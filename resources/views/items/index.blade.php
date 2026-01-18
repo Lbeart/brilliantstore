@@ -1,387 +1,650 @@
-<!DOCTYPE html>   
+<!DOCTYPE html>
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Brillant Tepiha & Perde  | b-brillant.com</title>
+  <title>Brillant Tepiha & Perde | b-brillant.com</title>
   <meta name="description" content="Tepiha moderne, perde, set qarqafësh, mbulesa, jastakë dekorues dhe tepiha për banjo. Cilësi dhe dizajn për shtëpinë tuaj në Lipjan.">
 
   <!-- Bootstrap CSS & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-  <!-- Poppins (Google Fonts) -->
+  <!-- Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="icon" type="image/png" href="{{ asset('images/llogo.png') }}">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <style>
-    html, body, .navbar-custom, .navbar-custom .nav-link, .dropdown-menu, .dropdown-item {
+    /* =========================================================
+      Brillant Home – Pro CSS (structured, responsive, modern)
+    ========================================================== */
+    :root{
+      --bg: #0b1020;
+      --surface: #0f172a;
+      --surface-2:#111827;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --text:#111827;
+      --light:#f8fafc;
+      --brand:#dc3545;          /* red */
+      --brand-2:#ffc107;        /* gold */
+      --ring: rgba(220,53,69,.28);
+      --shadow: 0 18px 45px rgba(2,6,23,.12);
+      --shadow-soft: 0 10px 28px rgba(2,6,23,.10);
+      --radius: 18px;
+      --radius-lg: 24px;
+    }
+
+    *{ box-sizing:border-box; }
+    html, body{ height:100%; }
+    html, body, .navbar-custom, .navbar-custom .nav-link, .dropdown-menu, .dropdown-item{
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
     }
 
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-      background-color: #f8f9fa;
+    body{
+      margin:0;
+      font-family:'Poppins',sans-serif;
+      background:
+        radial-gradient(1200px 700px at 10% -10%, rgba(220,53,69,.18), transparent 55%),
+        radial-gradient(900px 500px at 90% 0%, rgba(255,193,7,.14), transparent 55%),
+        #f6f7fb;
+      color:var(--text);
     }
 
-    /* NAVBAR */
-    .navbar-custom {
-      background: linear-gradient(90deg, #111827, #1f2933);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      padding: 0.6rem 1.5rem;
+    /* ===== Helpers ===== */
+    .section-pad{ padding: 4rem 0; }
+    .soft-card{
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(17,24,39,.06);
+      box-shadow: var(--shadow-soft);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .pill{
+      border-radius: 999px !important;
+    }
+    .btn-brand{
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(220,53,69,.22);
+    }
+    .btn-brand:hover{
+      filter: brightness(.98);
+      box-shadow: 0 14px 30px rgba(220,53,69,.28);
+    }
+
+    /* =========================
+       NAVBAR (New look)
+    ========================== */
+    .navbar-custom{
       position: sticky;
-      top: 0;
+      top:0;
       z-index: 1000;
+      padding: .75rem 0;
+      background: linear-gradient(90deg, rgba(15,23,42,.92), rgba(17,24,39,.92));
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
-    .navbar-custom .navbar-brand img {
-      height: 52px;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+    .navbar-custom .navbar-brand img{
+      height: 46px;
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,.20));
     }
 
-    .navbar-custom .nav-link {
+    .navbar-custom .nav-link{
+      color: rgba(248,250,252,.92) !important;
       font-weight: 500;
-      font-size: 0.95rem;
-      color: #f8f9fa !important;
-      padding: 0.6rem 0.9rem;
+      font-size: .95rem;
+      padding: .55rem .85rem;
+      border-radius: 999px;
+      transition: background .2s ease, color .2s ease, transform .2s ease;
     }
     .navbar-custom .nav-link:hover,
-    .navbar-custom .nav-link:focus {
-      color: #ffc107 !important;
+    .navbar-custom .nav-link:focus{
+      color: #fff !important;
+      background: rgba(255,255,255,.08);
+      transform: translateY(-1px);
     }
 
-    .navbar-custom .navbar-toggler {
-      border-color: rgba(255,255,255,0.4);
+    .navbar-custom .navbar-toggler{
+      border-color: rgba(255,255,255,.28);
+      border-radius: 12px;
+      padding: .45rem .6rem;
     }
-    .navbar-custom .navbar-toggler-icon {
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28 255, 255, 255, 0.8 %29)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-    }
-
-    .dropdown-menu {
-      border-radius: 0.75rem;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-      padding: 0.5rem 0;
-      border: none;
+    .navbar-custom .navbar-toggler-icon{
+      background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28 255, 255, 255, 0.85 %29)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
     }
 
-    .dropdown-submenu .submenu {
-      display: none;
-      position: absolute;
-      top: 0;
-      left: 100%;
-      margin-left: 0.1rem;
-      border-radius: 0.75rem;
-      min-width: 180px;
+    .dropdown-menu{
+      border: 1px solid rgba(2,6,23,.08);
+      border-radius: 14px;
+      box-shadow: 0 18px 50px rgba(2,6,23,.18);
+      padding: .55rem;
     }
-    .dropdown-submenu:hover .submenu {
-      display: block;
+    .dropdown-item{
+      border-radius: 12px;
+      padding: .55rem .75rem;
+      font-weight: 500;
+    }
+    .dropdown-item:hover{
+      background: rgba(220,53,69,.08);
+      color: var(--brand);
     }
 
-    @media (max-width: 992px) {
-      .navbar-custom {
-        padding: 0.5rem 1rem;
-      }
-      .navbar-custom .navbar-brand img {
-        height: 44px;
-      }
+    .dropdown-submenu .submenu{
+      display:none;
+      position:absolute;
+      top:0;
+      left:100%;
+      margin-left:.25rem;
+      min-width: 190px;
+      border-radius: 14px;
+    }
+    .dropdown-submenu:hover .submenu{ display:block; }
 
-      /* Dropdown më i lexueshëm në mobile */
-      .navbar-custom .dropdown-menu {
-        border-radius: 0;
+    /* Navbar right small button */
+    .nav-login-btn{
+      border: 1px solid rgba(255,255,255,.28);
+      color: rgba(255,255,255,.92);
+      background: rgba(255,255,255,.06);
+      border-radius: 999px;
+      padding: .45rem .85rem;
+      font-weight: 600;
+    }
+    .nav-login-btn:hover{
+      background: rgba(255,255,255,.10);
+      color:#fff;
+    }
+
+    /* Mobile navbar dropdown */
+    @media (max-width: 992px){
+      .navbar-custom .dropdown-menu{
+        background: rgba(17,24,39,.98);
+        border-color: rgba(255,255,255,.10);
         box-shadow: none;
-        background: #111827;
       }
-      .navbar-custom .dropdown-item {
-        color: #f8f9fa;
+      .navbar-custom .dropdown-item{
+        color: rgba(248,250,252,.92);
       }
-      .navbar-custom .dropdown-item:hover {
-        background: rgba(255,255,255,0.05);
-        color: #ffc107;
+      .navbar-custom .dropdown-item:hover{
+        background: rgba(255,255,255,.06);
+        color: var(--brand-2);
       }
-
-      /* submenu te “Perde” të hapura poshtë parent-it në mobile */
-      .dropdown-submenu .submenu {
+      .dropdown-submenu .submenu{
         position: static;
         display: block;
         margin-left: 0;
         padding-left: 1rem;
         background: transparent;
-        box-shadow: none;
+        border: none;
       }
     }
 
-    /* HERO SECTION */
-    .hero-section {
-      position: relative;
-      min-height: 70vh;
-      display: flex;
-      align-items: center;
-      color: #fff;
-      overflow: hidden;
+    /* =========================
+       TOP ACTION BAR (NEW)
+       - search moved "mas mirti"
+    ========================== */
+    .topbar{
+      margin-top: 18px;
     }
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background: url('{{ asset('slider/foto1.jpg') }}') center center/cover no-repeat;
-      filter: brightness(0.4);
-      z-index: -2;
+    .topbar-inner{
+      padding: 14px;
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(17,24,39,.06);
+      box-shadow: var(--shadow-soft);
     }
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 10% 20%, rgba(220,53,69,0.35), transparent 60%);
-      z-index: -1;
-    }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.2rem 0.75rem;
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:.5rem;
+      padding:.55rem .85rem;
       border-radius: 999px;
-      background: rgba(255,255,255,0.12);
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-    }
-    .hero-badge span {
-      background: #ffc107;
-      color: #000;
-      padding: 0.05rem 0.5rem;
-      border-radius: 999px;
+      background: rgba(17,24,39,.04);
+      border: 1px solid rgba(17,24,39,.06);
       font-weight: 600;
+      color: #0f172a;
+      text-decoration:none;
+      transition: transform .18s ease, background .18s ease;
+      white-space: nowrap;
     }
-    .hero-title {
-      font-size: clamp(2.4rem, 4vw, 3.2rem);
-      font-weight: 700;
-      line-height: 1.1;
-      margin-top: 1rem;
+    .chip:hover{
+      background: rgba(220,53,69,.08);
+      transform: translateY(-1px);
+      color: var(--brand);
     }
-    .hero-title span {
-      color: #ffc107;
+    .chip i{ opacity:.9; }
+
+    /* Search */
+    .search-pro{
+      position: relative;
     }
-    .hero-subtitle {
-      font-size: 1rem;
-      max-width: 520px;
-      margin-top: 1rem;
-      color: #f8f9fa;
-    }
-    .hero-cta .btn {
+    .search-pro input{
+      height: 50px;
       border-radius: 999px;
-      padding: 0.65rem 1.6rem;
-      font-weight: 500;
+      padding-left: 48px;
+      padding-right: 120px;
+      border: 1px solid rgba(17,24,39,.10);
+      box-shadow: 0 10px 28px rgba(2,6,23,.08);
+      outline: none;
     }
-    .hero-cta .btn-outline-light {
+    .search-pro input:focus{
+      border-color: rgba(220,53,69,.35);
+      box-shadow: 0 0 0 5px var(--ring), 0 12px 28px rgba(2,6,23,.10);
+    }
+    .search-pro .icon{
+      position:absolute;
+      top:50%;
+      left: 16px;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+    .search-pro .btn{
+      position:absolute;
+      top:50%;
+      right: 6px;
+      transform: translateY(-50%);
+      border-radius: 999px;
+      padding: .55rem 1rem;
+      font-weight: 700;
+    }
+
+    /* WhatsApp */
+    .wa-btn{
+      background: #16a34a;
+      border: 1px solid rgba(22,163,74,.25);
+      color: #fff;
+      border-radius: 999px;
+      padding: .6rem 1rem;
+      font-weight: 700;
+      box-shadow: 0 10px 26px rgba(22,163,74,.18);
+      white-space: nowrap;
+    }
+    .wa-btn:hover{
+      filter: brightness(.98);
+      color:#fff;
+      box-shadow: 0 14px 34px rgba(22,163,74,.22);
+    }
+
+    /* =========================
+       HERO (New layout)
+    ========================== */
+    .hero{
+      margin-top: 18px;
+      border-radius: 32px;
+      overflow: hidden;
+      position: relative;
+      background:
+        radial-gradient(900px 500px at 20% 20%, rgba(255,193,7,.18), transparent 55%),
+        radial-gradient(900px 500px at 80% 40%, rgba(220,53,69,.22), transparent 60%),
+        linear-gradient(180deg, rgba(15,23,42,.92), rgba(2,6,23,.92));
+      color: #fff;
+      box-shadow: 0 30px 80px rgba(2,6,23,.25);
+    }
+
+    .hero-bg{
+      position:absolute;
+      inset:0;
+      background: url('{{ asset('slider/foto1.jpg') }}') center/cover no-repeat;
+      filter: brightness(.45) saturate(1.05);
+      transform: scale(1.03);
+      z-index: 0;
+    }
+    .hero::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(90deg, rgba(2,6,23,.70), rgba(2,6,23,.30) 55%, rgba(2,6,23,.70));
+      z-index: 1;
+    }
+
+    .hero-content{
+      position: relative;
+      z-index: 2;
+      padding: 3.2rem 1.5rem;
+    }
+    .hero-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:.6rem;
+      padding:.35rem .85rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.14);
+      font-size: .82rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+    .hero-badge span{
+      background: var(--brand-2);
+      color: #111;
+      padding: .12rem .55rem;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: .10em;
+    }
+
+    .hero-title{
+      font-weight: 800;
+      line-height: 1.06;
+      margin-top: 1rem;
+      font-size: clamp(2.05rem, 4.2vw, 3.35rem);
+    }
+    .hero-title em{
+      font-style: normal;
+      color: var(--brand-2);
+    }
+    .hero-sub{
+      margin-top: 1rem;
+      max-width: 560px;
+      color: rgba(248,250,252,.92);
+      font-size: 1.02rem;
+      line-height: 1.65;
+    }
+
+    .hero-actions{
+      margin-top: 1.4rem;
+      display:flex;
+      gap:.75rem;
+      flex-wrap: wrap;
+    }
+    .hero-actions .btn{
+      border-radius: 999px;
+      padding: .72rem 1.35rem;
+      font-weight: 800;
+    }
+    .hero-actions .btn-outline-light{
       border-width: 2px;
     }
-    .hero-stats {
-      margin-top: 1.8rem;
-      display: flex;
+
+    .hero-stats{
+      margin-top: 1.7rem;
+      display:flex;
+      gap: 14px;
       flex-wrap: wrap;
-      gap: 1.5rem;
-      font-size: 0.9rem;
     }
-    .hero-stat-number {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #ffc107;
+    .stat{
+      padding: .75rem .95rem;
+      border-radius: 16px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      min-width: 175px;
+    }
+    .stat .n{
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--brand-2);
+      line-height: 1;
+    }
+    .stat .t{
+      font-size: .9rem;
+      color: rgba(248,250,252,.88);
+      margin-top: .3rem;
     }
 
-    /* CATEGORY CARDS */
-    .section-title {
-      text-align: center;
-      margin-bottom: 2.5rem;
+    /* Weekly offers card */
+    .weekly-card{
+      border-radius: 26px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,255,255,.16);
+      box-shadow: 0 18px 55px rgba(2,6,23,.24);
+      overflow: hidden;
     }
-    .section-title span {
-      font-size: 0.85rem;
-      color: #dc3545;
-      font-weight: 600;
-      letter-spacing: 0.14em;
+    .weekly-card .head{
+      padding: 1rem 1.1rem .3rem;
+    }
+    .weekly-card .kicker{
+      font-size: .78rem;
+      letter-spacing: .16em;
       text-transform: uppercase;
+      color: rgba(2,6,23,.55);
+      margin-bottom: .35rem;
+      font-weight: 800;
     }
-    .section-title h2 {
-      font-weight: 700;
-      margin-top: 0.4rem;
+    .weekly-card .title{
+      font-weight: 900;
+      margin:0;
+      color: #0f172a;
+    }
+    .weekly-item{
+      padding: .9rem 1.1rem;
+      border-top: 1px solid rgba(2,6,23,.06);
+    }
+    .weekly-item img{
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 10px 22px rgba(2,6,23,.12);
+    }
+    .price{
+      font-weight: 900;
+      color: var(--brand);
+    }
+    .old{
+      color: rgba(2,6,23,.45);
+      text-decoration: line-through;
+      font-size: .9rem;
     }
 
-    .category-card {
-      border-radius: 1.5rem;
-      background: #fff;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
-      overflow: hidden;
-      position: relative;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* =========================
+       SECTIONS
+    ========================== */
+    .section-title{
+      text-align:center;
+      margin-bottom: 2.25rem;
+    }
+    .section-title .k{
+      display:inline-block;
+      font-size: .82rem;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--brand);
+      background: rgba(220,53,69,.08);
+      border: 1px solid rgba(220,53,69,.14);
+      padding: .35rem .8rem;
+      border-radius: 999px;
+    }
+    .section-title h2{
+      margin-top: .85rem;
+      font-weight: 900;
+      color: #0f172a;
+    }
+    .section-title p{
+      margin: .55rem auto 0;
+      max-width: 680px;
+      color: var(--muted);
+    }
+
+    /* Category cards */
+    .cat-card{
       height: 100%;
+      border-radius: 22px;
+      background: #fff;
+      border: 1px solid rgba(2,6,23,.06);
+      box-shadow: var(--shadow-soft);
+      overflow:hidden;
+      transition: transform .2s ease, box-shadow .2s ease;
     }
-    .category-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+    .cat-card:hover{
+      transform: translateY(-5px);
+      box-shadow: 0 22px 55px rgba(2,6,23,.14);
     }
-    .category-image-wrapper {
+    .cat-media{
       position: relative;
       overflow: hidden;
     }
-    .category-image-wrapper img {
-      width: 100%;
+    .cat-media img{
+      width:100%;
       height: 220px;
       object-fit: cover;
-      display: block;
-      transition: transform 0.4s ease;
+      transition: transform .45s ease;
     }
-    .category-card:hover img {
-      transform: scale(1.05);
+    .cat-card:hover .cat-media img{
+      transform: scale(1.06);
     }
-    .category-tag {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(0,0,0,0.7);
-      color: #fff;
-      padding: 0.2rem 0.7rem;
+    .cat-badge{
+      position:absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(2,6,23,.72);
+      color:#fff;
+      padding: .25rem .7rem;
       border-radius: 999px;
-      font-size: 0.75rem;
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .06em;
     }
-    .category-body {
-      padding: 1rem 1.25rem 1.3rem;
+    .cat-body{
+      padding: 1rem 1.1rem 1.2rem;
     }
-    .category-body h5 {
-      font-weight: 600;
+    .cat-body h5{
+      font-weight: 800;
+      margin-bottom: .35rem;
     }
-    .category-body p {
-      font-size: 0.9rem;
-      margin-bottom: 0.8rem;
-      color: #6c757d;
+    .cat-body p{
+      color: var(--muted);
+      font-size: .93rem;
+      margin-bottom: .8rem;
     }
-    .category-link {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: #dc3545;
-      font-weight: 600;
+    .cat-link{
+      display:inline-flex;
+      align-items:center;
+      gap:.45rem;
       text-decoration: none;
-    }
-
-    /* RUGS CAROUSEL SECTION */
-    .rugs-badge {
-      font-size: 0.8rem;
-      letter-spacing: 0.18em;
+      font-weight: 900;
+      letter-spacing: .12em;
       text-transform: uppercase;
-      color: #6c757d;
-    }
-    .rugs-card-title {
-      font-weight: 600;
+      font-size: .82rem;
+      color: var(--brand);
     }
 
-    /* LAST PRODUCTS */
-    .product-card {
-      border: none;
-      border-radius: 1.5rem;
-      overflow: hidden;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
-      height: 100%;
+    /* Rugs carousel title */
+    .rugs-head .k{
+      font-size: .82rem;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(2,6,23,.55);
     }
-    .product-card img {
+    .rugs-head h2{
+      font-weight: 900;
+      margin: .35rem 0;
+    }
+
+    /* Product cards */
+    .product-card{
+      border: 1px solid rgba(2,6,23,.06);
+      border-radius: 22px;
+      overflow:hidden;
+      box-shadow: var(--shadow-soft);
+      height:100%;
+      background:#fff;
+    }
+    .product-card img{
       height: 260px;
+      width:100%;
       object-fit: cover;
-      width: 100%;
     }
-    .product-card .card-body {
-      padding: 1rem 1.25rem 1.3rem;
+    .product-card .card-body{
+      padding: 1rem 1.1rem 1.2rem;
     }
 
-    /* WHY CHOOSE US */
-    .why-bullet h5 {
-      font-weight: 600;
+    /* Why choose us block */
+    .why-wrap{
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(17,24,39,.06);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .why-wrap .why-side{
+      padding: 2rem;
+      background: linear-gradient(180deg, rgba(220,53,69,.08), rgba(255,255,255,0));
+    }
+    .why-wrap .why-points{
+      padding: 2rem;
+    }
+    .why-bullet h5{
+      font-weight: 900;
       font-size: 1rem;
+      margin-bottom: .25rem;
     }
-    .why-bullet p {
-      font-size: 0.9rem;
-      color: #6c757d;
+    .why-bullet p{
+      color: var(--muted);
+      margin-bottom: 0;
+      font-size: .95rem;
+      line-height: 1.6;
+    }
+    .why-bullet{
+      padding: .95rem 1rem;
+      border-radius: 18px;
+      border: 1px solid rgba(2,6,23,.06);
+      background: rgba(255,255,255,.70);
+      box-shadow: 0 10px 26px rgba(2,6,23,.07);
+      margin-bottom: .85rem;
     }
 
-    /* SEO TEXT */
-    .seo-text {
-      font-size: 0.95rem;
-      line-height: 1.7;
+    /* SEO text */
+    .seo-text{
+      font-size: .98rem;
+      line-height: 1.75;
+      color: rgba(2,6,23,.78);
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(17,24,39,.06);
+      border-radius: 22px;
+      padding: 1.6rem;
+      box-shadow: var(--shadow-soft);
+    }
+    .seo-text h2{
+      font-weight: 900;
+      margin-bottom: .85rem;
     }
 
-    /* FOOTER */
-    footer {
-      font-size: 0.9rem;
+    /* Footer */
+    footer{
+      font-size: .92rem;
+      background: rgba(255,255,255,.75) !important;
+      border-top: 1px solid rgba(17,24,39,.08) !important;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
 
-   @media (max-width: 768px) {
-  .hero-section {
-    min-height: 60vh;
-    text-align: center;
-  }
-  .hero-subtitle {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .hero-stats {
-    justify-content: center;
-  }
-}
-
-      .search-wrapper {
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 1rem 0;
-}
-
-.search-box {
-  max-width: 700px;
-  margin: auto;
-  position: relative;
-}
-
-.search-box input {
-  border-radius: 999px;
-  padding-left: 3rem;
-  height: 48px;
-  font-size: 0.95rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.search-box i {
-  position: absolute;
-  top: 50%;
-  left: 18px;
-  transform: translateY(-50%);
-  color: #6b7280;
-}
-
-.category-side {
-  border-radius: 1rem;
-  background: #f9fafb;
-  padding: 1rem;
-}
-
-.category-side a {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.6rem 0;
-  color: #111827;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.category-side a:hover {
-  color: #dc3545;
-}
-    
+    /* =========================
+       Responsive tweaks
+    ========================== */
+    @media (max-width: 992px){
+      .hero-content{ padding: 2.5rem 1.1rem; }
+      .weekly-card{ margin-top: 16px; }
+      .search-pro input{ padding-right: 110px; }
+    }
+    @media (max-width: 768px){
+      .topbar{ margin-top: 12px; }
+      .hero-content{ padding: 2.2rem 1rem; }
+      .hero-sub{ font-size: .98rem; }
+      .hero-stats{ justify-content: center; }
+      .stat{ min-width: 160px; }
+      .search-pro input{ height: 52px; }
+    }
+    @media (max-width: 576px){
+      .search-pro input{ padding-right: 100px; }
+      .hero-actions .btn{ width: 100%; }
+      .weekly-item img{ width: 92px; height: 92px; }
+    }
   </style>
 </head>
-<body>
 
+<body>
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
     <div class="container">
@@ -396,7 +659,7 @@
       </button>
 
       <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
-        <ul class="navbar-nav align-items-lg-center me-lg-3">
+        <ul class="navbar-nav align-items-lg-center gap-lg-1 me-lg-2">
           <li class="nav-item">
             <a class="nav-link" href="/">Home</a>
           </li>
@@ -430,7 +693,7 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ route('about') }}">About Us</a>
           </li>
-          <li class="nav-item me-lg-2">
+          <li class="nav-item">
             <a class="nav-link" href="{{ route('contact') }}">Contact us</a>
           </li>
 
@@ -455,13 +718,13 @@
               </ul>
             </li>
           @else
-            <li class="nav-item ms-lg-2">
-              <a href="{{ route('login') }}" class="btn btn-outline-light btn-sm rounded-pill">Log in</a>
+            <li class="nav-item ms-lg-1">
+              <a href="{{ route('login') }}" class="nav-login-btn btn btn-sm">Log in</a>
             </li>
           @endauth
 
-          <!-- CART / GJURMO POROSINË -->
-          <li class="nav-item dropdown ms-lg-2">
+          <!-- CART / TRACK -->
+          <li class="nav-item dropdown ms-lg-1">
             <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
                href="#" id="cartDropdown" role="button"
                data-bs-toggle="dropdown" aria-expanded="false" onclick="return false;">
@@ -499,218 +762,202 @@
       </div>
     </div>
   </nav>
-<div class="search-wrapper">
-  <div class="container">
-    <div class="row align-items-center g-3">
 
-      <!-- CATEGORIES LEFT -->
-      <div class="col-lg-3 d-none d-lg-block">
-        <div class="category-side shadow-sm">
-          <a href="/tepiha">
-            <span><i class="bi bi-grid me-2"></i> Tepiha</span>
-            <i class="bi bi-chevron-right"></i>
-          </a>
-          <a href="/mobije">
-            <span><i class="bi bi-house me-2"></i> Mobilje</span>
-            <i class="bi bi-chevron-right"></i>
-          </a>
-          <a href="/anesore">
-            <span><i class="bi bi-layout-text-window me-2"></i> Perde</span>
-            <i class="bi bi-chevron-right"></i>
+  <!-- TOPBAR: categories + NEW SEARCH + WhatsApp -->
+  <div class="container topbar">
+    <div class="topbar-inner">
+      <div class="row g-3 align-items-center">
+        <div class="col-lg-4">
+          <div class="d-flex flex-wrap gap-2">
+            <a class="chip" href="/tepiha"><i class="bi bi-grid"></i> Tepiha</a>
+            <a class="chip" href="/mobije"><i class="bi bi-house"></i> Mobilje</a>
+            <a class="chip" href="/anesore"><i class="bi bi-layout-text-window"></i> Perde</a>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <form action="{{ route('search') }}" method="GET" class="search-pro">
+            <i class="bi bi-search icon"></i>
+            <input type="text" name="q" class="form-control"
+                   placeholder="Kërko: tepiha hali, shkallore, garnishte alumin..."
+                   value="{{ request('q') }}" required>
+            <button class="btn btn-brand" type="submit">Kërko</button>
+          </form>
+        </div>
+
+        <div class="col-lg-3 text-lg-end">
+          <a href="https://wa.me/38344996926" target="_blank" class="wa-btn d-inline-flex align-items-center gap-2">
+            <i class="bi bi-whatsapp"></i> Chat në WhatsApp
           </a>
         </div>
       </div>
-
-      <!-- SEARCH CENTER -->
-      <div class="col-lg-6 col-md-12">
-        <form action="{{ route('search') }}" method="GET" class="search-box">
-          <i class="bi bi-search"></i>
-          <input
-            type="text"
-            name="q"
-            class="form-control"
-            placeholder="Kërko produkte..."
-            value="{{ request('q') }}"
-            required
-          >
-        </form>
-      </div>
-
-      <!-- CHAT RIGHT -->
-      <div class="col-lg-3 text-end d-none d-lg-block">
-        <a href="https://wa.me/38344996926" target="_blank"
-           class="btn btn-success rounded-pill px-4">
-          <i class="bi bi-whatsapp me-1"></i> Chat
-        </a>
-      </div>
-
     </div>
   </div>
-</div>
-  <!-- HERO SECTION -->
-  <section class="hero-section">
-    <div class="hero-bg"></div>
-    <div class="hero-overlay"></div>
-    <div class="container py-5">
-      <div class="row align-items-center">
-        <div class="col-lg-7">
-          <div class="hero-badge">
-            <span>KOLEKSION I RI</span> Tepiha & perde për çdo ambient
-          </div>
-          <h1 class="hero-title">
-            Tepiha & perde <span>premium</span> për shtëpi moderne.
-          </h1>
-          <p class="hero-subtitle">
-            Zgjidh dizajnin ideal për sallon, dhomë gjumi apo zyrë.
-            Tekstura cilësore, ngjyra që nuk zbehen dhe shërbim profesional nga Brillant në Lipjan.
-          </p>
-          <div class="hero-cta mt-4 d-flex flex-wrap gap-2">
-            <a href="/tepiha" class="btn btn-danger text-white">
-              Shiko tepihat
-            </a>
-            <a href="/anesore" class="btn btn-outline-light">
-              Shiko perdet
-            </a>
-          </div>
-          <div class="hero-stats">
-            <div>
-              <div class="hero-stat-number">3000+</div>
-              <div>Klientë të kënaqur në Kosovë</div>
-            </div>
-            <div>
-              <div class="hero-stat-number">15+ vjet</div>
-              <div>Përvojë në tekstile shtëpie</div>
-            </div>
-          </div>
-        </div>
 
-        <!-- KARTA: OFERTA E JAVËS ME KAROSEL -->
-        <div class="col-lg-5 mt-4 mt-lg-0">
-          <div class="card border-0 rounded-4 shadow-lg bg-white">
-            <div class="card-body p-3 p-md-4">
-              <p class="rugs-badge mb-2">ZBRITJE SEZONALE</p>
-              <h5 class="fw-bold mb-3">Oferta e javës</h5>
+  <!-- HERO -->
+  <section class="container mt-3">
+    <div class="hero">
+      <div class="hero-bg"></div>
+
+      <div class="hero-content">
+        <div class="row align-items-center gy-4">
+          <div class="col-lg-7">
+            <div class="hero-badge">
+              <span>KOLEKSION I RI</span> Tepiha & perde për çdo ambient
+            </div>
+
+            <h1 class="hero-title">
+              Tepiha & perde <em>premium</em> për shtëpi moderne.
+            </h1>
+
+            <p class="hero-sub">
+              Zgjidh dizajnin ideal për sallon, dhomë gjumi apo zyrë.
+              Tekstura cilësore, ngjyra që nuk zbehen dhe shërbim profesional nga Brillant në Lipjan.
+            </p>
+
+            <div class="hero-actions">
+              <a href="/tepiha" class="btn btn-brand">
+                Shiko tepihat
+              </a>
+              <a href="/anesore" class="btn btn-outline-light">
+                Shiko perdet
+              </a>
+            </div>
+
+            <div class="hero-stats">
+              <div class="stat">
+                <div class="n">3000+</div>
+                <div class="t">Klientë të kënaqur në Kosovë</div>
+              </div>
+              <div class="stat">
+                <div class="n">15+ vjet</div>
+                <div class="t">Përvojë në tekstile shtëpie</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-5">
+            <div class="weekly-card">
+              <div class="head">
+                <div class="kicker">ZBRITJE SEZONALE</div>
+                <h5 class="title">Oferta e javës</h5>
+              </div>
 
               <div id="weeklyOffersCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
                 <div class="carousel-inner">
 
-                  <!-- SLIDE 1 – TEPIHA -->
+                  <!-- Slide 1 -->
                   <div class="carousel-item active">
-                    <div class="d-flex gap-3 align-items-center">
-                      <img src="{{ asset('slider/side.bmp') }}" alt="Tepiha Modern 150x230"
-                           class="rounded-3 flex-shrink-0"
-                           style="width: 110px; height: 110px; object-fit: cover;">
-                      <div class="flex-grow-1">
-                        <span class="badge bg-danger-subtle text-danger border border-danger mb-1">Tepiha</span>
-                        <p class="mb-1 fw-semibold">Tepiha Modern 150x230 cm</p>
-                        <p class="mb-1 small text-muted">Antibakterial, Akrill, lehtë për pastrim.</p>
-                        <div class="d-flex align-items-baseline gap-2">
-                          <span class="fw-bold text-danger">€75.00</span>
-                          <span class="text-muted text-decoration-line-through small">€95.00</span>
+                    <div class="weekly-item">
+                      <div class="d-flex gap-3 align-items-center">
+                        <img src="{{ asset('slider/side.bmp') }}" alt="Tepiha Modern 150x230">
+                        <div class="flex-grow-1">
+                          <span class="badge bg-danger-subtle text-danger border border-danger mb-2">Tepiha</span>
+                          <div class="fw-bold">Tepiha Modern 150x230 cm</div>
+                          <div class="small text-muted">Antibakterial, Akrill, lehtë për pastrim.</div>
+                          <div class="d-flex align-items-baseline gap-2 mt-2">
+                            <span class="price">€75.00</span>
+                            <span class="old">€95.00</span>
+                          </div>
+                          <a href="/tepiha" class="small text-decoration-none text-danger d-inline-flex align-items-center gap-1 mt-2">
+                            Shko te tepihat <i class="bi bi-arrow-right"></i>
+                          </a>
                         </div>
-                        <a href="/tepiha" class="small text-decoration-none text-danger d-inline-flex align-items-center gap-1 mt-1">
-                          Shko te tepihat <i class="bi bi-arrow-right"></i>
-                        </a>
                       </div>
                     </div>
                   </div>
 
-                  <!-- SLIDE 2 – TEPIHA TJETËR -->
+                  <!-- Slide 2 -->
                   <div class="carousel-item">
-                    <div class="d-flex gap-3 align-items-center">
-                      <img src="{{ asset('slider/hali4.jpg') }}" alt="Tepiha 200x300"
-                           class="rounded-3 flex-shrink-0"
-                           style="width: 110px; height: 110px; object-fit: cover;">
-                      <div class="flex-grow-1">
-                        <span class="badge bg-danger-subtle text-danger border border-danger mb-1">Tepiha</span>
-                        <p class="mb-1 fw-semibold">Tepiha Hali 200x300 cm</p>
-                        <p class="mb-1 small text-muted">Rezistent, me fibra cilësore për sallon.</p>
-                        <div class="d-flex align-items-baseline gap-2">
-                          <span class="fw-bold text-danger">€95.00</span>
-                          <span class="text-muted text-decoration-line-through small">€120.00</span>
+                    <div class="weekly-item">
+                      <div class="d-flex gap-3 align-items-center">
+                        <img src="{{ asset('slider/hali4.jpg') }}" alt="Tepiha Hali 200x300">
+                        <div class="flex-grow-1">
+                          <span class="badge bg-danger-subtle text-danger border border-danger mb-2">Tepiha</span>
+                          <div class="fw-bold">Tepiha Hali 200x300 cm</div>
+                          <div class="small text-muted">Rezistent, me fibra cilësore për sallon.</div>
+                          <div class="d-flex align-items-baseline gap-2 mt-2">
+                            <span class="price">€95.00</span>
+                            <span class="old">€120.00</span>
+                          </div>
+                          <a href="/tepiha" class="small text-decoration-none text-danger d-inline-flex align-items-center gap-1 mt-2">
+                            Shiko modelet Hali <i class="bi bi-arrow-right"></i>
+                          </a>
                         </div>
-                        <a href="/tepiha" class="small text-decoration-none text-danger d-inline-flex align-items-center gap-1 mt-1">
-                          Shiko modelet Hali <i class="bi bi-arrow-right"></i>
-                        </a>
                       </div>
                     </div>
                   </div>
 
-                  <!-- SLIDE 3 – SET ÇARÇAFËSH -->
+                  <!-- Slide 3 -->
                   <div class="carousel-item">
-                    <div class="d-flex gap-3 align-items-center">
-                      <img src="{{ asset('slider/bedshet.jpg') }}" alt="Set çarçafësh"
-                           class="rounded-3 flex-shrink-0"
-                           style="width: 110px; height: 110px; object-fit: cover;">
-                      <div class="flex-grow-1">
-                        <span class="badge bg-warning-subtle text-warning border border-warning mb-1">Set çarçafësh</span>
-                        <p class="mb-1 fw-semibold">Set çarçafësh pambuk</p>
-                        <p class="mb-1 small text-muted">Material i butë, ngjyra që nuk zbehen, ideale për përdorim ditor.</p>
-                        <div class="d-flex align-items-baseline gap-2">
-                          <span class="fw-bold text-danger">€25.00</span>
-                          <span class="text-muted text-decoration-line-through small">€59.00</span>
+                    <div class="weekly-item">
+                      <div class="d-flex gap-3 align-items-center">
+                        <img src="{{ asset('slider/bedshet.jpg') }}" alt="Set çarçafësh">
+                        <div class="flex-grow-1">
+                          <span class="badge bg-warning-subtle text-warning border border-warning mb-2">Set çarçafësh</span>
+                          <div class="fw-bold">Set çarçafësh pambuk</div>
+                          <div class="small text-muted">I butë, ngjyra që nuk zbehen, ideal për përdorim ditor.</div>
+                          <div class="d-flex align-items-baseline gap-2 mt-2">
+                            <span class="price">€25.00</span>
+                            <span class="old">€59.00</span>
+                          </div>
+                          <a href="/postava" class="small text-decoration-none text-danger d-inline-flex align-items-center gap-1 mt-2">
+                            Shko te setet <i class="bi bi-arrow-right"></i>
+                          </a>
                         </div>
-                        <a href="/postava" class="small text-decoration-none text-danger d-inline-flex align-items-center gap-1 mt-1">
-                          Shko te setet e çarçafëve <i class="bi bi-arrow-right"></i>
-                        </a>
                       </div>
                     </div>
                   </div>
 
                 </div>
 
-                <!-- Controls -->
                 <button class="carousel-control-prev" type="button" data-bs-target="#weeklyOffersCarousel" data-bs-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="carousel-control-prev-icon"></span>
                   <span class="visually-hidden">Previous</span>
                 </button>
                 <button class="carousel-control-next" type="button" data-bs-target="#weeklyOffersCarousel" data-bs-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="carousel-control-next-icon"></span>
                   <span class="visually-hidden">Next</span>
                 </button>
-
-                <!-- Indicators -->
-                <div class="mt-3 d-flex justify-content-center gap-2">
-                  <button type="button" data-bs-target="#weeklyOffersCarousel" data-bs-slide-to="0" class="active rounded-pill border-0" style="width:8px;height:8px;background:#dc3545;"></button>
-                  <button type="button" data-bs-target="#weeklyOffersCarousel" data-bs-slide-to="1" class="rounded-pill border-0" style="width:8px;height:8px;background:#ced4da;"></button>
-                  <button type="button" data-bs-target="#weeklyOffersCarousel" data-bs-slide-to="2" class="rounded-pill border-0" style="width:8px;height:8px;background:#ced4da;"></button>
-                </div>
               </div>
 
-              <a href="/tepiha" class="btn btn-outline-dark w-100 mt-3 rounded-pill btn-sm">
-                Shiko të gjitha ofertat
-              </a>
+              <div class="p-3 pt-2">
+                <a href="/tepiha" class="btn btn-outline-dark w-100 pill btn-sm">
+                  Shiko të gjitha ofertat
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-        <!-- /KARTA: OFERTA E JAVËS -->
 
-      </div>
-    </div>
+        </div><!-- row -->
+      </div><!-- hero-content -->
+    </div><!-- hero -->
   </section>
 
-  <!-- MAIN CONTENT -->
-  <main class="py-5">
+  <!-- MAIN -->
+  <main class="section-pad">
     <div class="container">
 
-      <!-- KATEGORITË KRYESORE -->
+      <!-- Categories -->
       <section class="mb-5">
         <div class="section-title">
-          <span>KATEGORITË KRYESORE</span>
+          <span class="k">KATEGORITË KRYESORE</span>
           <h2>Çfarë po kërkon sot?</h2>
+          <p>Zgjidh një kategori dhe shiko modelet më të kërkuara në Brillant.</p>
         </div>
+
         <div class="row g-4">
           <div class="col-md-3 col-sm-6">
             <a href="/tepiha" class="text-decoration-none text-dark">
-              <div class="category-card">
-                <div class="category-image-wrapper">
+              <div class="cat-card">
+                <div class="cat-media">
                   <img src="{{ asset('slider/tepihali600cream.png') }}" alt="Tepiha">
-                  <span class="category-tag">Tepiha</span>
+                  <span class="cat-badge">Tepiha</span>
                 </div>
-                <div class="category-body">
+                <div class="cat-body">
                   <h5>Tepiha modern & klasik</h5>
                   <p>Modele për sallon, korridor, dhoma fëmijësh dhe banjo.</p>
-                  <span class="category-link">Shiko tepihat →</span>
+                  <span class="cat-link">Shiko tepihat <i class="bi bi-arrow-right"></i></span>
                 </div>
               </div>
             </a>
@@ -718,15 +965,15 @@
 
           <div class="col-md-3 col-sm-6">
             <a href="/anesore" class="text-decoration-none text-dark">
-              <div class="category-card">
-                <div class="category-image-wrapper">
+              <div class="cat-card">
+                <div class="cat-media">
                   <img src="{{ asset('slider/raffaello.jpg') }}" alt="Perde">
-                  <span class="category-tag">Perde</span>
+                  <span class="cat-badge">Perde</span>
                 </div>
-                <div class="category-body">
+                <div class="cat-body">
                   <h5>Perde anësore & ditore</h5>
                   <p>Tekstile cilësore me sisteme amerikane dhe dizajn modern.</p>
-                  <span class="category-link">Shiko perdet →</span>
+                  <span class="cat-link">Shiko perdet <i class="bi bi-arrow-right"></i></span>
                 </div>
               </div>
             </a>
@@ -734,15 +981,15 @@
 
           <div class="col-md-3 col-sm-6">
             <a href="/postava" class="text-decoration-none text-dark">
-              <div class="category-card">
-                <div class="category-image-wrapper">
+              <div class="cat-card">
+                <div class="cat-media">
                   <img src="{{ asset('slider/bedshet.jpg') }}" alt="Set çarçafësh">
-                  <span class="category-tag">Shtrat</span>
+                  <span class="cat-badge">Shtrat</span>
                 </div>
-                <div class="category-body">
+                <div class="cat-body">
                   <h5>Set çarçafësh & kompleta krevati</h5>
                   <p>Material i butë, i qëndrueshëm dhe ngjyra që nuk zbehen.</p>
-                  <span class="category-link">Shiko setet →</span>
+                  <span class="cat-link">Shiko setet <i class="bi bi-arrow-right"></i></span>
                 </div>
               </div>
             </a>
@@ -750,156 +997,154 @@
 
           <div class="col-md-3 col-sm-6">
             <a href="/mbulesa" class="text-decoration-none text-dark">
-              <div class="category-card">
-                <div class="category-image-wrapper">
+              <div class="cat-card">
+                <div class="cat-media">
                   <img src="{{ asset('slider/paris.jpg') }}" alt="Mbulesa & batanije">
-                  <span class="category-tag">Komfor</span>
+                  <span class="cat-badge">Komfor</span>
                 </div>
-                <div class="category-body">
+                <div class="cat-body">
                   <h5>Mbulesa & batanije</h5>
-                  <p>Batanije të ngrohta, mbulesa karrigesh dhe garnitura dekoruese.</p>
-                  <span class="category-link">Shiko mbulesat →</span>
+                  <p>Batanije të ngrohta, mbulesa karrigesh dhe garnishte dekoruese.</p>
+                  <span class="cat-link">Shiko mbulesat <i class="bi bi-arrow-right"></i></span>
                 </div>
               </div>
             </a>
           </div>
+
         </div>
       </section>
 
-      <!-- MODERN RUGS CAROUSEL -->
+      <!-- Modern rugs carousel -->
       <section class="mb-5">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 rugs-head">
           <div>
-            <div class="rugs-badge mb-1">TEPIHA MODERN</div>
-            <h2 class="rugs-card-title mb-0">Tepiha moderne në ofertë</h2>
+            <div class="k">TEPIHA MODERN</div>
+            <h2 class="mb-1">Tepiha moderne në ofertë</h2>
             <p class="text-muted small mb-0">Modele të zgjedhura nga koleksioni ynë.</p>
           </div>
-          <a href="/tepiha" class="btn btn-danger btn-sm rounded-pill mt-3 mt-md-0">Shiko të gjithë katalogun e tepihave</a>
+          <a href="/tepiha" class="btn btn-brand btn-sm pill mt-3 mt-md-0">Shiko katalogun e tepihave</a>
         </div>
 
-        <div id="modernRugsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4500">
-          <div class="carousel-inner">
-            @php
-              $rugs = [
-                ['side.bmp',  'Modern Rose 120x170 cm',  '€45.00'],
-                ['hali4.jpg', 'Modern Hali 300x200 cm',  '€95.00'],
-                ['gold.bmp',  'Modern Gold 300x200 cm',  '€55.00'],
-                ['gold1.bmp', 'Modern Gold 300x200 cm',  '€55.00'],
-                ['gold2.bmp', 'Modern Gold 300x200 cm',  '€55.00'],
-                ['rose1.jpg', 'rose 300x200 cm',         '€105.00'],
-                ['rose2.bmp', 'rose 150x230 cm',         '€75.00'],
-                ['rose3.bmp', 'rose 150x230 cm',         '€75.00'],
-                ['hali5.jpg', 'hali 150x230 cm',         '€65.00'],
-                ['hali3.jpg', 'hali 150x230 cm',         '€65.00'],
-              ];
-              $chunks = collect($rugs)->chunk(5);
-            @endphp
+        <div class="soft-card p-3 p-md-4">
+          <div id="modernRugsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4500">
+            <div class="carousel-inner">
+              @php
+                $rugs = [
+                  ['side.bmp',  'Modern Rose 120x170 cm',  '€45.00'],
+                  ['hali4.jpg', 'Modern Hali 300x200 cm',  '€95.00'],
+                  ['gold.bmp',  'Modern Gold 300x200 cm',  '€55.00'],
+                  ['gold1.bmp', 'Modern Gold 300x200 cm',  '€55.00'],
+                  ['gold2.bmp', 'Modern Gold 300x200 cm',  '€55.00'],
+                  ['rose1.jpg', 'rose 300x200 cm',         '€105.00'],
+                  ['rose2.bmp', 'rose 150x230 cm',         '€75.00'],
+                  ['rose3.bmp', 'rose 150x230 cm',         '€75.00'],
+                  ['hali5.jpg', 'hali 150x230 cm',         '€65.00'],
+                  ['hali3.jpg', 'hali 150x230 cm',         '€65.00'],
+                ];
+                $chunks = collect($rugs)->chunk(5);
+              @endphp
 
-            @foreach($chunks as $i => $group)
-              <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
-                <div class="row gx-3 justify-content-center">
-                  @foreach($group as $item)
-                    <div class="col-6 col-sm-4 col-md-2 text-center mb-3">
-                      <div class="small text-success mb-1">
-                        <i class="bi bi-check-circle-fill"></i> In stock
+              @foreach($chunks as $i => $group)
+                <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
+                  <div class="row gx-3 justify-content-center">
+                    @foreach($group as $item)
+                      <div class="col-6 col-sm-4 col-md-2 text-center mb-3">
+                        <div class="small text-success mb-1">
+                          <i class="bi bi-check-circle-fill"></i> In stock
+                        </div>
+                        <img
+                          src="{{ asset('slider/'.$item[0]) }}"
+                          alt="{{ $item[1] }}"
+                          class="img-fluid rounded-4 shadow-sm mb-2"
+                          style="height: 200px; width: auto; object-fit: contain;">
+                        <p class="small mb-1">{{ $item[1] }}</p>
+                        <h6 class="fw-bold mb-0">{{ $item[2] }}</h6>
                       </div>
-                      <img
-                        src="{{ asset('slider/'.$item[0]) }}"
-                        alt="{{ $item[1] }}"
-                        class="img-fluid rounded shadow-sm mb-2"
-                        style="height: 200px; width: auto; object-fit: contain;">
-                      <p class="small mb-1">{{ $item[1] }}</p>
-                      <h6 class="fw-bold mb-0">{{ $item[2] }}</h6>
+                    @endforeach
+                  </div>
+                </div>
+              @endforeach
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#modernRugsCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#modernRugsCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Latest products -->
+      <section class="mb-5">
+        <div class="section-title">
+          <span class="k">PRODUKTET E FUNDIT</span>
+          <h2>Zbuloni çfarë ka ardhur rishtazi</h2>
+          <p>Produktet e reja që janë shtuar së fundmi në katalog.</p>
+        </div>
+
+        <div class="row g-4">
+          @if(isset($items) && $items->count())
+            @foreach($items->take(3) as $item)
+              <div class="col-md-4">
+                <div class="card product-card">
+                  @if($item->image_path)
+                    <img src="{{ asset('storage/'.$item->image_path) }}" class="card-img-top" alt="{{ $item->name }}">
+                  @else
+                    <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:260px;">
+                      <span class="text-white">Pa foto</span>
                     </div>
-                  @endforeach
+                  @endif
+
+                  <div class="card-body">
+                    <h5 class="card-title fw-bold text-danger mb-1">{{ $item->name }}</h5>
+                    <p class="card-text text-muted mb-0">{{ \Illuminate\Support\Str::limit($item->description, 100) }}</p>
+                  </div>
                 </div>
               </div>
             @endforeach
-          </div>
-
-          <button class="carousel-control-prev" type="button" data-bs-target="#modernRugsCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#modernRugsCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
+          @endif
         </div>
       </section>
 
-      <!-- LATEST PRODUCTS (DYNAMIC) -->
-      <!-- LATEST PRODUCTS (DYNAMIC) -->
-<section class="mb-5">
-  <div class="section-title">
-    <span>PRODUKTET E FUNDIT</span>
-    <h2>Zbuloni çfarë ka ardhur rishtazi</h2>
-  </div>
-
-  <div class="row g-4">
-    @if(isset($items) && $items->count())
-      @foreach($items->take(3) as $item)
-        <div class="col-md-4">
-          <div class="card product-card">
-            @if($item->image_path)
-              <img src="{{ asset('storage/'.$item->image_path) }}" class="card-img-top" alt="{{ $item->name }}">
-            @else
-              <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:260px;">
-                <span class="text-white">Pa foto</span>
-              </div>
-            @endif
-
-            <div class="card-body">
-              <h5 class="card-title fw-bold text-danger mb-1">
-                {{ $item->name }}
-              </h5>
-              <p class="card-text text-muted mb-0">
-                {{ \Illuminate\Support\Str::limit($item->description, 100) }}
-              </p>
-            </div>
-          </div>
-        </div>
-      @endforeach
-    @endif
-  </div>
-</section>
-
-      <!-- WHY CHOOSE US -->
-      <section class="py-5 bg-white rounded-4 px-3 px-md-4">
-        <div class="row align-items-center gy-4">
-          <div class="col-md-5">
+      <!-- Why choose us -->
+      <section class="why-wrap mb-5">
+        <div class="row g-0 align-items-stretch">
+          <div class="col-md-5 why-side">
             <div class="section-title text-md-start text-center mb-3 mb-md-0">
-              <span>PSE BRILLANT?</span>
-              <h2>Tekstil i zgjedhur, shërbim i kujdesshëm.</h2>
+              <span class="k">PSE BRILLANT?</span>
+              <h2 class="mt-3">Tekstil i zgjedhur, shërbim i kujdesshëm.</h2>
+              <p class="mt-2 text-muted">Matje, konsulencë dhe qepje profesionale – me fokus në cilësi dhe kënaqësi.</p>
             </div>
-            <img src="{{ asset('slider/raffaello.jpg') }}" class="img-fluid rounded-4 shadow-sm" alt="Why Choose Us">
+            <img src="{{ asset('slider/raffaello.jpg') }}" class="img-fluid rounded-4 shadow-sm mt-3" alt="Why Choose Us">
           </div>
-          <div class="col-md-7">
-            <div class="why-bullet mb-3">
+
+          <div class="col-md-7 why-points">
+            <div class="why-bullet">
               <h5>American System Curtains</h5>
               <p>Perde me sistem amerikan, montim i lehtë dhe pamje elegante për çdo ambient modern.</p>
             </div>
-            <div class="why-bullet mb-3">
+            <div class="why-bullet">
               <h5>Antibacterial Acrylic Rugs</h5>
               <p>Tepiha akrilik me mbrojtje antibakteriale, rezistent ndaj shtypjes dhe i lehtë për t’u pastruar.</p>
             </div>
-            <div class="why-bullet mb-3">
+            <div class="why-bullet">
               <h5>Plush bed covers & sheets</h5>
-              <p>Mbulesa dhe çarçafë pelushi të butë, të rehatshëm dhe miqësorë me mjedisin, me materiale të riciklueshme.</p>
+              <p>Mbulesa dhe çarçafë pelushi të butë, të rehatshëm dhe miqësorë me mjedisin.</p>
             </div>
             <div class="why-bullet mb-0">
               <h5>Shërbim profesional në Lipjan</h5>
-              <p>
-                Matje në terren, konsulencë për zgjedhjen e modelit dhe qepje profesionale.
-                Fokus i plotë në cilësi dhe kënaqësi të klientit.
-              </p>
+              <p>Matje në terren, konsulencë për modelin dhe qepje profesionale – gjithçka në një vend.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- SEO TEXT SECTION -->
-      <section class="seo-text mt-5">
+      <!-- SEO -->
+      <section class="seo-text">
         <h2>Brillant – Tepiha, Perde dhe Dekorime për Shtëpi</h2>
         <p>Brillant është destinacioni juaj i besueshëm për tepiha modern, perde cilësore, mbulesa të bukura dhe dekorime për shtëpi. Me përvojë shumëvjeçare, synimi ynë është t’ju ofrojmë produkte të cilësisë së lartë që i bëjnë ambientet tuaja më të bukura, më komode dhe më funksionale.</p>
 
@@ -914,7 +1159,7 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-light text-dark pt-5 pb-3 mt-5 border-top">
+  <footer class="text-dark pt-5 pb-3 mt-5">
     <div class="container">
       <div class="row">
         <div class="col-md-3 text-center text-md-start mb-4 mb-md-0">
@@ -948,7 +1193,7 @@
         </div>
       </div>
 
-      <div class="row mt-4">
+      <div class="row mt-4 align-items-center">
         <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
           <a href="#" class="text-dark me-3 fs-4"><i class="bi bi-instagram"></i></a>
           <a href="#" class="text-dark fs-4"><i class="bi bi-whatsapp"></i></a>
