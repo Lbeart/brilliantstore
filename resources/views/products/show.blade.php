@@ -442,6 +442,120 @@
   .similar-name{ font-size:16px; }
   .similar-price{ font-size:18px; }
 }
+.brillant-footer{
+  background:#f6f1f1;           /* si foto (shumë e lehtë) */
+  padding:58px 0 20px;
+}
+
+.brillant-footer .footer-inner{
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 22px;
+}
+
+.footer-grid{
+  display:grid;
+  grid-template-columns: 1.2fr 1fr 1fr 0.7fr;
+  gap:40px;
+  align-items:start;
+}
+
+/* left brand */
+.footer-brand{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.footer-logo{
+  width:86px;
+  height:auto;
+  display:block;
+}
+.footer-brand small{
+  display:block;
+  color:#111827;
+  font-weight:500;
+  letter-spacing:.2px;
+}
+.footer-brand .brand-name{
+  font-weight:900;
+  font-size:34px;
+  color:#111827;
+  line-height:1;
+}
+
+/* columns */
+.footer-col h4{
+  font-size:16px;
+  font-weight:900;
+  letter-spacing:.06em;
+  color:#111827;
+  margin:0 0 14px 0;
+}
+.footer-links{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:grid;
+  gap:8px;
+}
+.footer-links a{
+  color:#111827;
+  text-decoration:none;
+  font-weight:500;
+  opacity:.9;
+}
+.footer-links a:hover{
+  text-decoration:underline;
+}
+
+/* socials */
+.footer-social{
+  margin-top:38px;
+  display:flex;
+  gap:16px;
+  align-items:center;
+}
+.footer-social a{
+  color:#111827;
+  font-size:26px;
+  line-height:1;
+  text-decoration:none;
+}
+.footer-social a:hover{ opacity:.75; }
+
+/* bottom */
+.footer-bottom{
+  margin-top:36px;
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items:center;
+  font-weight:500;
+  color:#111827;
+  opacity:.8;
+  font-size:14px;
+}
+.footer-bottom .center{ text-align:center; }
+.footer-bottom .right{ text-align:right; }
+
+/* responsive */
+@media (max-width:992px){
+  .footer-grid{
+    grid-template-columns: 1fr 1fr;
+    gap:28px;
+  }
+  .footer-bottom{
+    grid-template-columns:1fr;
+    gap:8px;
+    text-align:center;
+  }
+  .footer-bottom .right{ text-align:center; }
+}
+@media (max-width:576px){
+  .brillant-footer{ padding:40px 0 16px; }
+  .footer-grid{ grid-template-columns: 1fr; }
+  .footer-social{ margin-top:18px; }
+}
   </style>
 </head>
 <body>
@@ -746,7 +860,71 @@
     </div>
   </div>
 @endif
+<br>
+<br>
+<br>
+<footer class="brillant-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      {{-- LEFT: LOGO + BRAND --}}
+      <div class="footer-brand">
+        <div>
+          <img class="footer-logo" src="{{ asset('images/brillant.png') }}" alt="Brillant">
+        </div>
 
+        <div>
+          <small>Salloni i Perdeve, Tepiha</small>
+          <div class="brand-name">BRILLANT</div>
+        </div>
+
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="https://wa.me/38344960661" target="_blank" rel="noopener" aria-label="WhatsApp">
+            <i class="bi bi-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+
+      {{-- PRODUCTS --}}
+      <div class="footer-col">
+        <h4>PRODUCTS</h4>
+        <ul class="footer-links">
+          <li><a href="{{ route('products.tepiha') }}">Carpet & Rugs</a></li>
+          <li><a href="{{ route('products.tepiha') }}">Decorative Carpets</a></li>
+          <li><a href="{{ route('products.tepihebanjo') }}">Bath Mats & Rugs</a></li>
+          <li><a href="{{ route('products.mbulesa') }}">Sofa Covers</a></li>
+          <li><a href="{{ route('products.postava') }}">Bed Sheets</a></li>
+          <li><a href="{{ route('products.batanije') }}">Blankets</a></li>
+        </ul>
+      </div>
+
+      {{-- INFORMATION --}}
+      <div class="footer-col">
+        <h4>INFORMATION</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url('/products') }}">Products</a></li>
+          <li><a href="{{ url('/catalogues') }}">Catalogues</a></li>
+          <li><a href="{{ url('/manufacturing') }}">Manufacturing</a></li>
+          <li><a href="{{ route('about') }}">About Us</a></li>
+        </ul>
+      </div>
+
+      {{-- FIND US --}}
+      <div class="footer-col">
+        <h4>FIND US</h4>
+        <ul class="footer-links">
+          <li><a href="{{ route('contact') }}">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div></div>
+      <div class="center">crafted by RDR Digital L.L.C</div>
+      <div class="right">Copyright © {{ now()->year }} Brillant</div>
+    </div>
+  </div>
+</footer>
 <!-- Fullscreen modal (e lejmë në HTML siç e ke, por s’e përdorim) -->
 <div class="img-modal" id="imgModal" aria-hidden="true">
   <button class="close-btn" type="button" id="modalClose" aria-label="Mbyll">
