@@ -829,49 +829,40 @@
       </section>
 
       <!-- LATEST PRODUCTS (DYNAMIC) -->
-      <section class="mb-5">
-        <div class="section-title">
-          <span>PRODUKTET E FUNDIT</span>
-          <h2>Zbuloni çfarë ka ardhur rishtazi</h2>
-        </div>
-        <div class="row g-4">
-        @if(isset($items) && $items->count())
-  @foreach($items->take(3) as $item)
-    <div class="col-md-4">
-      <div class="card product-card">
-        @if($item->image_path)
-          <img src="{{ asset('storage/'.$item->image_path) }}" class="card-img-top" alt="{{ $item->name }}">
-        @else
-          <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:260px;">
-            <span class="text-white">Pa foto</span>
-          </div>
-        @endif
-        <div class="card-body">
-          <h5 class="card-title fw-bold text-danger mb-1">{{ $item->name }}</h5>
-          <p class="card-text text-muted mb-0">{{ Str::limit($item->description, 100) }}</p>
-        </div>
-      </div>
-    </div>
-  @endforeach
-@endif
-            <div class="col-md-4">
-              <div class="card product-card">
-                @if($item->image_path)
-                  <img src="{{ asset('storage/'.$item->image_path) }}" class="card-img-top" alt="{{ $item->name }}">
-                @else
-                  <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:260px;">
-                    <span class="text-white">Pa foto</span>
-                  </div>
-                @endif
-                <div class="card-body">
-                  <h5 class="card-title fw-bold text-danger mb-1">{{ $item->name }}</h5>
-                  <p class="card-text text-muted mb-0">{{ Str::limit($item->description, 100) }}</p>
-                </div>
+      <!-- LATEST PRODUCTS (DYNAMIC) -->
+<section class="mb-5">
+  <div class="section-title">
+    <span>PRODUKTET E FUNDIT</span>
+    <h2>Zbuloni çfarë ka ardhur rishtazi</h2>
+  </div>
+
+  <div class="row g-4">
+    @if(isset($items) && $items->count())
+      @foreach($items->take(3) as $item)
+        <div class="col-md-4">
+          <div class="card product-card">
+            @if($item->image_path)
+              <img src="{{ asset('storage/'.$item->image_path) }}" class="card-img-top" alt="{{ $item->name }}">
+            @else
+              <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:260px;">
+                <span class="text-white">Pa foto</span>
               </div>
+            @endif
+
+            <div class="card-body">
+              <h5 class="card-title fw-bold text-danger mb-1">
+                {{ $item->name }}
+              </h5>
+              <p class="card-text text-muted mb-0">
+                {{ \Illuminate\Support\Str::limit($item->description, 100) }}
+              </p>
             </div>
-          @endforeach
+          </div>
         </div>
-      </section>
+      @endforeach
+    @endif
+  </div>
+</section>
 
       <!-- WHY CHOOSE US -->
       <section class="py-5 bg-white rounded-4 px-3 px-md-4">
