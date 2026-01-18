@@ -27,23 +27,40 @@ class ProductController extends Controller
     // =====================
     // TEPIHA (FIX SHKALLORE)
     // =====================
- public function tepiha(Request $request)
+public function tepiha(Request $request)
 {
+    $q = strtolower(trim($request->query('q')));
     $focus = $request->query('focus');
-    $q = trim(strtolower($request->query('q')));
 
     $query = Product::where('category', 'tepiha')
         ->where('is_active', true);
 
-    // SEARCH brenda produkteve
+    // 🔍 SEARCH tolerant ndaj gabimeve
     if ($q) {
-        $query->where(function ($sub) use ($q) {
-            $sub->whereRaw('LOWER(name) LIKE ?', ["%{$q}%"])
+        $synonyms = [
+            'shkallore' => ['shkallore','shkalore','shkallor','shkall','shkal'],
+            'rrethore'  => ['rrethore','rrumbullake','rreth','rrethor','rrumbullak'],
+            'tepiha'    => ['tepiha','tepih','tepija','tepia','tepihat','tepi'],
+        ];
+
+        $query->where(function ($sub) use ($q, $synonyms) {
+
+            foreach ($synonyms as $group) {
+                foreach ($group as $word) {
+                    if (str_contains($q, $word)) {
+                        $sub->orWhereRaw('LOWER(name) LIKE ?', ["%{$word}%"])
+                            ->orWhereRaw('LOWER(description) LIKE ?', ["%{$word}%"]);
+                    }
+                }
+            }
+
+            // fallback – çfarëdo fjale që shkruan klienti
+            $sub->orWhereRaw('LOWER(name) LIKE ?', ["%{$q}%"])
                 ->orWhereRaw('LOWER(description) LIKE ?', ["%{$q}%"]);
         });
     }
 
-    // PRIORITET SHKALLORE
+    // ⭐ PRIORITET SHKALLORE
     if ($focus === 'shkallore') {
         $query->orderByRaw("
             CASE
@@ -54,7 +71,7 @@ class ProductController extends Controller
         ");
     }
 
-    // PRIORITET RRETHORE
+    // ⭐ PRIORITET RRETHORE
     if ($focus === 'rrethore') {
         $query->orderByRaw("
             CASE
