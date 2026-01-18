@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # --- SHTIMI I RI ---
+    # Redirect pa-www ose http -> https://www.b-brillant.com
+    RewriteCond %{HTTPS} !=on [OR]
+    RewriteCond %{HTTP_HOST} !^www\.b-brillant\.com$ [NC]
+    RewriteRule ^ https://www.b-brillant.com%{REQUEST_URI} [L,R=301]
+
+    # --- RREGULLI QË E KISHE ---
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
+</IfModule>
