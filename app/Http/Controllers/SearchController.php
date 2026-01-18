@@ -18,6 +18,13 @@ class SearchController extends Controller
         if (str_contains($q, 'shkallore')) {
             return redirect('/tepiha?focus=shkallore');
         }
+        if (
+    str_contains($q, 'rrethore') ||
+    str_contains($q, 'rrumbullake') ||
+    str_contains($q, 'round')
+) {
+    return redirect('/tepiha?focus=rrethore');
+}
 
         // 👉 TEPIHA
         if (
