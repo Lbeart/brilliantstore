@@ -27,30 +27,37 @@ class ProductController extends Controller
     // =====================
     // TEPIHA (FIX SHKALLORE)
     // =====================
-    public function tepiha(Request $request)
-    {
-        $focus = $request->query('focus');
+   public function tepiha(Request $request)
+{
+    $focus = $request->query('focus');
 
-        $products = Product::where('category', 'tepiha')
-            ->where('is_active', true)
-            ->select('*')
-            ->selectRaw("
-                CASE
-                    WHEN ? = 'shkallore'
+    $products = Product::where('category', 'tepiha')
+        ->where('is_active', true)
+        ->select('*')
+        ->selectRaw("
+            CASE
+                WHEN ? = 'shkallore'
+                     AND (name LIKE '%shkallore%' OR description LIKE '%shkallore%')
+                THEN 0
+
+                WHEN ? = 'rrethore'
                      AND (
-                        name LIKE '%shkallore%'
-                        OR description LIKE '%shkallore%'
+                        name LIKE '%rrethore%' 
+                        OR name LIKE '%rrumbullake%'
+                        OR description LIKE '%rrethore%'
+                        OR description LIKE '%rrumbullake%'
                      )
-                    THEN 0
-                    ELSE 1
-                END AS priority
-            ", [$focus])
-            ->orderBy('priority')      // 🔥 SHKALLORET TË PARAT
-            ->orderByDesc('id')        // renditje normale brenda grupit
-            ->paginate(12);
+                THEN 0
 
-        return view('products.tepiha', compact('products'));
-    }
+                ELSE 1
+            END AS priority
+        ", [$focus, $focus])
+        ->orderBy('priority')     // 🔥 TË KËRKUARAT NË KRYE
+        ->orderByDesc('id')       // renditje normale brenda grupit
+        ->paginate(12);
+
+    return view('products.tepiha', compact('products'));
+}
 
     // PERDE – ANËSORE
     public function anesore()
