@@ -357,82 +357,90 @@
         display:none;
       }
     }
-   .similar-section{
+  .similar-box{
   background:#fff;
   border:1px solid #e5e7eb;
-  border-radius:14px;
-  padding:22px;
-  margin-top:22px;
+  border-radius:16px;
+  padding:28px;
 }
 
 .similar-title{
+  font-size:34px;
   font-weight:800;
-  font-size:1.8rem;
-  margin:0 0 18px 0;
   color:#111827;
+  margin:0 0 22px 0;
 }
 
 .similar-grid{
   display:grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap:18px;
+  grid-template-columns:repeat(5, minmax(0, 1fr));
+  gap:22px;
 }
 
+/* karta */
 .similar-card{
   display:block;
   text-decoration:none;
+  color:inherit;
   background:#fff;
   border:1px solid #e5e7eb;
-  border-radius:12px;
+  border-radius:14px;
   overflow:hidden;
-  transition: border-color .15s ease, box-shadow .15s ease;
-}
-.similar-card:hover{
-  border-color:#d1d5db;
-  box-shadow:0 10px 24px rgba(0,0,0,.08);
 }
 
-.similar-img{
-  aspect-ratio: 1 / 1;
-  background:#fff;
-  padding:14px;
+.similar-card-inner{
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  height:100%;
 }
+
+/* image square */
+.similar-img{
+  width:100%;
+  aspect-ratio:1/1;
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
+}
+
 .similar-img img{
   width:100%;
   height:100%;
   object-fit:cover;
-  border-radius:10px;
+  display:block;
 }
 
-.similar-body{
-  padding:14px 14px 16px;
-}
-
+/* text */
 .similar-name{
+  margin-top:14px;
+  font-size:20px;
   font-weight:700;
   color:#111827;
-  font-size:1rem;
-  line-height:1.25;
-  margin-bottom:10px;
+  line-height:1.2;
 }
 
 .similar-price{
-  font-weight:800;
+  margin-top:12px;
+  font-size:24px;
+  font-weight:900;
   color:#111827;
-  font-size:1.15rem;
 }
 
+/* responsive si zakonisht */
 @media (max-width:1200px){
-  .similar-grid{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .similar-grid{ grid-template-columns:repeat(4, minmax(0, 1fr)); }
 }
 @media (max-width:992px){
-  .similar-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .similar-grid{ grid-template-columns:repeat(3, minmax(0, 1fr)); }
+  .similar-title{ font-size:28px; }
 }
 @media (max-width:576px){
-  .similar-section{ padding:14px; }
-  .similar-title{ font-size:1.35rem; }
-  .similar-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px; }
-  .similar-price{ font-size:1.05rem; }
+  .similar-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+  .similar-box{ padding:16px; }
+  .similar-title{ font-size:22px; margin-bottom:16px; }
+  .similar-name{ font-size:16px; }
+  .similar-price{ font-size:18px; }
 }
   </style>
 </head>
@@ -690,16 +698,16 @@
   </div>
 </div>
 
-{{-- PRODUKTE TE NGJASHME (vetem Bootstrap, pa CSS) --}}
+{{-- PRODUKTE TE NGJASHME --}}
 @if(isset($similarProducts) && $similarProducts->count())
   <div class="container mb-5">
-    <div class="bg-white border rounded-4 p-4">
-      <h2 class="fw-bold mb-4" style="color:#111827;">Produkte të ngjashme</h2>
+    <div class="similar-box">
+      <h2 class="similar-title">Produkte të ngjashme</h2>
 
-      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-4">
+      <div class="similar-grid">
         @foreach($similarProducts as $p)
           @php
-            // Price range nga sizes nese ka
+            // price range nga sizes nese ka
             $minPrice = (float)$p->price;
             $maxPrice = (float)$p->price;
 
@@ -715,34 +723,27 @@
             }
           @endphp
 
-          <div class="col">
-            <a href="{{ route('products.show', $p) }}" class="text-decoration-none">
-              <div class="card h-100 border rounded-4">
-                <div class="ratio ratio-1x1 p-3">
-                  <img
-                    src="{{ $p->image_path ? asset('storage/'.$p->image_path) : asset('images/placeholder-product.png') }}"
-                    alt="{{ $p->name }}"
-                    class="w-100 h-100 rounded-3 object-fit-cover"
-                    loading="lazy"
-                  >
-                </div>
-
-                <div class="card-body pt-0">
-                  <div class="fw-semibold" style="color:#111827;">
-                    {{ $p->name }}
-                  </div>
-
-                  <div class="fw-bold mt-2" style="color:#111827; font-size:1.05rem;">
-                    @if($minPrice == $maxPrice)
-                      {{ number_format($minPrice, 2) }} €
-                    @else
-                      {{ number_format($minPrice, 2) }} € – {{ number_format($maxPrice, 2) }} €
-                    @endif
-                  </div>
-                </div>
+          <a class="similar-card" href="{{ route('products.show', $p) }}">
+            <div class="similar-card-inner">
+              <div class="similar-img">
+                <img
+                  src="{{ $p->image_path ? asset('storage/'.$p->image_path) : asset('images/placeholder-product.png') }}"
+                  alt="{{ $p->name }}"
+                  loading="lazy"
+                >
               </div>
-            </a>
-          </div>
+
+              <div class="similar-name">{{ $p->name }}</div>
+
+              <div class="similar-price">
+                @if($minPrice == $maxPrice)
+                  {{ number_format($minPrice, 2) }} €
+                @else
+                  {{ number_format($minPrice, 2) }} € – {{ number_format($maxPrice, 2) }} €
+                @endif
+              </div>
+            </div>
+          </a>
         @endforeach
       </div>
     </div>
