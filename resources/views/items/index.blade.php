@@ -772,6 +772,7 @@
             <a class="chip" href="/tepiha"><i class="bi bi-grid"></i> Tepiha</a>
             <a class="chip" href="/mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
             <a class="chip" href="/anesore"><i class="bi bi-layout-text-window"></i> Perde</a>
+            <a class="chip" href="/garnishte"><i class="bi bi-layout-text-window"></i> Garnishte</a>
           </div>
         </div>
 
