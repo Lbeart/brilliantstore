@@ -8,73 +8,105 @@ class SearchController extends Controller
 {
     public function index(Request $request)
     {
-        $q = strtolower(trim($request->get('q')));
+        $q = mb_strtolower(trim($request->get('q')));
 
         if (!$q) {
-            return redirect()->back();
+            return back();
         }
 
-        // 👉 SHKALLORE (duhet me u kap PARA tepiha)
-        if (str_contains($q, 'shkallore')) {
-            return redirect('/tepiha?focus=shkallore');
-        }
-        if (
-    str_contains($q, 'rrethore') ||
-    str_contains($q, 'rrumbullake') ||
-    str_contains($q, 'round')
-) {
-    return redirect('/tepiha?focus=rrethore');
-}
+        /*
+        |--------------------------------------------------------------------------
+        | TEPIHA – SUBTYPES (DUHET PARA TEPIHA GENERIKE)
+        |--------------------------------------------------------------------------
+        */
 
-        // 👉 TEPIHA
+        // SHKALLORE
         if (
-            str_contains($q, 'tepiha') ||
+            str_contains($q, 'shkall') ||
+            str_contains($q, 'shkal') ||
+            str_contains($q, 'stairs')
+        ) {
+            return redirect('/tepiha?focus=shkallore&q='.$q);
+        }
+
+        // RRETHORE / RRUMBULLAKE
+        if (
+            str_contains($q, 'rreth') ||
+            str_contains($q, 'rrumb') ||
+            str_contains($q, 'round')
+        ) {
+            return redirect('/tepiha?focus=rrethore&q='.$q);
+        }
+
+        // HALI
+        if (str_contains($q, 'hali')) {
+            return redirect('/tepiha?focus=hali&q='.$q);
+        }
+
+        // OTTO
+        if (str_contains($q, 'otto')) {
+            return redirect('/tepiha?focus=otto&q='.$q);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | TEPIHA – GENERIKE (KREJT TEPHIAT)
+        |--------------------------------------------------------------------------
+        */
+        if (
+            str_contains($q, 'tepi') ||
             str_contains($q, 'tepih') ||
+            str_contains($q, 'tepija') ||
             str_contains($q, 'carpet') ||
             str_contains($q, 'rug')
         ) {
-            return redirect('/tepiha');
+            return redirect('/tepiha?q='.$q);
         }
 
-        // 👉 PERDE
+        /*
+        |--------------------------------------------------------------------------
+        | KATEGORI TË TJERA
+        |--------------------------------------------------------------------------
+        */
+
+        // PERDE
         if (
-            str_contains($q, 'perde') ||
+            str_contains($q, 'perd') ||
             str_contains($q, 'curtain')
         ) {
-            return redirect('/anesore');
+            return redirect('/anesore?q='.$q);
         }
 
-        // 👉 GARNISHTE
-        if (str_contains($q, 'garnishte')) {
-            return redirect('/garnishte');
+        // GARNISHTE
+        if (str_contains($q, 'garnish')) {
+            return redirect('/garnishte?q='.$q);
         }
 
-        // 👉 BATANIJE / QEBE
+        // BATANIJE / QEBE
         if (
-            str_contains($q, 'batanije') ||
+            str_contains($q, 'batan') ||
             str_contains($q, 'qebe')
         ) {
-            return redirect('/batanije');
+            return redirect('/batanije?q='.$q);
         }
 
-        // 👉 POSTAVA / SET ÇARÇAFËSH
+        // POSTAVA / ÇARÇAFË
         if (
-            str_contains($q, 'postava') ||
-            str_contains($q, 'çarçaf') ||
-            str_contains($q, 'qarqaf')
+            str_contains($q, 'postav') ||
+            str_contains($q, 'çar') ||
+            str_contains($q, 'qar')
         ) {
-            return redirect('/postava');
+            return redirect('/postava?q='.$q);
         }
 
-        // 👉 MBULESA
+        // MBULESA
         if (
-            str_contains($q, 'mbulesa') ||
+            str_contains($q, 'mbul') ||
             str_contains($q, 'cover')
         ) {
-            return redirect('/mbulesa');
+            return redirect('/mbulesa?q='.$q);
         }
 
-        // 👉 nëse s’përputhet me asgjë
-        return redirect()->back();
+        return back();
     }
 }
