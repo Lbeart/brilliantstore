@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
@@ -167,6 +167,104 @@
       padding:18px;
     }
 
+    /* ✅ DIMENSION PILLS (si ne foto) */
+    .dim-title{
+      font-weight:800;
+      color:#111827;
+      margin:0 0 .5rem 0;
+      font-size:.95rem;
+    }
+    .size-grid{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.55rem;
+      align-items:center;
+    }
+    .size-pill{
+      border:1px solid #e5e7eb;
+      background:#fff;
+      border-radius:999px;
+      padding:.55rem .9rem;
+      font-weight:700;
+      font-size:.9rem;
+      color:#111827;
+      box-shadow:0 3px 10px rgba(0,0,0,.04);
+      transition:all .15s ease;
+      cursor:pointer;
+      user-select:none;
+      line-height:1;
+      display:inline-flex;
+      align-items:center;
+      gap:.45rem;
+    }
+    .size-pill:hover{transform:translateY(-1px); border-color:#d1d5db}
+    .size-pill.active{
+      border-color:rgba(220,53,69,.35);
+      background:rgba(220,53,69,.06);
+      box-shadow:0 10px 22px rgba(220,53,69,.10);
+    }
+    .size-pill .dot{
+      width:8px;height:8px;border-radius:50%;
+      background:#e5e7eb;
+      display:inline-block;
+    }
+    .size-pill.active .dot{ background:var(--brand); }
+    .size-pill[disabled]{
+      opacity:.55;
+      cursor:not-allowed;
+      text-decoration:line-through;
+      box-shadow:none;
+      transform:none;
+    }
+
+    /* ✅ Shipping / Payment info (si ne foto) */
+    .info-list{
+      margin:0;
+      padding:0;
+      list-style:none;
+      display:grid;
+      gap:.5rem;
+    }
+    .info-list li{
+      display:flex;
+      align-items:center;
+      gap:.55rem;
+      color:#111827;
+      font-weight:600;
+      font-size:.92rem;
+    }
+    .info-list i{
+      color:#111827;
+      opacity:.85;
+    }
+    .green-title{
+      color:#16a34a;
+      font-weight:900;
+      margin-bottom:.6rem;
+      font-size:1rem;
+    }
+    .pay-badges{
+      display:flex;
+      gap:.6rem;
+      flex-wrap:wrap;
+      margin-top:.6rem;
+    }
+    .pay-badge{
+      background:#fff;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      padding:.45rem .65rem;
+      display:flex;
+      align-items:center;
+      gap:.45rem;
+      font-weight:800;
+      font-size:.85rem;
+      box-shadow:0 4px 12px rgba(0,0,0,.05);
+    }
+    .pay-badge img{
+      height:18px;width:auto;
+    }
+
     /* QTY & BUTTONS */
     .qty-btn{
       width:40px;height:40px;
@@ -231,6 +329,7 @@
         padding:.4rem .7rem;font-size:14px
       }
       .section-card{padding:14px}
+      .size-pill{font-size:.88rem;padding:.52rem .85rem}
     }
     @media (max-width:576px){
       h1,h2,.h2{font-size:1.25rem}
@@ -400,6 +499,20 @@
         $discount  = ($oldBase && $basePrice && $oldBase > $basePrice)
           ? round(100 - ($basePrice / $oldBase * 100))
           : 20;
+
+        $sizes=[];
+        if(!empty($product->sizes)){
+          $decoded=json_decode($product->sizes,true);
+          if(is_array($decoded)) $sizes=$decoded;
+        }
+
+        // zgjedh default: e para qe ka stok, nese s'ka, e para fare
+        $defaultIndex = 0;
+        if(count($sizes)>0){
+          foreach($sizes as $i => $sz){
+            if(((int)($sz['stock'] ?? 0)) > 0){ $defaultIndex = $i; break; }
+          }
+        }
       @endphp
 
       <div id="priceContainer" class="price-block mb-2">
@@ -422,26 +535,52 @@
         </span>
       </div>
 
-      @php
-        $sizes=[];
-        if(!empty($product->sizes)){
-          $decoded=json_decode($product->sizes,true);
-          if(is_array($decoded)) $sizes=$decoded;
-        }
-      @endphp
+      {{-- ✅ DIMENSIONET si pills (si ne screenshot) --}}
       @if(count($sizes)>0)
-        <div class="mb-3">
-          <label for="sizeSelect" class="form-label">Zgjidh dimensionin:</label>
-          <select id="sizeSelect" class="form-select">
-            @foreach($sizes as $size)
-              <option value="{{ (float)($size['price'] ?? $product->price) }}"
-                      data-stock="{{ (int)($size['stock'] ?? 0) }}">
-                {{ $size['label'] }} - {{ number_format((float)($size['price'] ?? $product->price),2) }} € ({{ (int)($size['stock'] ?? 0) }} në stok)
-              </option>
+        <div class="section-card mb-3">
+          <div class="dim-title">Dimensionet</div>
+          <div class="size-grid" id="sizePills" role="radiogroup" aria-label="Zgjidh dimensionin">
+            @foreach($sizes as $i => $size)
+              @php
+                $p = (float)($size['price'] ?? $product->price);
+                $st = (int)($size['stock'] ?? 0);
+                $label = (string)($size['label'] ?? '');
+                $isActive = ($i === $defaultIndex);
+              @endphp
+              <button
+                type="button"
+                class="size-pill {{ $isActive ? 'active' : '' }}"
+                data-label="{{ $label }}"
+                data-price="{{ $p }}"
+                data-stock="{{ $st }}"
+                aria-checked="{{ $isActive ? 'true' : 'false' }}"
+                {{ $st <= 0 ? 'disabled' : '' }}
+              >
+                <span class="dot" aria-hidden="true"></span>
+                <span>{{ $label }}</span>
+              </button>
             @endforeach
-          </select>
+          </div>
+          <div class="small text-muted mt-2">
+            * Dimensionet pa stok janë të çaktivizuara.
+          </div>
         </div>
       @endif
+
+      {{-- ✅ Transporti & Pagesa (si ne foto) --}}
+      <div class="section-card mb-3">
+        <div class="green-title">Transporti falas brenda Kosovës</div>
+        <ul class="info-list">
+          <li><i class="bi bi-truck"></i> Caktohet pas konfirmimit të porosisë</li>
+          <li><i class="bi bi-cash-coin"></i> Paguj me para në dorë ose kartelë</li>
+          <li><i class="bi bi-credit-card"></i> Paguj Online</li>
+        </ul>
+
+        <div class="pay-badges" aria-label="Opsionet e pagesës">
+          <div class="pay-badge"><i class="bi bi-bank"></i> 24 këste pa kamatë</div>
+          <div class="pay-badge"><i class="bi bi-credit-card-2-front"></i> 24 këste pa kamatë</div>
+        </div>
+      </div>
 
       <div class="d-flex align-items-center flex-wrap gap-3 mb-4">
         <div class="d-flex align-items-center gap-2">
@@ -486,29 +625,38 @@
 
 <script>
 (() => {
-  const sizeSelect=document.getElementById('sizeSelect');
   const priceContainer=document.getElementById('priceContainer');
   const stockContainer=document.getElementById('stockContainer');
   const waBtn=document.getElementById('waBtn');
+
   const qty=document.getElementById('qty');
   const minus=document.getElementById('qtyMinus');
   const plus=document.getElementById('qtyPlus');
 
+  const sizePills = document.getElementById('sizePills');
+  const pills = sizePills ? Array.from(sizePills.querySelectorAll('.size-pill')) : [];
+
   const basePriceDefault = parseFloat({{ json_encode((float)$product->price) }});
   const baseStockDefault = parseInt({{ json_encode((int)($product->stock ?? 0)) }},10) || 0;
 
+  function getActivePill(){
+    if(!pills.length) return null;
+    return pills.find(b => b.classList.contains('active')) || pills[0] || null;
+  }
+
   function selDim(){
-    if(!sizeSelect) return '';
-    return (sizeSelect.options[sizeSelect.selectedIndex].text.split(' - ')[0]||'');
+    const p = getActivePill();
+    return p ? (p.dataset.label || '') : '';
   }
   function selPrice(){
-    if(!sizeSelect) return basePriceDefault;
-    return parseFloat(sizeSelect.value||basePriceDefault);
+    const p = getActivePill();
+    return p ? parseFloat(p.dataset.price || basePriceDefault) : basePriceDefault;
   }
   function selStock(){
-    if(!sizeSelect) return baseStockDefault;
-    return parseInt(sizeSelect.options[sizeSelect.selectedIndex].dataset.stock||0,10);
+    const p = getActivePill();
+    return p ? parseInt(p.dataset.stock || 0,10) : baseStockDefault;
   }
+
   function cleanQty(){
     const v=parseInt(qty.value||1,10);
     qty.value=Math.max(1,isNaN(v)?1:v);
@@ -547,6 +695,22 @@
     waBtn.href = `https://wa.me/38344960661?text=${encodeURIComponent(baseMsg)}${qty.value}`;
   }
 
+  // ✅ Pills click
+  if(pills.length){
+    pills.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if(btn.disabled) return;
+        pills.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-checked','false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-checked','true');
+        updateUI();
+      });
+    });
+  }
+
   minus?.addEventListener('click',()=>{
     cleanQty();
     qty.value=Math.max(1,parseInt(qty.value,10)-1);
@@ -561,7 +725,7 @@
     cleanQty();
     updateUI();
   });
-  sizeSelect?.addEventListener('change',updateUI);
+
   updateUI();
 
   /* =========================
@@ -581,7 +745,6 @@
   const zoom = 1.35;
 
   function setDisplay(el, value){
-    // kjo e thyen edhe CSS display:none!important
     el.style.setProperty('display', value, 'important');
   }
 
@@ -685,12 +848,17 @@
 const addBtn = document.getElementById('addToCartBtn');
 
 function currentSizeLabel(){
-  const s = document.getElementById('sizeSelect');
-  return s ? (s.options[s.selectedIndex].text.split(' - ')[0] || '') : null;
+  const wrap = document.getElementById('sizePills');
+  if(!wrap) return null;
+  const active = wrap.querySelector('.size-pill.active');
+  return active ? (active.dataset.label || '') : null;
 }
+
 function currentPrice(){
-  const s = document.getElementById('sizeSelect');
-  return s ? parseFloat(s.value) : parseFloat({{ json_encode((float)$product->price) }});
+  const wrap = document.getElementById('sizePills');
+  if(!wrap) return parseFloat({{ json_encode((float)$product->price) }});
+  const active = wrap.querySelector('.size-pill.active');
+  return active ? parseFloat(active.dataset.price) : parseFloat({{ json_encode((float)$product->price) }});
 }
 
 addBtn?.addEventListener('click', async () => {
