@@ -443,8 +443,10 @@
   .similar-price{ font-size:18px; }
 }
 .brillant-footer{
-  background:#f6f1f1;           /* si foto (shumë e lehtë) */
-  padding:58px 0 20px;
+  width:100%;
+  background: #0b1220;                 /* NGJYRA E FOOTERIT */
+  padding:58px 0 22px;
+  color: rgba(255,255,255,.88);
 }
 
 .brillant-footer .footer-inner{
@@ -456,42 +458,57 @@
 .footer-grid{
   display:grid;
   grid-template-columns: 1.2fr 1fr 1fr 0.7fr;
-  gap:40px;
+  gap:46px;
   align-items:start;
 }
 
-/* left brand */
+/* LEFT brand */
 .footer-brand{
   display:flex;
   flex-direction:column;
   gap:16px;
 }
+
+/* logo fix (mos u shtyp) */
+.footer-logo-wrap{
+  width:120px;                          /* madhesia e kutise se logos */
+  height:120px;
+  background:#ffffff;                   /* e nxjerr logon mire */
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+}
+
 .footer-logo{
-  width:86px;
-  height:auto;
+  width:100%;
+  height:100%;
+  object-fit:contain;                   /* kjo e rregullon logon */
   display:block;
 }
+
 .footer-brand small{
-  display:block;
-  color:#111827;
+  color: rgba(255,255,255,.75);
   font-weight:500;
-  letter-spacing:.2px;
 }
 .footer-brand .brand-name{
   font-weight:900;
   font-size:34px;
-  color:#111827;
+  color:#ffffff;
   line-height:1;
 }
 
 /* columns */
 .footer-col h4{
-  font-size:16px;
+  font-size:15px;
   font-weight:900;
-  letter-spacing:.06em;
-  color:#111827;
+  letter-spacing:.08em;
+  color:#ffffff;
   margin:0 0 14px 0;
 }
+
 .footer-links{
   list-style:none;
   padding:0;
@@ -499,40 +516,42 @@
   display:grid;
   gap:8px;
 }
+
 .footer-links a{
-  color:#111827;
+  color: rgba(255,255,255,.82);
   text-decoration:none;
   font-weight:500;
-  opacity:.9;
 }
 .footer-links a:hover{
+  color:#ffffff;
   text-decoration:underline;
 }
 
 /* socials */
 .footer-social{
-  margin-top:38px;
+  margin-top:28px;
   display:flex;
   gap:16px;
   align-items:center;
 }
 .footer-social a{
-  color:#111827;
+  color:#ffffff;
   font-size:26px;
-  line-height:1;
   text-decoration:none;
+  opacity:.9;
 }
-.footer-social a:hover{ opacity:.75; }
+.footer-social a:hover{opacity:.7;}
 
 /* bottom */
 .footer-bottom{
-  margin-top:36px;
+  margin-top:34px;
+  padding-top:16px;
+  border-top: 1px solid rgba(255,255,255,.10);
   display:grid;
   grid-template-columns: 1fr 1fr 1fr;
   align-items:center;
   font-weight:500;
-  color:#111827;
-  opacity:.8;
+  color: rgba(255,255,255,.65);
   font-size:14px;
 }
 .footer-bottom .center{ text-align:center; }
@@ -554,7 +573,7 @@
 @media (max-width:576px){
   .brillant-footer{ padding:40px 0 16px; }
   .footer-grid{ grid-template-columns: 1fr; }
-  .footer-social{ margin-top:18px; }
+  .footer-logo-wrap{ width:110px; height:110px; }
 }
   </style>
 </head>
@@ -868,9 +887,10 @@
     <div class="footer-grid">
       {{-- LEFT: LOGO + BRAND --}}
       <div class="footer-brand">
-        <div>
-          <img class="footer-logo" src="{{ asset('images/brillant.png') }}" alt="Brillant">
-        </div>
+  <div class="footer-logo-wrap">
+    <img class="footer-logo" src="{{ asset('images/brillant.png') }}" alt="Brillant" loading="lazy">
+  </div>
+
 
         <div>
           <small>Salloni i Perdeve, Tepiha</small>
