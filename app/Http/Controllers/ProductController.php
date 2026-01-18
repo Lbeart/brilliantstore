@@ -37,26 +37,44 @@ public function tepiha(Request $request)
 
     if ($raw !== '') {
 
-        // 1️⃣ Fjalë të përgjithshme që nuk filtrojnë (vetëm emërtim)
-        $ignoreWords = [
-            'tepiha', 'tepih', 'tepija', 'tepia', 'tepi', 'tepihat'
+        // 1️⃣ Normalizo fjalët bazë (gabime të vogla)
+        $normalize = [
+            'tepiha' => ['tepiha','tepih','tepija','tepia','tepi'],
         ];
 
-        // 2️⃣ Ndaj search-in në fjalë
-        $words = array_filter(explode(' ', $raw));
-
-        // 3️⃣ Largo fjalët e përgjithshme
-        $searchTerms = array_values(array_diff($words, $ignoreWords));
-
-        // 4️⃣ Nëse s’mbeti asgjë → mos filtro (shfaq krejt)
-        if (!empty($searchTerms)) {
-            foreach ($searchTerms as $term) {
-                $query->where(function ($q) use ($term) {
-                    $q->whereRaw('LOWER(name) LIKE ?', ["%{$term}%"])
-                      ->orWhereRaw('LOWER(description) LIKE ?', ["%{$term}%"]);
-                });
+        foreach ($normalize as $base => $variants) {
+            foreach ($variants as $v) {
+                if (str_contains($raw, $v)) {
+                    $raw = str_replace($v, $base, $raw);
+                }
             }
         }
+
+        // 2️⃣ Ndaj search-in në fjalë
+        $terms = array_filter(explode(' ', $raw));
+
+        // 3️⃣ FILTER: të paktën NJË fjalë duhet të përputhet
+        $query->where(function ($q) use ($terms) {
+            foreach ($terms as $term) {
+                $q->orWhereRaw('LOWER(name) LIKE ?', ["%{$term}%"])
+                  ->orWhereRaw('LOWER(description) LIKE ?', ["%{$term}%"]);
+            }
+        });
+
+        // 4️⃣ RENDITJE SIPAS RELEVANCËS (më shumë match = më lart)
+        $score = [];
+
+        foreach ($terms as $term) {
+            $score[] = "
+                (CASE 
+                    WHEN LOWER(name) LIKE '%{$term}%' THEN 2
+                    WHEN LOWER(description) LIKE '%{$term}%' THEN 1
+                    ELSE 0
+                END)
+            ";
+        }
+
+        $query->orderByRaw('(' . implode(' + ', $score) . ') DESC');
     }
 
     $products = $query
