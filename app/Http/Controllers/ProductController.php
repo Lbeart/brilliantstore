@@ -27,36 +27,50 @@ class ProductController extends Controller
     // =====================
     // TEPIHA (FIX SHKALLORE)
     // =====================
-   public function tepiha(Request $request)
+  public function tepiha(Request $request)
 {
     $focus = $request->query('focus');
+    $q     = trim(strtolower($request->query('q')));
 
-    $products = Product::where('category', 'tepiha')
-        ->where('is_active', true)
-        ->select('*')
-        ->selectRaw("
+    $query = Product::where('category', 'tepiha')
+        ->where('is_active', true);
+
+    // 🔎 SEARCH brenda produkteve
+    if ($q) {
+        $query->where(function ($sub) use ($q) {
+            $sub->where('name', 'LIKE', "%{$q}%")
+                ->orWhere('description', 'LIKE', "%{$q}%");
+        });
+    }
+
+    // ⭐ PRIORITET NGA SEARCH I MENYSË
+    if ($focus === 'shkallore') {
+        $query->orderByRaw("
             CASE
-                WHEN ? = 'shkallore'
-                     AND (name LIKE '%shkallore%' OR description LIKE '%shkallore%')
-                THEN 0
+                WHEN name LIKE '%shkallore%' OR description LIKE '%shkallore%'
+                THEN 0 ELSE 1
+            END
+        ");
+    }
 
-                WHEN ? = 'rrethore'
-                     AND (
-                        name LIKE '%rrethore%' 
-                        OR name LIKE '%rrumbullake%'
-                        OR description LIKE '%rrethore%'
-                        OR description LIKE '%rrumbullake%'
-                     )
-                THEN 0
+    if ($focus === 'rrethore') {
+        $query->orderByRaw("
+            CASE
+                WHEN name LIKE '%rrethore%'
+                  OR name LIKE '%rrumbullake%'
+                  OR description LIKE '%rrethore%'
+                  OR description LIKE '%rrumbullake%'
+                THEN 0 ELSE 1
+            END
+        ");
+    }
 
-                ELSE 1
-            END AS priority
-        ", [$focus, $focus])
-        ->orderBy('priority')     // 🔥 TË KËRKUARAT NË KRYE
-        ->orderByDesc('id')       // renditje normale brenda grupit
-        ->paginate(12);
+    $products = $query
+        ->orderByDesc('id')
+        ->paginate(12)
+        ->withQueryString(); // 🔥 ruan q & focus
 
-    return view('products.tepiha', compact('products'));
+    return view('products.tepiha', compact('products', 'q'));
 }
 
     // PERDE – ANËSORE

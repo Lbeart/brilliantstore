@@ -490,6 +490,20 @@
   <h1>Tepiha – Koleksioni ynë</h1>
   <div class="page-sub">Tepiha modern & klasik me zbritje sezonale. Modele për sallon, dhomë gjumi dhe çdo ambient.</div>
 </header>
+<form method="GET" action="{{ url('/tepiha') }}" class="mb-4">
+    <div class="input-group">
+        <input
+            type="text"
+            name="q"
+            value="{{ request('q') }}"
+            class="form-control"
+            placeholder="Kërko brenda tepihave..."
+        >
+        <button class="btn btn-danger">
+            <i class="bi bi-search"></i>
+        </button>
+    </div>
+</form>
 
 <main class="container py-3 pb-5">
 
