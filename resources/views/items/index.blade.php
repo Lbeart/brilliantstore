@@ -786,7 +786,7 @@
         </div>
 
         <div class="col-lg-3 text-lg-end">
-          <a href="https://wa.me/38344996926" target="_blank" class="wa-btn d-inline-flex align-items-center gap-2">
+          <a href="https://wa.me/38344960661" target="_blank" class="wa-btn d-inline-flex align-items-center gap-2">
             <i class="bi bi-whatsapp"></i> Chat në WhatsApp
           </a>
         </div>
