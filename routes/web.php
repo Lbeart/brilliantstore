@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\SearchController;
 // Public controllers
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ContactController;
@@ -34,7 +34,7 @@ use App\Http\Controllers\OrderTrackingController;
 
 Route::get('/track', [OrderTrackingController::class, 'form'])->name('track.form');//
 Route::get('/track/{code}', [OrderTrackingController::class, 'show'])->name('track.show');
-
+Route::get('/search', [SearchController::class, 'index'])->name('search');
 // 🏠 Home
 Route::get('/', [ItemController::class, 'index'])->name('home');
 

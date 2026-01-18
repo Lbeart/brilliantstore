@@ -329,6 +329,53 @@
       .hero-stats {
         justify-content: center;
       }
+
+      .search-wrapper {
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 0;
+}
+
+.search-box {
+  max-width: 700px;
+  margin: auto;
+  position: relative;
+}
+
+.search-box input {
+  border-radius: 999px;
+  padding-left: 3rem;
+  height: 48px;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.search-box i {
+  position: absolute;
+  top: 50%;
+  left: 18px;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+.category-side {
+  border-radius: 1rem;
+  background: #f9fafb;
+  padding: 1rem;
+}
+
+.category-side a {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  color: #111827;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.category-side a:hover {
+  color: #dc3545;
+}
     }
   </style>
 </head>
@@ -451,7 +498,54 @@
       </div>
     </div>
   </nav>
+<div class="search-wrapper">
+  <div class="container">
+    <div class="row align-items-center g-3">
 
+      <!-- CATEGORIES LEFT -->
+      <div class="col-lg-3 d-none d-lg-block">
+        <div class="category-side shadow-sm">
+          <a href="/tepiha">
+            <span><i class="bi bi-grid me-2"></i> Tepiha</span>
+            <i class="bi bi-chevron-right"></i>
+          </a>
+          <a href="/mobije">
+            <span><i class="bi bi-house me-2"></i> Mobilje</span>
+            <i class="bi bi-chevron-right"></i>
+          </a>
+          <a href="/anesore">
+            <span><i class="bi bi-layout-text-window me-2"></i> Perde</span>
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- SEARCH CENTER -->
+      <div class="col-lg-6 col-md-12">
+        <form action="{{ route('search') }}" method="GET" class="search-box">
+          <i class="bi bi-search"></i>
+          <input
+            type="text"
+            name="q"
+            class="form-control"
+            placeholder="Kërko produkte..."
+            value="{{ request('q') }}"
+            required
+          >
+        </form>
+      </div>
+
+      <!-- CHAT RIGHT -->
+      <div class="col-lg-3 text-end d-none d-lg-block">
+        <a href="https://wa.me/38344996926" target="_blank"
+           class="btn btn-success rounded-pill px-4">
+          <i class="bi bi-whatsapp me-1"></i> Chat
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
   <!-- HERO SECTION -->
   <section class="hero-section">
     <div class="hero-bg"></div>
