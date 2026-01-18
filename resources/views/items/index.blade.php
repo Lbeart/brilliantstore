@@ -317,24 +317,25 @@
       font-size: 0.9rem;
     }
 
-    @media (max-width: 768px) {
-      .hero-section {
-        min-height: 60vh;
-        text-align: center;
-      }
-      .hero-subtitle {
-        margin-left: auto;
-        margin-right: auto;
-      }
-      .hero-stats {
-        justify-content: center;
-      }
+   @media (max-width: 768px) {
+  .hero-section {
+    min-height: 60vh;
+    text-align: center;
+  }
+  .hero-subtitle {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-stats {
+    justify-content: center;
+  }
+}
 
       .search-wrapper {
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
   padding: 1rem 0;
-}}
+}
 
 .search-box {
   max-width: 700px;
