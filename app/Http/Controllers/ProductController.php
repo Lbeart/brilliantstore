@@ -29,23 +29,29 @@ class ProductController extends Controller
     // =====================
 public function tepiha(Request $request)
 {
-    $q = strtolower(trim($request->query('q')));
-    $focus = $request->query('focus');
+    $q = mb_strtolower(trim($request->query('q')));
 
-    $query = Product::where('category', 'tepiha')
+    // 👉 Fjalë kyçe të pranuara (PROFESIONAL)
+    $keywords = [
+        'shkallore' => ['shkallore', 'shkalore', 'shkall'],
+        'rrethore'  => ['rrethore', 'rrumbullake', 'rreth'],
+        'tepiha'    => ['tepiha', 'tepih', 'tepia', 'tepija', 'tepi'],
+    ];
+
+    $query = Product::query()
+        ->where('category', 'tepiha')
         ->where('is_active', true);
 
-    // 🔍 SEARCH tolerant ndaj gabimeve
-    if ($q) {
-        $synonyms = [
-            'shkallore' => ['shkallore','shkalore','shkallor','shkall','shkal'],
-            'rrethore'  => ['rrethore','rrumbullake','rreth','rrethor','rrumbullak'],
-            'tepiha'    => ['tepiha','tepih','tepija','tepia','tepihat','tepi'],
-        ];
+    // 🔍 FILTER I PASTËR SEARCH
+    if ($q !== '') {
+        $query->where(function ($sub) use ($q, $keywords) {
 
-        $query->where(function ($sub) use ($q, $synonyms) {
+            // match direkt
+            $sub->whereRaw('LOWER(name) LIKE ?', ["%{$q}%"])
+                ->orWhereRaw('LOWER(description) LIKE ?', ["%{$q}%"]);
 
-            foreach ($synonyms as $group) {
+            // match me keywords (profesional)
+            foreach ($keywords as $group) {
                 foreach ($group as $word) {
                     if (str_contains($q, $word)) {
                         $sub->orWhereRaw('LOWER(name) LIKE ?', ["%{$word}%"])
@@ -53,33 +59,25 @@ public function tepiha(Request $request)
                     }
                 }
             }
-
-            // fallback – çfarëdo fjale që shkruan klienti
-            $sub->orWhereRaw('LOWER(name) LIKE ?', ["%{$q}%"])
-                ->orWhereRaw('LOWER(description) LIKE ?', ["%{$q}%"]);
         });
     }
 
-    // ⭐ PRIORITET SHKALLORE
-    if ($focus === 'shkallore') {
-        $query->orderByRaw("
-            CASE
-                WHEN LOWER(name) LIKE '%shkallore%'
-                  OR LOWER(description) LIKE '%shkallore%'
-                THEN 0 ELSE 1
-            END
-        ");
+    // ⭐ PRIORITET I PASTËR (JO HACK)
+    $priorityCases = [];
+
+    if (str_contains($q, 'shkall')) {
+        $priorityCases[] = "WHEN LOWER(name) LIKE '%shkall%' THEN 0";
     }
 
-    // ⭐ PRIORITET RRETHORE
-    if ($focus === 'rrethore') {
+    if (str_contains($q, 'rreth')) {
+        $priorityCases[] = "WHEN LOWER(name) LIKE '%rreth%' OR LOWER(name) LIKE '%rrumbull%' THEN 0";
+    }
+
+    if (!empty($priorityCases)) {
         $query->orderByRaw("
             CASE
-                WHEN LOWER(name) LIKE '%rrethore%'
-                  OR LOWER(name) LIKE '%rrumbullake%'
-                  OR LOWER(description) LIKE '%rrethore%'
-                  OR LOWER(description) LIKE '%rrumbullake%'
-                THEN 0 ELSE 1
+                " . implode("\n", $priorityCases) . "
+                ELSE 1
             END
         ");
     }
