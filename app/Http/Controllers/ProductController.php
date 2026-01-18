@@ -31,55 +31,20 @@ public function tepiha(Request $request)
 {
     $q = mb_strtolower(trim($request->query('q')));
 
-    // 👉 Fjalë kyçe të pranuara (PROFESIONAL)
-    $keywords = [
-        'shkallore' => ['shkallore', 'shkalore', 'shkall'],
-        'rrethore'  => ['rrethore', 'rrumbullake', 'rreth'],
-        'tepiha'    => ['tepiha', 'tepih', 'tepia', 'tepija', 'tepi'],
-    ];
-
     $query = Product::query()
         ->where('category', 'tepiha')
         ->where('is_active', true);
 
-    // 🔍 FILTER I PASTËR SEARCH
     if ($q !== '') {
-        $query->where(function ($sub) use ($q, $keywords) {
+        // nda search në fjalë: "tepiha rrethore" => ["tepiha", "rrethore"]
+        $terms = array_filter(explode(' ', $q));
 
-            // match direkt
-            $sub->whereRaw('LOWER(name) LIKE ?', ["%{$q}%"])
-                ->orWhereRaw('LOWER(description) LIKE ?', ["%{$q}%"]);
-
-            // match me keywords (profesional)
-            foreach ($keywords as $group) {
-                foreach ($group as $word) {
-                    if (str_contains($q, $word)) {
-                        $sub->orWhereRaw('LOWER(name) LIKE ?', ["%{$word}%"])
-                            ->orWhereRaw('LOWER(description) LIKE ?', ["%{$word}%"]);
-                    }
-                }
-            }
-        });
-    }
-
-    // ⭐ PRIORITET I PASTËR (JO HACK)
-    $priorityCases = [];
-
-    if (str_contains($q, 'shkall')) {
-        $priorityCases[] = "WHEN LOWER(name) LIKE '%shkall%' THEN 0";
-    }
-
-    if (str_contains($q, 'rreth')) {
-        $priorityCases[] = "WHEN LOWER(name) LIKE '%rreth%' OR LOWER(name) LIKE '%rrumbull%' THEN 0";
-    }
-
-    if (!empty($priorityCases)) {
-        $query->orderByRaw("
-            CASE
-                " . implode("\n", $priorityCases) . "
-                ELSE 1
-            END
-        ");
+        foreach ($terms as $term) {
+            $query->where(function ($sub) use ($term) {
+                $sub->whereRaw('LOWER(name) LIKE ?', ["%{$term}%"])
+                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$term}%"]);
+            });
+        }
     }
 
     $products = $query
