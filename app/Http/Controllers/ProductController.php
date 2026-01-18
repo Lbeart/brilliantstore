@@ -29,20 +29,42 @@ class ProductController extends Controller
     // =====================
 public function tepiha(Request $request)
 {
-    $q = mb_strtolower(trim($request->query('q')));
+    $raw = mb_strtolower(trim($request->query('q')));
 
     $query = Product::query()
         ->where('category', 'tepiha')
         ->where('is_active', true);
 
-    if ($q !== '') {
-        // nda search në fjalë: "tepiha rrethore" => ["tepiha", "rrethore"]
-        $terms = array_filter(explode(' ', $q));
+    if ($raw !== '') {
 
-        foreach ($terms as $term) {
-            $query->where(function ($sub) use ($term) {
-                $sub->whereRaw('LOWER(name) LIKE ?', ["%{$term}%"])
-                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$term}%"]);
+        // 1️⃣ Normalizim (gabime → formë bazë)
+        $map = [
+            'tepiha'   => ['tepiha','tepih','tepija','tepia','tepi'],
+            'rrethore' => ['rrethore','rrumbullake','rrethor','rrumbullak','rreth'],
+            'shkallore'=> ['shkallore','shkalore','shkallor','shkall'],
+        ];
+
+        $normalized = [];
+
+        foreach ($map as $base => $variants) {
+            foreach ($variants as $v) {
+                if (str_contains($raw, $v)) {
+                    $normalized[] = $base;
+                    break;
+                }
+            }
+        }
+
+        // nëse s’u kap asgjë, nda fjalët normalisht
+        if (empty($normalized)) {
+            $normalized = array_filter(explode(' ', $raw));
+        }
+
+        // 2️⃣ AND logic – çdo term duhet me ekzistu
+        foreach ($normalized as $term) {
+            $query->where(function ($q) use ($term) {
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$term}%"])
+                  ->orWhereRaw('LOWER(description) LIKE ?', ["%{$term}%"]);
             });
         }
     }
@@ -54,6 +76,7 @@ public function tepiha(Request $request)
 
     return view('products.tepiha', compact('products'));
 }
+
 
     // PERDE – ANËSORE
     public function anesore()
