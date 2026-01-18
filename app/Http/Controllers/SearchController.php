@@ -40,6 +40,33 @@ class SearchController extends Controller
         ) {
             return redirect('/mbulesa');
         }
+         if (
+            str_contains($q, 'garnishte plastik') ||
+            str_contains($q, 'garnishte alumin') ||
+            str_contains($q, 'garnishte') ||
+            str_contains($q, 'garnishte amerikane') ||
+            str_contains($q, 'garnishte')
+        ) {
+            return redirect('/garnishte');
+        }
+         if (
+            str_contains($q, 'batanije') ||
+            str_contains($q, 'qebe') ||
+            str_contains($q, 'batanije dele') ||
+            str_contains($q, 'batanije per ni person') ||
+            str_contains($q, 'batanije per ni person')
+        ) {
+            return redirect('/batanije');
+        }
+        if (
+            str_contains($q, 'set qarqafesh') ||
+            str_contains($q, 'postava') ||
+            str_contains($q, 'postava per ni person') ||
+            str_contains($q, 'postava per dy persona') ||
+            str_contains($q, 'postava pambuk')
+        ) {
+            return redirect('/postava');
+        }
 
         // 👉 NËSE S’PËRPUTHET ME ASNJË KATEGORI
         return redirect()->back();
