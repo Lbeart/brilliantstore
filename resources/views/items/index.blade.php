@@ -334,7 +334,7 @@
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
   padding: 1rem 0;
-}
+}}
 
 .search-box {
   max-width: 700px;
@@ -376,7 +376,7 @@
 .category-side a:hover {
   color: #dc3545;
 }
-    }
+    
   </style>
 </head>
 <body>
@@ -834,7 +834,25 @@
           <h2>Zbuloni çfarë ka ardhur rishtazi</h2>
         </div>
         <div class="row g-4">
-          @foreach($items->take(3) as $item)
+        @if(isset($items) && $items->count())
+  @foreach($items->take(3) as $item)
+    <div class="col-md-4">
+      <div class="card product-card">
+        @if($item->image_path)
+          <img src="{{ asset('storage/'.$item->image_path) }}" class="card-img-top" alt="{{ $item->name }}">
+        @else
+          <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:260px;">
+            <span class="text-white">Pa foto</span>
+          </div>
+        @endif
+        <div class="card-body">
+          <h5 class="card-title fw-bold text-danger mb-1">{{ $item->name }}</h5>
+          <p class="card-text text-muted mb-0">{{ Str::limit($item->description, 100) }}</p>
+        </div>
+      </div>
+    </div>
+  @endforeach
+@endif
             <div class="col-md-4">
               <div class="card product-card">
                 @if($item->image_path)
