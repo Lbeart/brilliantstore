@@ -22,11 +22,19 @@ class ProductController extends Controller
     // =====================
     // SHOW PRODUCT
     // =====================
-    public function show(Product $product)
-    {
-        abort_unless($product->is_active, 404);
-        return view('products.show', compact('product'));
-    }
+   public function show(Product $product)
+{
+    abort_unless($product->is_active, 404);
+
+    $similarProducts = Product::where('is_active', true)
+        ->where('id', '!=', $product->id)
+        ->where('category', $product->category) // ngjashëm sipas kategorisë
+        ->orderByDesc('id')
+        ->take(10)
+        ->get();
+
+    return view('products.show', compact('product', 'similarProducts'));
+}
 
     // =====================================================
     // 🔥 FUNKSION I PËRBASHKËT SEARCH (PËR KREJT KATEGORITË)

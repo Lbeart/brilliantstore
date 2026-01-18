@@ -357,6 +357,83 @@
         display:none;
       }
     }
+    .similar-wrap{
+  background:#fff;
+  border-radius:16px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.08);
+  padding:22px;
+  border:1px solid rgba(15,23,42,.06);
+  margin-top:22px;
+}
+.similar-title{
+  font-weight:900;
+  font-size:1.7rem;
+  margin:0 0 18px 0;
+  color:#0f172a;
+}
+.similar-grid{
+  display:grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap:18px;
+}
+
+.similar-card{
+  display:flex;
+  flex-direction:column;
+  text-decoration:none;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  background:#fff;
+  overflow:hidden;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.similar-card:hover{
+  transform: translateY(-2px);
+  border-color:#d1d5db;
+  box-shadow: 0 12px 28px rgba(0,0,0,.10);
+}
+
+.similar-img{
+  aspect-ratio: 1 / 1;
+  background:#f8fafc;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+}
+.similar-img img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+.similar-body{ padding:14px 14px 16px; }
+.similar-name{
+  font-weight:800;
+  color:#111827;
+  font-size:1rem;
+  line-height:1.2;
+  margin-bottom:10px;
+}
+.similar-price{
+  font-weight:900;
+  color:#0f172a;
+  font-size:1.12rem;
+}
+
+@media (max-width:1200px){
+  .similar-grid{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width:992px){
+  .similar-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width:576px){
+  .similar-wrap{ padding:14px; }
+  .similar-title{ font-size:1.3rem; }
+  .similar-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px; }
+  .similar-price{ font-size:1rem; }
+}
   </style>
 </head>
 <body>
@@ -612,6 +689,57 @@
     </div>
   </div>
 </div>
+{{-- PRODUKTE TE NGJASHME --}}
+@if(isset($similarProducts) && $similarProducts->count())
+  <div class="container mb-5">
+    <div class="similar-wrap">
+      <h2 class="similar-title">Produkte të ngjashme</h2>
+
+      <div class="similar-grid">
+        @foreach($similarProducts as $p)
+          @php
+            // price range nga sizes (nese ekziston)
+            $minPrice = (float)$p->price;
+            $maxPrice = (float)$p->price;
+
+            if(!empty($p->sizes)){
+              $sz = json_decode($p->sizes, true);
+              if(is_array($sz) && count($sz)){
+                $prices = collect($sz)->pluck('price')->filter()->map(fn($v)=>(float)$v)->values();
+                if($prices->count()){
+                  $minPrice = $prices->min();
+                  $maxPrice = $prices->max();
+                }
+              }
+            }
+          @endphp
+
+          <a href="{{ route('products.show', $p->id) }}" class="similar-card">
+            <div class="similar-img">
+              <img
+                src="{{ $p->image_path ? asset('storage/'.$p->image_path) : asset('images/placeholder-product.png') }}"
+                alt="{{ $p->name }}"
+                loading="lazy"
+              >
+            </div>
+
+            <div class="similar-body">
+              <div class="similar-name">{{ $p->name }}</div>
+
+              <div class="similar-price">
+                @if($minPrice == $maxPrice)
+                  {{ number_format($minPrice, 2) }} €
+                @else
+                  {{ number_format($minPrice, 2) }} € – {{ number_format($maxPrice, 2) }} €
+                @endif
+              </div>
+            </div>
+          </a>
+        @endforeach
+      </div>
+    </div>
+  </div>
+@endif
 
 <!-- Fullscreen modal (e lejmë në HTML siç e ke, por s’e përdorim) -->
 <div class="img-modal" id="imgModal" aria-hidden="true">
