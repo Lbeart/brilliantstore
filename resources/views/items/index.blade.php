@@ -804,8 +804,6 @@
 
           <!-- RRESHTI 2 -->
           <a class="chip" href="/garnishte"><i class="bi bi-layout-text-window"></i> Garnishte</a>
-          <a class="chip" href="/batanije"><i class="bi bi-snow"></i> Batanije</a>
-          <a class="chip" href="/postava"><i class="bi bi-bag-check"></i> Set çarçafesh</a>
         </div>
       </div>
 
