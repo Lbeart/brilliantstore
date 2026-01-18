@@ -578,7 +578,7 @@
   </div>
 </nav>
 
-<h1>A jemi live</h1>
+
 
 
 <!-- ABOUT HERO -->
