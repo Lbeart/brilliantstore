@@ -357,20 +357,21 @@
         display:none;
       }
     }
-    .similar-wrap{
+   .similar-section{
   background:#fff;
-  border-radius:16px;
-  box-shadow: 0 4px 14px rgba(0,0,0,.08);
+  border:1px solid #e5e7eb;
+  border-radius:14px;
   padding:22px;
-  border:1px solid rgba(15,23,42,.06);
   margin-top:22px;
 }
+
 .similar-title{
-  font-weight:900;
-  font-size:1.7rem;
+  font-weight:800;
+  font-size:1.8rem;
   margin:0 0 18px 0;
-  color:#0f172a;
+  color:#111827;
 }
+
 .similar-grid{
   display:grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -378,27 +379,22 @@
 }
 
 .similar-card{
-  display:flex;
-  flex-direction:column;
+  display:block;
   text-decoration:none;
-  border:1px solid #e5e7eb;
-  border-radius:14px;
   background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
   overflow:hidden;
-  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  transition: border-color .15s ease, box-shadow .15s ease;
 }
 .similar-card:hover{
-  transform: translateY(-2px);
   border-color:#d1d5db;
-  box-shadow: 0 12px 28px rgba(0,0,0,.10);
+  box-shadow:0 10px 24px rgba(0,0,0,.08);
 }
 
 .similar-img{
   aspect-ratio: 1 / 1;
-  background:#f8fafc;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  background:#fff;
   padding:14px;
 }
 .similar-img img{
@@ -408,18 +404,22 @@
   border-radius:10px;
 }
 
-.similar-body{ padding:14px 14px 16px; }
+.similar-body{
+  padding:14px 14px 16px;
+}
+
 .similar-name{
-  font-weight:800;
+  font-weight:700;
   color:#111827;
   font-size:1rem;
-  line-height:1.2;
+  line-height:1.25;
   margin-bottom:10px;
 }
+
 .similar-price{
-  font-weight:900;
-  color:#0f172a;
-  font-size:1.12rem;
+  font-weight:800;
+  color:#111827;
+  font-size:1.15rem;
 }
 
 @media (max-width:1200px){
@@ -429,10 +429,10 @@
   .similar-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width:576px){
-  .similar-wrap{ padding:14px; }
-  .similar-title{ font-size:1.3rem; }
+  .similar-section{ padding:14px; }
+  .similar-title{ font-size:1.35rem; }
   .similar-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px; }
-  .similar-price{ font-size:1rem; }
+  .similar-price{ font-size:1.05rem; }
 }
   </style>
 </head>
@@ -689,23 +689,25 @@
     </div>
   </div>
 </div>
+
 {{-- PRODUKTE TE NGJASHME --}}
 @if(isset($similarProducts) && $similarProducts->count())
   <div class="container mb-5">
-    <div class="similar-wrap">
+    <div class="similar-section">
       <h2 class="similar-title">Produkte të ngjashme</h2>
 
       <div class="similar-grid">
         @foreach($similarProducts as $p)
           @php
-            // price range nga sizes (nese ekziston)
+            // Price range nga sizes nese ka
             $minPrice = (float)$p->price;
             $maxPrice = (float)$p->price;
 
             if(!empty($p->sizes)){
               $sz = json_decode($p->sizes, true);
               if(is_array($sz) && count($sz)){
-                $prices = collect($sz)->pluck('price')->filter()->map(fn($v)=>(float)$v)->values();
+                $prices = collect($sz)->pluck('price')->filter()
+                          ->map(fn($v)=>(float)$v)->values();
                 if($prices->count()){
                   $minPrice = $prices->min();
                   $maxPrice = $prices->max();
@@ -714,7 +716,7 @@
             }
           @endphp
 
-          <a href="{{ route('products.show', $p->id) }}" class="similar-card">
+          <a href="{{ route('products.show', $p) }}" class="similar-card">
             <div class="similar-img">
               <img
                 src="{{ $p->image_path ? asset('storage/'.$p->image_path) : asset('images/placeholder-product.png') }}"

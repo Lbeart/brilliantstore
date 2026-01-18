@@ -24,11 +24,12 @@ class ProductController extends Controller
     // =====================
    public function show(Product $product)
 {
-    abort_unless($product->is_active, 404);
+    abort_unless((int)$product->is_active === 1, 404);
 
-    $similarProducts = Product::where('is_active', true)
+    $similarProducts = Product::query()
+        ->where('is_active', 1)
         ->where('id', '!=', $product->id)
-        ->where('category', $product->category) // ngjashëm sipas kategorisë
+        ->when($product->category, fn($q) => $q->where('category', $product->category))
         ->orderByDesc('id')
         ->take(10)
         ->get();
