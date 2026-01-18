@@ -27,39 +27,41 @@ class ProductController extends Controller
     // =====================
     // TEPIHA (FIX SHKALLORE)
     // =====================
-  public function tepiha(Request $request)
+ public function tepiha(Request $request)
 {
     $focus = $request->query('focus');
-    $q     = trim(strtolower($request->query('q')));
+    $q = trim(strtolower($request->query('q')));
 
     $query = Product::where('category', 'tepiha')
         ->where('is_active', true);
 
-    // 🔎 SEARCH brenda produkteve
+    // SEARCH brenda produkteve
     if ($q) {
         $query->where(function ($sub) use ($q) {
-            $sub->where('name', 'LIKE', "%{$q}%")
-                ->orWhere('description', 'LIKE', "%{$q}%");
+            $sub->whereRaw('LOWER(name) LIKE ?', ["%{$q}%"])
+                ->orWhereRaw('LOWER(description) LIKE ?', ["%{$q}%"]);
         });
     }
 
-    // ⭐ PRIORITET NGA SEARCH I MENYSË
+    // PRIORITET SHKALLORE
     if ($focus === 'shkallore') {
         $query->orderByRaw("
             CASE
-                WHEN name LIKE '%shkallore%' OR description LIKE '%shkallore%'
+                WHEN LOWER(name) LIKE '%shkallore%'
+                  OR LOWER(description) LIKE '%shkallore%'
                 THEN 0 ELSE 1
             END
         ");
     }
 
+    // PRIORITET RRETHORE
     if ($focus === 'rrethore') {
         $query->orderByRaw("
             CASE
-                WHEN name LIKE '%rrethore%'
-                  OR name LIKE '%rrumbullake%'
-                  OR description LIKE '%rrethore%'
-                  OR description LIKE '%rrumbullake%'
+                WHEN LOWER(name) LIKE '%rrethore%'
+                  OR LOWER(name) LIKE '%rrumbullake%'
+                  OR LOWER(description) LIKE '%rrethore%'
+                  OR LOWER(description) LIKE '%rrumbullake%'
                 THEN 0 ELSE 1
             END
         ");
@@ -68,9 +70,9 @@ class ProductController extends Controller
     $products = $query
         ->orderByDesc('id')
         ->paginate(12)
-        ->withQueryString(); // 🔥 ruan q & focus
+        ->withQueryString();
 
-    return view('products.tepiha', compact('products', 'q'));
+    return view('products.tepiha', compact('products'));
 }
 
     // PERDE – ANËSORE
