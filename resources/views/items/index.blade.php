@@ -767,7 +767,7 @@
   <div class="container topbar">
     <div class="topbar-inner">
       <div class="row g-3 align-items-center">
-        <div class="col-lg-4">
+        <div class="col-lg-3">
           <div class="d-flex flex-wrap gap-3">
             <a class="chip" href="/tepiha"><i class="bi bi-grid"></i> Tepiha</a>
             <a class="chip" href="/mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
