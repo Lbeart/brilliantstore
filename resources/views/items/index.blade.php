@@ -641,6 +641,33 @@
       .hero-actions .btn{ width: 100%; }
       .weekly-item img{ width: 92px; height: 92px; }
     }
+    .chips-2rows{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:12px;
+}
+
+/* Me i bo chips me i mbush kolonen (mos me u prish layout) */
+.chips-2rows .chip{
+  width:100%;
+  justify-content:center; /* nese chip eshte display:flex */
+  text-align:center;
+  white-space:nowrap;
+}
+
+/* Tablet: 2 ne rresht */
+@media (max-width: 991.98px){
+  .chips-2rows{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Mobile: 1 ne rresht */
+@media (max-width: 575.98px){
+  .chips-2rows{
+    grid-template-columns:1fr;
+  }
+}
   </style>
 </head>
 
@@ -765,38 +792,42 @@
 
   <!-- TOPBAR: categories + NEW SEARCH + WhatsApp -->
   <div class="container topbar">
-    <div class="topbar-inner">
-      <div class="row g-2 align-items-center">
-        <div class="col-lg-3">
-          <div class="d-flex flex-wrap gap-3">
-            <a class="chip" href="/tepiha"><i class="bi bi-grid"></i> Tepiha</a>
-            <a class="chip" href="/mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
-            <a class="chip" href="/anesore"><i class="bi bi-layout-text-window"></i> Perde</a>
-            <a class="chip" href="/garnishte"><i class="bi bi-layout-text-window"></i> Garnishte</a>
-            <a class="chip" href="/jastekdekorues"><i class="bi bi-patch-check"></i> JastekDekorues</a>
-            <a class="chip" href="/postava"><i class="bi bi-bag-check"></i> Set çarçafesh</a>
-            <a class="chip" href="/batanije"><i class="bi bi-snow"></i> Batanije</a>
-          </div>
-        </div>
+  <div class="topbar-inner">
+    <div class="row g-3 align-items-center">
 
-        <div class="col-lg-5">
-          <form action="{{ route('search') }}" method="GET" class="search-pro">
-            <i class="bi bi-search icon"></i>
-            <input type="text" name="q" class="form-control"
-                   placeholder="Kërko produktin:"
-                   value="{{ request('q') }}" required>
-            <button class="btn btn-brand" type="submit">Kërko</button>
-          </form>
-        </div>
+      <div class="col-lg-4">
+        <div class="chips-2rows">
+          <!-- RRESHTI 1 -->
+          <a class="chip" href="/tepiha"><i class="bi bi-grid"></i> Tepiha</a>
+          <a class="chip" href="/mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
+          <a class="chip" href="/anesore"><i class="bi bi-layout-text-window"></i> Perde</a>
 
-        <div class="col-lg-3 text-lg-end">
-          <a href="https://wa.me/38344960661" target="_blank" class="wa-btn d-inline-flex align-items-center gap-2">
-            <i class="bi bi-whatsapp"></i> Chat
-          </a>
+          <!-- RRESHTI 2 -->
+          <a class="chip" href="/garnishte"><i class="bi bi-layout-text-window"></i> Garnishte</a>
+          <a class="chip" href="/batanije"><i class="bi bi-snow"></i> Batanije</a>
+          <a class="chip" href="/postava"><i class="bi bi-bag-check"></i> Set çarçafesh</a>
         </div>
       </div>
+
+      <div class="col-lg-5">
+        <form action="{{ route('search') }}" method="GET" class="search-pro">
+          <i class="bi bi-search icon"></i>
+          <input type="text" name="q" class="form-control"
+                 placeholder="Kërko produktin:"
+                 value="{{ request('q') }}" required>
+          <button class="btn btn-brand" type="submit">Kërko</button>
+        </form>
+      </div>
+
+      <div class="col-lg-3 text-lg-end">
+        <a href="https://wa.me/38344960661" target="_blank" class="wa-btn d-inline-flex align-items-center gap-2">
+          <i class="bi bi-whatsapp"></i> Chat
+        </a>
+      </div>
+
     </div>
   </div>
+</div>
 
   <!-- HERO -->
   <section class="container mt-3">
