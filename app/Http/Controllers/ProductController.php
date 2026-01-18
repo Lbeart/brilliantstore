@@ -37,44 +37,31 @@ public function tepiha(Request $request)
 
     if ($raw !== '') {
 
-        // 1️⃣ Normalizo fjalët bazë (gabime të vogla)
-        $normalize = [
-            'tepiha' => ['tepiha','tepih','tepija','tepia','tepi'],
+        // 1️⃣ Fjalë të përgjithshme (NUK filtrojnë)
+        $genericWords = [
+            'tepiha', 'tepih', 'tepija', 'tepia', 'tepi', 'tepihat'
         ];
 
-        foreach ($normalize as $base => $variants) {
-            foreach ($variants as $v) {
-                if (str_contains($raw, $v)) {
-                    $raw = str_replace($v, $base, $raw);
-                }
+        // 2️⃣ Ndaj search në fjalë
+        $words = array_filter(explode(' ', $raw));
+
+        // 3️⃣ Hiq fjalët e përgjithshme
+        $filterTerms = array_values(array_diff($words, $genericWords));
+
+        /**
+         * 👉 NËSE KA VETËM FJALË TË PËRGJITHSHME
+         * mos filtro asgjë → shfaq krejt produktet
+         */
+        if (!empty($filterTerms)) {
+
+            // 4️⃣ FILTER: çdo term duhet të ekzistojë (AND)
+            foreach ($filterTerms as $term) {
+                $query->where(function ($q) use ($term) {
+                    $q->whereRaw('LOWER(name) LIKE ?', ["%{$term}%"])
+                      ->orWhereRaw('LOWER(description) LIKE ?', ["%{$term}%"]);
+                });
             }
         }
-
-        // 2️⃣ Ndaj search-in në fjalë
-        $terms = array_filter(explode(' ', $raw));
-
-        // 3️⃣ FILTER: të paktën NJË fjalë duhet të përputhet
-        $query->where(function ($q) use ($terms) {
-            foreach ($terms as $term) {
-                $q->orWhereRaw('LOWER(name) LIKE ?', ["%{$term}%"])
-                  ->orWhereRaw('LOWER(description) LIKE ?', ["%{$term}%"]);
-            }
-        });
-
-        // 4️⃣ RENDITJE SIPAS RELEVANCËS (më shumë match = më lart)
-        $score = [];
-
-        foreach ($terms as $term) {
-            $score[] = "
-                (CASE 
-                    WHEN LOWER(name) LIKE '%{$term}%' THEN 2
-                    WHEN LOWER(description) LIKE '%{$term}%' THEN 1
-                    ELSE 0
-                END)
-            ";
-        }
-
-        $query->orderByRaw('(' . implode(' + ', $score) . ') DESC');
     }
 
     $products = $query
@@ -84,6 +71,7 @@ public function tepiha(Request $request)
 
     return view('products.tepiha', compact('products'));
 }
+
 
 
     // PERDE – ANËSORE
