@@ -773,6 +773,9 @@
             <a class="chip" href="/mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
             <a class="chip" href="/anesore"><i class="bi bi-layout-text-window"></i> Perde</a>
             <a class="chip" href="/garnishte"><i class="bi bi-layout-text-window"></i> Garnishte</a>
+            <a class="chip" href="/jastekdekorues"><i class="bi bi-patch-check"></i> JastekDekorues</a>
+            <a class="chip" href="/postava"><i class="bi bi-bag-check"></i> Set çarçafesh</a>
+            <a class="chip" href="/batanije"><i class="bi bi-snow"></i> Batanije</a>
           </div>
         </div>
 
