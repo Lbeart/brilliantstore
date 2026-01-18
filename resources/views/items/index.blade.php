@@ -770,7 +770,7 @@
         <div class="col-lg-4">
           <div class="d-flex flex-wrap gap-2">
             <a class="chip" href="/tepiha"><i class="bi bi-grid"></i> Tepiha</a>
-            <a class="chip" href="/mobije"><i class="bi bi-house"></i> Mobilje</a>
+            <a class="chip" href="/mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
             <a class="chip" href="/anesore"><i class="bi bi-layout-text-window"></i> Perde</a>
           </div>
         </div>
@@ -779,7 +779,7 @@
           <form action="{{ route('search') }}" method="GET" class="search-pro">
             <i class="bi bi-search icon"></i>
             <input type="text" name="q" class="form-control"
-                   placeholder="Kërko: tepiha hali, shkallore, garnishte alumin..."
+                   placeholder="Kërko produktin:"
                    value="{{ request('q') }}" required>
             <button class="btn btn-brand" type="submit">Kërko</button>
           </form>
