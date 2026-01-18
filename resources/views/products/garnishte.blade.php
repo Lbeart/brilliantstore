@@ -280,6 +280,24 @@
   <h1>Garnishte</h1>
   <div class="page-sub">Modele të reja, cilësi superiore – gati për porosi.</div>
 </header>
+<div class="mb-4">
+    <form method="GET" action="{{ url()->current() }}" class="row g-2 align-items-center">
+        <div class="col-9 col-md-10">
+            <input
+                type="text"
+                name="q"
+                value="{{ request('q') }}"
+                class="form-control"
+                placeholder="Kërko produkte (p.sh. shkallore, otto, plastik, rodos...)"
+            >
+        </div>
+        <div class="col-3 col-md-2 d-grid">
+            <button type="submit" class="btn btn-dark">
+                Kërko
+            </button>
+        </div>
+    </form>
+</div>
 
 <!-- Grid nga DB -->
 <main class="container py-3 pb-5">
