@@ -24,16 +24,32 @@ class ProductController extends Controller
     }
 
     // Kategori kryesore: TEPIHA
-    public function tepiha()
-    {
-        $products = Product::where('category', 'tepiha')
-            ->where('is_active', true)
-            ->orderByDesc('id')
-            ->paginate(12);
+   public function tepiha(Request $request)
+{
+    $focus = $request->get('focus');
 
-        // view: resources/views/products/tepiha.blade.php
-        return view('products.tepiha', compact('products'));
+    $query = Product::where('category', 'tepiha')
+        ->where('is_active', true);
+
+    // 👉 NËSE VJEN NGA SEARCH "SHKALLORE"
+    if ($focus === 'shkallore') {
+        $query->orderByRaw("
+            CASE
+                WHEN name LIKE '%shkallore%'
+                  OR description LIKE '%shkallore%'
+                THEN 0
+                ELSE 1
+            END
+        ");
     }
+
+    // renditja normale pas prioritetit
+    $products = $query
+        ->orderByDesc('id')
+        ->paginate(12);
+
+    return view('products.tepiha', compact('products'));
+}
 
     // PERDE – nën-kategoria: ANËSORE
     public function anesore()
