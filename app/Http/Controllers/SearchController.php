@@ -10,70 +10,68 @@ class SearchController extends Controller
     {
         $q = mb_strtolower(trim($request->get('q')));
 
-        if (!$q) {
+        if ($q === '') {
             return back();
         }
 
-        // ===============================
-        // MAP: kategori → route
-        // ===============================
         $categories = [
             'tepiha' => [
                 'route' => '/tepiha',
                 'keywords' => [
                     'tepiha','tepih','tepija','tepia','tepi',
-                    'hali','otto','shkall','rreth','rrumb','round'
+                    'shkallore','hali','otto','rrethore','rrumbullake','round'
                 ]
             ],
             'garnishte' => [
                 'route' => '/garnishte',
                 'keywords' => [
-                    'garnish','kanal','plastik','alumin','metal'
+                    'garnishte','garnish','kanal','plastik','alumin','metal'
                 ]
             ],
             'batanije' => [
                 'route' => '/batanije',
                 'keywords' => [
-                    'batan','qebe','rodos','zara','blanket'
+                    'batanije','batan','qebe','rodos','zara','blanket'
                 ]
             ],
             'mbulesa' => [
                 'route' => '/mbulesa',
                 'keywords' => [
-                    'mbules','cover','stella','sofa'
+                    'mbulesa','mbules','stella','cover','sofa'
                 ]
             ],
             'postava' => [
                 'route' => '/postava',
                 'keywords' => [
-                    'postav','çar','qar','bedsheet'
+                    'postava','postav','çar','qar','bedsheet'
                 ]
             ],
             'perde' => [
                 'route' => '/anesore',
                 'keywords' => [
-                    'perd','curtain','anesore','ditore'
+                    'perde','perd','curtain','anesore','ditore'
                 ]
             ],
         ];
 
-        // ===============================
-        // GJET KATEGORINË
-        // ===============================
         foreach ($categories as $cat) {
-            foreach ($cat['keywords'] as $word) {
-                if (str_contains($q, $word)) {
+            foreach ($cat['keywords'] as $keyword) {
 
-                    // hiq fjalët e kategorisë nga query
-                    $clean = trim(str_replace($word, '', $q));
+                if (str_contains($q, $keyword)) {
 
-                    // nëse s’ka mbet asgjë → vetëm kategori
-                    if ($clean === '') {
-                        return redirect($cat['route']);
+                    /**
+                     * 👉 NËSE QUERY = VETËM FJALË KATEGORIE
+                     * p.sh. "shkallore", "garnishte", "batanije"
+                     */
+                    if ($q === $keyword) {
+                        return redirect($cat['route'].'?q='.$keyword);
                     }
 
-                    // përndryshe → filtro
-                    return redirect($cat['route'].'?q='.urlencode($clean));
+                    /**
+                     * 👉 NËSE KA EDHE FJALË TJERA
+                     * p.sh. "shkallore otto", "garnishte plastik"
+                     */
+                    return redirect($cat['route'].'?q='.urlencode($q));
                 }
             }
         }
