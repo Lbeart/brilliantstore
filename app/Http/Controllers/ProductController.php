@@ -37,35 +37,25 @@ public function tepiha(Request $request)
 
     if ($raw !== '') {
 
-        // 1️⃣ Normalizim (gabime → formë bazë)
-        $map = [
-            'tepiha'   => ['tepiha','tepih','tepija','tepia','tepi'],
-            'rrethore' => ['rrethore','rrumbullake','rrethor','rrumbullak','rreth'],
-            'shkallore'=> ['shkallore','shkalore','shkallor','shkall'],
+        // 1️⃣ Fjalë të përgjithshme që nuk filtrojnë (vetëm emërtim)
+        $ignoreWords = [
+            'tepiha', 'tepih', 'tepija', 'tepia', 'tepi', 'tepihat'
         ];
 
-        $normalized = [];
+        // 2️⃣ Ndaj search-in në fjalë
+        $words = array_filter(explode(' ', $raw));
 
-        foreach ($map as $base => $variants) {
-            foreach ($variants as $v) {
-                if (str_contains($raw, $v)) {
-                    $normalized[] = $base;
-                    break;
-                }
+        // 3️⃣ Largo fjalët e përgjithshme
+        $searchTerms = array_values(array_diff($words, $ignoreWords));
+
+        // 4️⃣ Nëse s’mbeti asgjë → mos filtro (shfaq krejt)
+        if (!empty($searchTerms)) {
+            foreach ($searchTerms as $term) {
+                $query->where(function ($q) use ($term) {
+                    $q->whereRaw('LOWER(name) LIKE ?', ["%{$term}%"])
+                      ->orWhereRaw('LOWER(description) LIKE ?', ["%{$term}%"]);
+                });
             }
-        }
-
-        // nëse s’u kap asgjë, nda fjalët normalisht
-        if (empty($normalized)) {
-            $normalized = array_filter(explode(' ', $raw));
-        }
-
-        // 2️⃣ AND logic – çdo term duhet me ekzistu
-        foreach ($normalized as $term) {
-            $query->where(function ($q) use ($term) {
-                $q->whereRaw('LOWER(name) LIKE ?', ["%{$term}%"])
-                  ->orWhereRaw('LOWER(description) LIKE ?', ["%{$term}%"]);
-            });
         }
     }
 
