@@ -471,21 +471,23 @@
 
 /* logo fix (mos u shtyp) */
 .footer-logo-wrap{
-  width:120px;                          /* madhesia e kutise se logos */
-  height:120px;
-  background:#ffffff;                   /* e nxjerr logon mire */
-  border-radius:14px;
+  width: 220px;              /* sa e madhe me dal */
+  height: 110px;             /* mos e bo katrore */
   display:flex;
   align-items:center;
-  justify-content:center;
-  padding:10px;
-  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+  justify-content:flex-start;
+  padding: 0;
+  background: transparent;   /* mos e bo white box */
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .footer-logo{
-  width:100%;
-  height:100%;
-  object-fit:contain;                   /* kjo e rregullon logon */
+  max-width: 220px;
+  max-height: 110px;
+  width: auto;
+  height: auto;
+  object-fit: contain;       /* mos e shtrydh */
   display:block;
 }
 
@@ -945,6 +947,8 @@
     </div>
   </div>
 </footer>
+
+
 <!-- Fullscreen modal (e lejmë në HTML siç e ke, por s’e përdorim) -->
 <div class="img-modal" id="imgModal" aria-hidden="true">
   <button class="close-btn" type="button" id="modalClose" aria-label="Mbyll">
