@@ -766,7 +766,7 @@
   <!-- TOPBAR: categories + NEW SEARCH + WhatsApp -->
   <div class="container topbar">
     <div class="topbar-inner">
-      <div class="row g-3 align-items-center">
+      <div class="row g-5 align-items-center">
         <div class="col-lg-3">
           <div class="d-flex flex-wrap gap-3">
             <a class="chip" href="/tepiha"><i class="bi bi-grid"></i> Tepiha</a>
