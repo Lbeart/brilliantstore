@@ -643,30 +643,30 @@
     }
     .chips-2rows{
   display:grid;
-  grid-template-columns:repeat(3, minmax(0, 1fr));
-  gap:12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px; /* mundesh me bo 8px nese don ma ngusht */
 }
 
-/* Me i bo chips me i mbush kolonen (mos me u prish layout) */
+/* chips mos me u bo te gjata */
 .chips-2rows .chip{
   width:100%;
-  justify-content:center; /* nese chip eshte display:flex */
-  text-align:center;
-  white-space:nowrap;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+
+  /* responsive pa e ndrru layout-in */
+  font-size: clamp(11px, 1.6vw, 14px);
+  padding: clamp(6px, 1.2vw, 10px) clamp(8px, 1.4vw, 12px);
+
+  line-height:1.1;
+  white-space: nowrap;       /* mos me ra ne 2 rreshta */
+  overflow: hidden;          /* mos me dal jasht */
+  text-overflow: ellipsis;   /* ... nese nuk nxan */
 }
 
-/* Tablet: 2 ne rresht */
-@media (max-width: 991.98px){
-  .chips-2rows{
-    grid-template-columns:repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* Mobile: 1 ne rresht */
-@media (max-width: 575.98px){
-  .chips-2rows{
-    grid-template-columns:1fr;
-  }
+.chips-2rows .chip i{
+  font-size: clamp(12px, 1.8vw, 16px);
 }
   </style>
 </head>
@@ -804,6 +804,8 @@
 
           <!-- RRESHTI 2 -->
           <a class="chip" href="/garnishte"><i class="bi bi-layout-text-window"></i> Garnishte</a>
+          <a class="chip" href="/batanije"><i class="bi bi-snow"></i> Batanije</a>
+          <a class="chip" href="/postava"><i class="bi bi-bag-check"></i> Set çarçafesh</a>
         </div>
       </div>
 
