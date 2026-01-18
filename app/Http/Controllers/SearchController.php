@@ -14,11 +14,15 @@ class SearchController extends Controller
             return redirect()->back();
         }
 
-        // 👉 TEPIHA (krejt sinonimet)
+        // 👉 SHKALLORE (duhet me u kap PARA tepiha)
+        if (str_contains($q, 'shkallore')) {
+            return redirect('/tepiha?focus=shkallore');
+        }
+
+        // 👉 TEPIHA
         if (
             str_contains($q, 'tepiha') ||
             str_contains($q, 'tepih') ||
-            str_contains($q, 'shkallore') ||
             str_contains($q, 'carpet') ||
             str_contains($q, 'rug')
         ) {
@@ -33,6 +37,28 @@ class SearchController extends Controller
             return redirect('/anesore');
         }
 
+        // 👉 GARNISHTE
+        if (str_contains($q, 'garnishte')) {
+            return redirect('/garnishte');
+        }
+
+        // 👉 BATANIJE / QEBE
+        if (
+            str_contains($q, 'batanije') ||
+            str_contains($q, 'qebe')
+        ) {
+            return redirect('/batanije');
+        }
+
+        // 👉 POSTAVA / SET ÇARÇAFËSH
+        if (
+            str_contains($q, 'postava') ||
+            str_contains($q, 'çarçaf') ||
+            str_contains($q, 'qarqaf')
+        ) {
+            return redirect('/postava');
+        }
+
         // 👉 MBULESA
         if (
             str_contains($q, 'mbulesa') ||
@@ -40,35 +66,8 @@ class SearchController extends Controller
         ) {
             return redirect('/mbulesa');
         }
-         if (
-            str_contains($q, 'garnishte plastik') ||
-            str_contains($q, 'garnishte alumin') ||
-            str_contains($q, 'garnishte') ||
-            str_contains($q, 'garnishte amerikane') ||
-            str_contains($q, 'garnishte')
-        ) {
-            return redirect('/garnishte');
-        }
-         if (
-            str_contains($q, 'batanije') ||
-            str_contains($q, 'qebe') ||
-            str_contains($q, 'batanije dele') ||
-            str_contains($q, 'batanije per ni person') ||
-            str_contains($q, 'batanije per ni person')
-        ) {
-            return redirect('/batanije');
-        }
-        if (
-            str_contains($q, 'set qarqafesh') ||
-            str_contains($q, 'postava') ||
-            str_contains($q, 'postava per ni person') ||
-            str_contains($q, 'postava per dy persona') ||
-            str_contains($q, 'postava pambuk')
-        ) {
-            return redirect('/postava');
-        }
 
-        // 👉 NËSE S’PËRPUTHET ME ASNJË KATEGORI
+        // 👉 nëse s’përputhet me asgjë
         return redirect()->back();
     }
 }
