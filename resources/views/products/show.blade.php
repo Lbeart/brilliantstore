@@ -661,10 +661,7 @@
           <li><i class="bi bi-credit-card"></i> Paguj Online</li>
         </ul>
 
-        <div class="pay-badges" aria-label="Opsionet e pagesës">
-          <div class="pay-badge"><i class="bi bi-bank"></i> 24 këste pa kamatë</div>
-          <div class="pay-badge"><i class="bi bi-credit-card-2-front"></i> 24 këste pa kamatë</div>
-        </div>
+        
       </div>
 
       <div class="d-flex align-items-center flex-wrap gap-3 mb-4">
