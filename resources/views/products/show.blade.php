@@ -690,13 +690,13 @@
   </div>
 </div>
 
-{{-- PRODUKTE TE NGJASHME --}}
+{{-- PRODUKTE TE NGJASHME (vetem Bootstrap, pa CSS) --}}
 @if(isset($similarProducts) && $similarProducts->count())
   <div class="container mb-5">
-    <div class="similar-section">
-      <h2 class="similar-title">Produkte të ngjashme</h2>
+    <div class="bg-white border rounded-4 p-4">
+      <h2 class="fw-bold mb-4" style="color:#111827;">Produkte të ngjashme</h2>
 
-      <div class="similar-grid">
+      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-4">
         @foreach($similarProducts as $p)
           @php
             // Price range nga sizes nese ka
@@ -706,8 +706,7 @@
             if(!empty($p->sizes)){
               $sz = json_decode($p->sizes, true);
               if(is_array($sz) && count($sz)){
-                $prices = collect($sz)->pluck('price')->filter()
-                          ->map(fn($v)=>(float)$v)->values();
+                $prices = collect($sz)->pluck('price')->filter()->map(fn($v)=>(float)$v)->values();
                 if($prices->count()){
                   $minPrice = $prices->min();
                   $maxPrice = $prices->max();
@@ -716,27 +715,34 @@
             }
           @endphp
 
-          <a href="{{ route('products.show', $p) }}" class="similar-card">
-            <div class="similar-img">
-              <img
-                src="{{ $p->image_path ? asset('storage/'.$p->image_path) : asset('images/placeholder-product.png') }}"
-                alt="{{ $p->name }}"
-                loading="lazy"
-              >
-            </div>
+          <div class="col">
+            <a href="{{ route('products.show', $p) }}" class="text-decoration-none">
+              <div class="card h-100 border rounded-4">
+                <div class="ratio ratio-1x1 p-3">
+                  <img
+                    src="{{ $p->image_path ? asset('storage/'.$p->image_path) : asset('images/placeholder-product.png') }}"
+                    alt="{{ $p->name }}"
+                    class="w-100 h-100 rounded-3 object-fit-cover"
+                    loading="lazy"
+                  >
+                </div>
 
-            <div class="similar-body">
-              <div class="similar-name">{{ $p->name }}</div>
+                <div class="card-body pt-0">
+                  <div class="fw-semibold" style="color:#111827;">
+                    {{ $p->name }}
+                  </div>
 
-              <div class="similar-price">
-                @if($minPrice == $maxPrice)
-                  {{ number_format($minPrice, 2) }} €
-                @else
-                  {{ number_format($minPrice, 2) }} € – {{ number_format($maxPrice, 2) }} €
-                @endif
+                  <div class="fw-bold mt-2" style="color:#111827; font-size:1.05rem;">
+                    @if($minPrice == $maxPrice)
+                      {{ number_format($minPrice, 2) }} €
+                    @else
+                      {{ number_format($minPrice, 2) }} € – {{ number_format($maxPrice, 2) }} €
+                    @endif
+                  </div>
+                </div>
               </div>
-            </div>
-          </a>
+            </a>
+          </div>
         @endforeach
       </div>
     </div>

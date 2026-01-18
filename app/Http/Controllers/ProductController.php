@@ -22,16 +22,16 @@ class ProductController extends Controller
     // =====================
     // SHOW PRODUCT
     // =====================
-   public function show(Product $product)
+ public function show(Product $product)
 {
     abort_unless((int)$product->is_active === 1, 404);
 
     $similarProducts = Product::query()
         ->where('is_active', 1)
         ->where('id', '!=', $product->id)
-        ->when($product->category, fn($q) => $q->where('category', $product->category))
+        ->where('category', $product->category)
         ->orderByDesc('id')
-        ->take(10)
+        ->take(5)
         ->get();
 
     return view('products.show', compact('product', 'similarProducts'));
