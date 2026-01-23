@@ -552,9 +552,20 @@
           : null;
 
         // Foto
-        $src = $product->image_path
-              ? Storage::url($product->image_path)
-              : asset('images/placeholder.jpg');
+       @php
+  // FOTO (e rregullon edhe kur image_path është JSON array)
+  $imgs = [];
+  if(!empty($product->image_path)){
+    $d = json_decode($product->image_path, true);
+    $imgs = is_array($d) ? $d : [$product->image_path];
+  }
+
+  $mainImg = $imgs[0] ?? null;
+
+  $src = $mainImg
+        ? asset('storage/'.$mainImg)
+        : asset('images/placeholder.jpg');
+@endphp
 
         // Provojmë me nxjerrë madhësinë prej emrit (150x230, 200x300, etj.) nëse ekziston
         preg_match('/\d{2,3}x\d{2,3}/', $product->name, $sizeMatch);
@@ -580,19 +591,10 @@
               <div class="size-label">{{ $sizeLabel }} cm</div>
             @endif
 
-           @php
-  $imgs = [];
-  if(!empty($p->image_path)){
-    $d = json_decode($p->image_path, true);
-    $imgs = is_array($d) ? $d : [$p->image_path];
-  }
-  $mainImg = $imgs[0] ?? null;
-@endphp
-
-<img
+          <img
   class="product-thumb"
-  src="{{ $mainImg ? asset('storage/'.$mainImg) : asset('images/placeholder.jpg') }}"
-  alt="{{ $p->name }}"
+  src="{{ $src }}"
+  alt="{{ $product->name }}"
   loading="lazy"
   onerror="this.onerror=null;this.src='{{ asset('images/placeholder.jpg') }}'">
           </div>
