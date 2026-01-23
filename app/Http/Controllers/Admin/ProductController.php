@@ -63,17 +63,17 @@ class ProductController extends Controller
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as $img) {
                 $ext = strtolower($img->getClientOriginalExtension());
-                $filename = Str::uuid().'.'.($ext === 'jpeg' ? 'jpg' : $ext);
+               $filename = Str::uuid().'.jpg';
 
-                $image = Image::make($img)
-                    ->orientate()
-                    ->resize(800, null, function ($c) {
-                        $c->aspectRatio();
-                        $c->upsize();
-                    });
+$image = Image::make($img)
+  ->orientate()
+  ->resize(800, null, function ($c) {
+      $c->aspectRatio();
+      $c->upsize();
+  });
 
-                Storage::disk('public')->put("products/$filename", (string)$image->encode('jpg', 70));
-                $paths[] = "products/$filename";
+Storage::disk('public')->put("products/$filename", (string) $image->encode('jpg', 70));
+$paths[] = "products/$filename";
             }
         }
 
@@ -90,6 +90,9 @@ class ProductController extends Controller
             $data['price'] = $minPrice ?? ($data['price'] ?? 0);
             $data['stock'] = $sumStock ?? ($data['stock'] ?? 0);
         }
+        if (($data['category'] ?? null) === 'perde' && !empty($data['subcategory'])) {
+    $data['category'] = 'perde-' . $data['subcategory']; // perde-ditore / perde-anesore
+}
 
         Product::create($data);
 
