@@ -580,12 +580,21 @@
               <div class="size-label">{{ $sizeLabel }} cm</div>
             @endif
 
-            <img
-              class="product-thumb"
-              src="{{ $src }}"
-              alt="{{ $product->name }}"
-              loading="lazy"
-              onerror="this.onerror=null;this.src='{{ asset('images/placeholder.jpg') }}'">
+           @php
+  $imgs = [];
+  if(!empty($p->image_path)){
+    $d = json_decode($p->image_path, true);
+    $imgs = is_array($d) ? $d : [$p->image_path];
+  }
+  $mainImg = $imgs[0] ?? null;
+@endphp
+
+<img
+  class="product-thumb"
+  src="{{ $mainImg ? asset('storage/'.$mainImg) : asset('images/placeholder.jpg') }}"
+  alt="{{ $p->name }}"
+  loading="lazy"
+  onerror="this.onerror=null;this.src='{{ asset('images/placeholder.jpg') }}'">
           </div>
 
           <div class="product-body">
