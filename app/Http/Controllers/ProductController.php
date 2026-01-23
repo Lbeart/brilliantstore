@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -12,7 +13,8 @@ class ProductController extends Controller
     // =====================
     public function index()
     {
-        $products = Product::where('is_active', true)
+        $products = Product::query()
+            ->where('is_active', 1)
             ->orderByDesc('id')
             ->paginate(12);
 
@@ -22,45 +24,61 @@ class ProductController extends Controller
     // =====================
     // SHOW PRODUCT
     // =====================
- public function show(Product $product)
-{
-    abort_unless((int)$product->is_active === 1, 404);
-
-    $similarProducts = Product::query()
-        ->where('is_active', 1)
-        ->where('id', '!=', $product->id)
-        ->where('category', $product->category)
-        ->orderByDesc('id')
-        ->take(5)
-        ->get();
-
-    return view('products.show', compact('product', 'similarProducts'));
-}
-
-    // =====================================================
-    // 🔥 FUNKSION I PËRBASHKËT SEARCH (PËR KREJT KATEGORITË)
-    // =====================================================
-    private function categorySearch(Request $request, string $category, array $genericWords)
+    public function show(Product $product)
     {
-        $raw = mb_strtolower(trim($request->query('q')));
+        abort_unless((int) $product->is_active === 1, 404);
 
-        $query = Product::where('category', $category)
-            ->where('is_active', true);
+        $similarQuery = Product::query()
+            ->where('is_active', 1)
+            ->where('id', '!=', $product->id)
+            ->where('category', $product->category);
+
+        // ✅ nëse është perde, respekto edhe subcategory
+        if (($product->category === 'perde') && !empty($product->subcategory)) {
+            $similarQuery->where('subcategory', $product->subcategory);
+        }
+
+        $similarProducts = $similarQuery
+            ->orderByDesc('id')
+            ->take(5)
+            ->get();
+
+        return view('products.show', compact('product', 'similarProducts'));
+    }
+
+    // =====================================================
+    // SEARCH FUNKSION I PËRBASHKËT (PËR KREJT KATEGORITË)
+    // =====================================================
+    private function categorySearch(Request $request, array $where, array $genericWords)
+    {
+        $raw = Str::of((string) $request->query('q', ''))->trim()->lower()->value();
+
+        $query = Product::query()
+            ->where('is_active', 1);
+
+        // ✅ where të detyrueshme (category, subcategory kur duhet)
+        foreach ($where as $col => $val) {
+            $query->where($col, $val);
+        }
 
         if ($raw !== '') {
+            $words = array_values(array_filter(explode(' ', $raw)));
 
-            // nda fjalët
-            $words = array_filter(explode(' ', $raw));
+            // normalizo fjalët e përgjithshme në lowercase
+            $genericWords = array_map(fn($w) => mb_strtolower((string)$w), $genericWords);
 
-            // hiq fjalët e përgjithshme
-            $filterTerms = array_values(array_diff($words, $genericWords));
+            // hiq fjalët e përgjithshme + hiq fjalë shumë të shkurta
+            $filterTerms = array_values(array_filter(
+                array_diff($words, $genericWords),
+                fn($t) => mb_strlen($t) >= 2
+            ));
 
-            // filtro vetëm nëse ka fjalë konkrete
             if (!empty($filterTerms)) {
                 foreach ($filterTerms as $term) {
                     $query->where(function ($q) use ($term) {
-                        $q->whereRaw('LOWER(name) LIKE ?', ["%{$term}%"])
-                          ->orWhereRaw('LOWER(description) LIKE ?', ["%{$term}%"]);
+                        $q->where('name', 'like', "%{$term}%")
+                          ->orWhere('description', 'like', "%{$term}%")
+                          ->orWhere('sku', 'like', "%{$term}%");
                     });
                 }
             }
@@ -79,7 +97,7 @@ class ProductController extends Controller
     {
         $products = $this->categorySearch(
             $request,
-            'tepiha',
+            ['category' => 'tepiha'],
             ['tepiha','tepih','tepija','tepia','tepi','tepihat']
         );
 
@@ -93,7 +111,7 @@ class ProductController extends Controller
     {
         $products = $this->categorySearch(
             $request,
-            'perde',
+            ['category' => 'perde', 'subcategory' => 'anesore'],
             ['perde','perd','anesore','curtain']
         );
 
@@ -107,7 +125,7 @@ class ProductController extends Controller
     {
         $products = $this->categorySearch(
             $request,
-            'perde',
+            ['category' => 'perde', 'subcategory' => 'ditore'],
             ['perde','perd','ditore','curtain']
         );
 
@@ -121,11 +139,14 @@ class ProductController extends Controller
     {
         $products = $this->categorySearch(
             $request,
-            'postava',
+            ['category' => 'postava'],
             ['postava','postav','çar','qar']
         );
 
+        // ✅ nëse view e ke "postavaa" lëre ashtu,
+        // por normalisht duhet "products.postava"
         return view('products.postavaa', compact('products'));
+        // return view('products.postava', compact('products'));
     }
 
     // =====================
@@ -135,7 +156,7 @@ class ProductController extends Controller
     {
         $products = $this->categorySearch(
             $request,
-            'mbulesa',
+            ['category' => 'mbulesa'],
             ['mbulesa','mbules','cover','sofa']
         );
 
@@ -149,7 +170,7 @@ class ProductController extends Controller
     {
         $products = $this->categorySearch(
             $request,
-            'jastekdekorues',
+            ['category' => 'jastekdekorues'],
             ['jastek','jastak','dekor']
         );
 
@@ -163,7 +184,7 @@ class ProductController extends Controller
     {
         $products = $this->categorySearch(
             $request,
-            'batanije',
+            ['category' => 'batanije'],
             ['batanije','batan','qebe']
         );
 
@@ -177,7 +198,7 @@ class ProductController extends Controller
     {
         $products = $this->categorySearch(
             $request,
-            'tepihebanjo',
+            ['category' => 'tepihebanjo'],
             ['banjo','bath','wc']
         );
 
@@ -191,7 +212,7 @@ class ProductController extends Controller
     {
         $products = $this->categorySearch(
             $request,
-            'posteqia',
+            ['category' => 'posteqia'],
             ['posteqia','pelush','lekure']
         );
 
@@ -205,7 +226,7 @@ class ProductController extends Controller
     {
         $products = $this->categorySearch(
             $request,
-            'garnishte',
+            ['category' => 'garnishte'],
             ['garnishte','garnish','kanal']
         );
 
