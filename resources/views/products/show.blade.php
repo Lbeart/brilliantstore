@@ -8,12 +8,26 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-  <meta name="description" content="{{ Str::limit(strip_tags($product->description ?? $product->name), 160) }}">
+  @php
+    // ✅ IMAGES: image_path mund të jetë JSON array ose string e vjetër
+    $imgs = [];
+    if (!empty($product->image_path)) {
+      $d = json_decode($product->image_path, true);
+      $imgs = is_array($d) ? $d : [$product->image_path];
+    }
+    $mainImg = $imgs[0] ?? null;
+
+    $metaDesc = Str::limit(strip_tags($product->description ?? $product->name), 160);
+  @endphp
+
+  <meta name="description" content="{{ $metaDesc }}">
   <meta property="og:title" content="{{ $product->name }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <meta property="og:description" content="{{ Str::limit(strip_tags($product->description ?? $product->name), 160) }}">
-  @if($product->image_path)
-    <meta property="og:image" content="{{ asset('storage/'.$product->image_path) }}">
+  <meta property="og:description" content="{{ $metaDesc }}">
+
+  {{-- ✅ OG IMAGE: merre foton e parë --}}
+  @if($mainImg)
+    <meta property="og:image" content="{{ asset('storage/'.$mainImg) }}">
   @endif
 
   <style>
@@ -98,6 +112,36 @@
     }
     @media (min-width:1400px){
       .zoom-pane{width:420px;height:420px}
+    }
+
+    /* ✅ THUMBNAILS */
+    .thumb-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.55rem;
+      margin-top:12px;
+    }
+    .thumb-btn{
+      width:82px;
+      height:82px;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      overflow:hidden;
+      padding:0;
+      background:#fff;
+      box-shadow:0 3px 10px rgba(0,0,0,.04);
+      transition:all .15s ease;
+    }
+    .thumb-btn img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .thumb-btn:hover{transform:translateY(-1px); border-color:#d1d5db}
+    .thumb-btn.active{
+      border-color:rgba(220,53,69,.45);
+      box-shadow:0 10px 22px rgba(220,53,69,.10);
     }
 
     /* PRODUCT INFO SIDE */
@@ -243,27 +287,6 @@
       margin-bottom:.6rem;
       font-size:1rem;
     }
-    .pay-badges{
-      display:flex;
-      gap:.6rem;
-      flex-wrap:wrap;
-      margin-top:.6rem;
-    }
-    .pay-badge{
-      background:#fff;
-      border:1px solid #e5e7eb;
-      border-radius:12px;
-      padding:.45rem .65rem;
-      display:flex;
-      align-items:center;
-      gap:.45rem;
-      font-weight:800;
-      font-size:.85rem;
-      box-shadow:0 4px 12px rgba(0,0,0,.05);
-    }
-    .pay-badge img{
-      height:18px;width:auto;
-    }
 
     /* QTY & BUTTONS */
     .qty-btn{
@@ -330,6 +353,7 @@
       }
       .section-card{padding:14px}
       .size-pill{font-size:.88rem;padding:.52rem .85rem}
+      .thumb-btn{width:70px;height:70px}
     }
     @media (max-width:576px){
       h1,h2,.h2{font-size:1.25rem}
@@ -337,6 +361,7 @@
       .qty-btn,.qty-input{width:36px;height:36px;font-size:14px}
       .qty-input{width:50px}
       .btn{padding:.45rem .85rem;font-size:14px}
+      .thumb-btn{width:64px;height:64px}
     }
     @media (max-width:991.98px){
       .zoom-pane{
@@ -357,226 +382,228 @@
         display:none;
       }
     }
-  .similar-box{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:16px;
-  padding:28px;
-}
 
-.similar-title{
-  font-size:34px;
-  font-weight:800;
-  color:#111827;
-  margin:0 0 22px 0;
-}
+    .similar-box{
+      background:#fff;
+      border:1px solid #e5e7eb;
+      border-radius:16px;
+      padding:28px;
+    }
 
-.similar-grid{
-  display:grid;
-  grid-template-columns:repeat(5, minmax(0, 1fr));
-  gap:22px;
-}
+    .similar-title{
+      font-size:34px;
+      font-weight:800;
+      color:#111827;
+      margin:0 0 22px 0;
+    }
 
-/* karta */
-.similar-card{
-  display:block;
-  text-decoration:none;
-  color:inherit;
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:14px;
-  overflow:hidden;
-}
+    .similar-grid{
+      display:grid;
+      grid-template-columns:repeat(5, minmax(0, 1fr));
+      gap:22px;
+    }
 
-.similar-card-inner{
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  height:100%;
-}
+    /* karta */
+    .similar-card{
+      display:block;
+      text-decoration:none;
+      color:inherit;
+      background:#fff;
+      border:1px solid #e5e7eb;
+      border-radius:14px;
+      overflow:hidden;
+    }
 
-/* image square */
-.similar-img{
-  width:100%;
-  aspect-ratio:1/1;
-  border-radius:12px;
-  overflow:hidden;
-  background:#fff;
-}
+    .similar-card-inner{
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      height:100%;
+    }
 
-.similar-img img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
+    /* image square */
+    .similar-img{
+      width:100%;
+      aspect-ratio:1/1;
+      border-radius:12px;
+      overflow:hidden;
+      background:#fff;
+    }
 
-/* text */
-.similar-name{
-  margin-top:14px;
-  font-size:20px;
-  font-weight:700;
-  color:#111827;
-  line-height:1.2;
-}
+    .similar-img img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
 
-.similar-price{
-  margin-top:12px;
-  font-size:24px;
-  font-weight:900;
-  color:#111827;
-}
+    /* text */
+    .similar-name{
+      margin-top:14px;
+      font-size:20px;
+      font-weight:700;
+      color:#111827;
+      line-height:1.2;
+    }
 
-/* responsive si zakonisht */
-@media (max-width:1200px){
-  .similar-grid{ grid-template-columns:repeat(4, minmax(0, 1fr)); }
-}
-@media (max-width:992px){
-  .similar-grid{ grid-template-columns:repeat(3, minmax(0, 1fr)); }
-  .similar-title{ font-size:28px; }
-}
-@media (max-width:576px){
-  .similar-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
-  .similar-box{ padding:16px; }
-  .similar-title{ font-size:22px; margin-bottom:16px; }
-  .similar-name{ font-size:16px; }
-  .similar-price{ font-size:18px; }
-}
-.brillant-footer{
-  width:100%;
-  background: #0b1220;                 /* NGJYRA E FOOTERIT */
-  padding:58px 0 22px;
-  color: rgba(255,255,255,.88);
-}
+    .similar-price{
+      margin-top:12px;
+      font-size:24px;
+      font-weight:900;
+      color:#111827;
+    }
 
-.brillant-footer .footer-inner{
-  max-width:1200px;
-  margin:0 auto;
-  padding:0 22px;
-}
+    /* responsive si zakonisht */
+    @media (max-width:1200px){
+      .similar-grid{ grid-template-columns:repeat(4, minmax(0, 1fr)); }
+    }
+    @media (max-width:992px){
+      .similar-grid{ grid-template-columns:repeat(3, minmax(0, 1fr)); }
+      .similar-title{ font-size:28px; }
+    }
+    @media (max-width:576px){
+      .similar-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+      .similar-box{ padding:16px; }
+      .similar-title{ font-size:22px; margin-bottom:16px; }
+      .similar-name{ font-size:16px; }
+      .similar-price{ font-size:18px; }
+    }
 
-.footer-grid{
-  display:grid;
-  grid-template-columns: 1.2fr 1fr 1fr 0.7fr;
-  gap:46px;
-  align-items:start;
-}
+    .brillant-footer{
+      width:100%;
+      background: #0b1220;
+      padding:58px 0 22px;
+      color: rgba(255,255,255,.88);
+    }
 
-/* LEFT brand */
-.footer-brand{
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-}
+    .brillant-footer .footer-inner{
+      max-width:1200px;
+      margin:0 auto;
+      padding:0 22px;
+    }
 
-/* logo fix (mos u shtyp) */
-.footer-logo-wrap{
-  width: 220px;              /* sa e madhe me dal */
-  height: 110px;             /* mos e bo katrore */
-  display:flex;
-  align-items:center;
-  justify-content:flex-start;
-  padding: 0;
-  background: transparent;   /* mos e bo white box */
-  border-radius: 0;
-  box-shadow: none;
-}
+    .footer-grid{
+      display:grid;
+      grid-template-columns: 1.2fr 1fr 1fr 0.7fr;
+      gap:46px;
+      align-items:start;
+    }
 
-.footer-logo{
-  max-width: 220px;
-  max-height: 110px;
-  width: auto;
-  height: auto;
-  object-fit: contain;       /* mos e shtrydh */
-  display:block;
-}
+    /* LEFT brand */
+    .footer-brand{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
 
-.footer-brand small{
-  color: rgba(255,255,255,.75);
-  font-weight:500;
-}
-.footer-brand .brand-name{
-  font-weight:900;
-  font-size:34px;
-  color:#ffffff;
-  line-height:1;
-}
+    /* logo fix */
+    .footer-logo-wrap{
+      width: 220px;
+      height: 110px;
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      padding: 0;
+      background: transparent;
+      border-radius: 0;
+      box-shadow: none;
+    }
 
-/* columns */
-.footer-col h4{
-  font-size:15px;
-  font-weight:900;
-  letter-spacing:.08em;
-  color:#ffffff;
-  margin:0 0 14px 0;
-}
+    .footer-logo{
+      max-width: 220px;
+      max-height: 110px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display:block;
+    }
 
-.footer-links{
-  list-style:none;
-  padding:0;
-  margin:0;
-  display:grid;
-  gap:8px;
-}
+    .footer-brand small{
+      color: rgba(255,255,255,.75);
+      font-weight:500;
+    }
+    .footer-brand .brand-name{
+      font-weight:900;
+      font-size:34px;
+      color:#ffffff;
+      line-height:1;
+    }
 
-.footer-links a{
-  color: rgba(255,255,255,.82);
-  text-decoration:none;
-  font-weight:500;
-}
-.footer-links a:hover{
-  color:#ffffff;
-  text-decoration:underline;
-}
+    /* columns */
+    .footer-col h4{
+      font-size:15px;
+      font-weight:900;
+      letter-spacing:.08em;
+      color:#ffffff;
+      margin:0 0 14px 0;
+    }
 
-/* socials */
-.footer-social{
-  margin-top:28px;
-  display:flex;
-  gap:16px;
-  align-items:center;
-}
-.footer-social a{
-  color:#ffffff;
-  font-size:26px;
-  text-decoration:none;
-  opacity:.9;
-}
-.footer-social a:hover{opacity:.7;}
+    .footer-links{
+      list-style:none;
+      padding:0;
+      margin:0;
+      display:grid;
+      gap:8px;
+    }
 
-/* bottom */
-.footer-bottom{
-  margin-top:34px;
-  padding-top:16px;
-  border-top: 1px solid rgba(255,255,255,.10);
-  display:grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  align-items:center;
-  font-weight:500;
-  color: rgba(255,255,255,.65);
-  font-size:14px;
-}
-.footer-bottom .center{ text-align:center; }
-.footer-bottom .right{ text-align:right; }
+    .footer-links a{
+      color: rgba(255,255,255,.82);
+      text-decoration:none;
+      font-weight:500;
+    }
+    .footer-links a:hover{
+      color:#ffffff;
+      text-decoration:underline;
+    }
 
-/* responsive */
-@media (max-width:992px){
-  .footer-grid{
-    grid-template-columns: 1fr 1fr;
-    gap:28px;
-  }
-  .footer-bottom{
-    grid-template-columns:1fr;
-    gap:8px;
-    text-align:center;
-  }
-  .footer-bottom .right{ text-align:center; }
-}
-@media (max-width:576px){
-  .brillant-footer{ padding:40px 0 16px; }
-  .footer-grid{ grid-template-columns: 1fr; }
-  .footer-logo-wrap{ width:110px; height:110px; }
-}
+    /* socials */
+    .footer-social{
+      margin-top:28px;
+      display:flex;
+      gap:16px;
+      align-items:center;
+    }
+    .footer-social a{
+      color:#ffffff;
+      font-size:26px;
+      text-decoration:none;
+      opacity:.9;
+    }
+    .footer-social a:hover{opacity:.7;}
+
+    /* bottom */
+    .footer-bottom{
+      margin-top:34px;
+      padding-top:16px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items:center;
+      font-weight:500;
+      color: rgba(255,255,255,.65);
+      font-size:14px;
+    }
+    .footer-bottom .center{ text-align:center; }
+    .footer-bottom .right{ text-align:right; }
+
+    /* responsive */
+    @media (max-width:992px){
+      .footer-grid{
+        grid-template-columns: 1fr 1fr;
+        gap:28px;
+      }
+      .footer-bottom{
+        grid-template-columns:1fr;
+        gap:8px;
+        text-align:center;
+      }
+      .footer-bottom .right{ text-align:center; }
+    }
+    @media (max-width:576px){
+      .brillant-footer{ padding:40px 0 16px; }
+      .footer-grid{ grid-template-columns: 1fr; }
+      .footer-logo-wrap{ width:110px; height:110px; }
+    }
   </style>
 </head>
 <body>
@@ -692,16 +719,35 @@
     <!-- FOTO -->
     <div class="col-lg-7">
       <div class="product-hero">
-        @if($product->image_path)
-          <img id="productImage" src="{{ asset('storage/'.$product->image_path) }}"
-               data-zoom="{{ asset('storage/'.$product->image_path) }}" alt="{{ $product->name }}">
+        @if($mainImg)
+          <img id="productImage"
+               src="{{ asset('storage/'.$mainImg) }}"
+               data-zoom="{{ asset('storage/'.$mainImg) }}"
+               alt="{{ $product->name }}">
         @else
-          <img id="productImage" src="{{ asset('images/placeholder-product.png') }}"
-               data-zoom="{{ asset('images/placeholder-product.png') }}" alt="{{ $product->name }}">
+          <img id="productImage"
+               src="{{ asset('images/placeholder-product.png') }}"
+               data-zoom="{{ asset('images/placeholder-product.png') }}"
+               alt="{{ $product->name }}">
         @endif
+
         <div class="zoom-lens" id="zoomLens" aria-hidden="true"></div>
         <div class="zoom-pane" id="zoomPane" aria-hidden="true"></div>
       </div>
+
+      {{-- ✅ thumbnails poshtë fotos --}}
+      @if(count($imgs) > 1)
+        <div class="thumb-row" aria-label="Fotot e produktit">
+          @foreach($imgs as $i => $imgPath)
+            <button type="button"
+                    class="thumb-btn {{ $i === 0 ? 'active' : '' }}"
+                    onclick="setMainImg('{{ asset('storage/'.$imgPath) }}', this)"
+                    aria-label="Foto {{ $i+1 }}">
+              <img src="{{ asset('storage/'.$imgPath) }}" alt="thumb {{ $i+1 }}" loading="lazy">
+            </button>
+          @endforeach
+        </div>
+      @endif
     </div>
 
     <!-- INFO -->
@@ -755,7 +801,7 @@
         </span>
       </div>
 
-      {{-- ✅ DIMENSIONET si pills (si ne screenshot) --}}
+      {{-- ✅ DIMENSIONET si pills --}}
       @if(count($sizes)>0)
         <div class="section-card mb-3">
           <div class="dim-title">Dimensionet</div>
@@ -787,7 +833,7 @@
         </div>
       @endif
 
-      {{-- ✅ Transporti & Pagesa (si ne foto) --}}
+      {{-- ✅ Transporti & Pagesa --}}
       <div class="section-card mb-3">
         <div class="green-title">Transporti falas brenda Kosovës</div>
         <ul class="info-list">
@@ -795,8 +841,6 @@
           <li><i class="bi bi-cash-coin"></i> Paguj me para në dorë ose kartelë</li>
           <li><i class="bi bi-credit-card"></i> Paguj Online</li>
         </ul>
-
-        
       </div>
 
       <div class="d-flex align-items-center flex-wrap gap-3 mb-4">
@@ -853,13 +897,21 @@
                 }
               }
             }
+
+            // ✅ image_path JSON ose string
+            $simImg = null;
+            if(!empty($p->image_path)){
+              $d = json_decode($p->image_path, true);
+              $arr = is_array($d) ? $d : [$p->image_path];
+              $simImg = $arr[0] ?? null;
+            }
           @endphp
 
           <a class="similar-card" href="{{ route('products.show', $p) }}">
             <div class="similar-card-inner">
               <div class="similar-img">
                 <img
-                  src="{{ $p->image_path ? asset('storage/'.$p->image_path) : asset('images/placeholder-product.png') }}"
+                  src="{{ $simImg ? asset('storage/'.$simImg) : asset('images/placeholder-product.png') }}"
                   alt="{{ $p->name }}"
                   loading="lazy"
                 >
@@ -881,18 +933,17 @@
     </div>
   </div>
 @endif
-<br>
-<br>
-<br>
+
+<br><br><br>
+
 <footer class="brillant-footer">
   <div class="footer-inner">
     <div class="footer-grid">
       {{-- LEFT: LOGO + BRAND --}}
       <div class="footer-brand">
-  <div class="footer-logo-wrap">
-    <img class="footer-logo" src="{{ asset('images/brillant.png') }}" alt="Brillant" loading="lazy">
-  </div>
-
+        <div class="footer-logo-wrap">
+          <img class="footer-logo" src="{{ asset('images/brillant.png') }}" alt="Brillant" loading="lazy">
+        </div>
 
         <div>
           <small>Salloni i Perdeve, Tepiha</small>
@@ -947,7 +998,6 @@
     </div>
   </div>
 </footer>
-
 
 <!-- Fullscreen modal (e lejmë në HTML siç e ke, por s’e përdorim) -->
 <div class="img-modal" id="imgModal" aria-hidden="true">
@@ -1066,7 +1116,6 @@
 
   /* =========================
      ZOOM (DESKTOP + MOBILE)
-     MOBILE: zoom vetëm kur e prek me gisht, si desktop
      ========================= */
   const img  = document.getElementById('productImage');
   const lens = document.getElementById('zoomLens');
@@ -1131,6 +1180,18 @@
     setDisplay(lens,'none');
     setDisplay(pane,'none');
   }
+
+  // ✅ thumbnails: ndërron foton kryesore + rifreskon zoom
+  window.setMainImg = (src, el) => {
+    img.src = src;
+    img.dataset.zoom = src;
+
+    document.querySelectorAll('.thumb-btn').forEach(b => b.classList.remove('active'));
+    if(el) el.classList.add('active');
+
+    hideZoom();
+    initZoom();
+  };
 
   /* DESKTOP (hover) */
   img.addEventListener('mouseenter', () => {

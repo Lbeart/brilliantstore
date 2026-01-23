@@ -209,7 +209,7 @@
 
                 <div class="col-md-6">
                     <label class="form-label">Foto (jpg/png, max 10MB)</label>
-                    <input type="file" name="image" class="form-control" accept="image/*">
+                    <input type="file" name="image[]" class="form-control" multiple accept="image/*">
                 </div>
 
                 <div class="col-12 d-flex gap-2">

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers\Admin;
 
@@ -39,11 +39,14 @@ class ProductController extends Controller
             'sizes'       => 'nullable|array',
             'description' => 'nullable|string',
             'is_active'   => 'sometimes|boolean',
-            'image'       => 'nullable|image|max:10240',
+
+            // ✅ MULTI IMAGE
+            'image'       => 'nullable|array',
+            'image.*'     => 'image|max:10240',
+
             'sku'         => 'nullable|alpha_dash|unique:products,sku',
         ]);
 
-        // Vetëm perde ka subcategory
         if (($data['category'] ?? null) !== 'perde') {
             $data['subcategory'] = null;
         }
@@ -55,26 +58,26 @@ class ProductController extends Controller
             $data['sku'] = Str::upper(Str::slug($data['name'])).'-'.Str::random(4);
         }
 
-        // Ruaj imazhin dhe optimizoje
+        // ✅ SAVE MULTI IMAGES AS JSON IN image_path
+        $paths = [];
         if ($request->hasFile('image')) {
-            $img = $request->file('image');
-            $ext = strtolower($img->getClientOriginalExtension());
-            $filename = Str::uuid().'.'.($ext === 'jpeg' ? 'jpg' : $ext);
+            foreach ($request->file('image') as $img) {
+                $ext = strtolower($img->getClientOriginalExtension());
+                $filename = Str::uuid().'.'.($ext === 'jpeg' ? 'jpg' : $ext);
 
-            $image = Image::make($img)
-                ->orientate()
-                ->resize(800, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
+                $image = Image::make($img)
+                    ->orientate()
+                    ->resize(800, null, function ($c) {
+                        $c->aspectRatio();
+                        $c->upsize();
+                    });
 
-            $encoded = in_array($ext, ['png'])
-                ? (string) $image->encode('png', 60)
-                : (string) $image->encode('jpg', 60);
-
-           Storage::disk('public')->put("products/$filename", (string) $image->encode('jpg', 60));
-            $data['image_path'] = "products/$filename";
+                Storage::disk('public')->put("products/$filename", (string)$image->encode('jpg', 70));
+                $paths[] = "products/$filename";
+            }
         }
+
+        $data['image_path'] = !empty($paths) ? json_encode($paths) : null;
 
         // Normalizo sizes
         $norm = $this->normalizeSizes($request->input('sizes', []));
@@ -110,7 +113,11 @@ class ProductController extends Controller
             'sizes'       => 'nullable|array',
             'description' => 'nullable|string',
             'is_active'   => 'sometimes|boolean',
-            'image'       => 'nullable|image|max:10240',
+
+            // ✅ MULTI IMAGE
+            'image'       => 'nullable|array',
+            'image.*'     => 'image|max:10240',
+
             'sku'         => 'nullable|alpha_dash|unique:products,sku,'.$product->id,
         ]);
 
@@ -124,30 +131,32 @@ class ProductController extends Controller
             $data['slug'] = Str::slug($data['name']).'-'.Str::random(6);
         }
 
-        // Ruaj imazhin dhe optimizoje
-        if ($request->hasFile('image')) {
-            if ($product->image_path) {
-                Storage::disk('public')->delete($product->image_path);
-            }
-
-            $img = $request->file('image');
-            $ext = strtolower($img->getClientOriginalExtension());
-            $filename = Str::uuid().'.'.($ext === 'jpeg' ? 'jpg' : $ext);
-
-            $image = Image::make($img)
-                ->orientate()
-                ->resize(800, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
-
-            $encoded = in_array($ext, ['png'])
-                ? (string) $image->encode('png', 80)
-                : (string) $image->encode('jpg', 80);
-
-            Storage::disk('public')->put("products/$filename", $encoded);
-            $data['image_path'] = "products/$filename";
+        // ✅ KEEP OLD IMAGES + ADD NEW ONES
+        $existing = [];
+        if ($product->image_path) {
+            $decoded = json_decode($product->image_path, true);
+            $existing = is_array($decoded) ? $decoded : [$product->image_path];
         }
+
+        if ($request->hasFile('image')) {
+            foreach ($request->file('image') as $img) {
+                $ext = strtolower($img->getClientOriginalExtension());
+                $filename = Str::uuid().'.'.($ext === 'jpeg' ? 'jpg' : $ext);
+
+                $image = Image::make($img)
+                    ->orientate()
+                    ->resize(800, null, function ($c) {
+                        $c->aspectRatio();
+                        $c->upsize();
+                    });
+
+                Storage::disk('public')->put("products/$filename", (string)$image->encode('jpg', 70));
+                $existing[] = "products/$filename";
+            }
+        }
+
+        // ✅ only set if we have something
+        $data['image_path'] = !empty($existing) ? json_encode($existing) : null;
 
         // Normalizo sizes
         $norm = $this->normalizeSizes($request->input('sizes', []));
@@ -168,8 +177,14 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         if ($product->image_path) {
-            Storage::disk('public')->delete($product->image_path);
+            $decoded = json_decode($product->image_path, true);
+            $paths = is_array($decoded) ? $decoded : [$product->image_path];
+
+            foreach ($paths as $p) {
+                if ($p) Storage::disk('public')->delete($p);
+            }
         }
+
         $product->delete();
         return back()->with('ok', 'Produkti u fshi.');
     }
