@@ -539,92 +539,96 @@
   <!-- Lista e produkteve -->
   <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 g-md-4">
     @foreach($products as $product)
-      @php
-        // Çmimi aktual
-        $price = $product->price;
+  @php
+    // Çmimi aktual
+    $price = $product->price;
 
-        // Çmimi i "vjetër" vetëm për vizual (rreth 25% më i lartë)
-        $oldPrice = $price ? round($price * 1.25, 2) : null;
+    // Çmimi i "vjetër" (vizual)
+    $oldPrice = $price ? round($price * 1.25, 2) : null;
 
-        // Përcenti i zbritjes (p.sh. 20%)
-        $discountPercent = ($oldPrice && $price && $oldPrice > $price)
-          ? round(100 - ($price / $oldPrice * 100))
-          : null;
+    // Përqindja e zbritjes
+    $discountPercent = ($oldPrice && $price && $oldPrice > $price)
+      ? round(100 - ($price / $oldPrice * 100))
+      : null;
 
-        // Foto
-       @php
-  // FOTO (e rregullon edhe kur image_path është JSON array)
-  $imgs = [];
-  if(!empty($product->image_path)){
-    $d = json_decode($product->image_path, true);
-    $imgs = is_array($d) ? $d : [$product->image_path];
-  }
+    // ✅ FOTO (punon edhe kur image_path është JSON array)
+    $src = asset('images/placeholder.jpg');
 
-  $mainImg = $imgs[0] ?? null;
+    if (!empty($product->image_path)) {
+      $decoded = json_decode($product->image_path, true);
+      $path = is_array($decoded) ? ($decoded[0] ?? null) : $product->image_path;
 
-  $src = $mainImg
-        ? asset('storage/'.$mainImg)
-        : asset('images/placeholder.jpg');
-@endphp
+      if (!empty($path)) {
+        $path = ltrim($path, '/');
+        $path = preg_replace('#^storage/#', '', $path);
+        $path = preg_replace('#^public/#', '', $path);
 
-        // Provojmë me nxjerrë madhësinë prej emrit (150x230, 200x300, etj.) nëse ekziston
-        preg_match('/\d{2,3}x\d{2,3}/', $product->name, $sizeMatch);
-        $sizeLabel = $sizeMatch[0] ?? null;
-      @endphp
+        $src = preg_match('#^https?://#i', $path)
+          ? $path
+          : asset('storage/' . $path);
+      }
+    }
 
-      <div class="col">
-        <article class="product-card">
-          <div class="product-thumb-wrap">
-            @if($discountPercent)
-              <div class="bf-label">
-                <span>-{{ $discountPercent }}%</span>
-                <small>Oferta</small>
-              </div>
-            @else
-              <div class="bf-label">
-                <span>SALE</span>
-                <small>Oferta</small>
-              </div>
-            @endif
+    // Madhësia prej emrit (150x230, 200x300...)
+    preg_match('/\d{2,3}x\d{2,3}/', $product->name, $sizeMatch);
+    $sizeLabel = $sizeMatch[0] ?? null;
+  @endphp
 
-            @if($sizeLabel)
-              <div class="size-label">{{ $sizeLabel }} cm</div>
-            @endif
+  <div class="col">
+    <article class="product-card">
+      <div class="product-thumb-wrap">
 
-          <img
-  class="product-thumb"
-  src="{{ $src }}"
-  alt="{{ $product->name }}"
-  loading="lazy"
-  onerror="this.onerror=null;this.src='{{ asset('images/placeholder.jpg') }}'">
+        @if($discountPercent)
+          <div class="bf-label">
+            <span>-{{ $discountPercent }}%</span>
+            <small>Oferta</small>
           </div>
-
-          <div class="product-body">
-            <div class="product-title" title="{{ $product->name }}">{{ $product->name }}</div>
-            <div class="product-desc">
-              Tepiha antibakterial, i përshtatshëm për përdorim të përditshëm.
-            </div>
-
-            <div class="price-row">
-              @if(!is_null($price))
-                <span class="price-new">{{ number_format($price, 2) }} €</span>
-              @endif
-              @if($oldPrice)
-                <span class="price-old">{{ number_format($oldPrice, 2) }} €</span>
-              @endif
-            </div>
-            @if($oldPrice && $price)
-              <div class="price-note">
-                Çmim promo aktual
-              </div>
-            @endif
+        @else
+          <div class="bf-label">
+            <span>SALE</span>
+            <small>Oferta</small>
           </div>
+        @endif
 
-          <!-- link i kartës -->
-          <a href="{{ route('products.show', $product->slug) }}" class="stretched-link" aria-label="Shiko {{ $product->name }}"></a>
-        </article>
+        @if($sizeLabel)
+          <div class="size-label">{{ $sizeLabel }} cm</div>
+        @endif
+
+        <img
+          class="product-thumb"
+          src="{{ $src }}"
+          alt="{{ $product->name }}"
+          loading="lazy"
+          onerror="this.onerror=null;this.src='{{ asset('images/placeholder.jpg') }}'">
       </div>
-    @endforeach
+
+      <div class="product-body">
+        <div class="product-title" title="{{ $product->name }}">{{ $product->name }}</div>
+
+        <div class="product-desc">
+          Tepiha antibakterial, i përshtatshëm për përdorim të përditshëm.
+        </div>
+
+        <div class="price-row">
+          @if(!is_null($price))
+            <span class="price-new">{{ number_format($price, 2) }} €</span>
+          @endif
+          @if($oldPrice)
+            <span class="price-old">{{ number_format($oldPrice, 2) }} €</span>
+          @endif
+        </div>
+
+        @if($oldPrice && $price)
+          <div class="price-note">Çmim promo aktual</div>
+        @endif
+      </div>
+
+      <a href="{{ route('products.show', $product->slug) }}" class="stretched-link"
+         aria-label="Shiko {{ $product->name }}"></a>
+    </article>
+  </div>
+@endforeach
+
   </div>
 
   <!-- PAGINATION E RE -->
