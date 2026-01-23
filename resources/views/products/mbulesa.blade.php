@@ -309,9 +309,18 @@
       @foreach ($products as $p)
         <div class="col-6 col-md-4 col-lg-3">
           <article class="product-card">
-            <img
+            @php
+  $imgs = [];
+  if(!empty($p->image_path)){
+    $d = json_decode($p->image_path, true);
+    $imgs = is_array($d) ? $d : [$p->image_path];
+  }
+  $mainImg = $imgs[0] ?? null;
+@endphp
+
+<img
   class="product-thumb"
-  src="{{ $p->image_path ? asset('storage/'.$p->image_path) : asset('images/placeholder.jpg') }}"
+  src="{{ $mainImg ? asset('storage/'.$mainImg) : asset('images/placeholder.jpg') }}"
   alt="{{ $p->name }}"
   loading="lazy"
   onerror="this.onerror=null;this.src='{{ asset('images/placeholder.jpg') }}'">
