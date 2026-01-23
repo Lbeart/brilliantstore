@@ -234,14 +234,38 @@
   @else
     <div class="row g-4">
       @foreach ($products as $p)
+      @php
+  $imgs = [];
+  $raw = $p->image_path ?? '';
+
+  if($raw !== ''){
+    $d = json_decode($raw, true);
+    $imgs = is_array($d) ? $d : [$raw];
+  }
+
+  $mainImg = $imgs[0] ?? null;
+
+  if($mainImg){
+    // nese është URL, merre veç path-in
+    if(preg_match('#^https?://#i', $mainImg)){
+      $mainImg = parse_url($mainImg, PHP_URL_PATH) ?? $mainImg;
+    }
+
+    // pastro prefikset
+    $mainImg = ltrim($mainImg, '/');
+    $mainImg = preg_replace('#^(storage|public)/#', '', $mainImg);
+  }
+
+  $src = $mainImg
+      ? \Illuminate\Support\Facades\Storage::disk('public')->url($mainImg)
+      : asset('images/placeholder.jpg');
+@endphp
+
         <div class="col-6 col-md-4 col-lg-3">
           <article class="product-card">
-       <img
-  class="product-thumb"
-  src="{{ $p->image_path ? asset('storage/'.$p->image_path) : asset('images/placeholder.jpg') }}"
-  alt="{{ $p->name }}"
-  loading="lazy"
-  onerror="this.onerror=null;this.src='{{ asset('images/placeholder.jpg') }}'">
+       <img class="product-thumb" src="{{ $src }}" alt="{{ $p->name }}"
+     loading="lazy"
+     onerror="this.onerror=null;this.src='{{ asset('images/placeholder.jpg') }}'">
 
 
             <div class="product-body">
