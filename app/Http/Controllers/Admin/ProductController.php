@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -33,7 +34,15 @@ class ProductController extends Controller
         $data = $request->validate([
             'name'        => 'required|string|max:150',
             'category'    => 'required|string|max:50',
-            'subcategory' => 'nullable|string|in:anesore,ditore',
+
+            // ✅ subcategory REQUIRED vetëm kur category = perde
+            'subcategory' => [
+                'nullable',
+                'string',
+                Rule::in(['anesore', 'ditore']),
+                Rule::requiredIf(fn () => $request->input('category') === 'perde'),
+            ],
+
             'price'       => 'nullable|numeric|min:0',
             'stock'       => 'nullable|integer|min:0',
             'sizes'       => 'nullable|array',
@@ -47,6 +56,7 @@ class ProductController extends Controller
             'sku'         => 'nullable|alpha_dash|unique:products,sku',
         ]);
 
+        // ✅ Nëse s’është perde, mos ruaj subcategory
         if (($data['category'] ?? null) !== 'perde') {
             $data['subcategory'] = null;
         }
@@ -58,16 +68,14 @@ class ProductController extends Controller
             $data['sku'] = Str::upper(Str::slug($data['name'])) . '-' . Str::random(4);
         }
 
-        // ✅ category perde-ditore / perde-anesore
-        if (($data['category'] ?? null) === 'perde' && !empty($data['subcategory'])) {
-            $data['category'] = 'perde-' . $data['subcategory'];
-        }
+        // ❌ MOS E NDRYSHO category në perde-ditore/perde-anesore
+        //    category mbetet 'perde', subcategory mban ditore/anesore
 
         // ✅ SAVE MULTI IMAGES AS JSON IN image_path
         $paths = [];
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as $img) {
-                $paths[] = $this->saveUploadedImage($img); // returns "products/uuid.jpg"
+                $paths[] = $this->saveUploadedImage($img); // "products/uuid.jpg"
             }
         }
         $data['image_path'] = !empty($paths) ? json_encode($paths, JSON_UNESCAPED_SLASHES) : null;
@@ -103,7 +111,15 @@ class ProductController extends Controller
         $data = $request->validate([
             'name'        => 'required|string|max:150',
             'category'    => 'required|string|max:50',
-            'subcategory' => 'nullable|string|in:anesore,ditore',
+
+            // ✅ subcategory REQUIRED vetëm kur category = perde
+            'subcategory' => [
+                'nullable',
+                'string',
+                Rule::in(['anesore', 'ditore']),
+                Rule::requiredIf(fn () => $request->input('category') === 'perde'),
+            ],
+
             'price'       => 'nullable|numeric|min:0',
             'stock'       => 'nullable|integer|min:0',
             'sizes'       => 'nullable|array',
@@ -114,13 +130,14 @@ class ProductController extends Controller
             'image'       => 'nullable|array',
             'image.*'     => 'image|max:10240',
 
-            // ✅ KJO E MUNDËSON: me i mbajt disa foto ekzistuese / me i fshi disa
+            // ✅ mbaj/fshi foto ekzistuese
             'existing_images'   => 'nullable|array',
             'existing_images.*' => 'string',
 
             'sku'         => 'nullable|alpha_dash|unique:products,sku,' . $product->id,
         ]);
 
+        // ✅ Nëse s’është perde, mos ruaj subcategory
         if (($data['category'] ?? null) !== 'perde') {
             $data['subcategory'] = null;
         }
@@ -131,16 +148,14 @@ class ProductController extends Controller
             $data['slug'] = Str::slug($data['name']) . '-' . Str::random(6);
         }
 
-        // ✅ category perde-ditore / perde-anesore (edhe te update)
-        if (($data['category'] ?? null) === 'perde' && !empty($data['subcategory'])) {
-            $data['category'] = 'perde-' . $data['subcategory'];
-        }
+        // ❌ MOS E NDRYSHO category në perde-ditore/perde-anesore
+        //    category mbetet 'perde', subcategory mban ditore/anesore
 
         // ====== ✅ IMAGE REPLACE/REMOVE LOGIC ======
-        $old = $this->decodeImagePaths($product->image_path);               // fotot që janë në DB
-        $keep = $request->input('existing_images', []);                    // fotot që user i la në form
+        $old  = $this->decodeImagePaths($product->image_path); // fotot në DB
+        $keep = $request->input('existing_images', []);        // fotot që user i la në form
 
-        // pastrim + lejo veç ato që ekzistojnë realisht në $old (siguri)
+        // siguri: mbaj vetëm ato që ekzistojnë në $old
         $keep = is_array($keep) ? array_values(array_intersect($old, $keep)) : [];
 
         // fshi nga disk ato që u hoqën
@@ -149,7 +164,7 @@ class ProductController extends Controller
             if ($p) Storage::disk('public')->delete($p);
         }
 
-        // shto fotot e reja (append te lista e keep)
+        // shto fotot e reja
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as $img) {
                 $keep[] = $this->saveUploadedImage($img);
@@ -206,10 +221,9 @@ class ProductController extends Controller
     {
         if (empty($value)) return [];
 
-        // nese vjen array (nese ndonjëherë e ke cast)
         if (is_array($value)) return array_values(array_filter($value));
 
-        $raw = trim((string)$value);
+        $raw = trim((string) $value);
 
         // nëse është URL që përmban JSON: .../storage/[...]
         if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
@@ -221,7 +235,6 @@ class ProductController extends Controller
             return array_values(array_filter($decoded));
         }
 
-        // fallback: string i vetëm
         return [$raw];
     }
 
@@ -230,11 +243,11 @@ class ProductController extends Controller
         $out = [];
         if (isset($sizes['label']) && is_array($sizes['label'])) {
             foreach ($sizes['label'] as $i => $lbl) {
-                $lbl = trim((string)$lbl);
+                $lbl = trim((string) $lbl);
                 if ($lbl === '') continue;
 
-                $price = isset($sizes['price'][$i]) && $sizes['price'][$i] !== '' ? (float)$sizes['price'][$i] : null;
-                $stock = isset($sizes['stock'][$i]) && $sizes['stock'][$i] !== '' ? (int)$sizes['stock'][$i] : 0;
+                $price = isset($sizes['price'][$i]) && $sizes['price'][$i] !== '' ? (float) $sizes['price'][$i] : null;
+                $stock = isset($sizes['stock'][$i]) && $sizes['stock'][$i] !== '' ? (int) $sizes['stock'][$i] : 0;
 
                 $out[] = ['label' => $lbl, 'price' => $price, 'stock' => $stock];
             }
