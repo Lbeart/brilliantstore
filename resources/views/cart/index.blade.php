@@ -56,17 +56,46 @@
 
   @php
     $cart = $cart ?? session('cart', []);
-    // helper i vogël për imazhe (pranon absolute/relative)
+
+    // ✅ FIX: trajton JSON array, URL absolute, storage/public prefix
     if (!function_exists('cart_img_url')) {
       function cart_img_url($raw) {
-        if (empty($raw)) return asset('images/placeholder-product.png');
-        if (preg_match('~^https?://~i', $raw)) return $raw;
+        $placeholder = asset('images/placeholder-product.png');
+
+        if (empty($raw)) return $placeholder;
+
+        // nese vjen array direkt
+        if (is_array($raw)) $raw = $raw[0] ?? null;
+        if (empty($raw)) return $placeholder;
+
+        $raw = trim((string)$raw);
+
+        // nese është JSON array string: ["a.jpg","b.jpg"]
+        if (str_starts_with($raw, '[')) {
+          $d = json_decode($raw, true);
+          if (is_array($d) && !empty($d)) $raw = $d[0];
+        }
+
+        if (empty($raw)) return $placeholder;
+
+        // nese është URL absolute, merre veç path-in
+        if (preg_match('#^https?://#i', $raw)) {
+          $raw = parse_url($raw, PHP_URL_PATH) ?? $raw;
+        }
+
         $clean = ltrim($raw, '/');
-        if (str_starts_with($clean,'images/'))  return asset($clean);
-        if (str_starts_with($clean,'storage/')) return asset($clean);
-        return asset('storage/'.$clean);
+
+        // pastro prefixet qe shpesh dalin prej DB
+        $clean = preg_replace('#^(storage|public)/#', '', $clean);
+
+        // nese është image në public/images
+        if (str_starts_with($clean, 'images/')) return asset($clean);
+
+        // ktheje gjithmon URL korrekt prej storage public
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
       }
     }
+
     $subtotal = 0;
     foreach ($cart as $it) { $subtotal += (float)($it['price'] ?? 0) * (int)($it['qty'] ?? 1); }
     $shipping = 0.00;
@@ -104,11 +133,15 @@
                 $qty  = (int)($item['qty'] ?? 1);
                 $size = $item['size'] ?? ($item['dimension'] ?? '—');
                 $line = $price * $qty;
+                $img  = $item['image'] ?? ($item['image_path'] ?? null);
               @endphp
               <tr>
                 <td>
                   <div class="d-flex align-items-center gap-2">
-                    <img class="cart-thumb" src="{{ cart_img_url($item['image'] ?? ($item['image_path'] ?? null)) }}" alt="{{ $name }}">
+                    <img class="cart-thumb"
+                         src="{{ cart_img_url($img) }}"
+                         alt="{{ $name }}"
+                         onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
                     <div class="fw-semibold">{{ $name }}</div>
                   </div>
                 </td>
@@ -160,10 +193,14 @@
               $qty  = (int)($item['qty'] ?? 1);
               $size = $item['size'] ?? ($item['dimension'] ?? '—');
               $line = $price * $qty;
+              $img  = $item['image'] ?? ($item['image_path'] ?? null);
             @endphp
             <div class="card-soft p-2">
               <div class="d-flex align-items-center gap-2">
-                <img class="cart-thumb" src="{{ cart_img_url($item['image'] ?? ($item['image_path'] ?? null)) }}" alt="{{ $name }}">
+                <img class="cart-thumb"
+                     src="{{ cart_img_url($img) }}"
+                     alt="{{ $name }}"
+                     onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
                 <div class="flex-grow-1">
                   <div class="fw-semibold">{{ $name }}</div>
                   <div class="small muted">Dimensioni: {{ $size }}</div>
