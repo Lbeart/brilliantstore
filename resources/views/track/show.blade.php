@@ -52,6 +52,50 @@
   </style>
 </head>
 <body>
+
+@php
+  // ✅ FIX FOTO per ORDER ITEMS (track/show)
+  $order_item_img = function($raw){
+    $placeholder = asset('images/placeholder-product.png');
+    if (empty($raw)) return $placeholder;
+
+    // nese vjen array
+    if (is_array($raw)) $raw = $raw[0] ?? null;
+    if (empty($raw)) return $placeholder;
+
+    $raw = trim((string)$raw);
+
+    // JSON array string: ["a","b"]
+    if (str_starts_with($raw, '[')) {
+      $d = json_decode($raw, true);
+      if (is_array($d) && !empty($d)) $raw = $d[0];
+    }
+
+    // URL që përmban JSON: https://domain.com/storage/[...]
+    if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
+      $d = json_decode($m[0], true);
+      if (is_array($d) && !empty($d)) $raw = $d[0];
+    }
+
+    if (empty($raw)) return $placeholder;
+
+    // URL absolute
+    if (preg_match('#^https?://#i', $raw)) {
+      return $raw;
+    }
+
+    // normalizo path
+    $clean = ltrim($raw, '/');
+    $clean = preg_replace('#^(storage|public)/#', '', $clean);
+
+    // nese është public/images/...
+    if (str_starts_with($clean, 'images/')) return asset($clean);
+
+    // default: storage public
+    return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
+  };
+@endphp
+
 <div class="container page-wrap py-4">
 
   <div class="d-flex align-items-center justify-content-between mb-3">
@@ -85,7 +129,6 @@
 
         <div class="mb-1">
           @php
-            // Normalizo statusin
             $raw = strtolower(trim((string)($order->status ?? '')));
             $aliases = [
               'pending'=>'pranuar','accepted'=>'pranuar','received'=>'pranuar','pranuar'=>'pranuar',
@@ -167,19 +210,23 @@
         <tbody>
         @foreach($order->items as $it)
           @php
-            $name = $it->name ?? 'Produkt';
+            $name  = $it->name ?? 'Produkt';
             $price = (float)($it->price ?? 0);
             $qty   = (int)($it->qty ?? 1);
             $size  = $it->size ?? '—';
             $line  = $price * $qty;
-            $img = $it->image ?? $it->image_path ?? null;
-            if(!$img) $img = asset('images/placeholder-product.png');
-            elseif(!preg_match('~^https?://~',$img)) $img = asset(ltrim($img,'/'));
+
+            // ✅ këtu e marrim foton
+            $rawImg = $it->image ?? $it->image_path ?? null;
+            $img = $order_item_img($rawImg);
           @endphp
           <tr>
             <td>
               <div class="d-flex align-items-center gap-2">
-                <img class="thumb" src="{{ $img }}" alt="{{ $name }}">
+                <img class="thumb"
+                     src="{{ $img }}"
+                     alt="{{ $name }}"
+                     onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
                 <div class="fw-semibold">{{ $name }}</div>
               </div>
             </td>
@@ -204,9 +251,11 @@
     <a href="{{ url('/') }}" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> Vazhdo blerjet
     </a>
-   
+
+    {{-- nëse e ki route për faturë, përdore kështu --}}
+    {{-- <a href="{{ route('orders.invoice',$order) }}" class="btn btn-danger">
       <i class="bi bi-printer"></i> Printo faturën
-    </a>
+    </a> --}}
   </div>
 
 </div>
