@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="sq">
 <head>
     <meta charset="UTF-8">
@@ -22,9 +22,61 @@
         .offcanvas.sidebar .nav-link.active,.offcanvas.sidebar .nav-link:hover{ background:#dc3545; color:#fff!important; }
         @media (max-width:991px){ .content{ padding:1rem; } }
         @media (max-width:767px){ .sidebar.desktop{ display:none; } }
+
+        .img-preview{
+            height:90px; width:90px; object-fit:cover;
+            border-radius:10px; background:#f1f2f6; border:1px solid #eee;
+        }
     </style>
 </head>
 <body>
+
+@php
+  // ✅ FIX FOTO (admin/edit): trajton JSON array, URL absolute, dhe rastin .../storage/[...]
+  $admin_img_url = function($raw){
+    $placeholder = asset('images/placeholder.png');
+    if (empty($raw)) return $placeholder;
+
+    if (is_array($raw)) $raw = $raw[0] ?? null;
+    if (empty($raw)) return $placeholder;
+
+    $raw = trim((string)$raw);
+
+    // JSON array string: ["a.png","b.png"]
+    if (str_starts_with($raw, '[')) {
+      $d = json_decode($raw, true);
+      if (is_array($d) && !empty($d)) $raw = $d[0];
+    }
+
+    // URL që përmban JSON: https://domain.com/storage/[...]
+    if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
+      $d = json_decode($m[0], true);
+      if (is_array($d) && !empty($d)) $raw = $d[0];
+    }
+
+    if (empty($raw)) return $placeholder;
+
+    // nese është URL absolute, merre veç path-in
+    if (preg_match('#^https?://#i', $raw)) {
+      $raw = parse_url($raw, PHP_URL_PATH) ?? $raw;
+    }
+
+    $clean = ltrim($raw, '/');
+
+    // pastro prefixet: storage/ ose public/
+    $clean = preg_replace('#^(storage|public)/#', '', $clean);
+
+    // nese është image në public/images
+    if (str_starts_with($clean, 'images/')) return asset($clean);
+
+    // gjithmon kthe URL nga storage public
+    return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
+  };
+
+  $currentImageRaw = $product->image_path ?? ($product->image ?? null);
+  $currentImageSrc = $admin_img_url($currentImageRaw);
+@endphp
+
 <nav class="navbar navbar-light app-navbar sticky-top">
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <button class="btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
@@ -119,120 +171,107 @@
                     <label class="form-label">Përshkrimi</label>
                     <textarea name="description" rows="4" class="form-control">{{ old('description',$product->description) }}</textarea>
                 </div>
-                  <div class="mb-3">
-            <label class="form-label">Stoku</label>
-            <input type="number" name="stock" class="form-control" value="{{ old('stock', $product->stock) }}" min="0" required>
-        </div>
-        {{-- Dimensione (vetëm për Tepiha) --}}
-<div class="card border-0 shadow-sm mt-3">
-  <div class="card-body">
-    <h6 class="mb-2">Dimensione për Tepiha</h6>
-    <small class="text-muted d-block mb-3">
-      Fillo vetem nese <strong>kategoria = Tepiha</strong>. Zbraz këtë seksion për kategori tjera.
-    </small>
 
-    @php
-      // Për EDIT: $product->sizes. Për CREATE: old('sizes')
-      $sizes = old('sizes', isset($product) ? ($product->sizes ?? []) : []);
-      // kur vjen nga old() si sizes[label] / sizes[price] / sizes[stock], i rindërtojmë:
-      if(isset($sizes['label'])){
-        $tmp=[]; foreach(($sizes['label'] ?? []) as $i=>$lbl){
-          if($lbl!==null && $lbl!==''){
-            $tmp[] = [
-              'label' => $lbl,
-              'price' => $sizes['price'][$i] ?? null,
-              'stock' => $sizes['stock'][$i] ?? null,
-            ];
-          }
-        }
-        $sizes = $tmp;
-      }
-    @endphp
-
-    <div id="sizesRepeater">
-      @forelse($sizes as $s)
-        <div class="row g-2 align-items-end mb-2 size-row">
-          <div class="col-md-5">
-            <label class="form-label mb-1">Dimensioni</label>
-            <input name="sizes[label][]" class="form-control" placeholder="p.sh. 80x150" value="{{ $s['label'] ?? '' }}">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label mb-1">Çmimi (€)</label>
-            <input name="sizes[price][]" type="number" step="0.01" class="form-control" value="{{ $s['price'] ?? '' }}">
-          </div>
-          <div class="col-md-2">
-            <label class="form-label mb-1">Stok</label>
-            <input name="sizes[stock][]" type="number" min="0" class="form-control" value="{{ $s['stock'] ?? '' }}">
-          </div>
-          <div class="col-md-2 text-end">
-            <button type="button" class="btn btn-outline-danger remove-size">Fshi</button>
-          </div>
-        </div>
-      @empty
-        <div class="row g-2 align-items-end mb-2 size-row">
-          <div class="col-md-5">
-            <label class="form-label mb-1">Dimensioni</label>
-            <input name="sizes[label][]" class="form-control" placeholder="p.sh. 80x150">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label mb-1">Çmimi (€)</label>
-            <input name="sizes[price][]" type="number" step="0.01" class="form-control">
-          </div>
-          <div class="col-md-2">
-            <label class="form-label mb-1">Stok</label>
-            <input name="sizes[stock][]" type="number" min="0" class="form-control">
-          </div>
-          <div class="col-md-2 text-end">
-            <button type="button" class="btn btn-outline-danger remove-size">Fshi</button>
-          </div>
-        </div>
-      @endforelse
-    </div>
-
-    <button type="button" id="addSize" class="btn btn-outline-primary btn-sm mt-2">+ Shto rresht</button>
-
-    <script>
-    document.addEventListener('click', function(e){
-      if(e.target.id === 'addSize'){
-        const wrap = document.getElementById('sizesRepeater');
-        const row = document.createElement('div');
-        row.className = 'row g-2 align-items-end mb-2 size-row';
-        row.innerHTML = `
-          <div class="col-md-5">
-            <label class="form-label mb-1">Dimensioni</label>
-            <input name="sizes[label][]" class="form-control" placeholder="p.sh. 120x180">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label mb-1">Çmimi (€)</label>
-            <input name="sizes[price][]" type="number" step="0.01" class="form-control">
-          </div>
-          <div class="col-md-2">
-            <label class="form-label mb-1">Stok</label>
-            <input name="sizes[stock][]" type="number" min="0" class="form-control">
-          </div>
-          <div class="col-md-2 text-end">
-            <button type="button" class="btn btn-outline-danger remove-size">Fshi</button>
-          </div>`;
-        wrap.appendChild(row);
-      }
-      if(e.target.classList.contains('remove-size')){
-        e.target.closest('.size-row')?.remove();
-      }
-    });
-    </script>
-  </div>
-</div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Foto e re (opsionale)</label>
-                    <input type="file" name="image" class="form-control" accept="image/*">
-                    @if($product->image_path)
-                        <small class="d-block mt-2">Aktuale:</small>
-                        <img src="{{ $product->image_url }}" style="height:80px;border-radius:6px">
-                    @endif
+                <div class="col-md-3">
+                    <label class="form-label">Stoku</label>
+                    <input type="number" name="stock" class="form-control" value="{{ old('stock', $product->stock) }}" min="0" required>
                 </div>
 
-                <div class="col-12 d-flex gap-2">
+                {{-- Dimensione (vetëm për Tepiha) --}}
+                <div class="card border-0 shadow-sm mt-3">
+                  <div class="card-body">
+                    <h6 class="mb-2">Dimensione për Tepiha</h6>
+                    <small class="text-muted d-block mb-3">
+                      Fillo vetem nese <strong>kategoria = Tepiha</strong>. Zbraz këtë seksion për kategori tjera.
+                    </small>
+
+                    @php
+                      $sizes = old('sizes', isset($product) ? ($product->sizes ?? []) : []);
+                      if(isset($sizes['label'])){
+                        $tmp=[]; foreach(($sizes['label'] ?? []) as $i=>$lbl){
+                          if($lbl!==null && $lbl!==''){
+                            $tmp[] = [
+                              'label' => $lbl,
+                              'price' => $sizes['price'][$i] ?? null,
+                              'stock' => $sizes['stock'][$i] ?? null,
+                            ];
+                          }
+                        }
+                        $sizes = $tmp;
+                      }
+                    @endphp
+
+                    <div id="sizesRepeater">
+                      @forelse($sizes as $s)
+                        <div class="row g-2 align-items-end mb-2 size-row">
+                          <div class="col-md-5">
+                            <label class="form-label mb-1">Dimensioni</label>
+                            <input name="sizes[label][]" class="form-control" placeholder="p.sh. 80x150" value="{{ $s['label'] ?? '' }}">
+                          </div>
+                          <div class="col-md-3">
+                            <label class="form-label mb-1">Çmimi (€)</label>
+                            <input name="sizes[price][]" type="number" step="0.01" class="form-control" value="{{ $s['price'] ?? '' }}">
+                          </div>
+                          <div class="col-md-2">
+                            <label class="form-label mb-1">Stok</label>
+                            <input name="sizes[stock][]" type="number" min="0" class="form-control" value="{{ $s['stock'] ?? '' }}">
+                          </div>
+                          <div class="col-md-2 text-end">
+                            <button type="button" class="btn btn-outline-danger remove-size">Fshi</button>
+                          </div>
+                        </div>
+                      @empty
+                        <div class="row g-2 align-items-end mb-2 size-row">
+                          <div class="col-md-5">
+                            <label class="form-label mb-1">Dimensioni</label>
+                            <input name="sizes[label][]" class="form-control" placeholder="p.sh. 80x150">
+                          </div>
+                          <div class="col-md-3">
+                            <label class="form-label mb-1">Çmimi (€)</label>
+                            <input name="sizes[price][]" type="number" step="0.01" class="form-control">
+                          </div>
+                          <div class="col-md-2">
+                            <label class="form-label mb-1">Stok</label>
+                            <input name="sizes[stock][]" type="number" min="0" class="form-control">
+                          </div>
+                          <div class="col-md-2 text-end">
+                            <button type="button" class="btn btn-outline-danger remove-size">Fshi</button>
+                          </div>
+                        </div>
+                      @endforelse
+                    </div>
+
+                    <button type="button" id="addSize" class="btn btn-outline-primary btn-sm mt-2">+ Shto rresht</button>
+                  </div>
+                </div>
+
+                <!-- FOTO -->
+                <div class="col-md-6 mt-2">
+                    <label class="form-label">Foto e re (opsionale)</label>
+                    <input type="file" name="image" class="form-control" accept="image/*" id="imageInput">
+
+                    <div class="d-flex align-items-center gap-3 mt-3">
+                        <div>
+                            <small class="d-block text-muted mb-1">Aktuale</small>
+                            <img id="currentImg"
+                                 src="{{ $currentImageSrc }}"
+                                 class="img-preview"
+                                 onerror="this.onerror=null;this.src='{{ asset('images/placeholder.png') }}'">
+                        </div>
+
+                        <div>
+                            <small class="d-block text-muted mb-1">Preview (foto e re)</small>
+                            <img id="newPreview"
+                                 src="{{ asset('images/placeholder.png') }}"
+                                 class="img-preview">
+                        </div>
+                    </div>
+
+                    {{-- ✅ nëse do, e heqim më vonë; kjo ndihmon me pa çka po ruhet --}}
+                    {{-- <small class="text-muted d-block mt-2">RAW: {{ is_string($currentImageRaw) ? $currentImageRaw : (is_array($currentImageRaw) ? json_encode($currentImageRaw) : 'NULL') }}</small> --}}
+                </div>
+
+                <div class="col-12 d-flex gap-2 mt-2">
                     <button class="btn btn-danger">Ruaj</button>
                     <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Kthehu</a>
                 </div>
@@ -257,5 +296,49 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// repeater për size
+document.addEventListener('click', function(e){
+  if(e.target.id === 'addSize'){
+    const wrap = document.getElementById('sizesRepeater');
+    const row = document.createElement('div');
+    row.className = 'row g-2 align-items-end mb-2 size-row';
+    row.innerHTML = `
+      <div class="col-md-5">
+        <label class="form-label mb-1">Dimensioni</label>
+        <input name="sizes[label][]" class="form-control" placeholder="p.sh. 120x180">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label mb-1">Çmimi (€)</label>
+        <input name="sizes[price][]" type="number" step="0.01" class="form-control">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label mb-1">Stok</label>
+        <input name="sizes[stock][]" type="number" min="0" class="form-control">
+      </div>
+      <div class="col-md-2 text-end">
+        <button type="button" class="btn btn-outline-danger remove-size">Fshi</button>
+      </div>`;
+    wrap.appendChild(row);
+  }
+  if(e.target.classList.contains('remove-size')){
+    e.target.closest('.size-row')?.remove();
+  }
+});
+
+// preview për foto të re
+const input = document.getElementById('imageInput');
+const preview = document.getElementById('newPreview');
+if(input && preview){
+  input.addEventListener('change', function(){
+    const file = this.files && this.files[0];
+    if(!file) return;
+    const url = URL.createObjectURL(file);
+    preview.src = url;
+  });
+}
+</script>
+
 </body>
 </html>
