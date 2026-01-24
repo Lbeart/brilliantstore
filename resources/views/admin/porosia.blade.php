@@ -16,64 +16,55 @@
 <body>
 
 @php
-  // ✅ FIX FOTO vetëm për këtë faqe (Admin Order Show) – s’prek sen tjetër
+  // ✅ FIX FOTO vetëm për këtë faqe – s’prek sen tjetër
   $order_item_img_url = function($raw){
     $placeholder = asset('images/placeholder-product.png');
     if (empty($raw)) return $placeholder;
 
-    // array -> merr të parën jo-bosh
+    // array -> merr të parën
     if (is_array($raw)) {
-      $raw = collect($raw)->first(fn($x) => !empty($x)) ?? null;
+      $raw = collect($raw)->first(fn($x)=>!empty($x)) ?? null;
       if (empty($raw)) return $placeholder;
     }
 
     $raw = trim((string)$raw);
 
-    // ✅ 1) Nëse vjen URL me JSON mbrenda: .../storage/[...]
-    if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
-      $json = str_replace(['\/','\\\/'], '/', $m[0]);  // unescape slashes
-      $arr  = json_decode($json, true);
-      if (is_array($arr) && !empty($arr)) {
-        $raw = $arr[0];
-      }
-    }
-    // ✅ 2) Nëse vjen JSON string direkt: ["a","b"]
-    elseif (str_starts_with($raw, '[')) {
-      $json = str_replace(['\/','\\\/'], '/', $raw);
-      $arr  = json_decode($json, true);
-      if (is_array($arr) && !empty($arr)) {
-        $raw = $arr[0];
-      }
-    }
+    // ✅ nëse vjen URL-encoded (p.sh. %5B%22...%22%5D)
+    $decodedRaw = urldecode($raw);
 
-    if (empty($raw)) return $placeholder;
-
-    // ✅ 3) Nëse është URL absolute e rregullt (pa JSON) – ktheje siç është
-    // (tani JSON rastin e kemi kap më lart)
-    if (preg_match('#^https?://#i', $raw)) {
-      return $raw;
+    // ✅ 1) Kap JSON brenda URL-së: .../storage/[...]
+    if (preg_match('/\[[^\]]+\]/', $decodedRaw, $m)) {
+      $json = $m[0];
+      $json = str_replace(['\/','\\\/'], '/', $json);
+      $arr = json_decode($json, true);
+      if (is_array($arr) && !empty($arr)) $decodedRaw = $arr[0];
+    }
+    // ✅ 2) Kap JSON string direkt: ["a","b"]
+    elseif (str_starts_with($decodedRaw, '[')) {
+      $json = str_replace(['\/','\\\/'], '/', $decodedRaw);
+      $arr = json_decode($json, true);
+      if (is_array($arr) && !empty($arr)) $decodedRaw = $arr[0];
     }
 
-    // ✅ 4) normalizo path
-    $clean = ltrim($raw, '/');
+    $decodedRaw = trim((string)$decodedRaw, " \t\n\r\0\x0B\"'"); // heq thonjëzat
+
+    if (empty($decodedRaw)) return $placeholder;
+
+    // ✅ nëse është URL absolute (e rregullt)
+    if (preg_match('#^https?://#i', $decodedRaw)) return $decodedRaw;
+
+    // ✅ normalizo path
+    $clean = ltrim($decodedRaw, '/');
     $clean = str_replace('\\', '/', $clean);
-
-    // heq public/ nëse vjen
     $clean = preg_replace('#^(public/)+#', '', $clean);
 
     // nëse vjen storage/...
-    if (str_starts_with($clean, 'storage/')) {
-      // kjo kthen /storage/...
-      return asset($clean);
-    }
+    if (str_starts_with($clean, 'storage/')) return asset($clean);
 
-    // public/images/...
-    if (str_starts_with($clean, 'images/')) {
-      return asset($clean);
-    }
+    // images/...
+    if (str_starts_with($clean, 'images/')) return asset($clean);
 
-    // nëse vjen si products/uuid.jpg (shumicën e rasteve)
-    // ose çkado në disk 'public'
+    // ✅ default: disk public -> /storage/...
     return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
   };
 @endphp
@@ -107,8 +98,6 @@
             @foreach($order->items as $it)
               @php
                 $line = (float)$it->price * (int)$it->qty;
-
-                // ✅ VETËM KJO: e nxjerr foton saktë
                 $imgSrc = $order_item_img_url($it->image ?? $it->image_path ?? null);
               @endphp
               <tr>
@@ -175,23 +164,18 @@
         </form>
       </div>
 
-      <!-- Aksione: email konfirmimi, email "nisur", fshi -->
       <div class="card-soft p-3 mt-3">
         <h6 class="mb-3">Aksione</h6>
         <div class="d-flex flex-wrap gap-2">
           @if($order->email)
             <form method="POST" action="{{ route('admin.orders.email', $order) }}">
               @csrf
-              <button class="btn btn-outline-primary">
-                ✉️ Dërgo email konfirmimi
-              </button>
+              <button class="btn btn-outline-primary">✉️ Dërgo email konfirmimi</button>
             </form>
 
             <form method="POST" action="{{ route('admin.orders.email_shipped', $order) }}">
               @csrf
-              <button class="btn btn-primary">
-                📦 Njofto: Porosia është nisur
-              </button>
+              <button class="btn btn-primary">📦 Njofto: Porosia është nisur</button>
             </form>
           @else
             <div class="alert alert-warning mb-0 w-100">
@@ -203,9 +187,7 @@
                 onsubmit="return confirm('A je i sigurt që do ta fshish këtë porosi (#{{ $order->id }})?');">
             @csrf
             @method('DELETE')
-            <button class="btn btn-outline-danger">
-              🗑️ Fshi porosinë
-            </button>
+            <button class="btn btn-outline-danger">🗑️ Fshi porosinë</button>
           </form>
         </div>
         @if($order->email)
