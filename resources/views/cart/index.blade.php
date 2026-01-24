@@ -57,38 +57,46 @@
   @php
     $cart = $cart ?? session('cart', []);
 
-    // ✅ mos e bo function global (shmang conflict). Boje si closure variable.
+    // ✅ FIX FOTO: e trajton JSON array, URL absolute, dhe rastin: .../storage/[...]
     $cart_img_url = function($raw){
-    $placeholder = asset('images/placeholder-product.png');
-    if (empty($raw)) return $placeholder;
+      $placeholder = asset('images/placeholder-product.png');
+      if (empty($raw)) return $placeholder;
 
-    if (is_array($raw)) $raw = $raw[0] ?? null;
-    if (empty($raw)) return $placeholder;
+      // nese vjen array direkt
+      if (is_array($raw)) $raw = $raw[0] ?? null;
+      if (empty($raw)) return $placeholder;
 
-    $raw = trim((string)$raw);
+      $raw = trim((string)$raw);
 
-    // ✅ Kap JSON array edhe nese është brenda URL-së: .../storage/[...]
-    if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
-      $d = json_decode($m[0], true);
-      if (is_array($d) && !empty($d)) {
-        $raw = $d[0]; // merre foton e parë
+      // ✅ nese është JSON array string: ["a.png","b.png"]
+      if (str_starts_with($raw, '[')) {
+        $d = json_decode($raw, true);
+        if (is_array($d) && !empty($d)) $raw = $d[0];
       }
-    }
 
-    if (empty($raw)) return $placeholder;
+      // ✅ nese është URL që përmban JSON array: https://domain.com/storage/[...]
+      if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
+        $d = json_decode($m[0], true);
+        if (is_array($d) && !empty($d)) $raw = $d[0];
+      }
 
-    // nese është URL absolute, merre veç path-in
-    if (preg_match('#^https?://#i', $raw)) {
-      $raw = parse_url($raw, PHP_URL_PATH) ?? $raw;
-    }
+      if (empty($raw)) return $placeholder;
 
-    $clean = ltrim($raw, '/');
-    $clean = preg_replace('#^(storage|public)/#', '', $clean);
+      // nese është URL absolute, merre veç path-in
+      if (preg_match('#^https?://#i', $raw)) {
+        $raw = parse_url($raw, PHP_URL_PATH) ?? $raw;
+      }
 
-    if (str_starts_with($clean, 'images/')) return asset($clean);
+      $clean = ltrim($raw, '/');
+      $clean = preg_replace('#^(storage|public)/#', '', $clean);
 
-    return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
-  };
+      // nese është image në public/images
+      if (str_starts_with($clean, 'images/')) return asset($clean);
+
+      // storage public url korrekt
+      return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
+    };
+
     $subtotal = 0;
     foreach ($cart as $it) { $subtotal += (float)($it['price'] ?? 0) * (int)($it['qty'] ?? 1); }
     $shipping = 0.00;
@@ -126,6 +134,7 @@
                 $qty  = (int)($item['qty'] ?? 1);
                 $size = $item['size'] ?? ($item['dimension'] ?? '—');
                 $line = $price * $qty;
+
                 $img  = $item['image'] ?? ($item['image_path'] ?? null);
                 $src  = $cart_img_url($img);
               @endphp
@@ -136,13 +145,7 @@
                          src="{{ $src }}"
                          alt="{{ $name }}"
                          onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
-
-                    {{-- ✅ DEBUG (hiqe masi ta rregullojme) --}}
-                    <div style="max-width:380px">
-                      <div class="fw-semibold">{{ $name }}</div>
-                      <small class="text-muted d-block">RAW: {{ is_string($img) ? $img : (is_array($img) ? json_encode($img) : 'NULL') }}</small>
-                      <small class="text-muted d-block">SRC: {{ $src }}</small>
-                    </div>
+                    <div class="fw-semibold">{{ $name }}</div>
                   </div>
                 </td>
                 <td>{{ number_format($price,2) }} €</td>
@@ -193,6 +196,7 @@
               $qty  = (int)($item['qty'] ?? 1);
               $size = $item['size'] ?? ($item['dimension'] ?? '—');
               $line = $price * $qty;
+
               $img  = $item['image'] ?? ($item['image_path'] ?? null);
               $src  = $cart_img_url($img);
             @endphp
@@ -205,11 +209,6 @@
 
                 <div class="flex-grow-1">
                   <div class="fw-semibold">{{ $name }}</div>
-
-                  {{-- ✅ DEBUG (hiqe masi ta rregullojme) --}}
-                  <small class="text-muted d-block">RAW: {{ is_string($img) ? $img : (is_array($img) ? json_encode($img) : 'NULL') }}</small>
-                  <small class="text-muted d-block">SRC: {{ $src }}</small>
-
                   <div class="small muted">Dimensioni: {{ $size }}</div>
                   <div class="small muted">Çmimi: {{ number_format($price,2) }} €</div>
                 </div>
