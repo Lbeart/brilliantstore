@@ -14,6 +14,48 @@
   </style>
 </head>
 <body>
+
+@php
+  // ✅ FIX FOTO vetëm për këtë faqe (Admin Order Show) – s’prek sen tjetër
+  $order_item_img_url = function($raw){
+    $placeholder = asset('images/placeholder-product.png');
+    if (empty($raw)) return $placeholder;
+
+    if (is_array($raw)) $raw = $raw[0] ?? null;
+    if (empty($raw)) return $placeholder;
+
+    $raw = trim((string)$raw);
+
+    // JSON string: ["a","b"]
+    if (str_starts_with($raw, '[')) {
+      $d = json_decode($raw, true);
+      if (is_array($d) && !empty($d)) $raw = $d[0];
+    }
+
+    // nëse është URL absolute
+    if (preg_match('#^https?://#i', $raw)) return $raw;
+
+    // normalizo path
+    $clean = ltrim($raw, '/');
+
+    // nëse vjen si /storage/...
+    if (str_starts_with($clean, 'storage/')) {
+      return asset($clean); // /storage/products/...
+    }
+
+    // public/images/...
+    if (str_starts_with($clean, 'images/')) {
+      return asset($clean);
+    }
+
+    // heq public/ nëse e ka
+    $clean = preg_replace('#^public/#', '', $clean);
+
+    // default: storage disk public -> /storage/...
+    return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
+  };
+@endphp
+
 <div class="container py-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h5 m-0">Porosia #{{ $order->id }}</h1>
@@ -41,13 +83,20 @@
             </thead>
             <tbody>
             @foreach($order->items as $it)
-              @php $line = (float)$it->price * (int)$it->qty; @endphp
+              @php
+                $line = (float)$it->price * (int)$it->qty;
+
+                // ✅ VETËM KJO: e nxjerr foton saktë
+                $imgSrc = $order_item_img_url($it->image ?? $it->image_path ?? null);
+              @endphp
               <tr>
                 <td>
                   <div class="d-flex align-items-center gap-2">
-                    @if($it->image)
-                      <img src="{{ $it->image }}" class="summary-thumb" alt="{{ $it->name }}">
-                    @endif
+                    <img
+                      src="{{ $imgSrc }}"
+                      class="summary-thumb"
+                      alt="{{ $it->name }}"
+                      onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
                     <div class="fw-semibold">{{ $it->name }}</div>
                   </div>
                 </td>
