@@ -1,12 +1,14 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="sq">
 <head>
     <meta charset="UTF-8">
     <title>Edito Produkt – Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <!-- Bootstrap + FontAwesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
     <style>
         body{ background:#f8f9fa; font-family:'Segoe UI',sans-serif; }
         .app-navbar{ background:#fff; box-shadow:0 8px 24px rgba(0,0,0,.05); }
@@ -23,58 +25,95 @@
         @media (max-width:991px){ .content{ padding:1rem; } }
         @media (max-width:767px){ .sidebar.desktop{ display:none; } }
 
-        .img-preview{
-            height:90px; width:90px; object-fit:cover;
-            border-radius:10px; background:#f1f2f6; border:1px solid #eee;
+        .img-grid{ display:flex; flex-wrap:wrap; gap:10px; }
+        .img-box{
+            position:relative;
+            width:92px; height:92px;
+            border-radius:12px;
+            background:#f1f2f6;
+            border:1px solid #eee;
+            overflow:hidden;
         }
+        .img-box img{ width:100%; height:100%; object-fit:cover; }
+        .img-remove{
+            position:absolute; top:6px; right:6px;
+            width:28px; height:28px;
+            border-radius:999px;
+            border:0;
+            background:#dc3545;
+            color:#fff;
+            display:flex; align-items:center; justify-content:center;
+            cursor:pointer;
+            box-shadow:0 8px 20px rgba(0,0,0,.15);
+        }
+        .hint{ font-size:12px; color:#6b7280; }
+        .card-soft{ background:#fff; border:0; border-radius:14px; box-shadow:0 8px 24px rgba(0,0,0,.06); }
     </style>
 </head>
 <body>
 
 @php
-  // ✅ FIX FOTO (admin/edit): trajton JSON array, URL absolute, dhe rastin .../storage/[...]
-  $admin_img_url = function($raw){
-    $placeholder = asset('images/placeholder.png');
-    if (empty($raw)) return $placeholder;
+  // ---------- Helpers për FOTO ----------
+  $placeholder = asset('images/placeholder.png');
 
-    if (is_array($raw)) $raw = $raw[0] ?? null;
-    if (empty($raw)) return $placeholder;
+  $decode_images = function($value){
+    if (empty($value)) return [];
 
-    $raw = trim((string)$raw);
+    if (is_array($value)) return array_values(array_filter($value));
 
-    // JSON array string: ["a.png","b.png"]
-    if (str_starts_with($raw, '[')) {
-      $d = json_decode($raw, true);
-      if (is_array($d) && !empty($d)) $raw = $d[0];
-    }
+    $raw = trim((string)$value);
 
-    // URL që përmban JSON: https://domain.com/storage/[...]
+    // nëse vjen si URL që përmban JSON: https://domain.com/storage/[...]
     if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
-      $d = json_decode($m[0], true);
-      if (is_array($d) && !empty($d)) $raw = $d[0];
+      $raw = $m[0];
     }
 
-    if (empty($raw)) return $placeholder;
-
-    // nese është URL absolute, merre veç path-in
-    if (preg_match('#^https?://#i', $raw)) {
-      $raw = parse_url($raw, PHP_URL_PATH) ?? $raw;
+    $decoded = json_decode($raw, true);
+    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+      return array_values(array_filter($decoded));
     }
 
-    $clean = ltrim($raw, '/');
+    // fallback: string i vetëm
+    return [$raw];
+  };
 
-    // pastro prefixet: storage/ ose public/
+  $img_src = function($path) use ($placeholder){
+    if (empty($path)) return $placeholder;
+
+    // nëse është URL absolute
+    if (preg_match('#^https?://#i', $path)) return $path;
+
+    $clean = ltrim((string)$path, '/');
     $clean = preg_replace('#^(storage|public)/#', '', $clean);
 
-    // nese është image në public/images
     if (str_starts_with($clean, 'images/')) return asset($clean);
 
-    // gjithmon kthe URL nga storage public
     return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
   };
 
-  $currentImageRaw = $product->image_path ?? ($product->image ?? null);
-  $currentImageSrc = $admin_img_url($currentImageRaw);
+  // Existing images nga DB
+  $existingImages = $decode_images($product->image_path ?? null);
+
+  // --------- Category / Subcategory (perde-ditore) ----------
+  $categories = [
+    'tepiha' => 'Tepiha',
+    'perde' => 'Perde',
+    'jastekdekorues' => 'JastekDekorues',
+    'postava' => 'Postava',
+    'mbulesa' => 'Mbulesa',
+    'batanije' => 'Batanije',
+    'tepihebanjo' => 'Tepiha për Banjo',
+    'posteqia' => 'Posteqia',
+    'garnishte' => 'Garnishte'
+  ];
+
+  $catValue = old('category', $product->category ?? 'tepiha');
+  $subValue = old('subcategory', null);
+
+  if (!$subValue && is_string($catValue) && str_starts_with($catValue, 'perde-')) {
+    $subValue = substr($catValue, strlen('perde-')); // ditore / anesore
+    $catValue = 'perde';
+  }
 @endphp
 
 <nav class="navbar navbar-light app-navbar sticky-top">
@@ -123,152 +162,175 @@
                 </div>
             @endif
 
-            @php
-                $categories = [
-                  'tepiha' => 'Tepiha',
-                  'perde' => 'Perde',
-                  'jastekdekorues' => 'JastekDekorues',
-                  'postava' => 'Postava',
-                  'mbulesa' => 'Mbulesa',
-                  'batanije' => 'Batanije',
-                  'tepihebanjo' => 'Tepiha për Banjo',
-                  'posteqia' => 'Posteqia',
-                  'garnishte' => 'Garnishte'
-                ];
-            @endphp
-
             <form action="{{ route('admin.products.update',$product) }}" method="POST" enctype="multipart/form-data" class="row g-3">
                 @csrf @method('PUT')
 
-                <div class="col-md-6">
-                    <label class="form-label">Emri *</label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name',$product->name) }}" required>
-                </div>
-
-                <div class="col-md-3">
-                    <label class="form-label">Çmimi (€) *</label>
-                    <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price',$product->price) }}" required>
-                </div>
-
-                <div class="col-md-3">
-                    <label class="form-label">Statusi</label>
-                    <select name="is_active" class="form-select">
-                        <option value="1" {{ old('is_active',$product->is_active)==1?'selected':'' }}>Aktiv</option>
-                        <option value="0" {{ old('is_active',$product->is_active)==0?'selected':'' }}>Jo aktiv</option>
-                    </select>
-                </div>
-
-                <div class="col-md-3">
-                    <label class="form-label">Kategoria *</label>
-                    <select name="category" class="form-select" required>
-                        @foreach($categories as $val => $label)
-                            <option value="{{ $val }}" @selected(old('category', $product->category ?? 'tepiha') === $val)>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
                 <div class="col-12">
-                    <label class="form-label">Përshkrimi</label>
-                    <textarea name="description" rows="4" class="form-control">{{ old('description',$product->description) }}</textarea>
-                </div>
+                    <div class="card-soft p-3">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Emri *</label>
+                                <input type="text" name="name" class="form-control" value="{{ old('name',$product->name) }}" required>
+                            </div>
 
-                <div class="col-md-3">
-                    <label class="form-label">Stoku</label>
-                    <input type="number" name="stock" class="form-control" value="{{ old('stock', $product->stock) }}" min="0" required>
+                            <div class="col-md-3">
+                                <label class="form-label">Çmimi (€) *</label>
+                                <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price',$product->price) }}" required>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label">Statusi</label>
+                                <select name="is_active" class="form-select">
+                                    <option value="1" {{ old('is_active',$product->is_active)==1?'selected':'' }}>Aktiv</option>
+                                    <option value="0" {{ old('is_active',$product->is_active)==0?'selected':'' }}>Jo aktiv</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label">Kategoria *</label>
+                                <select name="category" class="form-select" required id="categorySelect">
+                                    @foreach($categories as $val => $label)
+                                        <option value="{{ $val }}" @selected($catValue === $val)>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="col-md-3" id="subcatWrap" style="{{ $catValue==='perde' ? '' : 'display:none' }}">
+                                <label class="form-label">Subkategoria (Perde)</label>
+                                <select name="subcategory" class="form-select" id="subcatSelect">
+                                    <option value="">—</option>
+                                    <option value="ditore" @selected($subValue==='ditore')>Ditorë</option>
+                                    <option value="anesore" @selected($subValue==='anesore')>Anësore</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label">Stoku</label>
+                                <input type="number" name="stock" class="form-control" value="{{ old('stock', $product->stock) }}" min="0" required>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Përshkrimi</label>
+                                <textarea name="description" rows="4" class="form-control">{{ old('description',$product->description) }}</textarea>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- Dimensione (vetëm për Tepiha) --}}
-                <div class="card border-0 shadow-sm mt-3">
-                  <div class="card-body">
-                    <h6 class="mb-2">Dimensione për Tepiha</h6>
-                    <small class="text-muted d-block mb-3">
-                      Fillo vetem nese <strong>kategoria = Tepiha</strong>. Zbraz këtë seksion për kategori tjera.
-                    </small>
+                <div class="col-12">
+                    <div class="card-soft p-3">
+                        <h6 class="mb-2">Dimensione për Tepiha</h6>
+                        <small class="text-muted d-block mb-3">
+                            Fillo vetem nese <strong>kategoria = Tepiha</strong>. Zbraz këtë seksion për kategori tjera.
+                        </small>
 
-                    @php
-                      $sizes = old('sizes', isset($product) ? ($product->sizes ?? []) : []);
-                      if(isset($sizes['label'])){
-                        $tmp=[]; foreach(($sizes['label'] ?? []) as $i=>$lbl){
-                          if($lbl!==null && $lbl!==''){
-                            $tmp[] = [
-                              'label' => $lbl,
-                              'price' => $sizes['price'][$i] ?? null,
-                              'stock' => $sizes['stock'][$i] ?? null,
-                            ];
+                        @php
+                          $sizes = old('sizes', isset($product) ? ($product->sizes ?? []) : []);
+                          if(isset($sizes['label'])){
+                            $tmp=[]; foreach(($sizes['label'] ?? []) as $i=>$lbl){
+                              if($lbl!==null && $lbl!==''){
+                                $tmp[] = [
+                                  'label' => $lbl,
+                                  'price' => $sizes['price'][$i] ?? null,
+                                  'stock' => $sizes['stock'][$i] ?? null,
+                                ];
+                              }
+                            }
+                            $sizes = $tmp;
                           }
-                        }
-                        $sizes = $tmp;
-                      }
-                    @endphp
+                        @endphp
 
-                    <div id="sizesRepeater">
-                      @forelse($sizes as $s)
-                        <div class="row g-2 align-items-end mb-2 size-row">
-                          <div class="col-md-5">
-                            <label class="form-label mb-1">Dimensioni</label>
-                            <input name="sizes[label][]" class="form-control" placeholder="p.sh. 80x150" value="{{ $s['label'] ?? '' }}">
-                          </div>
-                          <div class="col-md-3">
-                            <label class="form-label mb-1">Çmimi (€)</label>
-                            <input name="sizes[price][]" type="number" step="0.01" class="form-control" value="{{ $s['price'] ?? '' }}">
-                          </div>
-                          <div class="col-md-2">
-                            <label class="form-label mb-1">Stok</label>
-                            <input name="sizes[stock][]" type="number" min="0" class="form-control" value="{{ $s['stock'] ?? '' }}">
-                          </div>
-                          <div class="col-md-2 text-end">
-                            <button type="button" class="btn btn-outline-danger remove-size">Fshi</button>
-                          </div>
+                        <div id="sizesRepeater">
+                          @forelse($sizes as $s)
+                            <div class="row g-2 align-items-end mb-2 size-row">
+                              <div class="col-md-5">
+                                <label class="form-label mb-1">Dimensioni</label>
+                                <input name="sizes[label][]" class="form-control" placeholder="p.sh. 80x150" value="{{ $s['label'] ?? '' }}">
+                              </div>
+                              <div class="col-md-3">
+                                <label class="form-label mb-1">Çmimi (€)</label>
+                                <input name="sizes[price][]" type="number" step="0.01" class="form-control" value="{{ $s['price'] ?? '' }}">
+                              </div>
+                              <div class="col-md-2">
+                                <label class="form-label mb-1">Stok</label>
+                                <input name="sizes[stock][]" type="number" min="0" class="form-control" value="{{ $s['stock'] ?? '' }}">
+                              </div>
+                              <div class="col-md-2 text-end">
+                                <button type="button" class="btn btn-outline-danger remove-size">Fshi</button>
+                              </div>
+                            </div>
+                          @empty
+                            <div class="row g-2 align-items-end mb-2 size-row">
+                              <div class="col-md-5">
+                                <label class="form-label mb-1">Dimensioni</label>
+                                <input name="sizes[label][]" class="form-control" placeholder="p.sh. 80x150">
+                              </div>
+                              <div class="col-md-3">
+                                <label class="form-label mb-1">Çmimi (€)</label>
+                                <input name="sizes[price][]" type="number" step="0.01" class="form-control">
+                              </div>
+                              <div class="col-md-2">
+                                <label class="form-label mb-1">Stok</label>
+                                <input name="sizes[stock][]" type="number" min="0" class="form-control">
+                              </div>
+                              <div class="col-md-2 text-end">
+                                <button type="button" class="btn btn-outline-danger remove-size">Fshi</button>
+                              </div>
+                            </div>
+                          @endforelse
                         </div>
-                      @empty
-                        <div class="row g-2 align-items-end mb-2 size-row">
-                          <div class="col-md-5">
-                            <label class="form-label mb-1">Dimensioni</label>
-                            <input name="sizes[label][]" class="form-control" placeholder="p.sh. 80x150">
-                          </div>
-                          <div class="col-md-3">
-                            <label class="form-label mb-1">Çmimi (€)</label>
-                            <input name="sizes[price][]" type="number" step="0.01" class="form-control">
-                          </div>
-                          <div class="col-md-2">
-                            <label class="form-label mb-1">Stok</label>
-                            <input name="sizes[stock][]" type="number" min="0" class="form-control">
-                          </div>
-                          <div class="col-md-2 text-end">
-                            <button type="button" class="btn btn-outline-danger remove-size">Fshi</button>
-                          </div>
-                        </div>
-                      @endforelse
+
+                        <button type="button" id="addSize" class="btn btn-outline-primary btn-sm mt-2">+ Shto rresht</button>
                     </div>
-
-                    <button type="button" id="addSize" class="btn btn-outline-primary btn-sm mt-2">+ Shto rresht</button>
-                  </div>
                 </div>
 
-                <!-- FOTO -->
-                <div class="col-md-6 mt-2">
-                    <label class="form-label">Foto e re (opsionale)</label>
-                    <input type="file" name="image" class="form-control" accept="image/*" id="imageInput">
-
-                    <div class="d-flex align-items-center gap-3 mt-3">
-                        <div>
-                            <small class="d-block text-muted mb-1">Aktuale</small>
-                            <img id="currentImg"
-                                 src="{{ $currentImageSrc }}"
-                                 class="img-preview"
-                                 onerror="this.onerror=null;this.src='{{ asset('images/placeholder.png') }}'">
+                <!-- FOTO MULTI -->
+                <div class="col-12">
+                    <div class="card-soft p-3">
+                        <h6 class="mb-2">Fotot</h6>
+                        <div class="hint mb-2">
+                            ✅ Mundesh me i fshi disa foto ekzistuese (X) dhe me shto të reja. Nëse i heq krejt ekzistueset, fotot e reja i zëvendësojnë krejt.
                         </div>
 
-                        <div>
-                            <small class="d-block text-muted mb-1">Preview (foto e re)</small>
-                            <img id="newPreview"
-                                 src="{{ asset('images/placeholder.png') }}"
-                                 class="img-preview">
+                        {{-- EXISTING --}}
+                        <div class="mb-3">
+                            <label class="form-label mb-1">Fotot aktuale</label>
+
+                            @if(!empty($existingImages))
+                                <div class="img-grid" id="existingWrap">
+                                    @foreach($existingImages as $p)
+                                        @php $src = $img_src($p); @endphp
+                                        <div class="img-box existing-item">
+                                            <img src="{{ $src }}"
+                                                 onerror="this.onerror=null;this.src='{{ $placeholder }}'">
+                                            <input type="hidden" name="existing_images[]" value="{{ $p }}">
+                                            <button type="button" class="img-remove remove-existing" title="Hiqe">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="text-muted">S’ka foto aktuale.</div>
+                            @endif
+                        </div>
+
+                        {{-- NEW UPLOAD --}}
+                        <div class="mb-2">
+                            <label class="form-label">Shto foto të reja (multiple)</label>
+                            <input type="file" name="image[]" class="form-control" accept="image/*" id="imageInput" multiple>
+                            <div class="hint mt-1">Mundesh me zgjedh 1+ foto njëherësh.</div>
+                        </div>
+
+                        {{-- PREVIEW NEW --}}
+                        <div class="mt-3">
+                            <label class="form-label mb-1">Preview (fotot e reja)</label>
+                            <div class="img-grid" id="newPreviewWrap">
+                                <div class="text-muted" id="noNewText">S’ka foto të reja të zgjedhura.</div>
+                            </div>
                         </div>
                     </div>
-
-                    {{-- ✅ nëse do, e heqim më vonë; kjo ndihmon me pa çka po ruhet --}}
-                    {{-- <small class="text-muted d-block mt-2">RAW: {{ is_string($currentImageRaw) ? $currentImageRaw : (is_array($currentImageRaw) ? json_encode($currentImageRaw) : 'NULL') }}</small> --}}
                 </div>
 
                 <div class="col-12 d-flex gap-2 mt-2">
@@ -327,15 +389,50 @@ document.addEventListener('click', function(e){
   }
 });
 
-// preview për foto të re
+// hiq existing image (heq edhe hidden input)
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('.remove-existing');
+  if(!btn) return;
+  btn.closest('.existing-item')?.remove();
+});
+
+// preview për shumë foto të reja
 const input = document.getElementById('imageInput');
-const preview = document.getElementById('newPreview');
-if(input && preview){
+const wrap = document.getElementById('newPreviewWrap');
+const noText = document.getElementById('noNewText');
+
+if(input && wrap){
   input.addEventListener('change', function(){
-    const file = this.files && this.files[0];
-    if(!file) return;
-    const url = URL.createObjectURL(file);
-    preview.src = url;
+    wrap.innerHTML = '';
+    const files = Array.from(this.files || []);
+    if(files.length === 0){
+      wrap.innerHTML = '<div class="text-muted">S’ka foto të reja të zgjedhura.</div>';
+      return;
+    }
+
+    files.forEach(file => {
+      const url = URL.createObjectURL(file);
+      const box = document.createElement('div');
+      box.className = 'img-box';
+      box.innerHTML = `<img src="${url}" alt="preview">`;
+      wrap.appendChild(box);
+    });
+  });
+}
+
+// category -> show/hide subcategory
+const catSel = document.getElementById('categorySelect');
+const subWrap = document.getElementById('subcatWrap');
+const subSel = document.getElementById('subcatSelect');
+
+if(catSel && subWrap){
+  catSel.addEventListener('change', function(){
+    if(this.value === 'perde'){
+      subWrap.style.display = '';
+    }else{
+      subWrap.style.display = 'none';
+      if(subSel) subSel.value = '';
+    }
   });
 }
 </script>

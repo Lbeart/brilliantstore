@@ -52,36 +52,29 @@ class ProductController extends Controller
         }
 
         $data['is_active'] = $request->boolean('is_active');
-        $data['slug'] = Str::slug($data['name']).'-'.Str::random(6);
+        $data['slug'] = Str::slug($data['name']) . '-' . Str::random(6);
 
         if (empty($data['sku'])) {
-            $data['sku'] = Str::upper(Str::slug($data['name'])).'-'.Str::random(4);
+            $data['sku'] = Str::upper(Str::slug($data['name'])) . '-' . Str::random(4);
+        }
+
+        // ✅ category perde-ditore / perde-anesore
+        if (($data['category'] ?? null) === 'perde' && !empty($data['subcategory'])) {
+            $data['category'] = 'perde-' . $data['subcategory'];
         }
 
         // ✅ SAVE MULTI IMAGES AS JSON IN image_path
         $paths = [];
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as $img) {
-                $ext = strtolower($img->getClientOriginalExtension());
-               $filename = Str::uuid().'.jpg';
-
-$image = Image::make($img)
-  ->orientate()
-  ->resize(800, null, function ($c) {
-      $c->aspectRatio();
-      $c->upsize();
-  });
-
-Storage::disk('public')->put("products/$filename", (string) $image->encode('jpg', 70));
-$paths[] = "products/$filename";
+                $paths[] = $this->saveUploadedImage($img); // returns "products/uuid.jpg"
             }
         }
-
-        $data['image_path'] = !empty($paths) ? json_encode($paths) : null;
+        $data['image_path'] = !empty($paths) ? json_encode($paths, JSON_UNESCAPED_SLASHES) : null;
 
         // Normalizo sizes
         $norm = $this->normalizeSizes($request->input('sizes', []));
-        $data['sizes'] = !empty($norm) ? json_encode($norm) : null;
+        $data['sizes'] = !empty($norm) ? json_encode($norm, JSON_UNESCAPED_SLASHES) : null;
 
         // Derivo price/stock nga sizes
         if (!empty($norm)) {
@@ -90,18 +83,18 @@ $paths[] = "products/$filename";
             $data['price'] = $minPrice ?? ($data['price'] ?? 0);
             $data['stock'] = $sumStock ?? ($data['stock'] ?? 0);
         }
-        if (($data['category'] ?? null) === 'perde' && !empty($data['subcategory'])) {
-    $data['category'] = 'perde-' . $data['subcategory']; // perde-ditore / perde-anesore
-}
 
         Product::create($data);
-
         return redirect()->route('admin.products.index')->with('ok', 'Produkti u shtua.');
     }
 
     public function edit(Product $product)
     {
         $product->sizes = $product->sizes ? json_decode($product->sizes, true) : [];
+
+        // ✅ images array për view
+        $product->images = $this->decodeImagePaths($product->image_path);
+
         return view('admin.products.edit', compact('product'));
     }
 
@@ -121,7 +114,11 @@ $paths[] = "products/$filename";
             'image'       => 'nullable|array',
             'image.*'     => 'image|max:10240',
 
-            'sku'         => 'nullable|alpha_dash|unique:products,sku,'.$product->id,
+            // ✅ KJO E MUNDËSON: me i mbajt disa foto ekzistuese / me i fshi disa
+            'existing_images'   => 'nullable|array',
+            'existing_images.*' => 'string',
+
+            'sku'         => 'nullable|alpha_dash|unique:products,sku,' . $product->id,
         ]);
 
         if (($data['category'] ?? null) !== 'perde') {
@@ -131,39 +128,40 @@ $paths[] = "products/$filename";
         $data['is_active'] = $request->boolean('is_active');
 
         if ($product->name !== $data['name']) {
-            $data['slug'] = Str::slug($data['name']).'-'.Str::random(6);
+            $data['slug'] = Str::slug($data['name']) . '-' . Str::random(6);
         }
 
-        // ✅ KEEP OLD IMAGES + ADD NEW ONES
-        $existing = [];
-        if ($product->image_path) {
-            $decoded = json_decode($product->image_path, true);
-            $existing = is_array($decoded) ? $decoded : [$product->image_path];
+        // ✅ category perde-ditore / perde-anesore (edhe te update)
+        if (($data['category'] ?? null) === 'perde' && !empty($data['subcategory'])) {
+            $data['category'] = 'perde-' . $data['subcategory'];
         }
 
+        // ====== ✅ IMAGE REPLACE/REMOVE LOGIC ======
+        $old = $this->decodeImagePaths($product->image_path);               // fotot që janë në DB
+        $keep = $request->input('existing_images', []);                    // fotot që user i la në form
+
+        // pastrim + lejo veç ato që ekzistojnë realisht në $old (siguri)
+        $keep = is_array($keep) ? array_values(array_intersect($old, $keep)) : [];
+
+        // fshi nga disk ato që u hoqën
+        $toDelete = array_values(array_diff($old, $keep));
+        foreach ($toDelete as $p) {
+            if ($p) Storage::disk('public')->delete($p);
+        }
+
+        // shto fotot e reja (append te lista e keep)
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as $img) {
-                $ext = strtolower($img->getClientOriginalExtension());
-                $filename = Str::uuid().'.'.($ext === 'jpeg' ? 'jpg' : $ext);
-
-                $image = Image::make($img)
-                    ->orientate()
-                    ->resize(800, null, function ($c) {
-                        $c->aspectRatio();
-                        $c->upsize();
-                    });
-
-                Storage::disk('public')->put("products/$filename", (string)$image->encode('jpg', 70));
-                $existing[] = "products/$filename";
+                $keep[] = $this->saveUploadedImage($img);
             }
         }
 
-        // ✅ only set if we have something
-        $data['image_path'] = !empty($existing) ? json_encode($existing) : null;
+        $data['image_path'] = !empty($keep) ? json_encode(array_values($keep), JSON_UNESCAPED_SLASHES) : null;
+        // =========================================
 
         // Normalizo sizes
         $norm = $this->normalizeSizes($request->input('sizes', []));
-        $data['sizes'] = !empty($norm) ? json_encode($norm) : null;
+        $data['sizes'] = !empty($norm) ? json_encode($norm, JSON_UNESCAPED_SLASHES) : null;
 
         if (!empty($norm)) {
             $minPrice = collect($norm)->pluck('price')->filter(fn($p) => $p !== null)->min();
@@ -173,23 +171,58 @@ $paths[] = "products/$filename";
         }
 
         $product->update($data);
-
         return redirect()->route('admin.products.index')->with('ok', 'Produkti u përditësua.');
     }
 
     public function destroy(Product $product)
     {
-        if ($product->image_path) {
-            $decoded = json_decode($product->image_path, true);
-            $paths = is_array($decoded) ? $decoded : [$product->image_path];
-
-            foreach ($paths as $p) {
-                if ($p) Storage::disk('public')->delete($p);
-            }
+        $paths = $this->decodeImagePaths($product->image_path);
+        foreach ($paths as $p) {
+            if ($p) Storage::disk('public')->delete($p);
         }
 
         $product->delete();
         return back()->with('ok', 'Produkti u fshi.');
+    }
+
+    // ===== Helpers =====
+
+    private function saveUploadedImage($img): string
+    {
+        $filename = (string) Str::uuid() . '.jpg';
+
+        $image = Image::make($img)
+            ->orientate()
+            ->resize(800, null, function ($c) {
+                $c->aspectRatio();
+                $c->upsize();
+            });
+
+        Storage::disk('public')->put("products/$filename", (string) $image->encode('jpg', 70));
+        return "products/$filename";
+    }
+
+    private function decodeImagePaths($value): array
+    {
+        if (empty($value)) return [];
+
+        // nese vjen array (nese ndonjëherë e ke cast)
+        if (is_array($value)) return array_values(array_filter($value));
+
+        $raw = trim((string)$value);
+
+        // nëse është URL që përmban JSON: .../storage/[...]
+        if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
+            $raw = $m[0];
+        }
+
+        $decoded = json_decode($raw, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            return array_values(array_filter($decoded));
+        }
+
+        // fallback: string i vetëm
+        return [$raw];
     }
 
     private function normalizeSizes(array $sizes): array
