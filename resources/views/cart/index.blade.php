@@ -59,41 +59,36 @@
 
     // ✅ mos e bo function global (shmang conflict). Boje si closure variable.
     $cart_img_url = function($raw){
-      $placeholder = asset('images/placeholder-product.png');
+    $placeholder = asset('images/placeholder-product.png');
+    if (empty($raw)) return $placeholder;
 
-      if (empty($raw)) return $placeholder;
+    if (is_array($raw)) $raw = $raw[0] ?? null;
+    if (empty($raw)) return $placeholder;
 
-      // nese vjen array direkt
-      if (is_array($raw)) $raw = $raw[0] ?? null;
-      if (empty($raw)) return $placeholder;
+    $raw = trim((string)$raw);
 
-      $raw = trim((string)$raw);
-
-      // nese është JSON array string: ["a.jpg","b.jpg"]
-      if (str_starts_with($raw, '[')) {
-        $d = json_decode($raw, true);
-        if (is_array($d) && !empty($d)) $raw = $d[0];
+    // ✅ Kap JSON array edhe nese është brenda URL-së: .../storage/[...]
+    if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
+      $d = json_decode($m[0], true);
+      if (is_array($d) && !empty($d)) {
+        $raw = $d[0]; // merre foton e parë
       }
+    }
 
-      if (empty($raw)) return $placeholder;
+    if (empty($raw)) return $placeholder;
 
-      // nese është URL absolute, merre veç path-in
-      if (preg_match('#^https?://#i', $raw)) {
-        $raw = parse_url($raw, PHP_URL_PATH) ?? $raw;
-      }
+    // nese është URL absolute, merre veç path-in
+    if (preg_match('#^https?://#i', $raw)) {
+      $raw = parse_url($raw, PHP_URL_PATH) ?? $raw;
+    }
 
-      $clean = ltrim($raw, '/');
+    $clean = ltrim($raw, '/');
+    $clean = preg_replace('#^(storage|public)/#', '', $clean);
 
-      // pastro prefixet qe shpesh dalin prej DB
-      $clean = preg_replace('#^(storage|public)/#', '', $clean);
+    if (str_starts_with($clean, 'images/')) return asset($clean);
 
-      // nese është image në public/images
-      if (str_starts_with($clean, 'images/')) return asset($clean);
-
-      // ✅ gjithmon url korrekt nga disk public
-      return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
-    };
-
+    return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
+  };
     $subtotal = 0;
     foreach ($cart as $it) { $subtotal += (float)($it['price'] ?? 0) * (int)($it['qty'] ?? 1); }
     $shipping = 0.00;
