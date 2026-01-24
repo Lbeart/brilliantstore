@@ -35,7 +35,7 @@
 
     /* TABLE */
     .table thead th{ white-space:nowrap }
-    .thumb{ height:56px; width:auto; border-radius:10px; background:#f1f2f6; object-fit:cover }
+    .thumb{ height:56px; width:56px; border-radius:10px; background:#f1f2f6; object-fit:cover }
     .badge-soft{ font-weight:600; }
     .actions .btn{ border-radius:10px }
 
@@ -56,6 +56,50 @@
   </style>
 </head>
 <body>
+
+@php
+  // ✅ FIX FOTO (admin): trajton JSON array, URL absolute, dhe rastin .../storage/[...]
+  $admin_img_url = function($raw){
+    $placeholder = asset('images/placeholder.png');
+    if (empty($raw)) return $placeholder;
+
+    // nese vjen array (p.sh. cast)
+    if (is_array($raw)) $raw = $raw[0] ?? null;
+    if (empty($raw)) return $placeholder;
+
+    $raw = trim((string)$raw);
+
+    // JSON array string: ["a.png","b.png"]
+    if (str_starts_with($raw, '[')) {
+      $d = json_decode($raw, true);
+      if (is_array($d) && !empty($d)) $raw = $d[0];
+    }
+
+    // URL që përmban JSON: https://domain.com/storage/[...]
+    if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
+      $d = json_decode($m[0], true);
+      if (is_array($d) && !empty($d)) $raw = $d[0];
+    }
+
+    if (empty($raw)) return $placeholder;
+
+    // nese është URL absolute, merre veç path-in
+    if (preg_match('#^https?://#i', $raw)) {
+      $raw = parse_url($raw, PHP_URL_PATH) ?? $raw;
+    }
+
+    $clean = ltrim($raw, '/');
+
+    // pastro prefixet: storage/ ose public/
+    $clean = preg_replace('#^(storage|public)/#', '', $clean);
+
+    // nese është image në public/images
+    if (str_starts_with($clean, 'images/')) return asset($clean);
+
+    // gjithmon kthe URL nga storage public
+    return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
+  };
+@endphp
 
 <!-- NAVBAR -->
 <nav class="navbar navbar-light app-navbar sticky-top">
@@ -162,7 +206,6 @@
             <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary w-100">Reseto</a>
           </div>
 
-          <!-- mbaj vlerën e search në filtra që të mos humbet kur ndryshon select-et -->
           <input type="hidden" name="search" value="{{ request('search') }}">
         </div>
       </form>
@@ -185,13 +228,17 @@
             </thead>
             <tbody>
             @forelse($products as $i => $p)
+              @php
+                $rawImg = $p->image_path ?? $p->image ?? null;
+                $srcImg = $admin_img_url($rawImg);
+              @endphp
               <tr>
                 <td class="text-muted">
                   {{ method_exists($products,'firstItem') && $products->firstItem() ? $products->firstItem()+$i : $loop->iteration }}
                 </td>
                 <td>
                   <img
-                    src="{{ $p->image_path ? Storage::url($p->image_path) : asset('images/placeholder.png') }}"
+                    src="{{ $srcImg }}"
                     class="thumb" alt="{{ $p->name }}"
                     loading="lazy"
                     onerror="this.onerror=null;this.src='{{ asset('images/placeholder.png') }}'">
@@ -289,7 +336,7 @@
 <!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Debounce kërkimi: s’bën submit për çdo tast – pret 500ms
+// Debounce kërkimi: pret 500ms
 (function(){
   const form = document.getElementById('searchForm');
   const input = document.getElementById('qInput');
