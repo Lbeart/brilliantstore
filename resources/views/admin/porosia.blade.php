@@ -21,26 +21,50 @@
     $placeholder = asset('images/placeholder-product.png');
     if (empty($raw)) return $placeholder;
 
-    if (is_array($raw)) $raw = $raw[0] ?? null;
-    if (empty($raw)) return $placeholder;
+    // array -> merr të parën jo-bosh
+    if (is_array($raw)) {
+      $raw = collect($raw)->first(fn($x) => !empty($x)) ?? null;
+      if (empty($raw)) return $placeholder;
+    }
 
     $raw = trim((string)$raw);
 
-    // JSON string: ["a","b"]
-    if (str_starts_with($raw, '[')) {
-      $d = json_decode($raw, true);
-      if (is_array($d) && !empty($d)) $raw = $d[0];
+    // ✅ 1) Nëse vjen URL me JSON mbrenda: .../storage/[...]
+    if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
+      $json = str_replace(['\/','\\\/'], '/', $m[0]);  // unescape slashes
+      $arr  = json_decode($json, true);
+      if (is_array($arr) && !empty($arr)) {
+        $raw = $arr[0];
+      }
+    }
+    // ✅ 2) Nëse vjen JSON string direkt: ["a","b"]
+    elseif (str_starts_with($raw, '[')) {
+      $json = str_replace(['\/','\\\/'], '/', $raw);
+      $arr  = json_decode($json, true);
+      if (is_array($arr) && !empty($arr)) {
+        $raw = $arr[0];
+      }
     }
 
-    // nëse është URL absolute
-    if (preg_match('#^https?://#i', $raw)) return $raw;
+    if (empty($raw)) return $placeholder;
 
-    // normalizo path
+    // ✅ 3) Nëse është URL absolute e rregullt (pa JSON) – ktheje siç është
+    // (tani JSON rastin e kemi kap më lart)
+    if (preg_match('#^https?://#i', $raw)) {
+      return $raw;
+    }
+
+    // ✅ 4) normalizo path
     $clean = ltrim($raw, '/');
+    $clean = str_replace('\\', '/', $clean);
 
-    // nëse vjen si /storage/...
+    // heq public/ nëse vjen
+    $clean = preg_replace('#^(public/)+#', '', $clean);
+
+    // nëse vjen storage/...
     if (str_starts_with($clean, 'storage/')) {
-      return asset($clean); // /storage/products/...
+      // kjo kthen /storage/...
+      return asset($clean);
     }
 
     // public/images/...
@@ -48,10 +72,8 @@
       return asset($clean);
     }
 
-    // heq public/ nëse e ka
-    $clean = preg_replace('#^public/#', '', $clean);
-
-    // default: storage disk public -> /storage/...
+    // nëse vjen si products/uuid.jpg (shumicën e rasteve)
+    // ose çkado në disk 'public'
     return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
   };
 @endphp
