@@ -53,28 +53,56 @@
     @if(session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
     @if(session('error'))   <div class="alert alert-danger">{{ session('error') }}</div>   @endif
 
-    @php $cart = $cart ?? session('cart', []); @endphp
+    @php
+      $cart = $cart ?? session('cart', []);
+    @endphp
 
     @if(empty($cart) || (is_countable($cart) && count($cart)===0))
       <div class="alert alert-info">Shporta është bosh.</div>
       <a class="btn btn-danger" href="{{ url('/') }}">Kthehu te produktet</a>
     @else
       @php
-        // Helper për FOTO: pranon 'image' ose 'image_path' dhe path relativ/absolut
-        if (!function_exists('order_img_url')) {
-          function order_img_url($raw) {
-            if (empty($raw)) { return asset('images/placeholder-product.png'); }
-            if (preg_match('~^https?://~i', $raw)) { return $raw; }
-            $clean = ltrim($raw, '/');
-            $clean = preg_replace('~^(public/)+~i', '', $clean);
-            if (str_starts_with($clean, 'images/'))   return asset($clean);
-            if (str_starts_with($clean, 'storage/'))  return asset($clean);
-            if (file_exists(storage_path('app/public/'.$clean))) { return asset('storage/'.$clean); }
-            if (file_exists(public_path('storage/'.$clean)))     { return asset('storage/'.$clean); }
-            if (file_exists(public_path('images/'.$clean)))      { return asset('images/'.$clean); }
-            return asset('images/placeholder-product.png');
+        // ✅ FIX FOTO (si te shporta): trajton JSON array, URL absolute, dhe rastin .../storage/[...]
+        $order_img_url = function($raw){
+          $placeholder = asset('images/placeholder-product.png');
+          if (empty($raw)) return $placeholder;
+
+          // nese vjen array direkt
+          if (is_array($raw)) $raw = $raw[0] ?? null;
+          if (empty($raw)) return $placeholder;
+
+          $raw = trim((string)$raw);
+
+          // nese është JSON array string: ["a.png","b.png"]
+          if (str_starts_with($raw, '[')) {
+            $d = json_decode($raw, true);
+            if (is_array($d) && !empty($d)) $raw = $d[0];
           }
-        }
+
+          // ✅ nese është URL që përmban JSON array: https://domain.com/storage/[...]
+          if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
+            $d = json_decode($m[0], true);
+            if (is_array($d) && !empty($d)) $raw = $d[0];
+          }
+
+          if (empty($raw)) return $placeholder;
+
+          // nese është URL absolute, merre veç path-in
+          if (preg_match('#^https?://#i', $raw)) {
+            $raw = parse_url($raw, PHP_URL_PATH) ?? $raw;
+          }
+
+          $clean = ltrim($raw, '/');
+
+          // pastro prefixet që dalin shpesh: storage/ ose public/
+          $clean = preg_replace('#^(storage|public)/#', '', $clean);
+
+          // nese është image në public/images
+          if (str_starts_with($clean, 'images/')) return asset($clean);
+
+          // URL e saktë prej storage public (domain.com/storage/...)
+          return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
+        };
 
         // Totale
         $items = $cart;
@@ -191,7 +219,6 @@
                 </div>
               </div>
 
-              {{-- gjendja e shportës (përdoret server-side / email) --}}
               <input type="hidden" name="cart_meta" value='@json($items, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_AMP|JSON_HEX_QUOT)' />
               <input type="hidden" name="total" value='{{ $grandTotal + $shipping }}' />
             </form>
@@ -200,7 +227,6 @@
 
         <!-- Përmbledhja (djathtas) -->
         <div class="col-lg-5">
-          <!-- Mobile toggler -->
           <button class="btn btn-outline-dark w-100 d-lg-none mb-2 mobile-summary-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#orderSummary" aria-expanded="false" aria-controls="orderSummary">
             <i class="bi bi-receipt-cutoff me-1"></i> Shiko përmbledhjen
           </button>
@@ -217,9 +243,14 @@
                   $line  = $price * $qty;
                   $name  = $it['name'] ?? 'Produkt';
                   $size  = $it['size'] ?? ($it['dimension'] ?? null);
+
+                  $src = $order_img_url($img);
                 @endphp
                 <div class="d-flex align-items-center">
-                  <img class="summary-thumb me-3" src="{{ order_img_url($img) }}" alt="{{ $name }}">
+                  <img class="summary-thumb me-3"
+                       src="{{ $src }}"
+                       alt="{{ $name }}"
+                       onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
                   <div class="flex-grow-1">
                     <div class="d-flex justify-content-between">
                       <div class="me-2">
@@ -266,7 +297,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // UX: spinner + validim bazik
     const form    = document.getElementById('checkoutForm');
     const btn     = document.getElementById('submitBtn');
     const spinner = document.getElementById('btnSpinner');
@@ -286,7 +316,6 @@
         btn.disabled=true; spinner.classList.remove('d-none');
       });
 
-      // telefon — pastro hapësirat shumë të gjata
       const phone = document.getElementById('phone');
       if (phone){
         phone.addEventListener('blur', () => { phone.value = phone.value.trim().replace(/\s{2,}/g,' '); });
