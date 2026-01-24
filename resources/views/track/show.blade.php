@@ -54,18 +54,17 @@
 <body>
 
 @php
-  // ✅ FIX FOTO per ORDER ITEMS (track/show)
-  $order_item_img = function($raw){
+  // ✅ FIX FOTO vetëm për TRACK ITEMS (lexon JSON, storage path, absolute url)
+  $item_img_url = function($raw){
     $placeholder = asset('images/placeholder-product.png');
     if (empty($raw)) return $placeholder;
 
-    // nese vjen array
     if (is_array($raw)) $raw = $raw[0] ?? null;
     if (empty($raw)) return $placeholder;
 
     $raw = trim((string)$raw);
 
-    // JSON array string: ["a","b"]
+    // JSON string: ["a","b"]
     if (str_starts_with($raw, '[')) {
       $d = json_decode($raw, true);
       if (is_array($d) && !empty($d)) $raw = $d[0];
@@ -79,19 +78,17 @@
 
     if (empty($raw)) return $placeholder;
 
-    // URL absolute
-    if (preg_match('#^https?://#i', $raw)) {
-      return $raw;
-    }
+    // absolute URL
+    if (preg_match('#^https?://#i', $raw)) return $raw;
 
     // normalizo path
     $clean = ltrim($raw, '/');
     $clean = preg_replace('#^(storage|public)/#', '', $clean);
 
-    // nese është public/images/...
+    // public/images/...
     if (str_starts_with($clean, 'images/')) return asset($clean);
 
-    // default: storage public
+    // storage disk public -> /storage/...
     return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
   };
 @endphp
@@ -129,6 +126,7 @@
 
         <div class="mb-1">
           @php
+            // Normalizo statusin
             $raw = strtolower(trim((string)($order->status ?? '')));
             $aliases = [
               'pending'=>'pranuar','accepted'=>'pranuar','received'=>'pranuar','pranuar'=>'pranuar',
@@ -216,9 +214,9 @@
             $size  = $it->size ?? '—';
             $line  = $price * $qty;
 
-            // ✅ këtu e marrim foton
+            // ✅ VETËM KJO U NDRYSHU: foton e nxjerrim saktë prej storage/JSON
             $rawImg = $it->image ?? $it->image_path ?? null;
-            $img = $order_item_img($rawImg);
+            $img = $item_img_url($rawImg);
           @endphp
           <tr>
             <td>
@@ -252,10 +250,8 @@
       <i class="bi bi-arrow-left"></i> Vazhdo blerjet
     </a>
 
-    {{-- nëse e ki route për faturë, përdore kështu --}}
-    {{-- <a href="{{ route('orders.invoice',$order) }}" class="btn btn-danger">
       <i class="bi bi-printer"></i> Printo faturën
-    </a> --}}
+    </a>
   </div>
 
 </div>
