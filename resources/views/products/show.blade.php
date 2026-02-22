@@ -936,11 +936,11 @@
 
            @php
 $folds = [
-    ['value'=>'fold1','name'=>'Fold 1 (1:2)','ratio'=>2,'extra'=>0,'img'=>'classic1.jpg'],
-    ['value'=>'fold2','name'=>'Fold 2 (1:2.5)','ratio'=>2.5,'extra'=>0,'img'=>'classic2.jpg'],
-    ['value'=>'fold3','name'=>'Fold 3 (1:3)','ratio'=>3,'extra'=>0,'img'=>'triple.jpg'],
-   ['value'=>'grommet','name'=>'Grommet','ratio'=>2.5,'rings'=>5,'ring_price'=>1,'img'=>'grommet.jpg'],
-   ['value'=>'pencil','name'=>'Pencil Pleat (1:1.5)','ratio'=>1.5,'extra'=>0,'img'=>'pencil.jpg'],
+    ['value'=>'fold1','name'=>'Fold 1 (1:2)','ratio'=>2,'extra'=>0,'img'=>'fold1.png'],
+    ['value'=>'fold2','name'=>'Fold 2 (1:2.5)','ratio'=>2.5,'extra'=>0,'img'=>'fold2.png'],
+    ['value'=>'fold3','name'=>'Fold 3 (1:3)','ratio'=>3,'extra'=>0,'img'=>'fold3.png'],
+   ['value'=>'grommet','name'=>'Grommet','ratio'=>2.5,'rings'=>5,'ring_price'=>1,'img'=>'rrumbu.png'],
+   ['value'=>'pencil','name'=>'Pencil Pleat (1:1.5)','ratio'=>1.5,'extra'=>0,'img'=>'shiriti.png'],
     ['value'=>'swave','name'=>'S-Wave','ratio'=>2.8,'extra'=>2.5,'img'=>'swave.jpg'],
 ];
 @endphp
