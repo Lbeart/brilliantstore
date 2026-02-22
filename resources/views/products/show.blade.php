@@ -8,11 +8,10 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-
-
   @php
-  $isCurtain = str_contains(strtolower($product->category ?? ''), 'perde');
-@endphp
+    $isCurtain = str_contains(strtolower($product->category ?? ''), 'perde');
+  @endphp
+
   @php
     // ✅ IMAGES: image_path mund të jetë JSON array ose string e vjetër
     $imgs = [];
@@ -609,47 +608,48 @@
       .footer-grid{ grid-template-columns: 1fr; }
       .footer-logo-wrap{ width:110px; height:110px; }
     }
+
     .fold-grid{
-  display:grid;
-  grid-template-columns:repeat(4, minmax(0,1fr));
-  gap:12px;
-  padding:12px;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  background:#fff;
-}
-.fold-item{ position:relative; }
-.fold-radio{ position:absolute; opacity:0; pointer-events:none; }
-.fold-card{
-  display:block;
-  cursor:pointer;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  padding:10px;
-  background:#fff;
-  transition:all .15s ease;
-  height:100%;
-}
-.fold-img{
-  width:100%;
-  aspect-ratio:1/1;
-  border-radius:10px;
-  overflow:hidden;
-  background:#f3f4f6;
-}
-.fold-img img{ width:100%; height:100%; object-fit:cover; display:block; }
-.fold-name{ margin-top:10px; font-weight:800; font-size:13px; color:#111827; line-height:1.15; }
-.fold-extra{ margin-top:4px; font-size:12px; color:#b45309; font-weight:700; }
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:12px;
+      padding:12px;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      background:#fff;
+    }
+    .fold-item{ position:relative; }
+    .fold-radio{ position:absolute; opacity:0; pointer-events:none; }
+    .fold-card{
+      display:block;
+      cursor:pointer;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      padding:10px;
+      background:#fff;
+      transition:all .15s ease;
+      height:100%;
+    }
+    .fold-img{
+      width:100%;
+      aspect-ratio:1/1;
+      border-radius:10px;
+      overflow:hidden;
+      background:#f3f4f6;
+    }
+    .fold-img img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .fold-name{ margin-top:10px; font-weight:800; font-size:13px; color:#111827; line-height:1.15; }
+    .fold-extra{ margin-top:4px; font-size:12px; color:#b45309; font-weight:700; }
 
-.fold-card:hover{ border-color:#d1d5db; transform:translateY(-1px); }
-.fold-radio:checked + .fold-card{
-  border-color:rgba(220,53,69,.55);
-  box-shadow:0 12px 26px rgba(220,53,69,.12);
-  transform:translateY(-2px);
-}
+    .fold-card:hover{ border-color:#d1d5db; transform:translateY(-1px); }
+    .fold-radio:checked + .fold-card{
+      border-color:rgba(220,53,69,.55);
+      box-shadow:0 12px 26px rgba(220,53,69,.12);
+      transform:translateY(-2px);
+    }
 
-@media(max-width:992px){ .fold-grid{ grid-template-columns:repeat(3, 1fr);} }
-@media(max-width:576px){ .fold-grid{ grid-template-columns:repeat(2, 1fr); gap:10px; } }
+    @media(max-width:992px){ .fold-grid{ grid-template-columns:repeat(3, 1fr);} }
+    @media(max-width:576px){ .fold-grid{ grid-template-columns:repeat(2, 1fr); gap:10px; } }
   </style>
 </head>
 <body>
@@ -906,99 +906,91 @@
         </a>
       </div>
 
-     
-     @if($isCurtain)
-<form action="{{ route('cart.addCurtain') }}" method="POST" id="curtainForm" class="mt-4">
-    @csrf
-    <input type="hidden" name="product_id" value="{{ $product->id }}">
+      {{-- ✅ FIX #1: BUTONI “Shto në shportë” për JO-PERDE (duhet jashtë if($isCurtain)) --}}
+      @if(!$isCurtain)
+        <button type="button" id="addToCartBtn" class="btn btn-danger w-100 py-2 mb-3">
+          <i class="bi bi-bag-plus"></i> Shto në shportë
+        </button>
+      @endif
 
-    <div class="section-card mb-3">
-        <h5 class="mb-3">Përmasa</h5>
+      @if($isCurtain)
+      <form action="{{ route('cart.addCurtain') }}" method="POST" id="curtainForm" class="mt-4">
+        @csrf
+        <input type="hidden" name="product_id" value="{{ $product->id }}">
 
-        <div class="row">
+        <div class="section-card mb-3">
+          <h5 class="mb-3">Përmasa</h5>
+
+          <div class="row">
             <div class="col-6">
-                <label class="form-label">Width (m)</label>
-                <input type="number" step="0.1" name="width" class="form-control" required>
+              <label class="form-label">Width (m)</label>
+              <input type="number" step="0.1" name="width" class="form-control" required>
             </div>
             <div class="col-6">
-                <label class="form-label">Height (m)</label>
-                <input type="number" step="0.1" name="height" class="form-control" required>
+              <label class="form-label">Height (m)</label>
+              <input type="number" step="0.1" name="height" class="form-control" required>
             </div>
+          </div>
         </div>
-    </div>
 
-    <div class="section-card mb-3">
-        <h5 class="mb-3">Folding System</h5>
+        <div class="section-card mb-3">
+          <h5 class="mb-3">Folding System</h5>
 
-        <div class="fold-grid">
-
-           @php
-$folds = [
-    ['value'=>'fold1','name'=>'Fold 1 (1:2)','ratio'=>2,'extra'=>0,'img'=>'fold1.png'],
-    ['value'=>'fold2','name'=>'Fold 2 (1:2.5)','ratio'=>2.5,'extra'=>0,'img'=>'fold2.png'],
-    ['value'=>'fold3','name'=>'Fold 3 (1:3)','ratio'=>3,'extra'=>0,'img'=>'fold3.png'],
-   ['value'=>'grommet','name'=>'Grommet','ratio'=>2.5,'rings'=>5,'ring_price'=>1,'img'=>'rrumbu.jpg'],
-   ['value'=>'pencil','name'=>'Pencil Pleat (1:1.5)','ratio'=>1.5,'extra'=>0,'img'=>'shiriti.png'],
-    ['value'=>'swave','name'=>'S-Wave','ratio'=>2.8,'extra'=>2.5,'img'=>'amerikan.png'],
-];
-@endphp
+          <div class="fold-grid">
+            @php
+              $folds = [
+                ['value'=>'fold1','name'=>'Fold 1 (1:2)','ratio'=>2,'extra'=>0,'img'=>'fold1.png'],
+                ['value'=>'fold2','name'=>'Fold 2 (1:2.5)','ratio'=>2.5,'extra'=>0,'img'=>'fold2.png'],
+                ['value'=>'fold3','name'=>'Fold 3 (1:3)','ratio'=>3,'extra'=>0,'img'=>'fold3.png'],
+                ['value'=>'grommet','name'=>'Grommet','ratio'=>2.5,'rings'=>5,'ring_price'=>1,'img'=>'rrumbu.jpg'],
+                ['value'=>'pencil','name'=>'Pencil Pleat (1:1.5)','ratio'=>1.5,'extra'=>0,'img'=>'shiriti.png'],
+                ['value'=>'swave','name'=>'S-Wave','ratio'=>2.8,'extra'=>2.5,'img'=>'amerikan.png'],
+              ];
+            @endphp
 
             @foreach($folds as $i => $f)
-            <label class="fold-item">
-               <input type="radio"
-       name="fold_type"
-       value="{{ $f['value'] }}"
-       data-ratio="{{ $f['ratio'] }}"
-       data-extra="{{ $f['extra'] ?? 0 }}"
-       data-rings="{{ $f['rings'] ?? 0 }}"
-       data-ringprice="{{ $f['ring_price'] ?? 0 }}"
-       class="fold-radio"
-       {{ $loop->first ? 'checked' : '' }}
-       required>
+              <label class="fold-item">
+                <input type="radio"
+                       name="fold_type"
+                       value="{{ $f['value'] }}"
+                       data-ratio="{{ $f['ratio'] }}"
+                       data-extra="{{ $f['extra'] ?? 0 }}"
+                       data-rings="{{ $f['rings'] ?? 0 }}"
+                       data-ringprice="{{ $f['ring_price'] ?? 0 }}"
+                       class="fold-radio"
+                       {{ $loop->first ? 'checked' : '' }}
+                       required>
 
                 <div class="fold-card">
-                    <div class="fold-img">
-                        <img src="{{ asset('images/folds/'.$f['img']) }}" alt="{{ $f['name'] }}">
+                  <div class="fold-img">
+                    <img src="{{ asset('images/folds/'.$f['img']) }}" alt="{{ $f['name'] }}">
+                  </div>
+
+                  <div class="fold-name">{{ $f['name'] }}</div>
+
+                  @if(isset($f['extra']) && $f['extra'] > 0)
+                    <div class="fold-extra">
+                      +{{ number_format($f['extra'],2) }} € / meter
                     </div>
-
-                    <div class="fold-name">{{ $f['name'] }}</div>
-
-                    @if(isset($f['extra']) && $f['extra'] > 0)
-    <div class="fold-extra">
-        +{{ number_format($f['extra'],2) }} € / meter
-    </div>
-@endif
+                  @endif
                 </div>
-            </label>
+              </label>
             @endforeach
-
+          </div>
         </div>
-    </div>
 
-    <div class="section-card mb-3">
-        <strong>Total: <span id="totalPrice">0.00</span> €</strong>
-        <div class="small text-muted">Meters: <span id="totalMeters">0</span></div>
-    </div>
-    <div class="mt-3">
-    <button type="submit" class="btn btn-danger px-4 w-100">
-        <i class="bi bi-bag-plus"></i> Shto në shportë
-    </button>
-    @if(!$isCurtain)
-  <button type="button" id="addToCartBtn" class="btn btn-danger w-100 py-2">
-    <i class="bi bi-bag-plus"></i> Shto në shportë
-  </button>
-@endif
-    
+        <div class="section-card mb-3">
+          <strong>Total: <span id="totalPrice">0.00</span> €</strong>
+          <div class="small text-muted">Meters: <span id="totalMeters">0</span></div>
+        </div>
 
-    
-    
-    
-</div>
-
-    
-</form>
-@endif
-      
+        <div class="mt-3">
+          <button type="submit" class="btn btn-danger px-4 w-100">
+            <i class="bi bi-bag-plus"></i> Shto në shportë
+          </button>
+        </div>
+      </form>
+      @endif
 
       @if($product->description)
         <div class="section-card mt-4" id="desc">
@@ -1135,7 +1127,7 @@ $folds = [
   </div>
 </footer>
 
-<!-- Fullscreen modal (e lejmë në HTML siç e ke, por s’e përdorim) -->
+<!-- Fullscreen modal -->
 <div class="img-modal" id="imgModal" aria-hidden="true">
   <button class="close-btn" type="button" id="modalClose" aria-label="Mbyll">
     <i class="bi bi-x-lg"></i>
@@ -1257,6 +1249,10 @@ $folds = [
   const lens = document.getElementById('zoomLens');
   const pane = document.getElementById('zoomPane');
 
+  const modal = document.getElementById('imgModal');
+  const modalImg = document.getElementById('modalImg');
+  const modalClose = document.getElementById('modalClose');
+
   if(!img || !lens || !pane) return;
 
   const isDesktop = () => window.matchMedia('(min-width:992px)').matches;
@@ -1343,27 +1339,17 @@ $folds = [
     move(e);
   });
 
-  /* MOBILE (touch) — vetëm kur e prek */
-  img.addEventListener('touchstart', (e) => {
+  /* MOBILE: hap modal sepse CSS e fsheh lens/pane me !important */
+  img.addEventListener('click', () => {
     if(!isMobile()) return;
-    showZoom();
-    move(e);
-  }, { passive:false });
-
-  img.addEventListener('touchmove', (e) => {
-    if(!isMobile()) return;
-    e.preventDefault();
-    move(e);
-  }, { passive:false });
-
-  img.addEventListener('touchend', () => {
-    if(!isMobile()) return;
-    hideZoom();
+    if(!modal || !modalImg) return;
+    modalImg.src = img.dataset.zoom || img.src;
+    modal.classList.add('open');
   });
 
-  img.addEventListener('touchcancel', () => {
-    if(!isMobile()) return;
-    hideZoom();
+  modalClose?.addEventListener('click', () => modal?.classList.remove('open'));
+  modal?.addEventListener('click', (e) => {
+    if(e.target === modal) modal.classList.remove('open');
   });
 
   window.addEventListener('resize', () => {
@@ -1407,12 +1393,16 @@ addBtn?.addEventListener('click', async () => {
       method: 'POST',
       headers: {
         'Content-Type':'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        'Accept': 'application/json'
       },
       body: JSON.stringify(payload)
     });
-    
-    if(data.ok){
+
+    // ✅ FIX #2: data mungon (pa këtë ke error)
+    const data = await res.json().catch(() => ({}));
+
+    if(res.ok && data.ok){
       document.querySelectorAll('.cart-badge').forEach(b => b.textContent = data.totalQty);
       document.dispatchEvent(new CustomEvent('cart:updated', { detail: { totalQty: data.totalQty }}));
       showToast(data.message || 'U shtua në shportë');
@@ -1441,6 +1431,7 @@ function showToast(text, isErr){
   t.show();
 }
 </script>
+
 <script>
 @if($isCurtain)
 
@@ -1479,6 +1470,7 @@ document.querySelectorAll('#curtainForm input')
     .forEach(el => el.addEventListener('input', calculateCurtain));
 
 @endif
+
 @if($isCurtain)
 
 function updateCurtainWhatsapp(){
