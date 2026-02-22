@@ -906,7 +906,15 @@
         </a>
       </div>
 
-      <button id="addToCartBtn" class="btn btn-outline-danger px-4">
+      @if($isCurtain)
+    <button type="submit" class="btn btn-danger px-4">
+        <i class="bi bi-bag-plus"></i> Shto në shportë
+    </button>
+@else
+    <button id="addToCartBtn" class="btn btn-outline-danger px-4">
+        <i class="bi bi-bag-plus"></i> Shto në shportë
+    </button>
+@endif
         <i class="bi bi-bag-plus"></i> Shto në shportë
       </button>
      @if($isCurtain)
@@ -982,11 +990,7 @@ $folds = [
         <div class="small text-muted">Meters: <span id="totalMeters">0</span></div>
     </div>
 
-    @if(!$isCurtain)
-<button id="addToCartBtn" class="btn btn-outline-danger px-4">
-  <i class="bi bi-bag-plus"></i> Add to cart
-</button>
-@endif
+    
 </form>
 @endif
       
