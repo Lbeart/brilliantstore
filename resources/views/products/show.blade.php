@@ -863,6 +863,37 @@
       <button id="addToCartBtn" class="btn btn-outline-danger px-4">
         <i class="bi bi-bag-plus"></i> Shto në shportë
       </button>
+      <form action="{{ route('cart.addCurtain') }}" method="POST" id="curtainForm">
+    @csrf
+
+    <div class="mb-3">
+        <label>Width (m)</label>
+        <input type="number" step="0.1" name="width" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Height (m)</label>
+        <input type="number" step="0.1" name="height" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Folding System</label>
+        <select name="fold_type" class="form-control" required>
+            <option value="classic1" data-extra="0">Classic Fold 1</option>
+            <option value="classic2" data-extra="0">Classic Fold 2</option>
+            <option value="grommet" data-extra="1.5">Grommet (+1.5€)</option>
+            <option value="pencil" data-extra="1">Pencil Pleat (+1€)</option>
+            <option value="swave" data-extra="2">S-Wave (+2€)</option>
+            <option value="triple" data-extra="3">Triple Pleat (+3€)</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <strong>Total: <span id="totalPrice">0.00</span> €</strong>
+    </div>
+
+    <button class="btn btn-danger w-100">Shto në shportë</button>
+</form>
 
       @if($product->description)
         <div class="section-card mt-4" id="desc">
