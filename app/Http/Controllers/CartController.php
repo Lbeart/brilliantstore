@@ -105,7 +105,7 @@ class CartController extends Controller
     $meters = $width * $ratio;
 
     // TOTAL
-    $unitPrice = $meters * ($pricePerMeter + $extra) * $height;
+    $unitPrice = $meters * ($pricePerMeter + $extra);
     $unitPrice = round($unitPrice, 2);
 
     $cart = session('cart', []);
