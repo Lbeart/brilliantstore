@@ -934,16 +934,16 @@
 
         <div class="fold-grid">
 
-            @php
-                $folds = [
-                    ['value'=>'classic1','name'=>'Classic Fold 1','extra'=>0,'img'=>'classic1.jpg'],
-                    ['value'=>'classic2','name'=>'Classic Fold 2','extra'=>0,'img'=>'classic2.jpg'],
-                    ['value'=>'grommet','name'=>'Grommet','extra'=>1.5,'img'=>'grommet.jpg'],
-                    ['value'=>'pencil','name'=>'Pencil Pleat','extra'=>1,'img'=>'pencil.jpg'],
-                    ['value'=>'swave','name'=>'S-Wave','extra'=>2,'img'=>'swave.jpg'],
-                    ['value'=>'triple','name'=>'Triple Pleat','extra'=>3,'img'=>'triple.jpg'],
-                ];
-            @endphp
+           @php
+$folds = [
+    ['value'=>'fold1','name'=>'Fold 1 (1:2)','extra'=>0,'fullness'=>2,'img'=>'classic1.jpg'],
+    ['value'=>'fold2','name'=>'Fold 2 (1:2.5)','extra'=>0,'fullness'=>2.5,'img'=>'classic2.jpg'],
+    ['value'=>'fold3','name'=>'Fold 3 (1:3)','extra'=>0,'fullness'=>3,'img'=>'triple.jpg'],
+    ['value'=>'grommet','name'=>'Grommet','extra'=>1.5,'fullness'=>2,'img'=>'grommet.jpg'],
+    ['value'=>'pencil','name'=>'Pencil Pleat','extra'=>1,'fullness'=>2.5,'img'=>'pencil.jpg'],
+    ['value'=>'swave','name'=>'S-Wave','extra'=>2,'fullness'=>2.2,'img'=>'swave.jpg'],
+];
+@endphp
 
             @foreach($folds as $i => $f)
             <label class="fold-item">
