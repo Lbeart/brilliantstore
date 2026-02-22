@@ -982,9 +982,11 @@ $folds = [
         <div class="small text-muted">Meters: <span id="totalMeters">0</span></div>
     </div>
 
-    <button class="btn btn-danger w-100 py-2">
-        Add to cart
-    </button>
+    @if(!$isCurtain)
+<button id="addToCartBtn" class="btn btn-outline-danger px-4">
+  <i class="bi bi-bag-plus"></i> Add to cart
+</button>
+@endif
 </form>
 @endif
       
