@@ -906,15 +906,7 @@
         </a>
       </div>
 
-     @if($isCurtain)
-    <button type="submit" form="curtainForm" class="btn btn-danger px-4">
-        <i class="bi bi-bag-plus"></i> Shto në shportë
-    </button>
-@else
-    <button id="addToCartBtn" type="button" class="btn btn-outline-danger px-4">
-        <i class="bi bi-bag-plus"></i> Shto në shportë
-    </button>
-@endif
+     
      @if($isCurtain)
 <form action="{{ route('cart.addCurtain') }}" method="POST" id="curtainForm" class="mt-4">
     @csrf
@@ -987,6 +979,11 @@ $folds = [
         <strong>Total: <span id="totalPrice">0.00</span> €</strong>
         <div class="small text-muted">Meters: <span id="totalMeters">0</span></div>
     </div>
+    <div class="mt-3">
+    <button type="submit" class="btn btn-danger px-4 w-100">
+        <i class="bi bi-bag-plus"></i> Shto në shportë
+    </button>
+</div>
 
     
 </form>
