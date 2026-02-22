@@ -149,20 +149,28 @@
                   </div>
                 </td>
                 <td>{{ number_format($price,2) }} €</td>
-               <td class="text-muted">
+             <td class="text-muted">
+
 @if(($item['type'] ?? '') === 'curtain' && isset($item['curtain']))
+
     <div>
         {{ $item['curtain']['width'] }}m x {{ $item['curtain']['height'] }}m
     </div>
-    <div class="small">
+
+    <div class="small text-muted">
         Sistemi: {{ $item['curtain']['fold_label'] }}
     </div>
-    <div class="small">
+
+    <div class="small text-muted">
         Material: {{ $item['curtain']['meters'] }}m
     </div>
+
 @else
+
     {{ $size }}
+
 @endif
+
 </td>
                 <td>
                   <form action="{{ route('cart.update') }}" method="POST" class="d-flex align-items-center gap-2 cart-line-form">
