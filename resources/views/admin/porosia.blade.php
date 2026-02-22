@@ -94,30 +94,52 @@
                 <th style="width:120px">Totali</th>
               </tr>
             </thead>
-            <tbody>
-            @foreach($order->items as $it)
-              @php
-                $line = (float)$it->price * (int)$it->qty;
-                $imgSrc = $order_item_img_url($it->image ?? $it->image_path ?? null);
-              @endphp
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center gap-2">
-                    <img
-                      src="{{ $imgSrc }}"
-                      class="summary-thumb"
-                      alt="{{ $it->name }}"
-                      onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
-                    <div class="fw-semibold">{{ $it->name }}</div>
-                  </div>
-                </td>
-                <td>{{ $it->size ?? '—' }}</td>
-                <td>{{ $it->qty }}</td>
-                <td>{{ number_format($it->price,2) }} €</td>
-                <td>{{ number_format($line,2) }} €</td>
-              </tr>
-            @endforeach
-            </tbody>
+           <tbody>
+@foreach($order->items as $it)
+  @php
+    $line = (float)$it->price * (int)$it->qty;
+    $imgSrc = $order_item_img_url($it->image ?? $it->image_path ?? null);
+
+    // 🔥 nëse është perde
+    $curtain = null;
+    if(isset($it->curtain)){
+        $curtain = is_array($it->curtain)
+            ? $it->curtain
+            : json_decode($it->curtain, true);
+    }
+  @endphp
+
+  <tr>
+    <td>
+      <div class="d-flex align-items-center gap-2">
+        <img
+          src="{{ $imgSrc }}"
+          class="summary-thumb"
+          alt="{{ $it->name }}"
+          onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+        <div class="fw-semibold">{{ $it->name }}</div>
+      </div>
+    </td>
+
+    <td>
+      @if($curtain)
+        <div class="small">
+          <strong>Gjerësia:</strong> {{ $curtain['width'] ?? '-' }} m<br>
+          <strong>Lartësia:</strong> {{ $curtain['height'] ?? '-' }} m<br>
+          <strong>Metra:</strong> {{ $curtain['meters'] ?? '-' }} m<br>
+          <strong>Sistemi:</strong> {{ $curtain['fold_label'] ?? ($curtain['fold_type'] ?? '-') }}
+        </div>
+      @else
+        {{ $it->size ?? '—' }}
+      @endif
+    </td>
+
+    <td>{{ $it->qty }}</td>
+    <td>{{ number_format($it->price,2) }} €</td>
+    <td>{{ number_format($line,2) }} €</td>
+  </tr>
+@endforeach
+</tbody>
           </table>
         </div>
       </div>
