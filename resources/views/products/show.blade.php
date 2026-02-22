@@ -909,38 +909,79 @@
       <button id="addToCartBtn" class="btn btn-outline-danger px-4">
         <i class="bi bi-bag-plus"></i> Shto në shportë
       </button>
-      <form action="{{ route('cart.addCurtain') }}" method="POST" id="curtainForm">
+     @if($isCurtain)
+<form action="{{ route('cart.addCurtain') }}" method="POST" id="curtainForm" class="mt-4">
     @csrf
+    <input type="hidden" name="product_id" value="{{ $product->id }}">
 
-    <div class="mb-3">
-        <label>Width (m)</label>
-        <input type="number" step="0.1" name="width" class="form-control" required>
+    <div class="section-card mb-3">
+        <h5 class="mb-3">Përmasa</h5>
+
+        <div class="row">
+            <div class="col-6">
+                <label class="form-label">Width (m)</label>
+                <input type="number" step="0.1" name="width" class="form-control" required>
+            </div>
+            <div class="col-6">
+                <label class="form-label">Height (m)</label>
+                <input type="number" step="0.1" name="height" class="form-control" required>
+            </div>
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label>Height (m)</label>
-        <input type="number" step="0.1" name="height" class="form-control" required>
+    <div class="section-card mb-3">
+        <h5 class="mb-3">Folding System</h5>
+
+        <div class="fold-grid">
+
+            @php
+                $folds = [
+                    ['value'=>'classic1','name'=>'Classic Fold 1','extra'=>0,'img'=>'classic1.jpg'],
+                    ['value'=>'classic2','name'=>'Classic Fold 2','extra'=>0,'img'=>'classic2.jpg'],
+                    ['value'=>'grommet','name'=>'Grommet','extra'=>1.5,'img'=>'grommet.jpg'],
+                    ['value'=>'pencil','name'=>'Pencil Pleat','extra'=>1,'img'=>'pencil.jpg'],
+                    ['value'=>'swave','name'=>'S-Wave','extra'=>2,'img'=>'swave.jpg'],
+                    ['value'=>'triple','name'=>'Triple Pleat','extra'=>3,'img'=>'triple.jpg'],
+                ];
+            @endphp
+
+            @foreach($folds as $i => $f)
+            <label class="fold-item">
+                <input type="radio"
+                       name="fold_type"
+                       value="{{ $f['value'] }}"
+                       data-extra="{{ $f['extra'] }}"
+                       class="fold-radio"
+                       {{ $i==0 ? 'checked' : '' }}
+                       required>
+
+                <div class="fold-card">
+                    <div class="fold-img">
+                        <img src="{{ asset('images/folds/'.$f['img']) }}" alt="{{ $f['name'] }}">
+                    </div>
+
+                    <div class="fold-name">{{ $f['name'] }}</div>
+
+                    @if($f['extra'] > 0)
+                        <div class="fold-extra">+{{ number_format($f['extra'],2) }} € / meter</div>
+                    @endif
+                </div>
+            </label>
+            @endforeach
+
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label>Folding System</label>
-        <select name="fold_type" class="form-control" required>
-            <option value="classic1" data-extra="0">Classic Fold 1</option>
-            <option value="classic2" data-extra="0">Classic Fold 2</option>
-            <option value="grommet" data-extra="1.5">Grommet (+1.5€)</option>
-            <option value="pencil" data-extra="1">Pencil Pleat (+1€)</option>
-            <option value="swave" data-extra="2">S-Wave (+2€)</option>
-            <option value="triple" data-extra="3">Triple Pleat (+3€)</option>
-        </select>
-    </div>
-
-    <div class="mb-3">
+    <div class="section-card mb-3">
         <strong>Total: <span id="totalPrice">0.00</span> €</strong>
+        <div class="small text-muted">Meters: <span id="totalMeters">0</span></div>
     </div>
 
-    <button class="btn btn-danger w-100">Shto në shportë</button>
+    <button class="btn btn-danger w-100 py-2">
+        Add to cart
+    </button>
 </form>
-      
+@endif
       
 
       @if($product->description)
@@ -1385,24 +1426,31 @@ function showToast(text, isErr){
 }
 </script>
 <script>
-const pricePerMeter = {{ $product->price }};
+@if($isCurtain)
+
+const pricePerMeter = {{ (float)$product->price }};
 
 function calculateCurtain() {
-    let width = parseFloat(document.querySelector('[name="width"]').value) || 0;
-    let foldSelect = document.querySelector('[name="fold_type"]');
-    let extra = parseFloat(foldSelect.options[foldSelect.selectedIndex].dataset.extra);
 
-    let multiplier = 2; // standard
+    let width = parseFloat(document.querySelector('[name="width"]').value) || 0;
+    let height = parseFloat(document.querySelector('[name="height"]').value) || 0;
+
+    let selectedFold = document.querySelector('[name="fold_type"]:checked');
+    let extra = parseFloat(selectedFold.dataset.extra);
+
+    let multiplier = 2; // standard fullness
 
     let meters = width * multiplier;
     let total = meters * (pricePerMeter + extra);
 
+    document.getElementById("totalMeters").innerText = meters.toFixed(2);
     document.getElementById("totalPrice").innerText = total.toFixed(2);
 }
 
-document.querySelectorAll('#curtainForm input, #curtainForm select')
+document.querySelectorAll('#curtainForm input')
     .forEach(el => el.addEventListener('input', calculateCurtain));
-</script>
 
+@endif
+</script>
 </body>
 </html>
