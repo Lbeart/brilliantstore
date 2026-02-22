@@ -40,13 +40,10 @@ Route::get('/', [ItemController::class, 'index'])->name('home');
 
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/add-curtain', [CartController::class, 'addCurtain'])->name('cart.addCurtain');
-
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
-
 
 
 // 📄 Static

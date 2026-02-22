@@ -8,6 +8,11 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
+
+
+  @php
+  $isCurtain = str_contains(strtolower($product->category ?? ''), 'perde');
+@endphp
   @php
     // ✅ IMAGES: image_path mund të jetë JSON array ose string e vjetër
     $imgs = [];
@@ -604,6 +609,47 @@
       .footer-grid{ grid-template-columns: 1fr; }
       .footer-logo-wrap{ width:110px; height:110px; }
     }
+    .fold-grid{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0,1fr));
+  gap:12px;
+  padding:12px;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  background:#fff;
+}
+.fold-item{ position:relative; }
+.fold-radio{ position:absolute; opacity:0; pointer-events:none; }
+.fold-card{
+  display:block;
+  cursor:pointer;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:10px;
+  background:#fff;
+  transition:all .15s ease;
+  height:100%;
+}
+.fold-img{
+  width:100%;
+  aspect-ratio:1/1;
+  border-radius:10px;
+  overflow:hidden;
+  background:#f3f4f6;
+}
+.fold-img img{ width:100%; height:100%; object-fit:cover; display:block; }
+.fold-name{ margin-top:10px; font-weight:800; font-size:13px; color:#111827; line-height:1.15; }
+.fold-extra{ margin-top:4px; font-size:12px; color:#b45309; font-weight:700; }
+
+.fold-card:hover{ border-color:#d1d5db; transform:translateY(-1px); }
+.fold-radio:checked + .fold-card{
+  border-color:rgba(220,53,69,.55);
+  box-shadow:0 12px 26px rgba(220,53,69,.12);
+  transform:translateY(-2px);
+}
+
+@media(max-width:992px){ .fold-grid{ grid-template-columns:repeat(3, 1fr);} }
+@media(max-width:576px){ .fold-grid{ grid-template-columns:repeat(2, 1fr); gap:10px; } }
   </style>
 </head>
 <body>
