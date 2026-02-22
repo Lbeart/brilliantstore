@@ -38,6 +38,13 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 // 🏠 Home
 Route::get('/', [ItemController::class, 'index'])->name('home');
 
+
+
+Route::post('/cart/add-curtain', [CartController::class, 'addCurtain'])
+    ->name('cart.addCurtain');
+
+
+
 // 📄 Static
 Route::get('/about', fn () => view('about'))->name('about');
 Route::get('/terms', fn () => view('pages.terms'))->name('terms');       // nëse s’i ke, krijoi blades

@@ -895,6 +895,7 @@
     <button class="btn btn-danger w-100">Shto në shportë</button>
 </form>
       
+      
 
       @if($product->description)
         <div class="section-card mt-4" id="desc">
@@ -1336,6 +1337,25 @@ function showToast(text, isErr){
   const t = new bootstrap.Toast(el, { delay: 1800 });
   t.show();
 }
+</script>
+<script>
+const pricePerMeter = {{ $product->price }};
+
+function calculateCurtain() {
+    let width = parseFloat(document.querySelector('[name="width"]').value) || 0;
+    let foldSelect = document.querySelector('[name="fold_type"]');
+    let extra = parseFloat(foldSelect.options[foldSelect.selectedIndex].dataset.extra);
+
+    let multiplier = 2; // standard
+
+    let meters = width * multiplier;
+    let total = meters * (pricePerMeter + extra);
+
+    document.getElementById("totalPrice").innerText = total.toFixed(2);
+}
+
+document.querySelectorAll('#curtainForm input, #curtainForm select')
+    .forEach(el => el.addEventListener('input', calculateCurtain));
 </script>
 
 </body>
