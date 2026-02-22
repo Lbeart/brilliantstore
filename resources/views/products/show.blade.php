@@ -894,6 +894,7 @@
 
     <button class="btn btn-danger w-100">Shto në shportë</button>
 </form>
+      
 
       @if($product->description)
         <div class="section-card mt-4" id="desc">
