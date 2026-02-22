@@ -941,16 +941,17 @@ $folds = [
     ['value'=>'fold3','name'=>'Fold 3 (1:3)','ratio'=>3,'extra'=>0,'img'=>'triple.jpg'],
     ['value'=>'grommet','name'=>'Grommet','extra'=>1.5,'ratio'=>2,'img'=>'grommet.jpg'],
     ['value'=>'pencil','name'=>'Pencil Pleat','extra'=>1,'ratio'=>2.5,'img'=>'pencil.jpg'],
-    ['value'=>'swave','name'=>'S-Wave','extra'=>2,'ratio'=>2.2,'img'=>'swave.jpg'],
+    ['value'=>'swave','name'=>'S-Wave','ratio'=>2.8,'extra'=>2.5,'img'=>'swave.jpg'],
 ];
 @endphp
 
             @foreach($folds as $i => $f)
             <label class="fold-item">
-                <input type="radio"
+               <input type="radio"
        name="fold_type"
        value="{{ $f['value'] }}"
        data-ratio="{{ $f['ratio'] }}"
+       data-extra="{{ $f['extra'] ?? 0 }}"
        class="fold-radio"
        {{ $loop->first ? 'checked' : '' }}
        required>
@@ -1437,12 +1438,21 @@ function calculateCurtain() {
     let width = parseFloat(document.querySelector('[name="width"]').value) || 0;
 
     let selectedFold = document.querySelector('[name="fold_type"]:checked');
+
     let ratio = parseFloat(selectedFold.dataset.ratio);
+    let extra = parseFloat(selectedFold.dataset.extra || 0);
 
     // WIDTH × RATIO
     let meters = width * ratio;
 
-    let total = meters * pricePerMeter;
+    // Pëlhura
+    let fabricTotal = meters * pricePerMeter;
+
+    // Shiriti
+    let extraTotal = meters * extra;
+
+    // TOTAL FINAL
+    let total = fabricTotal + extraTotal;
 
     document.getElementById("totalMeters").innerText = meters.toFixed(2);
     document.getElementById("totalPrice").innerText = total.toFixed(2);
