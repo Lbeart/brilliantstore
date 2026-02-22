@@ -70,77 +70,106 @@ class CartController extends Controller
     }
 
     // ✅ PERDE (width + height + folding system me extra)
-   public function addCurtain(Request $request)
-{
-    $data = $request->validate([
-        'product_id' => 'required|integer|exists:products,id',
-        'width'      => 'required|numeric|min:0.1|max:50',
-        'height'     => 'required|numeric|min:0.1|max:50',
-        'fold_type'  => 'required|string|max:50',
-    ]);
+    public function addCurtain(Request $request)
+    {
+        $data = $request->validate([
+            'product_id' => 'required|integer|exists:products,id',
+            'width'      => 'required|numeric|min:0.1|max:50',
+            'height'     => 'required|numeric|min:0.1|max:50',
+            'fold_type'  => 'required|string|max:50',
+        ]);
 
-    $product = Product::findOrFail($data['product_id']);
+        $product = Product::findOrFail($data['product_id']);
 
-    $foldMap = [
-        'fold1'   => ['label' => 'Fold 1 (1:2)',     'ratio' => 2.0,  'extra' => 0.0],
-        'fold2'   => ['label' => 'Fold 2 (1:2.5)',   'ratio' => 2.5,  'extra' => 0.0],
-        'fold3'   => ['label' => 'Fold 3 (1:3)',     'ratio' => 3.0,  'extra' => 0.0],
-         'grommet' => ['label'=>'Grommet',        'ratio'=>2.5, 'extra'=>0.0, 'rings'=>5, 'ring_price'=>1],
-        'pencil'  => ['label' => 'Pencil Pleat',     'ratio' => 1.5,  'extra' => 0.0],
-        'swave'   => ['label' => 'S-Wave',           'ratio' => 2.8,  'extra' => 2.5],
-    ];
+        $foldMap = [
+            'fold1'   => ['label' => 'Fold 1 (1:2)',     'ratio' => 2.0,  'extra' => 0.0],
+            'fold2'   => ['label' => 'Fold 2 (1:2.5)',   'ratio' => 2.5,  'extra' => 0.0],
+            'fold3'   => ['label' => 'Fold 3 (1:3)',     'ratio' => 3.0,  'extra' => 0.0],
 
-    if (!isset($foldMap[$data['fold_type']])) {
-        return back()->withErrors(['fold_type' => 'Folding system i pavlefshëm']);
-    }
-
-    $width  = (float)$data['width'];
-    $height = (float)$data['height'];
-
-    $ratio  = $foldMap[$data['fold_type']]['ratio'];
-    $extra  = $foldMap[$data['fold_type']]['extra'];
-    $pricePerMeter = (float)$product->price;
-
-    // METERS
-    $meters = $width * $ratio;
-
-    // TOTAL
-    $unitPrice = $meters * ($pricePerMeter + $extra);
-    $unitPrice = round($unitPrice, 2);
-
-    $cart = session('cart', []);
-
-    $key = "curtain|{$product->id}|"
-        .number_format($width,2,'.','')."|"
-        .number_format($height,2,'.','')."|"
-        .$data['fold_type'];
-
-    if (isset($cart[$key])) {
-        $cart[$key]['qty'] += 1;
-    } else {
-        $cart[$key] = [
-            'type'       => 'curtain',
-            'product_id' => $product->id,
-            'name'       => $product->name,
-            'image'      => $this->productImage($product),
-            'qty'        => 1,
-            'price'      => $unitPrice,
-            'curtain'    => [
-                'width'  => $width,
-                'height' => $height,
-                'meters' => round($meters, 2),
-                'fold_type'  => $data['fold_type'],
-                'fold_label' => $foldMap[$data['fold_type']]['label'],
-                'extra_per_meter' => $extra,
-                'base_price_per_meter' => $pricePerMeter,
+            // ✅ GROMMET: si në JS (rings per meter + ring price)
+            'grommet' => [
+                'label'      => 'Grommet',
+                'ratio'      => 2.5,
+                'extra'      => 0.0,
+                'rings'      => 5,   // rings per meter (si data-rings)
+                'ring_price' => 1,   // price per ring
             ],
+
+            'pencil'  => ['label' => 'Pencil Pleat',     'ratio' => 1.5,  'extra' => 0.0],
+            'swave'   => ['label' => 'S-Wave',           'ratio' => 2.8,  'extra' => 2.5],
         ];
+
+        if (!isset($foldMap[$data['fold_type']])) {
+            return back()->withErrors(['fold_type' => 'Folding system i pavlefshëm']);
+        }
+
+        $width  = (float)$data['width'];
+        $height = (float)$data['height'];
+
+        $ratio  = (float)$foldMap[$data['fold_type']]['ratio'];
+        $extra  = (float)$foldMap[$data['fold_type']]['extra'];
+        $pricePerMeter = (float)$product->price;
+
+        // METERS (si në JS)
+        $meters = $width * $ratio;
+
+        // TOTAL bazë (si e ke ti)
+        $unitPrice = $meters * ($pricePerMeter + $extra);
+
+        // ✅ SHTESA VETËM PËR GROMMET (unaza) – pa prish tjera llogaritje
+        $rings = 0;
+        $ringsTotal = 0.0;
+
+        if ($data['fold_type'] === 'grommet') {
+            $ringsPerMeter = (float)($foldMap['grommet']['rings'] ?? 0);
+            $ringPrice     = (float)($foldMap['grommet']['ring_price'] ?? 0);
+
+            $rings = (int) ceil($meters * $ringsPerMeter);
+            $ringsTotal = $rings * $ringPrice;
+
+            $unitPrice += $ringsTotal;
+        }
+
+        $unitPrice = round($unitPrice, 2);
+
+        $cart = session('cart', []);
+
+        $key = "curtain|{$product->id}|"
+            .number_format($width,2,'.','')."|"
+            .number_format($height,2,'.','')."|"
+            .$data['fold_type'];
+
+        if (isset($cart[$key])) {
+            $cart[$key]['qty'] += 1;
+        } else {
+            $cart[$key] = [
+                'type'       => 'curtain',
+                'product_id' => $product->id,
+                'name'       => $product->name,
+                'image'      => $this->productImage($product),
+                'qty'        => 1,
+                'price'      => $unitPrice,
+                'curtain'    => [
+                    'width'  => $width,
+                    'height' => $height,
+                    'meters' => round($meters, 2),
+                    'fold_type'  => $data['fold_type'],
+                    'fold_label' => $foldMap[$data['fold_type']]['label'],
+                    'extra_per_meter' => $extra,
+                    'base_price_per_meter' => $pricePerMeter,
+
+                    // ✅ vetëm informuese (për shfaqje në shportë)
+                    'rings' => $rings,
+                    'ring_price' => (float)($foldMap[$data['fold_type']]['ring_price'] ?? 0),
+                    'rings_total' => round($ringsTotal, 2),
+                ],
+            ];
+        }
+
+        $this->storeCart($cart);
+
+        return redirect()->back()->with('success', 'Perde u shtua në shportë!');
     }
-
-    $this->storeCart($cart);
-
-    return redirect()->back()->with('success', 'Perde u shtua në shportë!');
-}
 
     public function update(Request $request)
     {
