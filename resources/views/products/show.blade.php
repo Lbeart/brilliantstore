@@ -1411,7 +1411,72 @@ addBtn?.addEventListener('click', async () => {
       },
       body: JSON.stringify(payload)
     });
-    const data = await res.json();
+    const addBtn = document.getElementById('addToCartBtn');
+
+function currentSizeLabel(){
+  const wrap = document.getElementById('sizePills');
+  if(!wrap) return null;
+  const active = wrap.querySelector('.size-pill.active');
+  return active ? (active.dataset.label || '') : null;
+}
+
+addBtn?.addEventListener('click', async () => {
+  const payload = {
+    product_id: {{ $product->id }},
+    qty: parseInt(document.getElementById('qty').value || '1', 10),
+    size: currentSizeLabel()
+  };
+
+  try {
+    const res = await fetch(`{{ route('cart.add') }}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type':'application/json',
+        'Accept':'application/json', // ✅ shumë e rëndësishme (ndryshe Laravel kthen HTML)
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify(payload)
+    });
+
+    // ✅ Lexo si text, pastaj provo JSON
+    const txt = await res.text();
+    let data = null;
+    try { data = JSON.parse(txt); } catch(e) {}
+
+    if(!res.ok){
+      // 419 / 500 / 302 etj
+      showToast((data && data.message) ? data.message : 'Gabim (CSRF/Server). Rifresko faqen.', true);
+      return;
+    }
+
+    if(data && data.ok){
+      document.querySelectorAll('.cart-badge').forEach(b => b.textContent = data.totalQty);
+      showToast(data.message || 'U shtua në shportë');
+    }else{
+      showToast((data && data.message) ? data.message : 'Diçka shkoi keq', true);
+    }
+
+  } catch (e) {
+    showToast('Gabim lidhjeje', true);
+  }
+});
+
+function showToast(text, isErr){
+  let el = document.getElementById('cartToast');
+  if(!el){
+    el = document.createElement('div');
+    el.id='cartToast';
+    el.className='toast align-items-center text-bg-' + (isErr?'danger':'success');
+    el.role='alert'; el.ariaLive='assertive'; el.ariaAtomic='true';
+    el.style.position='fixed'; el.style.bottom='16px'; el.style.right='16px'; el.style.zIndex='3000';
+    el.innerHTML=`<div class="d-flex"><div class="toast-body"></div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>`;
+    document.body.appendChild(el);
+  }
+  el.querySelector('.toast-body').textContent = text;
+  const t = new bootstrap.Toast(el, { delay: 1800 });
+  t.show();
+}
     if(data.ok){
       document.querySelectorAll('.cart-badge').forEach(b => b.textContent = data.totalQty);
       document.dispatchEvent(new CustomEvent('cart:updated', { detail: { totalQty: data.totalQty }}));
