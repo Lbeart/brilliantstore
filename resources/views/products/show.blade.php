@@ -936,12 +936,12 @@
 
            @php
 $folds = [
-     ['value'=>'fold1','name'=>'Fold 1 (1:2)','ratio'=>2,'img'=>'classic1.jpg'],
-    ['value'=>'fold2','name'=>'Fold 2 (1:2.5)','ratio'=>2.5,'img'=>'classic2.jpg'],
-    ['value'=>'fold3','name'=>'Fold 3 (1:3)','ratio'=>3,'img'=>'triple.jpg'],
-    ['value'=>'grommet','name'=>'Grommet','extra'=>1.5,'fullness'=>2,'img'=>'grommet.jpg'],
-    ['value'=>'pencil','name'=>'Pencil Pleat','extra'=>1,'fullness'=>2.5,'img'=>'pencil.jpg'],
-    ['value'=>'swave','name'=>'S-Wave','extra'=>2,'fullness'=>2.2,'img'=>'swave.jpg'],
+    ['value'=>'fold1','name'=>'Fold 1 (1:2)','ratio'=>2,'extra'=>0,'img'=>'classic1.jpg'],
+    ['value'=>'fold2','name'=>'Fold 2 (1:2.5)','ratio'=>2.5,'extra'=>0,'img'=>'classic2.jpg'],
+    ['value'=>'fold3','name'=>'Fold 3 (1:3)','ratio'=>3,'extra'=>0,'img'=>'triple.jpg'],
+    ['value'=>'grommet','name'=>'Grommet','extra'=>1.5,'ratio'=>2,'img'=>'grommet.jpg'],
+    ['value'=>'pencil','name'=>'Pencil Pleat','extra'=>1,'ratio'=>2.5,'img'=>'pencil.jpg'],
+    ['value'=>'swave','name'=>'S-Wave','extra'=>2,'ratio'=>2.2,'img'=>'swave.jpg'],
 ];
 @endphp
 
@@ -962,9 +962,11 @@ $folds = [
 
                     <div class="fold-name">{{ $f['name'] }}</div>
 
-                    @if($f['extra'] > 0)
-                        <div class="fold-extra">+{{ number_format($f['extra'],2) }} € / meter</div>
-                    @endif
+                    @if(isset($f['extra']) && $f['extra'] > 0)
+    <div class="fold-extra">
+        +{{ number_format($f['extra'],2) }} € / meter
+    </div>
+@endif
                 </div>
             </label>
             @endforeach
