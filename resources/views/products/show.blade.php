@@ -951,9 +951,9 @@ $folds = [
        name="fold_type"
        value="{{ $f['value'] }}"
        data-ratio="{{ $f['ratio'] }}"
+       data-extra="{{ $f['extra'] ?? 0 }}"
        data-rings="{{ $f['rings'] ?? 0 }}"
        data-ringprice="{{ $f['ring_price'] ?? 0 }}"
-       data-extra="{{ $f['extra'] ?? 0 }}"
        class="fold-radio"
        {{ $loop->first ? 'checked' : '' }}
        required>
@@ -1442,6 +1442,7 @@ function calculateCurtain() {
     let selectedFold = document.querySelector('[name="fold_type"]:checked');
 
     let ratio = parseFloat(selectedFold.dataset.ratio || 1);
+    let extra = parseFloat(selectedFold.dataset.extra || 0);
     let ringsPerMeter = parseFloat(selectedFold.dataset.rings || 0);
     let ringPrice = parseFloat(selectedFold.dataset.ringprice || 0);
 
@@ -1449,16 +1450,15 @@ function calculateCurtain() {
     let meters = width * ratio;
     let fabricTotal = meters * pricePerMeter;
 
-    // RRUMBULLAKA (llogariten mbi MATERIAL)
-    let rings = meters * ringsPerMeter;
+    // SHIRIT (S-Wave)
+    let extraTotal = meters * extra;
 
-    // nëse don me i rrumbullaku gjithmonë lart:
-    rings = Math.ceil(rings);
-
+    // RRUMBULLAKA (Grommet)
+    let rings = Math.ceil(meters * ringsPerMeter);
     let ringsTotal = rings * ringPrice;
 
     // TOTAL
-    let total = fabricTotal + ringsTotal;
+    let total = fabricTotal + extraTotal + ringsTotal;
 
     document.getElementById("totalMeters").innerText = meters.toFixed(2);
     document.getElementById("totalPrice").innerText = total.toFixed(2);
