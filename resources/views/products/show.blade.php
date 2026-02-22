@@ -1442,8 +1442,6 @@ function calculateCurtain() {
     let selectedFold = document.querySelector('[name="fold_type"]:checked');
 
     let ratio = parseFloat(selectedFold.dataset.ratio || 1);
-    let extra = parseFloat(selectedFold.dataset.extra || 0);
-
     let ringsPerMeter = parseFloat(selectedFold.dataset.rings || 0);
     let ringPrice = parseFloat(selectedFold.dataset.ringprice || 0);
 
@@ -1451,15 +1449,16 @@ function calculateCurtain() {
     let meters = width * ratio;
     let fabricTotal = meters * pricePerMeter;
 
-    // SHIRIT (nëse ka)
-    let extraTotal = meters * extra;
+    // RRUMBULLAKA (llogariten mbi MATERIAL)
+    let rings = meters * ringsPerMeter;
 
-    // RRUMBULLAKA (GROMMET)
-    let rings = width * ringsPerMeter;
+    // nëse don me i rrumbullaku gjithmonë lart:
+    rings = Math.ceil(rings);
+
     let ringsTotal = rings * ringPrice;
 
     // TOTAL
-    let total = fabricTotal + extraTotal + ringsTotal;
+    let total = fabricTotal + ringsTotal;
 
     document.getElementById("totalMeters").innerText = meters.toFixed(2);
     document.getElementById("totalPrice").innerText = total.toFixed(2);
