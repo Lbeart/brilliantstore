@@ -939,7 +939,7 @@ $folds = [
     ['value'=>'fold1','name'=>'Fold 1 (1:2)','ratio'=>2,'extra'=>0,'img'=>'classic1.jpg'],
     ['value'=>'fold2','name'=>'Fold 2 (1:2.5)','ratio'=>2.5,'extra'=>0,'img'=>'classic2.jpg'],
     ['value'=>'fold3','name'=>'Fold 3 (1:3)','ratio'=>3,'extra'=>0,'img'=>'triple.jpg'],
-    ['value'=>'grommet','name'=>'Grommet','extra'=>1.5,'ratio'=>2,'img'=>'grommet.jpg'],
+   ['value'=>'grommet','name'=>'Grommet','ratio'=>2.5,'rings'=>5,'ring_price'=>1,'img'=>'grommet.jpg'],
     ['value'=>'pencil','name'=>'Pencil Pleat','extra'=>1,'ratio'=>2.5,'img'=>'pencil.jpg'],
     ['value'=>'swave','name'=>'S-Wave','ratio'=>2.8,'extra'=>2.5,'img'=>'swave.jpg'],
 ];
@@ -951,6 +951,8 @@ $folds = [
        name="fold_type"
        value="{{ $f['value'] }}"
        data-ratio="{{ $f['ratio'] }}"
+       data-rings="{{ $f['rings'] ?? 0 }}"
+       data-ringprice="{{ $f['ring_price'] ?? 0 }}"
        data-extra="{{ $f['extra'] ?? 0 }}"
        class="fold-radio"
        {{ $loop->first ? 'checked' : '' }}
@@ -1439,20 +1441,25 @@ function calculateCurtain() {
 
     let selectedFold = document.querySelector('[name="fold_type"]:checked');
 
-    let ratio = parseFloat(selectedFold.dataset.ratio);
+    let ratio = parseFloat(selectedFold.dataset.ratio || 1);
     let extra = parseFloat(selectedFold.dataset.extra || 0);
 
-    // WIDTH × RATIO
-    let meters = width * ratio;
+    let ringsPerMeter = parseFloat(selectedFold.dataset.rings || 0);
+    let ringPrice = parseFloat(selectedFold.dataset.ringprice || 0);
 
-    // Pëlhura
+    // MATERIAL
+    let meters = width * ratio;
     let fabricTotal = meters * pricePerMeter;
 
-    // Shiriti
+    // SHIRIT (nëse ka)
     let extraTotal = meters * extra;
 
-    // TOTAL FINAL
-    let total = fabricTotal + extraTotal;
+    // RRUMBULLAKA (GROMMET)
+    let rings = width * ringsPerMeter;
+    let ringsTotal = rings * ringPrice;
+
+    // TOTAL
+    let total = fabricTotal + extraTotal + ringsTotal;
 
     document.getElementById("totalMeters").innerText = meters.toFixed(2);
     document.getElementById("totalPrice").innerText = total.toFixed(2);
