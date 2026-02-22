@@ -85,7 +85,7 @@ class CartController extends Controller
         'fold1'   => ['label' => 'Fold 1 (1:2)',     'ratio' => 2.0,  'extra' => 0.0],
         'fold2'   => ['label' => 'Fold 2 (1:2.5)',   'ratio' => 2.5,  'extra' => 0.0],
         'fold3'   => ['label' => 'Fold 3 (1:3)',     'ratio' => 3.0,  'extra' => 0.0],
-        'grommet' => ['label' => 'Grommet',          'ratio' => 2.5,  'extra' => 1.0],
+         'grommet' => ['label'=>'Grommet',        'ratio'=>2.5, 'extra'=>0.0, 'rings'=>5, 'ring_price'=>1],
         'pencil'  => ['label' => 'Pencil Pleat',     'ratio' => 1.5,  'extra' => 0.0],
         'swave'   => ['label' => 'S-Wave',           'ratio' => 2.8,  'extra' => 2.5],
     ];
