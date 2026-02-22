@@ -149,7 +149,21 @@
                   </div>
                 </td>
                 <td>{{ number_format($price,2) }} €</td>
-                <td class="text-muted">{{ $size }}</td>
+               <td class="text-muted">
+@if(($item['type'] ?? '') === 'curtain' && isset($item['curtain']))
+    <div>
+        {{ $item['curtain']['width'] }}m x {{ $item['curtain']['height'] }}m
+    </div>
+    <div class="small">
+        Sistemi: {{ $item['curtain']['fold_label'] }}
+    </div>
+    <div class="small">
+        Material: {{ $item['curtain']['meters'] }}m
+    </div>
+@else
+    {{ $size }}
+@endif
+</td>
                 <td>
                   <form action="{{ route('cart.update') }}" method="POST" class="d-flex align-items-center gap-2 cart-line-form">
                     @csrf
@@ -209,7 +223,19 @@
 
                 <div class="flex-grow-1">
                   <div class="fw-semibold">{{ $name }}</div>
-                  <div class="small muted">Dimensioni: {{ $size }}</div>
+                  @if(($item['type'] ?? '') === 'curtain' && isset($item['curtain']))
+    <div class="small muted">
+        {{ $item['curtain']['width'] }}m x {{ $item['curtain']['height'] }}m
+    </div>
+    <div class="small muted">
+        Sistemi: {{ $item['curtain']['fold_label'] }}
+    </div>
+    <div class="small muted">
+        Material: {{ $item['curtain']['meters'] }}m
+    </div>
+@else
+    <div class="small muted">Dimensioni: {{ $size }}</div>
+@endif
                   <div class="small muted">Çmimi: {{ number_format($price,2) }} €</div>
                 </div>
 
