@@ -70,85 +70,77 @@ class CartController extends Controller
     }
 
     // ✅ PERDE (width + height + folding system me extra)
-    public function addCurtain(Request $request)
-    {
-        $data = $request->validate([
-            'product_id' => 'required|integer|exists:products,id',
-            'qty'        => 'required|integer|min:1|max:100',
-            'width'      => 'required|numeric|min:0.1|max:50',
-            'height'     => 'required|numeric|min:0.1|max:50',
-            'fold_type'  => 'required|string|max:50',
-        ]);
+   public function addCurtain(Request $request)
+{
+    $data = $request->validate([
+        'product_id' => 'required|integer|exists:products,id',
+        'width'      => 'required|numeric|min:0.1|max:50',
+        'height'     => 'required|numeric|min:0.1|max:50',
+        'fold_type'  => 'required|string|max:50',
+    ]);
 
-        $product = Product::findOrFail($data['product_id']);
+    $product = Product::findOrFail($data['product_id']);
 
-        $foldMap = [
-            'classic1' => ['label' => 'Classic Folds 1', 'extra' => 0.0],
-            'classic2' => ['label' => 'Classic Folds 2', 'extra' => 0.0],
-            'classic3' => ['label' => 'Classic Folds 3', 'extra' => 0.0],
-            'grommet'  => ['label' => 'Grommet',        'extra' => 1.5],
-            'pencil'   => ['label' => 'Pencil Pleat',   'extra' => 1.0],
-            'swave'    => ['label' => 'S-Wave',         'extra' => 2.0],
-            'triple'   => ['label' => 'Triple Pleat',   'extra' => 3.0],
-        ];
+    $foldMap = [
+        'fold1'   => ['label' => 'Fold 1 (1:2)',     'ratio' => 2.0,  'extra' => 0.0],
+        'fold2'   => ['label' => 'Fold 2 (1:2.5)',   'ratio' => 2.5,  'extra' => 0.0],
+        'fold3'   => ['label' => 'Fold 3 (1:3)',     'ratio' => 3.0,  'extra' => 0.0],
+        'grommet' => ['label' => 'Grommet',          'ratio' => 2.5,  'extra' => 1.0],
+        'pencil'  => ['label' => 'Pencil Pleat',     'ratio' => 1.5,  'extra' => 0.0],
+        'swave'   => ['label' => 'S-Wave',           'ratio' => 2.8,  'extra' => 2.5],
+    ];
 
-        if (!isset($foldMap[$data['fold_type']])) {
-            return response()->json(['ok'=>false,'message'=>'Folding System i pavlefshëm'], 422);
-        }
-
-        $width  = (float)$data['width'];
-        $height = (float)$data['height'];
-        $qty    = (int)$data['qty'];
-
-        // ✅ logjika jote + e përmirësuar:
-        // meters = width * 2 (fold standard)
-        // total = meters * (pricePerMeter + extra) * height
-        $multiplier = 2.0;
-        $meters = $width * $multiplier;
-        $extra = (float)$foldMap[$data['fold_type']]['extra'];
-        $pricePerMeter = (float)$product->price;
-
-        $unitPrice = $meters * ($pricePerMeter + $extra) * $height;
-        $unitPrice = round($unitPrice, 2);
-
-        $cart = session('cart', []);
-
-        $key = "curtain|{$product->id}|"
-            .number_format($width,2,'.','')."|"
-            .number_format($height,2,'.','')."|"
-            .$data['fold_type'];
-
-        if (isset($cart[$key])) {
-            $cart[$key]['qty'] += $qty;
-        } else {
-            $cart[$key] = [
-                'type'       => 'curtain',
-                'product_id' => $product->id,
-                'name'       => $product->name,
-                'image'      => $this->productImage($product),
-                'qty'        => $qty,
-                'price'      => $unitPrice, // ✅ çmimi për 1 set (qty e shumëzon)
-                'curtain'    => [
-                    'width'  => $width,
-                    'height' => $height,
-                    'meters' => round($meters, 2),
-                    'multiplier' => $multiplier,
-                    'fold_type'  => $data['fold_type'],
-                    'fold_label' => $foldMap[$data['fold_type']]['label'],
-                    'extra_per_meter' => $extra,
-                    'base_price_per_meter' => $pricePerMeter,
-                ],
-            ];
-        }
-
-        $this->storeCart($cart);
-
-        return response()->json([
-            'ok' => true,
-            'totalQty' => session('cart_total_qty', 0),
-            'message' => 'U shtua në shportë',
-        ]);
+    if (!isset($foldMap[$data['fold_type']])) {
+        return back()->withErrors(['fold_type' => 'Folding system i pavlefshëm']);
     }
+
+    $width  = (float)$data['width'];
+    $height = (float)$data['height'];
+
+    $ratio  = $foldMap[$data['fold_type']]['ratio'];
+    $extra  = $foldMap[$data['fold_type']]['extra'];
+    $pricePerMeter = (float)$product->price;
+
+    // METERS
+    $meters = $width * $ratio;
+
+    // TOTAL
+    $unitPrice = $meters * ($pricePerMeter + $extra) * $height;
+    $unitPrice = round($unitPrice, 2);
+
+    $cart = session('cart', []);
+
+    $key = "curtain|{$product->id}|"
+        .number_format($width,2,'.','')."|"
+        .number_format($height,2,'.','')."|"
+        .$data['fold_type'];
+
+    if (isset($cart[$key])) {
+        $cart[$key]['qty'] += 1;
+    } else {
+        $cart[$key] = [
+            'type'       => 'curtain',
+            'product_id' => $product->id,
+            'name'       => $product->name,
+            'image'      => $this->productImage($product),
+            'qty'        => 1,
+            'price'      => $unitPrice,
+            'curtain'    => [
+                'width'  => $width,
+                'height' => $height,
+                'meters' => round($meters, 2),
+                'fold_type'  => $data['fold_type'],
+                'fold_label' => $foldMap[$data['fold_type']]['label'],
+                'extra_per_meter' => $extra,
+                'base_price_per_meter' => $pricePerMeter,
+            ],
+        ];
+    }
+
+    $this->storeCart($cart);
+
+    return redirect()->back()->with('success', 'Perde u shtua në shportë!');
+}
 
     public function update(Request $request)
     {
