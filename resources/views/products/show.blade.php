@@ -948,12 +948,12 @@ $folds = [
             @foreach($folds as $i => $f)
             <label class="fold-item">
                 <input type="radio"
-                       name="fold_type"
-                       value="{{ $f['value'] }}"
-                       data-extra="{{ $f['extra'] }}"
-                       class="fold-radio"
-                       {{ $i==0 ? 'checked' : '' }}
-                       required>
+       name="fold_type"
+       value="{{ $f['value'] }}"
+       data-ratio="{{ $f['ratio'] }}"
+       class="fold-radio"
+       {{ $loop->first ? 'checked' : '' }}
+       required>
 
                 <div class="fold-card">
                     <div class="fold-img">
@@ -1433,15 +1433,14 @@ const pricePerMeter = {{ (float)$product->price }};
 function calculateCurtain() {
 
     let width = parseFloat(document.querySelector('[name="width"]').value) || 0;
-    let height = parseFloat(document.querySelector('[name="height"]').value) || 0;
 
     let selectedFold = document.querySelector('[name="fold_type"]:checked');
-    let extra = parseFloat(selectedFold.dataset.extra);
+    let ratio = parseFloat(selectedFold.dataset.ratio);
 
-    let multiplier = 2; // standard fullness
+    // WIDTH × RATIO
+    let meters = width * ratio;
 
-    let meters = width * multiplier;
-    let total = meters * (pricePerMeter + extra);
+    let total = meters * pricePerMeter;
 
     document.getElementById("totalMeters").innerText = meters.toFixed(2);
     document.getElementById("totalPrice").innerText = total.toFixed(2);
