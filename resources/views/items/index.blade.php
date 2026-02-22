@@ -3,177 +3,138 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>Brillant Tepiha & Perde | Lipjan – Porosit Online</title>
-
-  <!-- ====== SEO CORE ====== -->
-  <meta name="description" content="Tepiha moderne & klasik, perde anësore/ditore, set çarçafësh, mbulesa, batanije, jastakë dekorues dhe tepiha për banjo. Porosit online – Brillant Lipjan.">
-  <meta name="keywords" content="tepiha, perde, set çarçafësh, mbulesa, batanije, garnishte, jastak dekorues, tepiha banjo, lipjan, kosovë, brilllant, b-brillant">
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-  <meta name="author" content="Brillant">
-  <meta name="theme-color" content="#dc3545">
-
-  <!-- Canonical (ndrysho domain nëse e ki tjetër) -->
-  <link rel="canonical" href="https://b-brillant.com/">
-
-  <!-- OpenGraph -->
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="sq_AL">
-  <meta property="og:site_name" content="Brillant">
-  <meta property="og:title" content="Brillant – Tepiha & Perde | Porosit Online">
-  <meta property="og:description" content="Tepiha, perde, set çarçafësh, mbulesa, batanije dhe dekorime për shtëpi. Shërbim profesional në Lipjan + dërgesë në gjithë Kosovën.">
-  <meta property="og:url" content="https://b-brillant.com/">
-  <meta property="og:image" content="{{ asset('images/og-cover.jpg') }}">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Brillant – Tepiha & Perde | Porosit Online">
-  <meta name="twitter:description" content="Tepiha, perde, set çarçafësh, mbulesa, batanije dhe dekorime për shtëpi. Dërgesë në gjithë Kosovën.">
-  <meta name="twitter:image" content="{{ asset('images/og-cover.jpg') }}">
-
-  <!-- Performance hints -->
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>Brillant Tepiha & Perde | b-brillant.com</title>
+  <meta name="description" content="Tepiha moderne, perde, set qarqafësh, mbulesa, jastakë dekorues dhe tepiha për banjo. Cilësi dhe dizajn për shtëpinë tuaj në Lipjan.">
 
   <!-- Bootstrap CSS & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="icon" type="image/png" href="{{ asset('images/llogo.png') }}">
-  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- ====== STRUCTURED DATA (JSON-LD) ====== -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "Brillant Tepiha & Perde",
-    "url": "https://b-brillant.com/",
-    "logo": "{{ asset('images/llogo.png') }}",
-    "image": "{{ asset('images/og-cover.jpg') }}",
-    "telephone": "+38344960661",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Lipjan",
-      "addressCountry": "XK"
-    },
-    "areaServed": "XK",
-    "sameAs": [
-      "https://www.instagram.com/"
-    ]
-  }
-  </script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Brillant",
-    "url": "https://b-brillant.com/",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://b-brillant.com/search?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  }
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <style>
+    /* =========================================================
+      Brillant Home – Pro CSS (structured, responsive, modern)
+    ========================================================== */
     :root{
-      --bg: #f6f7fb;
-      --text: #0f172a;
-      --muted:#64748b;
-      --brand:#dc3545;
-      --brand2:#ffc107;
+      --bg: #0b1020;
+      --surface: #0f172a;
+      --surface-2:#111827;
       --card:#ffffff;
-      --ring: rgba(220,53,69,.22);
-      --shadow: 0 18px 45px rgba(2,6,23,.10);
-      --shadow2: 0 10px 30px rgba(2,6,23,.08);
+      --muted:#6b7280;
+      --text:#111827;
+      --light:#f8fafc;
+      --brand:#dc3545;          /* red */
+      --brand-2:#ffc107;        /* gold */
+      --ring: rgba(220,53,69,.28);
+      --shadow: 0 18px 45px rgba(2,6,23,.12);
+      --shadow-soft: 0 10px 28px rgba(2,6,23,.10);
       --radius: 18px;
-      --radius2: 26px;
+      --radius-lg: 24px;
     }
 
     *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family:'Poppins',sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(1200px 700px at 10% -10%, rgba(220,53,69,.16), transparent 55%),
-        radial-gradient(900px 500px at 90% 0%, rgba(255,193,7,.12), transparent 55%),
-        var(--bg);
+    html, body{ height:100%; }
+    html, body, .navbar-custom, .navbar-custom .nav-link, .dropdown-menu, .dropdown-item{
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
     }
 
-    a{ text-decoration:none; }
+    body{
+      margin:0;
+      font-family:'Poppins',sans-serif;
+      background:
+        radial-gradient(1200px 700px at 10% -10%, rgba(220,53,69,.18), transparent 55%),
+        radial-gradient(900px 500px at 90% 0%, rgba(255,193,7,.14), transparent 55%),
+        #f6f7fb;
+      color:var(--text);
+    }
+
+    /* ===== Helpers ===== */
     .section-pad{ padding: 4rem 0; }
     .soft-card{
-      background: rgba(255,255,255,.78);
-      border: 1px solid rgba(2,6,23,.06);
-      box-shadow: var(--shadow2);
-      border-radius: var(--radius2);
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(17,24,39,.06);
+      box-shadow: var(--shadow-soft);
+      border-radius: var(--radius-lg);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
-    .pill{ border-radius: 999px !important; }
+    .pill{
+      border-radius: 999px !important;
+    }
+    .btn-brand{
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(220,53,69,.22);
+    }
+    .btn-brand:hover{
+      filter: brightness(.98);
+      box-shadow: 0 14px 30px rgba(220,53,69,.28);
+    }
 
-    /* ===== NAVBAR ===== */
+    /* =========================
+       NAVBAR (New look)
+    ========================== */
     .navbar-custom{
       position: sticky;
       top:0;
       z-index: 1000;
       padding: .75rem 0;
-      background: rgba(15,23,42,.88);
+      background: linear-gradient(90deg, rgba(15,23,42,.92), rgba(17,24,39,.92));
       border-bottom: 1px solid rgba(255,255,255,.08);
-      backdrop-filter: blur(14px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
+
     .navbar-custom .navbar-brand img{
-      height: 44px;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.20));
+      height: 46px;
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,.20));
     }
+
     .navbar-custom .nav-link{
       color: rgba(248,250,252,.92) !important;
-      font-weight: 600;
+      font-weight: 500;
       font-size: .95rem;
       padding: .55rem .85rem;
       border-radius: 999px;
-      transition: all .2s ease;
+      transition: background .2s ease, color .2s ease, transform .2s ease;
     }
-    .navbar-custom .nav-link:hover{
-      background: rgba(255,255,255,.10);
+    .navbar-custom .nav-link:hover,
+    .navbar-custom .nav-link:focus{
+      color: #fff !important;
+      background: rgba(255,255,255,.08);
       transform: translateY(-1px);
-      color:#fff !important;
     }
+
     .navbar-custom .navbar-toggler{
-      border-color: rgba(255,255,255,.25);
-      border-radius: 14px;
+      border-color: rgba(255,255,255,.28);
+      border-radius: 12px;
       padding: .45rem .6rem;
     }
     .navbar-custom .navbar-toggler-icon{
-      background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255,255,255,0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28 255, 255, 255, 0.85 %29)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
     }
 
     .dropdown-menu{
       border: 1px solid rgba(2,6,23,.08);
-      border-radius: 16px;
-      box-shadow: 0 22px 60px rgba(2,6,23,.18);
-      padding: .6rem;
+      border-radius: 14px;
+      box-shadow: 0 18px 50px rgba(2,6,23,.18);
+      padding: .55rem;
     }
     .dropdown-item{
       border-radius: 12px;
       padding: .55rem .75rem;
-      font-weight: 600;
+      font-weight: 500;
     }
     .dropdown-item:hover{
-      background: rgba(220,53,69,.10);
+      background: rgba(220,53,69,.08);
       color: var(--brand);
     }
 
@@ -183,29 +144,39 @@
       top:0;
       left:100%;
       margin-left:.25rem;
-      min-width: 210px;
-      border-radius: 16px;
+      min-width: 190px;
+      border-radius: 14px;
     }
     .dropdown-submenu:hover .submenu{ display:block; }
 
+    /* Navbar right small button */
     .nav-login-btn{
       border: 1px solid rgba(255,255,255,.28);
       color: rgba(255,255,255,.92);
       background: rgba(255,255,255,.06);
       border-radius: 999px;
-      padding: .45rem .9rem;
-      font-weight: 800;
+      padding: .45rem .85rem;
+      font-weight: 600;
     }
-    .nav-login-btn:hover{ background: rgba(255,255,255,.10); color:#fff; }
+    .nav-login-btn:hover{
+      background: rgba(255,255,255,.10);
+      color:#fff;
+    }
 
+    /* Mobile navbar dropdown */
     @media (max-width: 992px){
       .navbar-custom .dropdown-menu{
         background: rgba(17,24,39,.98);
         border-color: rgba(255,255,255,.10);
         box-shadow: none;
       }
-      .navbar-custom .dropdown-item{ color: rgba(248,250,252,.92); }
-      .navbar-custom .dropdown-item:hover{ background: rgba(255,255,255,.08); color: var(--brand2); }
+      .navbar-custom .dropdown-item{
+        color: rgba(248,250,252,.92);
+      }
+      .navbar-custom .dropdown-item:hover{
+        background: rgba(255,255,255,.06);
+        color: var(--brand-2);
+      }
       .dropdown-submenu .submenu{
         position: static;
         display: block;
@@ -216,219 +187,262 @@
       }
     }
 
-    /* ===== TOPBAR ===== */
-    .topbar{ margin-top: 16px; }
+    /* =========================
+       TOP ACTION BAR (NEW)
+       - search moved "mas mirti"
+    ========================== */
+    .topbar{
+      margin-top: 18px;
+    }
     .topbar-inner{
       padding: 14px;
-      border-radius: var(--radius2);
-      background: rgba(255,255,255,.78);
-      border: 1px solid rgba(2,6,23,.06);
-      box-shadow: var(--shadow2);
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(17,24,39,.06);
+      box-shadow: var(--shadow-soft);
     }
 
-    .chips{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
     .chip{
-      width:100%;
-      display:flex;
+      display:inline-flex;
       align-items:center;
-      justify-content:center;
-      gap:8px;
-      padding: 10px 12px;
+      gap:.5rem;
+      padding:.55rem .85rem;
       border-radius: 999px;
-      background: rgba(2,6,23,.04);
-      border: 1px solid rgba(2,6,23,.06);
-      font-weight: 800;
+      background: rgba(17,24,39,.04);
+      border: 1px solid rgba(17,24,39,.06);
+      font-weight: 600;
       color: #0f172a;
-      transition: all .18s ease;
-      font-size: 14px;
+      text-decoration:none;
+      transition: transform .18s ease, background .18s ease;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
-    .chip:hover{ background: rgba(220,53,69,.10); color: var(--brand); transform: translateY(-1px); }
+    .chip:hover{
+      background: rgba(220,53,69,.08);
+      transform: translateY(-1px);
+      color: var(--brand);
+    }
+    .chip i{ opacity:.9; }
 
-    .search-pro{ position: relative; }
+    /* Search */
+    .search-pro{
+      position: relative;
+    }
     .search-pro input{
-      height: 54px;
+      height: 50px;
       border-radius: 999px;
       padding-left: 48px;
-      padding-right: 125px;
-      border: 1px solid rgba(2,6,23,.10);
-      box-shadow: 0 12px 30px rgba(2,6,23,.08);
-      outline:none;
+      padding-right: 120px;
+      border: 1px solid rgba(17,24,39,.10);
+      box-shadow: 0 10px 28px rgba(2,6,23,.08);
+      outline: none;
     }
     .search-pro input:focus{
-      border-color: rgba(220,53,69,.40);
-      box-shadow: 0 0 0 6px var(--ring), 0 12px 32px rgba(2,6,23,.10);
+      border-color: rgba(220,53,69,.35);
+      box-shadow: 0 0 0 5px var(--ring), 0 12px 28px rgba(2,6,23,.10);
     }
     .search-pro .icon{
       position:absolute;
       top:50%;
-      left: 18px;
+      left: 16px;
       transform: translateY(-50%);
       color: var(--muted);
       font-size: 1.05rem;
     }
-    .btn-brand{
-      background: var(--brand);
-      border-color: var(--brand);
-      color:#fff;
-      font-weight: 900;
-      box-shadow: 0 14px 34px rgba(220,53,69,.22);
-    }
-    .btn-brand:hover{ filter: brightness(.98); color:#fff; box-shadow: 0 18px 44px rgba(220,53,69,.28); }
-
     .search-pro .btn{
       position:absolute;
       top:50%;
       right: 6px;
       transform: translateY(-50%);
       border-radius: 999px;
-      padding: .65rem 1.05rem;
-      font-weight: 900;
+      padding: .55rem 1rem;
+      font-weight: 700;
     }
 
+    /* WhatsApp */
     .wa-btn{
       background: #16a34a;
       border: 1px solid rgba(22,163,74,.25);
-      color:#fff;
+      color: #fff;
       border-radius: 999px;
-      padding: .75rem 1.05rem;
-      font-weight: 900;
-      box-shadow: 0 14px 34px rgba(22,163,74,.18);
+      padding: .6rem 1rem;
+      font-weight: 700;
+      box-shadow: 0 10px 26px rgba(22,163,74,.18);
       white-space: nowrap;
     }
-    .wa-btn:hover{ filter: brightness(.98); color:#fff; box-shadow: 0 18px 44px rgba(22,163,74,.22); }
+    .wa-btn:hover{
+      filter: brightness(.98);
+      color:#fff;
+      box-shadow: 0 14px 34px rgba(22,163,74,.22);
+    }
 
-    /* ===== HERO ===== */
+    /* =========================
+       HERO (New layout)
+    ========================== */
     .hero{
-      margin-top: 16px;
-      border-radius: 34px;
+      margin-top: 18px;
+      border-radius: 32px;
       overflow: hidden;
       position: relative;
-      box-shadow: 0 32px 90px rgba(2,6,23,.20);
-      background: linear-gradient(180deg, rgba(15,23,42,.92), rgba(2,6,23,.92));
-      color:#fff;
+      background:
+        radial-gradient(900px 500px at 20% 20%, rgba(255,193,7,.18), transparent 55%),
+        radial-gradient(900px 500px at 80% 40%, rgba(220,53,69,.22), transparent 60%),
+        linear-gradient(180deg, rgba(15,23,42,.92), rgba(2,6,23,.92));
+      color: #fff;
+      box-shadow: 0 30px 80px rgba(2,6,23,.25);
     }
+
     .hero-bg{
       position:absolute;
       inset:0;
       background: url('{{ asset('slider/foto1.jpg') }}') center/cover no-repeat;
       filter: brightness(.45) saturate(1.05);
       transform: scale(1.03);
+      z-index: 0;
     }
     .hero::after{
       content:"";
       position:absolute;
       inset:0;
-      background:
-        radial-gradient(900px 500px at 20% 20%, rgba(255,193,7,.18), transparent 55%),
-        radial-gradient(900px 500px at 80% 40%, rgba(220,53,69,.22), transparent 60%),
-        linear-gradient(90deg, rgba(2,6,23,.72), rgba(2,6,23,.32) 60%, rgba(2,6,23,.70));
+      background: linear-gradient(90deg, rgba(2,6,23,.70), rgba(2,6,23,.30) 55%, rgba(2,6,23,.70));
+      z-index: 1;
     }
+
     .hero-content{
-      position:relative;
-      z-index:2;
-      padding: 3.2rem 1.6rem;
+      position: relative;
+      z-index: 2;
+      padding: 3.2rem 1.5rem;
     }
     .hero-badge{
       display:inline-flex;
       align-items:center;
       gap:.6rem;
-      padding:.4rem .9rem;
+      padding:.35rem .85rem;
       border-radius: 999px;
       background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.16);
+      border: 1px solid rgba(255,255,255,.14);
       font-size: .82rem;
-      letter-spacing: .12em;
       text-transform: uppercase;
-      font-weight: 800;
+      letter-spacing: .12em;
     }
     .hero-badge span{
-      background: var(--brand2);
+      background: var(--brand-2);
       color: #111;
-      padding: .12rem .6rem;
+      padding: .12rem .55rem;
       border-radius: 999px;
-      font-weight: 900;
+      font-weight: 800;
       letter-spacing: .10em;
     }
+
     .hero-title{
-      margin-top: 1rem;
-      font-weight: 900;
+      font-weight: 800;
       line-height: 1.06;
-      font-size: clamp(2.05rem, 4.4vw, 3.45rem);
+      margin-top: 1rem;
+      font-size: clamp(2.05rem, 4.2vw, 3.35rem);
     }
-    .hero-title em{ font-style: normal; color: var(--brand2); }
+    .hero-title em{
+      font-style: normal;
+      color: var(--brand-2);
+    }
     .hero-sub{
       margin-top: 1rem;
-      max-width: 600px;
+      max-width: 560px;
       color: rgba(248,250,252,.92);
-      line-height: 1.75;
       font-size: 1.02rem;
+      line-height: 1.65;
     }
+
     .hero-actions{
-      margin-top: 1.35rem;
+      margin-top: 1.4rem;
       display:flex;
       gap:.75rem;
       flex-wrap: wrap;
     }
     .hero-actions .btn{
       border-radius: 999px;
-      padding: .78rem 1.45rem;
-      font-weight: 900;
-    }
-    .trust-row{
-      margin-top: 1.25rem;
-      display:flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .trust{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding: .6rem .85rem;
-      border-radius: 16px;
-      background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.14);
+      padding: .72rem 1.35rem;
       font-weight: 800;
-      color: rgba(248,250,252,.95);
-      font-size: .92rem;
     }
-    .trust i{ color: var(--brand2); }
+    .hero-actions .btn-outline-light{
+      border-width: 2px;
+    }
 
-    /* Weekly card */
+    .hero-stats{
+      margin-top: 1.7rem;
+      display:flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .stat{
+      padding: .75rem .95rem;
+      border-radius: 16px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      min-width: 175px;
+    }
+    .stat .n{
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--brand-2);
+      line-height: 1;
+    }
+    .stat .t{
+      font-size: .9rem;
+      color: rgba(248,250,252,.88);
+      margin-top: .3rem;
+    }
+
+    /* Weekly offers card */
     .weekly-card{
       border-radius: 26px;
       background: rgba(255,255,255,.92);
-      border: 1px solid rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.16);
       box-shadow: 0 18px 55px rgba(2,6,23,.24);
-      overflow:hidden;
+      overflow: hidden;
     }
-    .weekly-card .head{ padding: 1rem 1.1rem .3rem; }
+    .weekly-card .head{
+      padding: 1rem 1.1rem .3rem;
+    }
     .weekly-card .kicker{
       font-size: .78rem;
       letter-spacing: .16em;
       text-transform: uppercase;
       color: rgba(2,6,23,.55);
       margin-bottom: .35rem;
+      font-weight: 800;
+    }
+    .weekly-card .title{
       font-weight: 900;
+      margin:0;
+      color: #0f172a;
     }
-    .weekly-card .title{ font-weight: 900; margin:0; color:#0f172a; }
-    .weekly-item{ padding: .9rem 1.1rem; border-top: 1px solid rgba(2,6,23,.06); }
+    .weekly-item{
+      padding: .9rem 1.1rem;
+      border-top: 1px solid rgba(2,6,23,.06);
+    }
     .weekly-item img{
-      width: 112px; height: 112px; object-fit: cover; border-radius: 16px;
-      box-shadow: 0 12px 26px rgba(2,6,23,.12);
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 10px 22px rgba(2,6,23,.12);
     }
-    .price{ font-weight: 900; color: var(--brand); }
-    .old{ color: rgba(2,6,23,.45); text-decoration: line-through; font-size: .9rem; }
+    .price{
+      font-weight: 900;
+      color: var(--brand);
+    }
+    .old{
+      color: rgba(2,6,23,.45);
+      text-decoration: line-through;
+      font-size: .9rem;
+    }
 
-    /* ===== Sections ===== */
-    .section-title{ text-align:center; margin-bottom: 2.2rem; }
+    /* =========================
+       SECTIONS
+    ========================== */
+    .section-title{
+      text-align:center;
+      margin-bottom: 2.25rem;
+    }
     .section-title .k{
       display:inline-block;
       font-size: .82rem;
@@ -438,43 +452,94 @@
       color: var(--brand);
       background: rgba(220,53,69,.08);
       border: 1px solid rgba(220,53,69,.14);
-      padding: .38rem .85rem;
+      padding: .35rem .8rem;
       border-radius: 999px;
     }
-    .section-title h2{ margin-top:.85rem; font-weight: 900; color:#0f172a; }
-    .section-title p{ margin: .55rem auto 0; max-width: 720px; color: var(--muted); }
+    .section-title h2{
+      margin-top: .85rem;
+      font-weight: 900;
+      color: #0f172a;
+    }
+    .section-title p{
+      margin: .55rem auto 0;
+      max-width: 680px;
+      color: var(--muted);
+    }
 
     /* Category cards */
     .cat-card{
-      height:100%;
+      height: 100%;
       border-radius: 22px;
-      background:#fff;
+      background: #fff;
       border: 1px solid rgba(2,6,23,.06);
-      box-shadow: var(--shadow2);
+      box-shadow: var(--shadow-soft);
       overflow:hidden;
       transition: transform .2s ease, box-shadow .2s ease;
     }
-    .cat-card:hover{ transform: translateY(-6px); box-shadow: 0 26px 70px rgba(2,6,23,.14); }
-    .cat-media{ position:relative; overflow:hidden; }
-    .cat-media img{ width:100%; height: 220px; object-fit: cover; transition: transform .5s ease; }
-    .cat-card:hover .cat-media img{ transform: scale(1.07); }
+    .cat-card:hover{
+      transform: translateY(-5px);
+      box-shadow: 0 22px 55px rgba(2,6,23,.14);
+    }
+    .cat-media{
+      position: relative;
+      overflow: hidden;
+    }
+    .cat-media img{
+      width:100%;
+      height: 220px;
+      object-fit: cover;
+      transition: transform .45s ease;
+    }
+    .cat-card:hover .cat-media img{
+      transform: scale(1.06);
+    }
     .cat-badge{
-      position:absolute; top: 12px; left: 12px;
-      background: rgba(2,6,23,.78);
+      position:absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(2,6,23,.72);
       color:#fff;
-      padding: .28rem .75rem;
+      padding: .25rem .7rem;
       border-radius: 999px;
       font-size: .76rem;
-      font-weight: 900;
-      letter-spacing:.06em;
+      font-weight: 800;
+      letter-spacing: .06em;
     }
-    .cat-body{ padding: 1rem 1.1rem 1.2rem; }
-    .cat-body h5{ font-weight: 900; margin-bottom: .35rem; }
-    .cat-body p{ color: var(--muted); font-size: .93rem; margin-bottom: .9rem; }
+    .cat-body{
+      padding: 1rem 1.1rem 1.2rem;
+    }
+    .cat-body h5{
+      font-weight: 800;
+      margin-bottom: .35rem;
+    }
+    .cat-body p{
+      color: var(--muted);
+      font-size: .93rem;
+      margin-bottom: .8rem;
+    }
     .cat-link{
-      display:inline-flex; align-items:center; gap:.45rem;
-      font-weight: 900; letter-spacing:.12em; text-transform: uppercase;
-      font-size: .82rem; color: var(--brand);
+      display:inline-flex;
+      align-items:center;
+      gap:.45rem;
+      text-decoration: none;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-size: .82rem;
+      color: var(--brand);
+    }
+
+    /* Rugs carousel title */
+    .rugs-head .k{
+      font-size: .82rem;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(2,6,23,.55);
+    }
+    .rugs-head h2{
+      font-weight: 900;
+      margin: .35rem 0;
     }
 
     /* Product cards */
@@ -482,65 +547,52 @@
       border: 1px solid rgba(2,6,23,.06);
       border-radius: 22px;
       overflow:hidden;
-      box-shadow: var(--shadow2);
-      background:#fff;
+      box-shadow: var(--shadow-soft);
       height:100%;
-      transition: transform .18s ease, box-shadow .18s ease;
+      background:#fff;
     }
-    .product-card:hover{ transform: translateY(-5px); box-shadow: 0 24px 66px rgba(2,6,23,.14); }
-    .product-card img{ height: 270px; width:100%; object-fit: cover; }
-    .product-card .card-body{ padding: 1rem 1.1rem 1.2rem; }
-    .tag{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding: .25rem .6rem;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 900;
-      background: rgba(220,53,69,.10);
-      color: var(--brand);
-      border: 1px solid rgba(220,53,69,.16);
+    .product-card img{
+      height: 260px;
+      width:100%;
+      object-fit: cover;
+    }
+    .product-card .card-body{
+      padding: 1rem 1.1rem 1.2rem;
     }
 
-    /* Why choose us */
+    /* Why choose us block */
     .why-wrap{
-      background: rgba(255,255,255,.82);
-      border: 1px solid rgba(2,6,23,.06);
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(17,24,39,.06);
       border-radius: 28px;
       box-shadow: var(--shadow);
       overflow:hidden;
     }
-    .why-side{
+    .why-wrap .why-side{
       padding: 2rem;
       background: linear-gradient(180deg, rgba(220,53,69,.08), rgba(255,255,255,0));
     }
-    .why-points{ padding: 2rem; }
+    .why-wrap .why-points{
+      padding: 2rem;
+    }
+    .why-bullet h5{
+      font-weight: 900;
+      font-size: 1rem;
+      margin-bottom: .25rem;
+    }
+    .why-bullet p{
+      color: var(--muted);
+      margin-bottom: 0;
+      font-size: .95rem;
+      line-height: 1.6;
+    }
     .why-bullet{
       padding: .95rem 1rem;
       border-radius: 18px;
       border: 1px solid rgba(2,6,23,.06);
-      background: rgba(255,255,255,.78);
+      background: rgba(255,255,255,.70);
       box-shadow: 0 10px 26px rgba(2,6,23,.07);
       margin-bottom: .85rem;
-    }
-    .why-bullet h5{ font-weight: 900; font-size: 1rem; margin-bottom: .25rem; }
-    .why-bullet p{ color: var(--muted); margin:0; font-size: .95rem; line-height: 1.6; }
-
-    /* Newsletter */
-    .newsletter{
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(220,53,69,.10), rgba(255,193,7,.10));
-      border: 1px solid rgba(2,6,23,.06);
-      box-shadow: var(--shadow2);
-      padding: 1.8rem;
-    }
-    .newsletter h3{ font-weight: 900; margin:0; }
-    .newsletter p{ color: var(--muted); margin:.35rem 0 1rem; }
-    .newsletter .form-control{
-      height: 52px;
-      border-radius: 999px;
-      border: 1px solid rgba(2,6,23,.10);
     }
 
     /* SEO text */
@@ -548,114 +600,129 @@
       font-size: .98rem;
       line-height: 1.75;
       color: rgba(2,6,23,.78);
-      background: rgba(255,255,255,.78);
-      border: 1px solid rgba(2,6,23,.06);
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(17,24,39,.06);
       border-radius: 22px;
       padding: 1.6rem;
-      box-shadow: var(--shadow2);
+      box-shadow: var(--shadow-soft);
     }
-    .seo-text h2{ font-weight: 900; margin-bottom: .85rem; }
+    .seo-text h2{
+      font-weight: 900;
+      margin-bottom: .85rem;
+    }
 
     /* Footer */
     footer{
-      font-size:.92rem;
-      background: rgba(255,255,255,.78) !important;
-      border-top: 1px solid rgba(2,6,23,.08) !important;
-      backdrop-filter: blur(12px);
+      font-size: .92rem;
+      background: rgba(255,255,255,.75) !important;
+      border-top: 1px solid rgba(17,24,39,.08) !important;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
 
-    /* Mobile CTA bar */
-    .mobile-cta{
-      display:none;
-      position: fixed;
-      left: 12px;
-      right: 12px;
-      bottom: 12px;
-      z-index: 1200;
-      background: rgba(15,23,42,.92);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 18px;
-      padding: 10px;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 18px 45px rgba(2,6,23,.22);
-    }
-    .mobile-cta a{
-      flex:1;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      padding: 12px 10px;
-      border-radius: 14px;
-      font-weight: 900;
-      color:#fff;
-    }
-    .mobile-cta a.call{ background: rgba(255,255,255,.10); }
-    .mobile-cta a.wa{ background: #16a34a; }
-
-    /* Responsive */
+    /* =========================
+       Responsive tweaks
+    ========================== */
     @media (max-width: 992px){
-      .hero-content{ padding: 2.6rem 1.1rem; }
-      .weekly-card{ margin-top: 14px; }
+      .hero-content{ padding: 2.5rem 1.1rem; }
+      .weekly-card{ margin-top: 16px; }
       .search-pro input{ padding-right: 110px; }
     }
     @media (max-width: 768px){
-      .section-pad{ padding: 3.2rem 0; }
-      .hero-actions .btn{ width: 100%; }
-      .trust-row{ justify-content:center; }
-      .mobile-cta{ display:flex; gap:10px; }
-      body{ padding-bottom: 84px; } /* space for mobile CTA */
+      .topbar{ margin-top: 12px; }
+      .hero-content{ padding: 2.2rem 1rem; }
+      .hero-sub{ font-size: .98rem; }
+      .hero-stats{ justify-content: center; }
+      .stat{ min-width: 160px; }
+      .search-pro input{ height: 52px; }
     }
+    @media (max-width: 576px){
+      .search-pro input{ padding-right: 100px; }
+      .hero-actions .btn{ width: 100%; }
+      .weekly-item img{ width: 92px; height: 92px; }
+    }
+    .chips-2rows{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px; /* mundesh me bo 8px nese don ma ngusht */
+}
+
+/* chips mos me u bo te gjata */
+.chips-2rows .chip{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+
+  /* responsive pa e ndrru layout-in */
+  font-size: clamp(11px, 1.6vw, 14px);
+  padding: clamp(6px, 1.2vw, 10px) clamp(8px, 1.4vw, 12px);
+
+  line-height:1.1;
+  white-space: nowrap;       /* mos me ra ne 2 rreshta */
+  overflow: hidden;          /* mos me dal jasht */
+  text-overflow: ellipsis;   /* ... nese nuk nxan */
+}
+
+.chips-2rows .chip i{
+  font-size: clamp(12px, 1.8vw, 16px);
+}
   </style>
 </head>
 
 <body>
-
   <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom" aria-label="Main navigation">
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center" href="/" aria-label="Brillant Home">
+      <a class="navbar-brand d-flex align-items-center" href="/">
         <img src="{{ asset('images/brillant.png') }}" alt="Brillant Logo">
       </a>
 
       <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
         data-bs-target="#navbarContent" aria-controls="navbarContent"
-        aria-expanded="false" aria-label="Hap menynë">
+        aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
         <ul class="navbar-nav align-items-lg-center gap-lg-1 me-lg-2">
-
-          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
 
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="catalogDropdown" role="button"
-              data-bs-toggle="dropdown" aria-expanded="false">Products</a>
-
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Products
+            </a>
             <ul class="dropdown-menu" aria-labelledby="catalogDropdown">
               <li><a class="dropdown-item" href="/tepiha">Tepiha</a></li>
 
               <li class="dropdown-submenu position-relative">
-                <a class="dropdown-item dropdown-toggle" href="#" role="button">Perde</a>
+                <a class="dropdown-item dropdown-toggle" href="#">Perde</a>
                 <ul class="dropdown-menu submenu shadow">
                   <li><a class="dropdown-item" href="/anesore">Perde Anësore</a></li>
                   <li><a class="dropdown-item" href="/perde-ditore">Perde Ditore</a></li>
                 </ul>
               </li>
 
-              <li><a class="dropdown-item" href="/jastekdekorues">Jastek Dekorues</a></li>
+              <li><a class="dropdown-item" href="/jastekdekorues">JastekDekorues</a></li>
               <li><a class="dropdown-item" href="/postava">Set çarçafesh</a></li>
               <li><a class="dropdown-item" href="/mbulesa">Mbulesa</a></li>
               <li><a class="dropdown-item" href="/batanije">Batanije</a></li>
               <li><a class="dropdown-item" href="/tepihebanjo">Tepiha për Banjo</a></li>
-              <li><a class="dropdown-item" href="/posteqia">Lëkurë Pelushi</a></li>
+              <li><a class="dropdown-item" href="/posteqia">Lekur Pelushi</a></li>
               <li><a class="dropdown-item" href="/garnishte">Garnishte</a></li>
             </ul>
           </li>
 
-          <li class="nav-item"><a class="nav-link" href="{{ route('about') }}">About Us</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}">Contact</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('about') }}">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('contact') }}">Contact us</a>
+          </li>
 
           @auth
             <li class="nav-item dropdown">
@@ -723,57 +790,55 @@
     </div>
   </nav>
 
-  <!-- TOPBAR -->
+  <!-- TOPBAR: categories + NEW SEARCH + WhatsApp -->
   <div class="container topbar">
-    <div class="topbar-inner">
-      <div class="row g-3 align-items-center">
-        <div class="col-lg-4">
-          <div class="chips">
-            <a class="chip" href="/tepiha"><i class="bi bi-grid"></i> Tepiha</a>
-            <a class="chip" href="/mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
-            <a class="chip" href="/anesore"><i class="bi bi-layout-text-window"></i> Perde</a>
-            <a class="chip" href="/garnishte"><i class="bi bi-stars"></i> Garnishte</a>
-            <a class="chip" href="/batanije"><i class="bi bi-snow"></i> Batanije</a>
-            <a class="chip" href="/postava"><i class="bi bi-bag-check"></i> Set çarçafesh</a>
-          </div>
-        </div>
+  <div class="topbar-inner">
+    <div class="row g-3 align-items-center">
 
-        <div class="col-lg-5">
-          <form action="{{ route('search') }}" method="GET" class="search-pro" role="search" aria-label="Kërko produkte">
-            <i class="bi bi-search icon"></i>
-            <input type="text" name="q" class="form-control"
-                   placeholder="Kërko produktin (p.sh. tepiha 150x230, perde ditore...)"
-                   value="{{ request('q') }}" required>
-            <button class="btn btn-brand" type="submit">Kërko</button>
-          </form>
-          <div class="mt-2 small text-muted">
-            Popullore: <a class="text-danger fw-bold" href="/tepiha">Tepiha</a> · <a class="text-danger fw-bold" href="/anesore">Perde</a> · <a class="text-danger fw-bold" href="/postava">Set çarçafesh</a>
-          </div>
-        </div>
+      <div class="col-lg-4">
+        <div class="chips-2rows">
+          <!-- RRESHTI 1 -->
+          <a class="chip" href="/tepiha"><i class="bi bi-grid"></i> Tepiha</a>
+          <a class="chip" href="/mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
+          <a class="chip" href="/anesore"><i class="bi bi-layout-text-window"></i> Perde</a>
 
-        <div class="col-lg-3 text-lg-end">
-          <a href="https://wa.me/38344960661" target="_blank" rel="noopener" class="wa-btn d-inline-flex align-items-center gap-2">
-            <i class="bi bi-whatsapp"></i> Chat në WhatsApp
-          </a>
-          <div class="small text-muted mt-2">
-            Për porosi / matje: <span class="fw-bold">+383 44 960 661</span>
-          </div>
+          <!-- RRESHTI 2 -->
+          <a class="chip" href="/garnishte"><i class="bi bi-layout-text-window"></i> Garnishte</a>
+          <a class="chip" href="/batanije"><i class="bi bi-snow"></i> Batanije</a>
+          <a class="chip" href="/postava"><i class="bi bi-bag-check"></i> Set çarçafesh</a>
         </div>
-
       </div>
+
+      <div class="col-lg-5">
+        <form action="{{ route('search') }}" method="GET" class="search-pro">
+          <i class="bi bi-search icon"></i>
+          <input type="text" name="q" class="form-control"
+                 placeholder="Kërko produktin:"
+                 value="{{ request('q') }}" required>
+          <button class="btn btn-brand" type="submit">Kërko</button>
+        </form>
+      </div>
+
+      <div class="col-lg-3 text-lg-end">
+        <a href="https://wa.me/38344960661" target="_blank" class="wa-btn d-inline-flex align-items-center gap-2">
+          <i class="bi bi-whatsapp"></i> Chat
+        </a>
+      </div>
+
     </div>
   </div>
+</div>
 
   <!-- HERO -->
   <section class="container mt-3">
     <div class="hero">
-      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="hero-bg"></div>
 
       <div class="hero-content">
         <div class="row align-items-center gy-4">
           <div class="col-lg-7">
             <div class="hero-badge">
-              <span>NEW</span> Koleksion i ri – dizajn modern & cilësi premium
+              <span>KOLEKSION I RI</span> Tepiha & perde për çdo ambient
             </div>
 
             <h1 class="hero-title">
@@ -782,25 +847,27 @@
 
             <p class="hero-sub">
               Zgjidh dizajnin ideal për sallon, dhomë gjumi apo zyrë.
-              Ngjyra që nuk zbehen, teksturë cilësore dhe shërbim profesional nga Brillant në Lipjan.
+              Tekstura cilësore, ngjyra që nuk zbehen dhe shërbim profesional nga Brillant në Lipjan.
             </p>
 
             <div class="hero-actions">
               <a href="/tepiha" class="btn btn-brand">
-                <i class="bi bi-grid me-1"></i> Shiko tepihat
+                Shiko tepihat
               </a>
               <a href="/anesore" class="btn btn-outline-light">
-                <i class="bi bi-layout-text-window me-1"></i> Shiko perdet
-              </a>
-              <a href="{{ route('contact') }}" class="btn btn-light">
-                <i class="bi bi-geo-alt me-1"></i> Na gjej
+                Shiko perdet
               </a>
             </div>
 
-            <div class="trust-row">
-              <div class="trust"><i class="bi bi-check-circle-fill"></i> Dërgesë në gjithë Kosovën</div>
-              <div class="trust"><i class="bi bi-shield-check"></i> Cilësi & garanci</div>
-              <div class="trust"><i class="bi bi-scissors"></i> Qepje & montim profesional</div>
+            <div class="hero-stats">
+              <div class="stat">
+                <div class="n">3000+</div>
+                <div class="t">Klientë të kënaqur në Kosovë</div>
+              </div>
+              <div class="stat">
+                <div class="n">15+ vjet</div>
+                <div class="t">Përvojë në tekstile shtëpie</div>
+              </div>
             </div>
           </div>
 
@@ -814,10 +881,11 @@
               <div id="weeklyOffersCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
                 <div class="carousel-inner">
 
+                  <!-- Slide 1 -->
                   <div class="carousel-item active">
                     <div class="weekly-item">
                       <div class="d-flex gap-3 align-items-center">
-                        <img loading="lazy" src="{{ asset('slider/side.bmp') }}" alt="Tepiha Modern 150x230">
+                        <img src="{{ asset('slider/side.bmp') }}" alt="Tepiha Modern 150x230">
                         <div class="flex-grow-1">
                           <span class="badge bg-danger-subtle text-danger border border-danger mb-2">Tepiha</span>
                           <div class="fw-bold">Tepiha Modern 150x230 cm</div>
@@ -834,10 +902,11 @@
                     </div>
                   </div>
 
+                  <!-- Slide 2 -->
                   <div class="carousel-item">
                     <div class="weekly-item">
                       <div class="d-flex gap-3 align-items-center">
-                        <img loading="lazy" src="{{ asset('slider/hali4.jpg') }}" alt="Tepiha Hali 200x300">
+                        <img src="{{ asset('slider/hali4.jpg') }}" alt="Tepiha Hali 200x300">
                         <div class="flex-grow-1">
                           <span class="badge bg-danger-subtle text-danger border border-danger mb-2">Tepiha</span>
                           <div class="fw-bold">Tepiha Hali 200x300 cm</div>
@@ -854,10 +923,11 @@
                     </div>
                   </div>
 
+                  <!-- Slide 3 -->
                   <div class="carousel-item">
                     <div class="weekly-item">
                       <div class="d-flex gap-3 align-items-center">
-                        <img loading="lazy" src="{{ asset('slider/bedshet.jpg') }}" alt="Set çarçafësh pambuk">
+                        <img src="{{ asset('slider/bedshet.jpg') }}" alt="Set çarçafësh">
                         <div class="flex-grow-1">
                           <span class="badge bg-warning-subtle text-warning border border-warning mb-2">Set çarçafësh</span>
                           <div class="fw-bold">Set çarçafësh pambuk</div>
@@ -894,12 +964,12 @@
             </div>
           </div>
 
-        </div>
-      </div>
-
-    </div>
+        </div><!-- row -->
+      </div><!-- hero-content -->
+    </div><!-- hero -->
   </section>
 
+  <!-- MAIN -->
   <main class="section-pad">
     <div class="container">
 
@@ -916,7 +986,7 @@
             <a href="/tepiha" class="text-decoration-none text-dark">
               <div class="cat-card">
                 <div class="cat-media">
-                  <img loading="lazy" src="{{ asset('slider/tepihali600cream.png') }}" alt="Tepiha">
+                  <img src="{{ asset('slider/tepihali600cream.png') }}" alt="Tepiha">
                   <span class="cat-badge">Tepiha</span>
                 </div>
                 <div class="cat-body">
@@ -932,7 +1002,7 @@
             <a href="/anesore" class="text-decoration-none text-dark">
               <div class="cat-card">
                 <div class="cat-media">
-                  <img loading="lazy" src="{{ asset('slider/raffaello.jpg') }}" alt="Perde">
+                  <img src="{{ asset('slider/raffaello.jpg') }}" alt="Perde">
                   <span class="cat-badge">Perde</span>
                 </div>
                 <div class="cat-body">
@@ -948,11 +1018,11 @@
             <a href="/postava" class="text-decoration-none text-dark">
               <div class="cat-card">
                 <div class="cat-media">
-                  <img loading="lazy" src="{{ asset('slider/bedshet.jpg') }}" alt="Set çarçafësh">
+                  <img src="{{ asset('slider/bedshet.jpg') }}" alt="Set çarçafësh">
                   <span class="cat-badge">Shtrat</span>
                 </div>
                 <div class="cat-body">
-                  <h5>Set çarçafësh & kompleta</h5>
+                  <h5>Set çarçafësh & kompleta krevati</h5>
                   <p>Material i butë, i qëndrueshëm dhe ngjyra që nuk zbehen.</p>
                   <span class="cat-link">Shiko setet <i class="bi bi-arrow-right"></i></span>
                 </div>
@@ -964,7 +1034,7 @@
             <a href="/mbulesa" class="text-decoration-none text-dark">
               <div class="cat-card">
                 <div class="cat-media">
-                  <img loading="lazy" src="{{ asset('slider/paris.jpg') }}" alt="Mbulesa & batanije">
+                  <img src="{{ asset('slider/paris.jpg') }}" alt="Mbulesa & batanije">
                   <span class="cat-badge">Komfor</span>
                 </div>
                 <div class="cat-body">
@@ -979,7 +1049,71 @@
         </div>
       </section>
 
-      <!-- Latest products (DB) -->
+      <!-- Modern rugs carousel -->
+      <section class="mb-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 rugs-head">
+          <div>
+            <div class="k">TEPIHA MODERN</div>
+            <h2 class="mb-1">Tepiha moderne në ofertë</h2>
+            <p class="text-muted small mb-0">Modele të zgjedhura nga koleksioni ynë.</p>
+          </div>
+          <a href="/tepiha" class="btn btn-brand btn-sm pill mt-3 mt-md-0">Shiko katalogun e tepihave</a>
+        </div>
+
+        <div class="soft-card p-3 p-md-4">
+          <div id="modernRugsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4500">
+            <div class="carousel-inner">
+              @php
+                $rugs = [
+                  ['side.bmp',  'Modern Rose 120x170 cm',  '€45.00'],
+                  ['hali4.jpg', 'Modern Hali 300x200 cm',  '€95.00'],
+                  ['gold.bmp',  'Modern Gold 300x200 cm',  '€55.00'],
+                  ['gold1.bmp', 'Modern Gold 300x200 cm',  '€55.00'],
+                  ['gold2.bmp', 'Modern Gold 300x200 cm',  '€55.00'],
+                  ['rose1.jpg', 'rose 300x200 cm',         '€105.00'],
+                  ['rose2.bmp', 'rose 150x230 cm',         '€75.00'],
+                  ['rose3.bmp', 'rose 150x230 cm',         '€75.00'],
+                  ['hali5.jpg', 'hali 150x230 cm',         '€65.00'],
+                  ['hali3.jpg', 'hali 150x230 cm',         '€65.00'],
+                ];
+                $chunks = collect($rugs)->chunk(5);
+              @endphp
+
+              @foreach($chunks as $i => $group)
+                <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
+                  <div class="row gx-3 justify-content-center">
+                    @foreach($group as $item)
+                      <div class="col-6 col-sm-4 col-md-2 text-center mb-3">
+                        <div class="small text-success mb-1">
+                          <i class="bi bi-check-circle-fill"></i> In stock
+                        </div>
+                        <img
+                          src="{{ asset('slider/'.$item[0]) }}"
+                          alt="{{ $item[1] }}"
+                          class="img-fluid rounded-4 shadow-sm mb-2"
+                          style="height: 200px; width: auto; object-fit: contain;">
+                        <p class="small mb-1">{{ $item[1] }}</p>
+                        <h6 class="fw-bold mb-0">{{ $item[2] }}</h6>
+                      </div>
+                    @endforeach
+                  </div>
+                </div>
+              @endforeach
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#modernRugsCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#modernRugsCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Latest products -->
       <section class="mb-5">
         <div class="section-title">
           <span class="k">PRODUKTET E FUNDIT</span>
@@ -989,32 +1123,24 @@
 
         <div class="row g-4">
           @if(isset($items) && $items->count())
-            @foreach($items->take(6) as $item)
-              <div class="col-md-4 col-sm-6">
+            @foreach($items->take(3) as $item)
+              <div class="col-md-4">
                 <div class="card product-card">
                   @if($item->image_path)
-                    <img loading="lazy" src="{{ asset('storage/'.$item->image_path) }}" alt="{{ $item->name }}">
+                    <img src="{{ asset('storage/'.$item->image_path) }}" class="card-img-top" alt="{{ $item->name }}">
                   @else
-                    <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:270px;">
+                    <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:260px;">
                       <span class="text-white">Pa foto</span>
                     </div>
                   @endif
 
                   <div class="card-body">
-                    <span class="tag"><i class="bi bi-fire"></i> Trending</span>
-                    <h5 class="fw-bold text-danger mt-2 mb-1">{{ $item->name }}</h5>
-                    <p class="text-muted mb-0">{{ \Illuminate\Support\Str::limit($item->description, 110) }}</p>
+                    <h5 class="card-title fw-bold text-danger mb-1">{{ $item->name }}</h5>
+                    <p class="card-text text-muted mb-0">{{ \Illuminate\Support\Str::limit($item->description, 100) }}</p>
                   </div>
                 </div>
               </div>
             @endforeach
-          @else
-            <div class="col-12">
-              <div class="soft-card p-4 text-center">
-                <h5 class="fw-bold mb-1">S’ka produkte për momentin</h5>
-                <p class="text-muted mb-0">Shto produkte në admin dhe do dalin këtu automatikisht.</p>
-              </div>
-            </div>
           @endif
         </div>
       </section>
@@ -1023,57 +1149,45 @@
       <section class="why-wrap mb-5">
         <div class="row g-0 align-items-stretch">
           <div class="col-md-5 why-side">
-            <div class="text-md-start text-center">
+            <div class="section-title text-md-start text-center mb-3 mb-md-0">
               <span class="k">PSE BRILLANT?</span>
-              <h2 class="mt-3 fw-bold">Tekstil i zgjedhur, shërbim i kujdesshëm.</h2>
+              <h2 class="mt-3">Tekstil i zgjedhur, shërbim i kujdesshëm.</h2>
               <p class="mt-2 text-muted">Matje, konsulencë dhe qepje profesionale – me fokus në cilësi dhe kënaqësi.</p>
             </div>
-            <img loading="lazy" src="{{ asset('slider/raffaello.jpg') }}" class="img-fluid rounded-4 shadow-sm mt-3" alt="Perde cilësore Brillant">
+            <img src="{{ asset('slider/raffaello.jpg') }}" class="img-fluid rounded-4 shadow-sm mt-3" alt="Why Choose Us">
           </div>
 
           <div class="col-md-7 why-points">
             <div class="why-bullet">
-              <h5><i class="bi bi-check2-circle text-danger me-1"></i> Perde me sistem amerikan</h5>
-              <p>Montim i lehtë dhe pamje elegante për çdo ambient modern.</p>
+              <h5>American System Curtains</h5>
+              <p>Perde me sistem amerikan, montim i lehtë dhe pamje elegante për çdo ambient modern.</p>
             </div>
             <div class="why-bullet">
-              <h5><i class="bi bi-check2-circle text-danger me-1"></i> Tepiha antibakteriale (akrilik)</h5>
-              <p>Rezistent ndaj shtypjes, i lehtë për pastrim dhe jetëgjatë.</p>
+              <h5>Antibacterial Acrylic Rugs</h5>
+              <p>Tepiha akrilik me mbrojtje antibakteriale, rezistent ndaj shtypjes dhe i lehtë për t’u pastruar.</p>
             </div>
             <div class="why-bullet">
-              <h5><i class="bi bi-check2-circle text-danger me-1"></i> Set çarçafësh & mbulesa premium</h5>
-              <p>Komoditet maksimal, material i butë dhe ngjyra që nuk zbehen.</p>
+              <h5>Plush bed covers & sheets</h5>
+              <p>Mbulesa dhe çarçafë pelushi të butë, të rehatshëm dhe miqësorë me mjedisin.</p>
             </div>
             <div class="why-bullet mb-0">
-              <h5><i class="bi bi-check2-circle text-danger me-1"></i> Shërbim profesional në Lipjan</h5>
-              <p>Matje në terren + këshillim për modelin + qepje profesionale – gjithçka në një vend.</p>
+              <h5>Shërbim profesional në Lipjan</h5>
+              <p>Matje në terren, konsulencë për modelin dhe qepje profesionale – gjithçka në një vend.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Newsletter -->
-      <section class="newsletter mb-5">
-        <div class="row align-items-center g-3">
-          <div class="col-lg-6">
-            <h3>Merre ofertën e javës në inbox ✨</h3>
-            <p>Na lë email-in dhe t’i dërgojmë zbritjet / koleksionet e reja.</p>
-          </div>
-          <div class="col-lg-6">
-            <form class="d-flex gap-2 flex-column flex-sm-row" onsubmit="event.preventDefault(); alert('Faleminderit!');">
-              <input type="email" class="form-control" placeholder="Email-i yt..." required>
-              <button class="btn btn-brand pill px-4" type="submit">Abonohu</button>
-            </form>
-          </div>
-        </div>
-      </section>
-
-      <!-- SEO text -->
+      <!-- SEO -->
       <section class="seo-text">
         <h2>Brillant – Tepiha, Perde dhe Dekorime për Shtëpi</h2>
         <p>Brillant është destinacioni juaj i besueshëm për tepiha modern, perde cilësore, mbulesa të bukura dhe dekorime për shtëpi. Me përvojë shumëvjeçare, synimi ynë është t’ju ofrojmë produkte të cilësisë së lartë që i bëjnë ambientet tuaja më të bukura, më komode dhe më funksionale.</p>
-        <p>Koleksioni ynë përfshin tepihë modern, tepihë klasik, tepihë rrethor, tepihë për sallon dhe tepiha për banjo. Ofruojmë gjithashtu batanije premium, kompleta krevati dhe sete çarçafësh për komoditet maksimal.</p>
-        <p>Në kategorinë e perdeve, do të gjeni materiale të cilësisë së lartë dhe dizajne elegante që i përshtaten çdo ambienti. Brillant – cilësi, stil dhe shërbim profesional në Lipjan, me dërgesë të sigurt në gjithë Kosovën.</p>
+
+        <p>Koleksioni ynë i tapetave përfshin tepihë modern, tepihë klasik, tepihë rrethor, tepihë për sallon dhe tapeta për banjo – të përzgjedhur me kujdes për të garantuar dizajn, qëndrueshmëri dhe cilësi të lartë. Për më shumë ngrohtësi dhe stil, ofrojmë edhe batanije premium, kompleta krevati dhe sete qarqafësh.</p>
+
+        <p>Në kategorinë e perdeve dhe mbulesave, do të gjeni materiale të cilësisë së lartë, ngjyra që nuk zbehen dhe dizajne elegante që i përshtaten çdo ambienti. Po ashtu, ofrojmë jastëkë dekorues, garnishte dhe shumë produkte të tjera që e kompletojnë dekorimin e shtëpisë.</p>
+
+        <p>Brillant – cilësi, stil dhe shërbim profesional në Lipjan. Porosit online lehtë dhe shpejt, me dërgesë të sigurt në gjithë Kosovën.</p>
       </section>
 
     </div>
@@ -1082,72 +1196,62 @@
   <!-- Footer -->
   <footer class="text-dark pt-5 pb-3 mt-5">
     <div class="container">
-      <div class="row g-4">
-        <div class="col-md-4">
-          <img src="{{ asset('images/llogo.png') }}" alt="Brillant" width="150" class="mb-2">
-          <p class="text-muted mb-2">Tepiha · Perde · Set çarçafësh · Mbulesa · Batanije · Dekor</p>
-          <div class="small">
-            <div><i class="bi bi-geo-alt me-1 text-danger"></i> Lipjan, Kosovë</div>
-            <div><i class="bi bi-telephone me-1 text-danger"></i> +383 44 960 661</div>
-          </div>
+      <div class="row">
+        <div class="col-md-3 text-center text-md-start mb-4 mb-md-0">
+          <img src="{{ asset('images/llogo.png') }}" alt="brillant" width="150" class="mb-2">
         </div>
-
-        <div class="col-md-2">
-          <h6 class="text-uppercase fw-bold mb-3">Katalog</h6>
+        <div class="col-md-3 mb-4 mb-md-0">
+          <h6 class="text-uppercase fw-bold mb-3">Products</h6>
           <ul class="list-unstyled">
-            <li><a href="/tepiha" class="text-dark">Tepiha</a></li>
-            <li><a href="/anesore" class="text-dark">Perde</a></li>
-            <li><a href="/postava" class="text-dark">Set çarçafësh</a></li>
-            <li><a href="/mbulesa" class="text-dark">Mbulesa</a></li>
+            <li><a href="/tepiha" class="text-dark text-decoration-none">Carpet & Rugs</a></li>
+            <li><a href="/tepiha" class="text-dark text-decoration-none">Decorative Carpets</a></li>
+            <li><a href="/tepihebanjo" class="text-dark text-decoration-none">Bath Mats & Rugs</a></li>
+            <li><a href="/mbulesa" class="text-dark text-decoration-none">Sofa Covers</a></li>
+            <li><a href="/postava" class="text-dark text-decoration-none">Bed Sheets</a></li>
+            <li><a href="/batanije" class="text-dark text-decoration-none">Blankets</a></li>
           </ul>
         </div>
-
-        <div class="col-md-3">
-          <h6 class="text-uppercase fw-bold mb-3">Informata</h6>
+        <div class="col-md-3 mb-4 mb-md-0">
+          <h6 class="text-uppercase fw-bold mb-3">Information</h6>
           <ul class="list-unstyled">
-            <li><a href="{{ route('about') }}" class="text-dark">About Us</a></li>
-            <li><a href="{{ route('contact') }}" class="text-dark">Contact</a></li>
-            <li><a href="/track" class="text-dark">Gjurmo porosinë</a></li>
-            <li><a href="{{ route('cart.index') }}" class="text-dark">Shporta</a></li>
+            <li><a href="/tepiha" class="text-dark text-decoration-none">Products</a></li>
+            <li><a href="#" class="text-dark text-decoration-none">Catalogues</a></li>
+            <li><a href="#" class="text-dark text-decoration-none">Manufacturing</a></li>
+            <li><a href="{{ route('about') }}" class="text-dark text-decoration-none">About Us</a></li>
           </ul>
         </div>
-
-        <div class="col-md-3">
-          <h6 class="text-uppercase fw-bold mb-3">Social</h6>
-          <div class="d-flex gap-3">
-            <a href="#" class="text-dark fs-4" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-            <a href="https://wa.me/38344960661" target="_blank" rel="noopener" class="text-dark fs-4" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
-          </div>
-          <div class="small text-muted mt-3">
-            Porosi të shpejta në WhatsApp – përgjigje brenda ditës.
-          </div>
+        <div class="col-md-3 text-center text-md-start">
+          <h6 class="text-uppercase fw-bold mb-3">Find Us</h6>
+          <ul class="list-unstyled">
+            <li><a href="{{ route('contact') }}" class="text-dark text-decoration-none">Contact</a></li>
+          </ul>
         </div>
       </div>
 
-      <hr class="my-4">
-
-      <div class="row align-items-center">
-        <div class="col-md-6 text-center text-md-start">
-          <small class="text-muted">Copyright © {{ date('Y') }} Brillant</small>
+      <div class="row mt-4 align-items-center">
+        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+          <a href="#" class="text-dark me-3 fs-4"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="text-dark fs-4"><i class="bi bi-whatsapp"></i></a>
         </div>
         <div class="col-md-6 text-center text-md-end">
+          <small class="text-muted">Copyright © {{ date('Y') }} Brillant</small>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col text-center">
           <small class="text-muted">crafted by RDR Digital L.L.C</small>
         </div>
       </div>
     </div>
   </footer>
 
-  <!-- Mobile CTA -->
-  <div class="mobile-cta" role="navigation" aria-label="Mobile actions">
-    <a class="call" href="tel:+38344960661"><i class="bi bi-telephone"></i> Thirr</a>
-    <a class="wa" href="https://wa.me/38344960661" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> WhatsApp</a>
-  </div>
-
   <script>
     // përditëso badge në të gjitha menutë
     window.updateCartBadges = function(totalQty){
       document.querySelectorAll('.cart-badge').forEach(b => b.textContent = totalQty);
     };
+
+    // dëgjo event-in global kur ndryshon shporta
     document.addEventListener('cart:updated', e => {
       if (e.detail && typeof e.detail.totalQty !== 'undefined') {
         updateCartBadges(e.detail.totalQty);
