@@ -983,6 +983,16 @@ $folds = [
     <button type="submit" class="btn btn-danger px-4 w-100">
         <i class="bi bi-bag-plus"></i> Shto në shportë
     </button>
+    @if(!$isCurtain)
+  <button type="button" id="addToCartBtn" class="btn btn-danger w-100 py-2">
+    <i class="bi bi-bag-plus"></i> Shto në shportë
+  </button>
+@endif
+    
+
+    
+    
+    
 </div>
 
     
