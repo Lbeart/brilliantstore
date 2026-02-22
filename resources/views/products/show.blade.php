@@ -1470,6 +1470,56 @@ document.querySelectorAll('#curtainForm input')
     .forEach(el => el.addEventListener('input', calculateCurtain));
 
 @endif
+@if($isCurtain)
+
+function updateCurtainWhatsapp(){
+
+    let width = parseFloat(document.querySelector('[name="width"]').value) || 0;
+    let height = parseFloat(document.querySelector('[name="height"]').value) || 0;
+    let fold = document.querySelector('[name="fold_type"]:checked');
+
+    if(!fold) return;
+
+    let ratio = parseFloat(fold.dataset.ratio || 1);
+    let extra = parseFloat(fold.dataset.extra || 0);
+    let ringsPerMeter = parseFloat(fold.dataset.rings || 0);
+    let ringPrice = parseFloat(fold.dataset.ringprice || 0);
+
+    let pricePerMeter = {{ (float)$product->price }};
+
+    let meters = width * ratio;
+    let fabricTotal = meters * pricePerMeter;
+    let extraTotal = meters * extra;
+    let rings = Math.ceil(meters * ringsPerMeter);
+    let ringsTotal = rings * ringPrice;
+    let total = fabricTotal + extraTotal + ringsTotal;
+
+    let message = `
+Përshëndetje 👋
+
+Dua të porosis këtë perde:
+
+Produkti: {{ addslashes($product->name) }}
+Gjerësia: ${width} m
+Lartësia: ${height} m
+Sistemi: ${fold.value}
+
+Metra material: ${meters.toFixed(2)} m
+Totali i llogaritur: ${total.toFixed(2)} €
+
+Ju lutem më konfirmoni porosinë 🙏
+`;
+
+    document.getElementById("waBtn").href =
+        "https://wa.me/38344960661?text=" + encodeURIComponent(message);
+}
+
+document.querySelectorAll('#curtainForm input')
+    .forEach(el => el.addEventListener('input', updateCurtainWhatsapp));
+
+updateCurtainWhatsapp();
+
+@endif
 </script>
 </body>
 </html>
