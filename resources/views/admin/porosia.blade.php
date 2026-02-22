@@ -94,52 +94,64 @@
                 <th style="width:120px">Totali</th>
               </tr>
             </thead>
-           <tbody>
-@foreach($order->items as $it)
-  @php
-    $line = (float)$it->price * (int)$it->qty;
-    $imgSrc = $order_item_img_url($it->image ?? $it->image_path ?? null);
 
-    // 🔥 nëse është perde
-    $curtain = null;
-    if(isset($it->curtain)){
-        $curtain = is_array($it->curtain)
-            ? $it->curtain
-            : json_decode($it->curtain, true);
-    }
-  @endphp
+            <tbody>
+            @foreach($order->items as $it)
+              @php
+                $line = (float)$it->price * (int)$it->qty;
+                $imgSrc = $order_item_img_url($it->image ?? $it->image_path ?? null);
 
-  <tr>
-    <td>
-      <div class="d-flex align-items-center gap-2">
-        <img
-          src="{{ $imgSrc }}"
-          class="summary-thumb"
-          alt="{{ $it->name }}"
-          onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
-        <div class="fw-semibold">{{ $it->name }}</div>
-      </div>
-    </td>
+                // ✅ Perde: e lexojmë safe (array ose JSON string)
+                $curtain = null;
+                if(isset($it->curtain) && !empty($it->curtain)){
+                    $curtain = is_array($it->curtain)
+                        ? $it->curtain
+                        : json_decode($it->curtain, true);
 
-    <td>
-      @if($curtain)
-        <div class="small">
-          <strong>Gjerësia:</strong> {{ $curtain['width'] ?? '-' }} m<br>
-          <strong>Lartësia:</strong> {{ $curtain['height'] ?? '-' }} m<br>
-          <strong>Metra:</strong> {{ $curtain['meters'] ?? '-' }} m<br>
-          <strong>Sistemi:</strong> {{ $curtain['fold_label'] ?? ($curtain['fold_type'] ?? '-') }}
-        </div>
-      @else
-        {{ $it->size ?? '—' }}
-      @endif
-    </td>
+                    // nëse json_decode dështon, kthe null
+                    if(!is_array($curtain)) $curtain = null;
+                }
+              @endphp
 
-    <td>{{ $it->qty }}</td>
-    <td>{{ number_format($it->price,2) }} €</td>
-    <td>{{ number_format($line,2) }} €</td>
-  </tr>
-@endforeach
-</tbody>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <img
+                      src="{{ $imgSrc }}"
+                      class="summary-thumb"
+                      alt="{{ $it->name }}"
+                      onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+                    <div class="fw-semibold">{{ $it->name }}</div>
+                  </div>
+                </td>
+
+                <td>
+                  @if($curtain)
+                    <div class="small">
+                      <strong>Gjerësia:</strong> {{ $curtain['width'] ?? '-' }} m<br>
+                      <strong>Lartësia:</strong> {{ $curtain['height'] ?? '-' }} m<br>
+                      <strong>Metra:</strong> {{ $curtain['meters'] ?? '-' }} m<br>
+                      <strong>Multiplier:</strong> {{ $curtain['multiplier'] ?? '-' }} x<br>
+                      <strong>Sistemi:</strong> {{ $curtain['fold_label'] ?? ($curtain['fold_type'] ?? '-') }}<br>
+                      @if(isset($curtain['extra_per_meter']))
+                        <strong>Extra/m:</strong> {{ number_format((float)$curtain['extra_per_meter'],2) }} €<br>
+                      @endif
+                      @if(isset($curtain['base_price_per_meter']))
+                        <strong>Baza/m:</strong> {{ number_format((float)$curtain['base_price_per_meter'],2) }} €
+                      @endif
+                    </div>
+                  @else
+                    {{ $it->size ?? '—' }}
+                  @endif
+                </td>
+
+                <td>{{ $it->qty }}</td>
+                <td>{{ number_format($it->price,2) }} €</td>
+                <td>{{ number_format($line,2) }} €</td>
+              </tr>
+            @endforeach
+            </tbody>
+
           </table>
         </div>
       </div>
@@ -212,10 +224,12 @@
             <button class="btn btn-outline-danger">🗑️ Fshi porosinë</button>
           </form>
         </div>
+
         @if($order->email)
           <div class="small text-muted mt-2">Email dërgohet te: {{ $order->email }}</div>
         @endif
       </div>
+
     </div>
   </div>
 </div>
