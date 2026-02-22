@@ -8,12 +8,9 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-
-
   @php
-  $isCurtain = str_contains(strtolower($product->category ?? ''), 'perde');
-@endphp
-  @php
+    $isCurtain = str_contains(strtolower($product->category ?? ''), 'perde');
+
     // ✅ IMAGES: image_path mund të jetë JSON array ose string e vjetër
     $imgs = [];
     if (!empty($product->image_path)) {
@@ -216,7 +213,7 @@
       padding:18px;
     }
 
-    /* ✅ DIMENSION PILLS (si ne foto) */
+    /* ✅ DIMENSION PILLS */
     .dim-title{
       font-weight:800;
       color:#111827;
@@ -266,7 +263,7 @@
       transform:none;
     }
 
-    /* ✅ Shipping / Payment info (si ne foto) */
+    /* ✅ Shipping / Payment info */
     .info-list{
       margin:0;
       padding:0;
@@ -317,28 +314,6 @@
       border-color:#15803d;
     }
 
-    /* FULLSCREEN IMAGE MODAL */
-    .img-modal{
-      position:fixed;inset:0;
-      background:rgba(0,0,0,.88);
-      display:none;z-index:2000;
-      align-items:center;justify-content:center
-    }
-    .img-modal.open{display:flex}
-    .img-modal img{
-      max-width:100%;max-height:100%;
-      object-fit:contain;touch-action:pan-x pan-y;
-      position:relative;z-index:2000
-    }
-    .img-modal .close-btn{
-      position:absolute;top:14px;right:14px;
-      background:#fff;border:none;border-radius:999px;
-      padding:.55rem .75rem;
-      box-shadow:0 6px 18px rgba(0,0,0,.25);
-      display:flex;align-items:center;justify-content:center;
-      z-index:2100;
-    }
-
     /* RESPONSIVE */
     @media (max-width:991.98px){
       body{padding-top:86px}
@@ -368,25 +343,6 @@
       .btn{padding:.45rem .85rem;font-size:14px}
       .thumb-btn{width:64px;height:64px}
     }
-    @media (max-width:991.98px){
-      .zoom-pane{
-        left:8px;
-        right:8px;
-        top:8px;
-        width:auto;
-        height:260px;
-        margin:0;
-        z-index:20;
-        display:none;
-      }
-
-      .zoom-lens{
-        width:120px;
-        height:120px;
-        border-radius:50%;
-        display:none;
-      }
-    }
 
     .similar-box{
       background:#fff;
@@ -408,7 +364,6 @@
       gap:22px;
     }
 
-    /* karta */
     .similar-card{
       display:block;
       text-decoration:none;
@@ -426,7 +381,6 @@
       height:100%;
     }
 
-    /* image square */
     .similar-img{
       width:100%;
       aspect-ratio:1/1;
@@ -442,7 +396,6 @@
       display:block;
     }
 
-    /* text */
     .similar-name{
       margin-top:14px;
       font-size:20px;
@@ -458,7 +411,6 @@
       color:#111827;
     }
 
-    /* responsive si zakonisht */
     @media (max-width:1200px){
       .similar-grid{ grid-template-columns:repeat(4, minmax(0, 1fr)); }
     }
@@ -480,28 +432,22 @@
       padding:58px 0 22px;
       color: rgba(255,255,255,.88);
     }
-
     .brillant-footer .footer-inner{
       max-width:1200px;
       margin:0 auto;
       padding:0 22px;
     }
-
     .footer-grid{
       display:grid;
       grid-template-columns: 1.2fr 1fr 1fr 0.7fr;
       gap:46px;
       align-items:start;
     }
-
-    /* LEFT brand */
     .footer-brand{
       display:flex;
       flex-direction:column;
       gap:16px;
     }
-
-    /* logo fix */
     .footer-logo-wrap{
       width: 220px;
       height: 110px;
@@ -513,7 +459,6 @@
       border-radius: 0;
       box-shadow: none;
     }
-
     .footer-logo{
       max-width: 220px;
       max-height: 110px;
@@ -522,7 +467,6 @@
       object-fit: contain;
       display:block;
     }
-
     .footer-brand small{
       color: rgba(255,255,255,.75);
       font-weight:500;
@@ -533,8 +477,6 @@
       color:#ffffff;
       line-height:1;
     }
-
-    /* columns */
     .footer-col h4{
       font-size:15px;
       font-weight:900;
@@ -542,7 +484,6 @@
       color:#ffffff;
       margin:0 0 14px 0;
     }
-
     .footer-links{
       list-style:none;
       padding:0;
@@ -550,7 +491,6 @@
       display:grid;
       gap:8px;
     }
-
     .footer-links a{
       color: rgba(255,255,255,.82);
       text-decoration:none;
@@ -560,8 +500,6 @@
       color:#ffffff;
       text-decoration:underline;
     }
-
-    /* socials */
     .footer-social{
       margin-top:28px;
       display:flex;
@@ -575,8 +513,6 @@
       opacity:.9;
     }
     .footer-social a:hover{opacity:.7;}
-
-    /* bottom */
     .footer-bottom{
       margin-top:34px;
       padding-top:16px;
@@ -591,7 +527,6 @@
     .footer-bottom .center{ text-align:center; }
     .footer-bottom .right{ text-align:right; }
 
-    /* responsive */
     @media (max-width:992px){
       .footer-grid{
         grid-template-columns: 1fr 1fr;
@@ -609,51 +544,52 @@
       .footer-grid{ grid-template-columns: 1fr; }
       .footer-logo-wrap{ width:110px; height:110px; }
     }
+
+    /* Fold */
     .fold-grid{
-  display:grid;
-  grid-template-columns:repeat(4, minmax(0,1fr));
-  gap:12px;
-  padding:12px;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  background:#fff;
-}
-.fold-item{ position:relative; }
-.fold-radio{ position:absolute; opacity:0; pointer-events:none; }
-.fold-card{
-  display:block;
-  cursor:pointer;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  padding:10px;
-  background:#fff;
-  transition:all .15s ease;
-  height:100%;
-}
-.fold-img{
-  width:100%;
-  aspect-ratio:1/1;
-  border-radius:10px;
-  overflow:hidden;
-  background:#f3f4f6;
-}
-.fold-img img{ width:100%; height:100%; object-fit:cover; display:block; }
-.fold-name{ margin-top:10px; font-weight:800; font-size:13px; color:#111827; line-height:1.15; }
-.fold-extra{ margin-top:4px; font-size:12px; color:#b45309; font-weight:700; }
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:12px;
+      padding:12px;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      background:#fff;
+    }
+    .fold-item{ position:relative; }
+    .fold-radio{ position:absolute; opacity:0; pointer-events:none; }
+    .fold-card{
+      display:block;
+      cursor:pointer;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      padding:10px;
+      background:#fff;
+      transition:all .15s ease;
+      height:100%;
+    }
+    .fold-img{
+      width:100%;
+      aspect-ratio:1/1;
+      border-radius:10px;
+      overflow:hidden;
+      background:#f3f4f6;
+    }
+    .fold-img img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .fold-name{ margin-top:10px; font-weight:800; font-size:13px; color:#111827; line-height:1.15; }
+    .fold-extra{ margin-top:4px; font-size:12px; color:#b45309; font-weight:700; }
 
-.fold-card:hover{ border-color:#d1d5db; transform:translateY(-1px); }
-.fold-radio:checked + .fold-card{
-  border-color:rgba(220,53,69,.55);
-  box-shadow:0 12px 26px rgba(220,53,69,.12);
-  transform:translateY(-2px);
-}
-
-@media(max-width:992px){ .fold-grid{ grid-template-columns:repeat(3, 1fr);} }
-@media(max-width:576px){ .fold-grid{ grid-template-columns:repeat(2, 1fr); gap:10px; } }
+    .fold-card:hover{ border-color:#d1d5db; transform:translateY(-1px); }
+    .fold-radio:checked + .fold-card{
+      border-color:rgba(220,53,69,.55);
+      box-shadow:0 12px 26px rgba(220,53,69,.12);
+      transform:translateY(-2px);
+    }
+    @media(max-width:992px){ .fold-grid{ grid-template-columns:repeat(3, 1fr);} }
+    @media(max-width:576px){ .fold-grid{ grid-template-columns:repeat(2, 1fr); gap:10px; } }
   </style>
 </head>
-<body>
 
+<body>
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom" aria-label="Kryemeny">
   <div class="container-fluid">
     <a class="navbar-brand" href="{{ url('/') }}">
@@ -662,6 +598,7 @@
     <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div id="nav" class="collapse navbar-collapse">
       <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
         <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">Home</a></li>
@@ -818,7 +755,6 @@
           if(is_array($decoded)) $sizes=$decoded;
         }
 
-        // zgjedh default: e para qe ka stok, nese s'ka, e para fare
         $defaultIndex = 0;
         if(count($sizes)>0){
           foreach($sizes as $i => $sz){
@@ -847,7 +783,7 @@
         </span>
       </div>
 
-      {{-- ✅ DIMENSIONET si pills --}}
+      {{-- ✅ DIMENSIONET --}}
       @if(count($sizes)>0)
         <div class="section-card mb-3">
           <div class="dim-title">Dimensionet</div>
@@ -889,7 +825,7 @@
         </ul>
       </div>
 
-      <div class="d-flex align-items-center flex-wrap gap-3 mb-4">
+      <div class="d-flex align-items-center flex-wrap gap-3 mb-3">
         <div class="d-flex align-items-center gap-2">
           <button class="qty-btn" id="qtyMinus" type="button" aria-label="Zvogëlo">−</button>
           <input class="qty-input" id="qty" type="number" min="1" value="1" aria-label="Sasia">
@@ -906,99 +842,86 @@
         </a>
       </div>
 
-     
-     @if($isCurtain)
-<form action="{{ route('cart.addCurtain') }}" method="POST" id="curtainForm" class="mt-4">
-    @csrf
-    <input type="hidden" name="product_id" value="{{ $product->id }}">
+      {{-- ✅ BUTTONI I SHPORTËS: NË VENDIN E SAKTË --}}
+      @if(!$isCurtain)
+        <button type="button" id="addToCartBtn" class="btn btn-danger w-100 py-2 mb-3">
+          <i class="bi bi-bag-plus"></i> Shto në shportë
+        </button>
+      @endif
 
-    <div class="section-card mb-3">
-        <h5 class="mb-3">Përmasa</h5>
+      {{-- ✅ FORM PER PERDE --}}
+      @if($isCurtain)
+        <form action="{{ route('cart.addCurtain') }}" method="POST" id="curtainForm" class="mt-2">
+          @csrf
+          <input type="hidden" name="product_id" value="{{ $product->id }}">
 
-        <div class="row">
-            <div class="col-6">
+          <div class="section-card mb-3">
+            <h5 class="mb-3">Përmasa</h5>
+            <div class="row">
+              <div class="col-6">
                 <label class="form-label">Width (m)</label>
                 <input type="number" step="0.1" name="width" class="form-control" required>
-            </div>
-            <div class="col-6">
+              </div>
+              <div class="col-6">
                 <label class="form-label">Height (m)</label>
                 <input type="number" step="0.1" name="height" class="form-control" required>
+              </div>
             </div>
-        </div>
-    </div>
+          </div>
 
-    <div class="section-card mb-3">
-        <h5 class="mb-3">Folding System</h5>
+          <div class="section-card mb-3">
+            <h5 class="mb-3">Folding System</h5>
 
-        <div class="fold-grid">
+            <div class="fold-grid">
+              @php
+                $folds = [
+                  ['value'=>'fold1','name'=>'Fold 1 (1:2)','ratio'=>2,'extra'=>0,'img'=>'fold1.png'],
+                  ['value'=>'fold2','name'=>'Fold 2 (1:2.5)','ratio'=>2.5,'extra'=>0,'img'=>'fold2.png'],
+                  ['value'=>'fold3','name'=>'Fold 3 (1:3)','ratio'=>3,'extra'=>0,'img'=>'fold3.png'],
+                  ['value'=>'grommet','name'=>'Grommet','ratio'=>2.5,'rings'=>5,'ring_price'=>1,'img'=>'rrumbu.jpg'],
+                  ['value'=>'pencil','name'=>'Pencil Pleat (1:1.5)','ratio'=>1.5,'extra'=>0,'img'=>'shiriti.png'],
+                  ['value'=>'swave','name'=>'S-Wave','ratio'=>2.8,'extra'=>2.5,'img'=>'amerikan.png'],
+                ];
+              @endphp
 
-           @php
-$folds = [
-    ['value'=>'fold1','name'=>'Fold 1 (1:2)','ratio'=>2,'extra'=>0,'img'=>'fold1.png'],
-    ['value'=>'fold2','name'=>'Fold 2 (1:2.5)','ratio'=>2.5,'extra'=>0,'img'=>'fold2.png'],
-    ['value'=>'fold3','name'=>'Fold 3 (1:3)','ratio'=>3,'extra'=>0,'img'=>'fold3.png'],
-   ['value'=>'grommet','name'=>'Grommet','ratio'=>2.5,'rings'=>5,'ring_price'=>1,'img'=>'rrumbu.jpg'],
-   ['value'=>'pencil','name'=>'Pencil Pleat (1:1.5)','ratio'=>1.5,'extra'=>0,'img'=>'shiriti.png'],
-    ['value'=>'swave','name'=>'S-Wave','ratio'=>2.8,'extra'=>2.5,'img'=>'amerikan.png'],
-];
-@endphp
-
-            @foreach($folds as $i => $f)
-            <label class="fold-item">
-               <input type="radio"
-       name="fold_type"
-       value="{{ $f['value'] }}"
-       data-ratio="{{ $f['ratio'] }}"
-       data-extra="{{ $f['extra'] ?? 0 }}"
-       data-rings="{{ $f['rings'] ?? 0 }}"
-       data-ringprice="{{ $f['ring_price'] ?? 0 }}"
-       class="fold-radio"
-       {{ $loop->first ? 'checked' : '' }}
-       required>
-
-                <div class="fold-card">
+              @foreach($folds as $i => $f)
+                <label class="fold-item">
+                  <input
+                    type="radio"
+                    name="fold_type"
+                    value="{{ $f['value'] }}"
+                    data-ratio="{{ $f['ratio'] }}"
+                    data-extra="{{ $f['extra'] ?? 0 }}"
+                    data-rings="{{ $f['rings'] ?? 0 }}"
+                    data-ringprice="{{ $f['ring_price'] ?? 0 }}"
+                    class="fold-radio"
+                    {{ $loop->first ? 'checked' : '' }}
+                    required
+                  >
+                  <div class="fold-card">
                     <div class="fold-img">
-                        <img src="{{ asset('images/folds/'.$f['img']) }}" alt="{{ $f['name'] }}">
+                      <img src="{{ asset('images/folds/'.$f['img']) }}" alt="{{ $f['name'] }}">
                     </div>
-
                     <div class="fold-name">{{ $f['name'] }}</div>
-
                     @if(isset($f['extra']) && $f['extra'] > 0)
-    <div class="fold-extra">
-        +{{ number_format($f['extra'],2) }} € / meter
-    </div>
-@endif
-                </div>
-            </label>
-            @endforeach
+                      <div class="fold-extra">+{{ number_format($f['extra'],2) }} € / meter</div>
+                    @endif
+                  </div>
+                </label>
+              @endforeach
+            </div>
+          </div>
 
-        </div>
-    </div>
+          <div class="section-card mb-3">
+            <strong>Total: <span id="totalPrice">0.00</span> €</strong>
+            <div class="small text-muted">Meters: <span id="totalMeters">0</span></div>
+          </div>
 
-    <div class="section-card mb-3">
-        <strong>Total: <span id="totalPrice">0.00</span> €</strong>
-        <div class="small text-muted">Meters: <span id="totalMeters">0</span></div>
-    </div>
-    <div class="mt-3">
-    <button type="submit" class="btn btn-danger px-4 w-100">
-        <i class="bi bi-bag-plus"></i> Shto në shportë
-    </button>
-    @if(!$isCurtain)
-  <button type="button" id="addToCartBtn" class="btn btn-danger w-100 py-2">
-    <i class="bi bi-bag-plus"></i> Shto në shportë
-  </button>
-@endif
-    
-
-    
-    
-    
-</div>
-
-    
-</form>
-@endif
-      
+          <button type="submit" class="btn btn-danger px-4 w-100">
+            <i class="bi bi-bag-plus"></i> Shto në shportë
+          </button>
+        </form>
+      @endif
 
       @if($product->description)
         <div class="section-card mt-4" id="desc">
@@ -1019,7 +942,6 @@ $folds = [
       <div class="similar-grid">
         @foreach($similarProducts as $p)
           @php
-            // price range nga sizes nese ka
             $minPrice = (float)$p->price;
             $maxPrice = (float)$p->price;
 
@@ -1034,7 +956,6 @@ $folds = [
               }
             }
 
-            // ✅ image_path JSON ose string
             $simImg = null;
             if(!empty($p->image_path)){
               $d = json_decode($p->image_path, true);
@@ -1075,7 +996,6 @@ $folds = [
 <footer class="brillant-footer">
   <div class="footer-inner">
     <div class="footer-grid">
-      {{-- LEFT: LOGO + BRAND --}}
       <div class="footer-brand">
         <div class="footer-logo-wrap">
           <img class="footer-logo" src="{{ asset('images/brillant.png') }}" alt="Brillant" loading="lazy">
@@ -1094,7 +1014,6 @@ $folds = [
         </div>
       </div>
 
-      {{-- PRODUCTS --}}
       <div class="footer-col">
         <h4>PRODUCTS</h4>
         <ul class="footer-links">
@@ -1107,7 +1026,6 @@ $folds = [
         </ul>
       </div>
 
-      {{-- INFORMATION --}}
       <div class="footer-col">
         <h4>INFORMATION</h4>
         <ul class="footer-links">
@@ -1118,7 +1036,6 @@ $folds = [
         </ul>
       </div>
 
-      {{-- FIND US --}}
       <div class="footer-col">
         <h4>FIND US</h4>
         <ul class="footer-links">
@@ -1135,25 +1052,50 @@ $folds = [
   </div>
 </footer>
 
-<!-- Fullscreen modal (e lejmë në HTML siç e ke, por s’e përdorim) -->
-<div class="img-modal" id="imgModal" aria-hidden="true">
-  <button class="close-btn" type="button" id="modalClose" aria-label="Mbyll">
-    <i class="bi bi-x-lg"></i>
-  </button>
-  <img id="modalImg" alt="Zoom">
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 (() => {
-  const priceContainer=document.getElementById('priceContainer');
-  const stockContainer=document.getElementById('stockContainer');
-  const waBtn=document.getElementById('waBtn');
+  const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
+  // ---------- HELPERS ----------
+  function showToast(text, isErr){
+    let el = document.getElementById('cartToast');
+    if(!el){
+      el = document.createElement('div');
+      el.id='cartToast';
+      el.className='toast align-items-center text-bg-' + (isErr?'danger':'success');
+      el.role='alert'; el.ariaLive='assertive'; el.ariaAtomic='true';
+      el.style.position='fixed'; el.style.bottom='16px'; el.style.right='16px'; el.style.zIndex='3000';
+      el.innerHTML=`<div class="d-flex"><div class="toast-body"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>`;
+      document.body.appendChild(el);
+    }
+    el.querySelector('.toast-body').textContent = text;
+    const t = new bootstrap.Toast(el, { delay: 1800 });
+    t.show();
+  }
+
+  function updateCartBadge(totalQty){
+    document.querySelectorAll('.cart-badge').forEach(b => b.textContent = totalQty);
+    document.dispatchEvent(new CustomEvent('cart:updated', { detail: { totalQty }}));
+  }
+
+  // ---------- QTY ----------
   const qty=document.getElementById('qty');
   const minus=document.getElementById('qtyMinus');
   const plus=document.getElementById('qtyPlus');
+
+  function cleanQty(){
+    if(!qty) return;
+    const v=parseInt(qty.value||1,10);
+    qty.value=Math.max(1,isNaN(v)?1:v);
+  }
+
+  // ---------- SIZE PILLS + PRICE + STOCK + WHATSAPP ----------
+  const priceContainer=document.getElementById('priceContainer');
+  const stockContainer=document.getElementById('stockContainer');
+  const waBtn=document.getElementById('waBtn');
 
   const sizePills = document.getElementById('sizePills');
   const pills = sizePills ? Array.from(sizePills.querySelectorAll('.size-pill')) : [];
@@ -1165,7 +1107,6 @@ $folds = [
     if(!pills.length) return null;
     return pills.find(b => b.classList.contains('active')) || pills[0] || null;
   }
-
   function selDim(){
     const p = getActivePill();
     return p ? (p.dataset.label || '') : '';
@@ -1179,11 +1120,6 @@ $folds = [
     return p ? parseInt(p.dataset.stock || 0,10) : baseStockDefault;
   }
 
-  function cleanQty(){
-    const v=parseInt(qty.value||1,10);
-    qty.value=Math.max(1,isNaN(v)?1:v);
-  }
-
   function updateUI(){
     const price=selPrice();
     const stock=selStock();
@@ -1193,31 +1129,29 @@ $folds = [
       ? Math.round(100 - (price / oldPrice * 100))
       : 20;
 
-    priceContainer.innerHTML = `
-      <div class="d-flex align-items-baseline flex-wrap gap-2">
-        <div class="price-now">${price.toFixed(2)} €</div>
-        ${oldPrice ? `<div class="price-old">${oldPrice.toFixed(2)} €</div>` : ''}
-        <span class="price-badge">-${discount}% Zbritje</span>
-      </div>
-    `;
-
-    if(stock > 0){
-      stockContainer.innerHTML = `
-        <span class="stock-label stock-pill-in">Në stok</span>
-        <span class="stock in">${stock} copë</span>
-      `;
-    }else{
-      stockContainer.innerHTML = `
-        <span class="stock-label stock-pill-out">S’ka në stok</span>
-        <span class="stock out">Momentalisht pa stok</span>
+    if(priceContainer){
+      priceContainer.innerHTML = `
+        <div class="d-flex align-items-baseline flex-wrap gap-2">
+          <div class="price-now">${price.toFixed(2)} €</div>
+          ${oldPrice ? `<div class="price-old">${oldPrice.toFixed(2)} €</div>` : ''}
+          <span class="price-badge">-${discount}% Zbritje</span>
+        </div>
       `;
     }
 
-    const baseMsg = `Përshëndetje! Dua ta porosis produktin:\n- {{ addslashes($product->name) }}\n- Dimensioni: ${selDim()||'—'}\n- Çmimi: ${price.toFixed(2)} €\n- Sasia: `;
-    waBtn.href = `https://wa.me/38344960661?text=${encodeURIComponent(baseMsg)}${qty.value}`;
+    if(stockContainer){
+      stockContainer.innerHTML = stock > 0
+        ? `<span class="stock-label stock-pill-in">Në stok</span><span class="stock in">${stock} copë</span>`
+        : `<span class="stock-label stock-pill-out">S’ka në stok</span><span class="stock out">Momentalisht pa stok</span>`;
+    }
+
+    // WhatsApp (normal product)
+    if(waBtn){
+      const baseMsg = `Përshëndetje! Dua ta porosis produktin:\n- {{ addslashes($product->name) }}\n- Dimensioni: ${selDim()||'—'}\n- Çmimi: ${price.toFixed(2)} €\n- Sasia: `;
+      waBtn.href = `https://wa.me/38344960661?text=${encodeURIComponent(baseMsg)}${qty?.value || 1}`;
+    }
   }
 
-  // ✅ Pills click
   if(pills.length){
     pills.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -1250,350 +1184,213 @@ $folds = [
 
   updateUI();
 
-  /* =========================
-     ZOOM (DESKTOP + MOBILE)
-     ========================= */
+  // ---------- THUMBNAILS + ZOOM ----------
   const img  = document.getElementById('productImage');
   const lens = document.getElementById('zoomLens');
   const pane = document.getElementById('zoomPane');
 
-  if(!img || !lens || !pane) return;
+  if(img && lens && pane){
+    const isDesktop = () => window.matchMedia('(min-width:992px)').matches;
+    const isMobile  = () => window.matchMedia('(max-width:991.98px)').matches;
 
-  const isDesktop = () => window.matchMedia('(min-width:992px)').matches;
-  const isMobile  = () => window.matchMedia('(max-width:991.98px)').matches;
+    let natW=0, natH=0;
+    const zoom = 1.35;
 
-  let natW=0, natH=0;
-  const zoom = 1.35;
+    function setDisplay(el, value){
+      el.style.setProperty('display', value, 'important');
+    }
 
-  function setDisplay(el, value){
-    el.style.setProperty('display', value, 'important');
-  }
+    function initZoom(){
+      const src = img.dataset.zoom || img.src;
+      pane.style.backgroundImage = `url('${src}')`;
 
-  function initZoom(){
-    const src = img.dataset.zoom || img.src;
-    pane.style.backgroundImage = `url('${src}')`;
+      const im = new Image();
+      im.onload = () => {
+        natW = im.naturalWidth;
+        natH = im.naturalHeight;
+        pane.style.backgroundRepeat = 'no-repeat';
+        pane.style.backgroundSize = `${natW*zoom}px ${natH*zoom}px`;
+      };
+      im.src = src;
+    }
 
-    const im = new Image();
-    im.onload = () => {
-      natW = im.naturalWidth;
-      natH = im.naturalHeight;
-      pane.style.backgroundRepeat = 'no-repeat';
-      pane.style.backgroundSize = `${natW*zoom}px ${natH*zoom}px`;
+    function pos(e){
+      const r = img.getBoundingClientRect();
+      const x = e.touches ? e.touches[0].clientX : e.clientX;
+      const y = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x:x-r.left, y:y-r.top };
+    }
+
+    function move(e){
+      const p = pos(e);
+
+      let L = p.x - lens.offsetWidth/2;
+      let T = p.y - lens.offsetHeight/2;
+
+      L = Math.max(0, Math.min(L, img.clientWidth - lens.offsetWidth));
+      T = Math.max(0, Math.min(T, img.clientHeight - lens.offsetHeight));
+
+      lens.style.left = L+'px';
+      lens.style.top  = T+'px';
+
+      const rx = natW / img.clientWidth;
+      const ry = natH / img.clientHeight;
+
+      pane.style.backgroundPosition = `${-(L*rx)*zoom}px ${-(T*ry)*zoom}px`;
+    }
+
+    function showZoom(){ setDisplay(lens,'block'); setDisplay(pane,'block'); }
+    function hideZoom(){ setDisplay(lens,'none'); setDisplay(pane,'none'); }
+
+    window.setMainImg = (src, el) => {
+      img.src = src;
+      img.dataset.zoom = src;
+
+      document.querySelectorAll('.thumb-btn').forEach(b => b.classList.remove('active'));
+      if(el) el.classList.add('active');
+
+      hideZoom();
+      initZoom();
     };
-    im.src = src;
+
+    img.addEventListener('mouseenter', () => { if(isDesktop()) showZoom(); });
+    img.addEventListener('mouseleave', () => { if(isDesktop()) hideZoom(); });
+    img.addEventListener('mousemove', (e) => { if(isDesktop()) move(e); });
+
+    img.addEventListener('touchstart', (e) => {
+      if(!isMobile()) return;
+      showZoom(); move(e);
+    }, { passive:false });
+
+    img.addEventListener('touchmove', (e) => {
+      if(!isMobile()) return;
+      e.preventDefault();
+      move(e);
+    }, { passive:false });
+
+    img.addEventListener('touchend', () => { if(isMobile()) hideZoom(); });
+    img.addEventListener('touchcancel', () => { if(isMobile()) hideZoom(); });
+
+    window.addEventListener('resize', () => { hideZoom(); initZoom(); });
+
+    if(img.complete) initZoom();
+    else img.addEventListener('load', initZoom);
   }
 
-  function pos(e){
-    const r = img.getBoundingClientRect();
-    const x = e.touches ? e.touches[0].clientX : e.clientX;
-    const y = e.touches ? e.touches[0].clientY : e.clientY;
-    return { x:x-r.left, y:y-r.top };
+  // ---------- ADD TO CART (NON-CURTAIN) ----------
+  const addBtn = document.getElementById('addToCartBtn');
+
+  function currentSizeLabel(){
+    const wrap = document.getElementById('sizePills');
+    if(!wrap) return null;
+    const active = wrap.querySelector('.size-pill.active');
+    return active ? (active.dataset.label || '') : null;
   }
 
-  function move(e){
-    const p = pos(e);
-
-    let L = p.x - lens.offsetWidth/2;
-    let T = p.y - lens.offsetHeight/2;
-
-    L = Math.max(0, Math.min(L, img.clientWidth - lens.offsetWidth));
-    T = Math.max(0, Math.min(T, img.clientHeight - lens.offsetHeight));
-
-    lens.style.left = L+'px';
-    lens.style.top  = T+'px';
-
-    const rx = natW / img.clientWidth;
-    const ry = natH / img.clientHeight;
-
-    pane.style.backgroundPosition = `${-(L*rx)*zoom}px ${-(T*ry)*zoom}px`;
+  function currentPrice(){
+    const wrap = document.getElementById('sizePills');
+    if(!wrap) return parseFloat({{ json_encode((float)$product->price) }});
+    const active = wrap.querySelector('.size-pill.active');
+    return active ? parseFloat(active.dataset.price) : parseFloat({{ json_encode((float)$product->price) }});
   }
 
-  function showZoom(){
-    setDisplay(lens,'block');
-    setDisplay(pane,'block');
+  addBtn?.addEventListener('click', async () => {
+    const payload = {
+      product_id: {{ (int)$product->id }},
+      qty: parseInt(document.getElementById('qty')?.value || '1', 10),
+      size: currentSizeLabel(),
+      price: currentPrice()
+    };
+
+    try {
+      const res = await fetch(`{{ route('cart.add') }}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type':'application/json',
+          'X-CSRF-TOKEN': csrf,
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if(res.ok && data.ok){
+        updateCartBadge(data.totalQty ?? 0);
+        showToast(data.message || 'U shtua në shportë');
+      } else {
+        showToast(data.message || 'Diçka shkoi keq', true);
+      }
+    } catch (e) {
+      showToast('Gabim lidhjeje', true);
+    }
+  });
+
+  // ---------- CURTAIN CALC + CURTAIN WHATSAPP ----------
+  const isCurtain = {!! json_encode($isCurtain) !!};
+
+  if(isCurtain){
+    const pricePerMeter = parseFloat({{ json_encode((float)$product->price) }});
+
+    function calculateCurtain(){
+      const width = parseFloat(document.querySelector('[name="width"]')?.value) || 0;
+
+      const fold = document.querySelector('[name="fold_type"]:checked');
+      if(!fold) return;
+
+      const ratio = parseFloat(fold.dataset.ratio || 1);
+      const extra = parseFloat(fold.dataset.extra || 0);
+      const ringsPerMeter = parseFloat(fold.dataset.rings || 0);
+      const ringPrice = parseFloat(fold.dataset.ringprice || 0);
+
+      const meters = width * ratio;
+      const fabricTotal = meters * pricePerMeter;
+      const extraTotal = meters * extra;
+      const rings = Math.ceil(meters * ringsPerMeter);
+      const ringsTotal = rings * ringPrice;
+      const total = fabricTotal + extraTotal + ringsTotal;
+
+      document.getElementById("totalMeters").innerText = meters.toFixed(2);
+      document.getElementById("totalPrice").innerText = total.toFixed(2);
+    }
+
+    function updateCurtainWhatsapp(){
+      const width = parseFloat(document.querySelector('[name="width"]')?.value) || 0;
+      const height = parseFloat(document.querySelector('[name="height"]')?.value) || 0;
+      const fold = document.querySelector('[name="fold_type"]:checked');
+      if(!fold) return;
+
+      const ratio = parseFloat(fold.dataset.ratio || 1);
+      const extra = parseFloat(fold.dataset.extra || 0);
+      const ringsPerMeter = parseFloat(fold.dataset.rings || 0);
+      const ringPrice = parseFloat(fold.dataset.ringprice || 0);
+
+      const meters = width * ratio;
+      const fabricTotal = meters * pricePerMeter;
+      const extraTotal = meters * extra;
+      const rings = Math.ceil(meters * ringsPerMeter);
+      const ringsTotal = rings * ringPrice;
+      const total = fabricTotal + extraTotal + ringsTotal;
+
+      const message = `Përshëndetje 👋\n\nDua të porosis këtë perde:\n\nProdukti: {{ addslashes($product->name) }}\nGjerësia: ${width} m\nLartësia: ${height} m\nSistemi: ${fold.value}\n\nMetra material: ${meters.toFixed(2)} m\nTotali i llogaritur: ${total.toFixed(2)} €\n\nJu lutem më konfirmoni porosinë 🙏`;
+
+      const btn = document.getElementById("waBtn");
+      if(btn){
+        btn.href = "https://wa.me/38344960661?text=" + encodeURIComponent(message);
+      }
+    }
+
+    // Listeners (input + change)
+    document.querySelectorAll('#curtainForm input').forEach(el => {
+      el.addEventListener('input', () => { calculateCurtain(); updateCurtainWhatsapp(); });
+      el.addEventListener('change', () => { calculateCurtain(); updateCurtainWhatsapp(); });
+    });
+
+    // init
+    calculateCurtain();
+    updateCurtainWhatsapp();
   }
-  function hideZoom(){
-    setDisplay(lens,'none');
-    setDisplay(pane,'none');
-  }
-
-  // ✅ thumbnails: ndërron foton kryesore + rifreskon zoom
-  window.setMainImg = (src, el) => {
-    img.src = src;
-    img.dataset.zoom = src;
-
-    document.querySelectorAll('.thumb-btn').forEach(b => b.classList.remove('active'));
-    if(el) el.classList.add('active');
-
-    hideZoom();
-    initZoom();
-  };
-
-  /* DESKTOP (hover) */
-  img.addEventListener('mouseenter', () => {
-    if(!isDesktop()) return;
-    showZoom();
-  });
-  img.addEventListener('mouseleave', () => {
-    if(!isDesktop()) return;
-    hideZoom();
-  });
-  img.addEventListener('mousemove', (e) => {
-    if(!isDesktop()) return;
-    move(e);
-  });
-
-  /* MOBILE (touch) — vetëm kur e prek */
-  img.addEventListener('touchstart', (e) => {
-    if(!isMobile()) return;
-    showZoom();
-    move(e);
-  }, { passive:false });
-
-  img.addEventListener('touchmove', (e) => {
-    if(!isMobile()) return;
-    e.preventDefault();
-    move(e);
-  }, { passive:false });
-
-  img.addEventListener('touchend', () => {
-    if(!isMobile()) return;
-    hideZoom();
-  });
-
-  img.addEventListener('touchcancel', () => {
-    if(!isMobile()) return;
-    hideZoom();
-  });
-
-  window.addEventListener('resize', () => {
-    hideZoom();
-    initZoom();
-  });
-
-  if(img.complete) initZoom();
-  else img.addEventListener('load', initZoom);
 })();
-</script>
-
-<script>
-// ---- CART ----
-const addBtn = document.getElementById('addToCartBtn');
-
-function currentSizeLabel(){
-  const wrap = document.getElementById('sizePills');
-  if(!wrap) return null;
-  const active = wrap.querySelector('.size-pill.active');
-  return active ? (active.dataset.label || '') : null;
-}
-
-function currentPrice(){
-  const wrap = document.getElementById('sizePills');
-  if(!wrap) return parseFloat({{ json_encode((float)$product->price) }});
-  const active = wrap.querySelector('.size-pill.active');
-  return active ? parseFloat(active.dataset.price) : parseFloat({{ json_encode((float)$product->price) }});
-}
-
-addBtn?.addEventListener('click', async () => {
-  const payload = {
-    product_id: {{ $product->id }},
-    qty: parseInt(document.getElementById('qty').value || '1', 10),
-    size: currentSizeLabel(),
-    price: currentPrice()
-  };
-
-  try {
-    const res = await fetch(`{{ route('cart.add') }}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type':'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      },
-      body: JSON.stringify(payload)
-    });
-    const addBtn = document.getElementById('addToCartBtn');
-
-function currentSizeLabel(){
-  const wrap = document.getElementById('sizePills');
-  if(!wrap) return null;
-  const active = wrap.querySelector('.size-pill.active');
-  return active ? (active.dataset.label || '') : null;
-}
-
-addBtn?.addEventListener('click', async () => {
-  const payload = {
-    product_id: {{ $product->id }},
-    qty: parseInt(document.getElementById('qty').value || '1', 10),
-    size: currentSizeLabel()
-  };
-
-  try {
-    const res = await fetch(`{{ route('cart.add') }}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type':'application/json',
-        'Accept':'application/json', // ✅ shumë e rëndësishme (ndryshe Laravel kthen HTML)
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      },
-      body: JSON.stringify(payload)
-    });
-
-    // ✅ Lexo si text, pastaj provo JSON
-    const txt = await res.text();
-    let data = null;
-    try { data = JSON.parse(txt); } catch(e) {}
-
-    if(!res.ok){
-      // 419 / 500 / 302 etj
-      showToast((data && data.message) ? data.message : 'Gabim (CSRF/Server). Rifresko faqen.', true);
-      return;
-    }
-
-    if(data && data.ok){
-      document.querySelectorAll('.cart-badge').forEach(b => b.textContent = data.totalQty);
-      showToast(data.message || 'U shtua në shportë');
-    }else{
-      showToast((data && data.message) ? data.message : 'Diçka shkoi keq', true);
-    }
-
-  } catch (e) {
-    showToast('Gabim lidhjeje', true);
-  }
-});
-
-function showToast(text, isErr){
-  let el = document.getElementById('cartToast');
-  if(!el){
-    el = document.createElement('div');
-    el.id='cartToast';
-    el.className='toast align-items-center text-bg-' + (isErr?'danger':'success');
-    el.role='alert'; el.ariaLive='assertive'; el.ariaAtomic='true';
-    el.style.position='fixed'; el.style.bottom='16px'; el.style.right='16px'; el.style.zIndex='3000';
-    el.innerHTML=`<div class="d-flex"><div class="toast-body"></div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>`;
-    document.body.appendChild(el);
-  }
-  el.querySelector('.toast-body').textContent = text;
-  const t = new bootstrap.Toast(el, { delay: 1800 });
-  t.show();
-}
-    if(data.ok){
-      document.querySelectorAll('.cart-badge').forEach(b => b.textContent = data.totalQty);
-      document.dispatchEvent(new CustomEvent('cart:updated', { detail: { totalQty: data.totalQty }}));
-      showToast(data.message || 'U shtua në shportë');
-    } else {
-      showToast(data.message || 'Diçka shkoi keq', true);
-    }
-  } catch (e) {
-    showToast('Gabim lidhjeje', true);
-  }
-});
-
-function showToast(text, isErr){
-  let el = document.getElementById('cartToast');
-  if(!el){
-    el = document.createElement('div');
-    el.id='cartToast';
-    el.className='toast align-items-center text-bg-' + (isErr?'danger':'success');
-    el.role='alert'; el.ariaLive='assertive'; el.ariaAtomic='true';
-    el.style.position='fixed'; el.style.bottom='16px'; el.style.right='16px'; el.style.zIndex='3000';
-    el.innerHTML=`<div class="d-flex"><div class="toast-body"></div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>`;
-    document.body.appendChild(el);
-  }
-  el.querySelector('.toast-body').textContent = text;
-  const t = new bootstrap.Toast(el, { delay: 1800 });
-  t.show();
-}
-</script>
-<script>
-@if($isCurtain)
-
-const pricePerMeter = {{ (float)$product->price }};
-
-function calculateCurtain() {
-
-    let width = parseFloat(document.querySelector('[name="width"]').value) || 0;
-
-    let selectedFold = document.querySelector('[name="fold_type"]:checked');
-
-    let ratio = parseFloat(selectedFold.dataset.ratio || 1);
-    let extra = parseFloat(selectedFold.dataset.extra || 0);
-    let ringsPerMeter = parseFloat(selectedFold.dataset.rings || 0);
-    let ringPrice = parseFloat(selectedFold.dataset.ringprice || 0);
-
-    // MATERIAL
-    let meters = width * ratio;
-    let fabricTotal = meters * pricePerMeter;
-
-    // SHIRIT (S-Wave)
-    let extraTotal = meters * extra;
-
-    // RRUMBULLAKA (Grommet)
-    let rings = Math.ceil(meters * ringsPerMeter);
-    let ringsTotal = rings * ringPrice;
-
-    // TOTAL
-    let total = fabricTotal + extraTotal + ringsTotal;
-
-    document.getElementById("totalMeters").innerText = meters.toFixed(2);
-    document.getElementById("totalPrice").innerText = total.toFixed(2);
-}
-
-document.querySelectorAll('#curtainForm input')
-    .forEach(el => el.addEventListener('input', calculateCurtain));
-
-@endif
-@if($isCurtain)
-
-function updateCurtainWhatsapp(){
-
-    let width = parseFloat(document.querySelector('[name="width"]').value) || 0;
-    let height = parseFloat(document.querySelector('[name="height"]').value) || 0;
-    let fold = document.querySelector('[name="fold_type"]:checked');
-
-    if(!fold) return;
-
-    let ratio = parseFloat(fold.dataset.ratio || 1);
-    let extra = parseFloat(fold.dataset.extra || 0);
-    let ringsPerMeter = parseFloat(fold.dataset.rings || 0);
-    let ringPrice = parseFloat(fold.dataset.ringprice || 0);
-
-    let pricePerMeter = {{ (float)$product->price }};
-
-    let meters = width * ratio;
-    let fabricTotal = meters * pricePerMeter;
-    let extraTotal = meters * extra;
-    let rings = Math.ceil(meters * ringsPerMeter);
-    let ringsTotal = rings * ringPrice;
-    let total = fabricTotal + extraTotal + ringsTotal;
-
-    let message = `
-Përshëndetje 👋
-
-Dua të porosis këtë perde:
-
-Produkti: {{ addslashes($product->name) }}
-Gjerësia: ${width} m
-Lartësia: ${height} m
-Sistemi: ${fold.value}
-
-Metra material: ${meters.toFixed(2)} m
-Totali i llogaritur: ${total.toFixed(2)} €
-
-Ju lutem më konfirmoni porosinë 🙏
-`;
-
-    document.getElementById("waBtn").href =
-        "https://wa.me/38344960661?text=" + encodeURIComponent(message);
-}
-
-document.querySelectorAll('#curtainForm input')
-    .forEach(el => el.addEventListener('input', updateCurtainWhatsapp));
-
-updateCurtainWhatsapp();
-
-@endif
 </script>
 </body>
 </html>
