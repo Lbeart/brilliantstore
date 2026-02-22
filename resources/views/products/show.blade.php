@@ -722,7 +722,7 @@
         <li class="nav-item dropdown ms-lg-2">
           <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
              href="#" id="cartDropdown" role="button"
-             data-bs-toggle="dropdown" aria-expanded="false" onclick="return false;">
+             data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-bag"></i> Shporta
             <span class="badge bg-danger rounded-pill ms-1 cart-badge">
               {{ session('cart_total_qty', 0) }}
@@ -906,90 +906,89 @@
         </a>
       </div>
 
-      {{-- ✅ FIX #1: BUTONI “Shto në shportë” për JO-PERDE (duhet jashtë if($isCurtain)) --}}
-      @if(!$isCurtain)
-        <button type="button" id="addToCartBtn" class="btn btn-danger w-100 py-2 mb-3">
+      {{-- ✅ PERDE: form special --}}
+      @if($isCurtain)
+        <form action="{{ route('cart.addCurtain') }}" method="POST" id="curtainForm" class="mt-4">
+          @csrf
+          <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+          <div class="section-card mb-3">
+            <h5 class="mb-3">Përmasa</h5>
+
+            <div class="row">
+              <div class="col-6">
+                <label class="form-label">Width (m)</label>
+                <input type="number" step="0.1" name="width" class="form-control" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Height (m)</label>
+                <input type="number" step="0.1" name="height" class="form-control" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card mb-3">
+            <h5 class="mb-3">Folding System</h5>
+
+            <div class="fold-grid">
+              @php
+                $folds = [
+                  ['value'=>'fold1','name'=>'Fold 1 (1:2)','ratio'=>2,'extra'=>0,'img'=>'fold1.png'],
+                  ['value'=>'fold2','name'=>'Fold 2 (1:2.5)','ratio'=>2.5,'extra'=>0,'img'=>'fold2.png'],
+                  ['value'=>'fold3','name'=>'Fold 3 (1:3)','ratio'=>3,'extra'=>0,'img'=>'fold3.png'],
+                  ['value'=>'grommet','name'=>'Grommet','ratio'=>2.5,'rings'=>5,'ring_price'=>1,'img'=>'rrumbu.jpg'],
+                  ['value'=>'pencil','name'=>'Pencil Pleat (1:1.5)','ratio'=>1.5,'extra'=>0,'img'=>'shiriti.png'],
+                  ['value'=>'swave','name'=>'S-Wave','ratio'=>2.8,'extra'=>2.5,'img'=>'amerikan.png'],
+                ];
+              @endphp
+
+              @foreach($folds as $i => $f)
+                <label class="fold-item">
+                  <input type="radio"
+                         name="fold_type"
+                         value="{{ $f['value'] }}"
+                         data-ratio="{{ $f['ratio'] }}"
+                         data-extra="{{ $f['extra'] ?? 0 }}"
+                         data-rings="{{ $f['rings'] ?? 0 }}"
+                         data-ringprice="{{ $f['ring_price'] ?? 0 }}"
+                         class="fold-radio"
+                         {{ $loop->first ? 'checked' : '' }}
+                         required>
+
+                  <div class="fold-card">
+                    <div class="fold-img">
+                      <img src="{{ asset('images/folds/'.$f['img']) }}" alt="{{ $f['name'] }}">
+                    </div>
+
+                    <div class="fold-name">{{ $f['name'] }}</div>
+
+                    @if(isset($f['extra']) && $f['extra'] > 0)
+                      <div class="fold-extra">
+                        +{{ number_format($f['extra'],2) }} € / meter
+                      </div>
+                    @endif
+                  </div>
+                </label>
+              @endforeach
+            </div>
+          </div>
+
+          <div class="section-card mb-3">
+            <strong>Total: <span id="totalPrice">0.00</span> €</strong>
+            <div class="small text-muted">Meters: <span id="totalMeters">0</span></div>
+          </div>
+
+          <div class="mt-3">
+            <button type="submit" class="btn btn-danger px-4 w-100">
+              <i class="bi bi-bag-plus"></i> Shto në shportë
+            </button>
+          </div>
+        </form>
+      @else
+        {{-- ✅ PRODUKTE TJERA: butoni normal --}}
+        <button type="button" id="addToCartBtn" class="btn btn-danger w-100 py-2 mt-4">
           <i class="bi bi-bag-plus"></i> Shto në shportë
         </button>
-      @endif
-
-      @if($isCurtain)
-      <form action="{{ route('cart.addCurtain') }}" method="POST" id="curtainForm" class="mt-4">
-        @csrf
-        <input type="hidden" name="product_id" value="{{ $product->id }}">
-
-        <div class="section-card mb-3">
-          <h5 class="mb-3">Përmasa</h5>
-
-          <div class="row">
-            <div class="col-6">
-              <label class="form-label">Width (m)</label>
-              <input type="number" step="0.1" name="width" class="form-control" required>
-            </div>
-            <div class="col-6">
-              <label class="form-label">Height (m)</label>
-              <input type="number" step="0.1" name="height" class="form-control" required>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-card mb-3">
-          <h5 class="mb-3">Folding System</h5>
-
-          <div class="fold-grid">
-            @php
-              $folds = [
-                ['value'=>'fold1','name'=>'Fold 1 (1:2)','ratio'=>2,'extra'=>0,'img'=>'fold1.png'],
-                ['value'=>'fold2','name'=>'Fold 2 (1:2.5)','ratio'=>2.5,'extra'=>0,'img'=>'fold2.png'],
-                ['value'=>'fold3','name'=>'Fold 3 (1:3)','ratio'=>3,'extra'=>0,'img'=>'fold3.png'],
-                ['value'=>'grommet','name'=>'Grommet','ratio'=>2.5,'rings'=>5,'ring_price'=>1,'img'=>'rrumbu.jpg'],
-                ['value'=>'pencil','name'=>'Pencil Pleat (1:1.5)','ratio'=>1.5,'extra'=>0,'img'=>'shiriti.png'],
-                ['value'=>'swave','name'=>'S-Wave','ratio'=>2.8,'extra'=>2.5,'img'=>'amerikan.png'],
-              ];
-            @endphp
-
-            @foreach($folds as $i => $f)
-              <label class="fold-item">
-                <input type="radio"
-                       name="fold_type"
-                       value="{{ $f['value'] }}"
-                       data-ratio="{{ $f['ratio'] }}"
-                       data-extra="{{ $f['extra'] ?? 0 }}"
-                       data-rings="{{ $f['rings'] ?? 0 }}"
-                       data-ringprice="{{ $f['ring_price'] ?? 0 }}"
-                       class="fold-radio"
-                       {{ $loop->first ? 'checked' : '' }}
-                       required>
-
-                <div class="fold-card">
-                  <div class="fold-img">
-                    <img src="{{ asset('images/folds/'.$f['img']) }}" alt="{{ $f['name'] }}">
-                  </div>
-
-                  <div class="fold-name">{{ $f['name'] }}</div>
-
-                  @if(isset($f['extra']) && $f['extra'] > 0)
-                    <div class="fold-extra">
-                      +{{ number_format($f['extra'],2) }} € / meter
-                    </div>
-                  @endif
-                </div>
-              </label>
-            @endforeach
-          </div>
-        </div>
-
-        <div class="section-card mb-3">
-          <strong>Total: <span id="totalPrice">0.00</span> €</strong>
-          <div class="small text-muted">Meters: <span id="totalMeters">0</span></div>
-        </div>
-
-        <div class="mt-3">
-          <button type="submit" class="btn btn-danger px-4 w-100">
-            <i class="bi bi-bag-plus"></i> Shto në shportë
-          </button>
-        </div>
-      </form>
       @endif
 
       @if($product->description)
@@ -1127,7 +1126,7 @@
   </div>
 </footer>
 
-<!-- Fullscreen modal -->
+<!-- Fullscreen modal (e lejmë në HTML siç e ke, por s’e përdorim) -->
 <div class="img-modal" id="imgModal" aria-hidden="true">
   <button class="close-btn" type="button" id="modalClose" aria-label="Mbyll">
     <i class="bi bi-x-lg"></i>
@@ -1249,10 +1248,6 @@
   const lens = document.getElementById('zoomLens');
   const pane = document.getElementById('zoomPane');
 
-  const modal = document.getElementById('imgModal');
-  const modalImg = document.getElementById('modalImg');
-  const modalClose = document.getElementById('modalClose');
-
   if(!img || !lens || !pane) return;
 
   const isDesktop = () => window.matchMedia('(min-width:992px)').matches;
@@ -1339,17 +1334,27 @@
     move(e);
   });
 
-  /* MOBILE: hap modal sepse CSS e fsheh lens/pane me !important */
-  img.addEventListener('click', () => {
+  /* MOBILE (touch) — vetëm kur e prek */
+  img.addEventListener('touchstart', (e) => {
     if(!isMobile()) return;
-    if(!modal || !modalImg) return;
-    modalImg.src = img.dataset.zoom || img.src;
-    modal.classList.add('open');
+    showZoom();
+    move(e);
+  }, { passive:false });
+
+  img.addEventListener('touchmove', (e) => {
+    if(!isMobile()) return;
+    e.preventDefault();
+    move(e);
+  }, { passive:false });
+
+  img.addEventListener('touchend', () => {
+    if(!isMobile()) return;
+    hideZoom();
   });
 
-  modalClose?.addEventListener('click', () => modal?.classList.remove('open'));
-  modal?.addEventListener('click', (e) => {
-    if(e.target === modal) modal.classList.remove('open');
+  img.addEventListener('touchcancel', () => {
+    if(!isMobile()) return;
+    hideZoom();
   });
 
   window.addEventListener('resize', () => {
@@ -1393,16 +1398,14 @@ addBtn?.addEventListener('click', async () => {
       method: 'POST',
       headers: {
         'Content-Type':'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        'Accept': 'application/json'
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       },
       body: JSON.stringify(payload)
     });
 
-    // ✅ FIX #2: data mungon (pa këtë ke error)
-    const data = await res.json().catch(() => ({}));
+    const data = await res.json(); // ✅ FIX: kjo mungonte
 
-    if(res.ok && data.ok){
+    if(data.ok){
       document.querySelectorAll('.cart-badge').forEach(b => b.textContent = data.totalQty);
       document.dispatchEvent(new CustomEvent('cart:updated', { detail: { totalQty: data.totalQty }}));
       showToast(data.message || 'U shtua në shportë');
@@ -1470,7 +1473,6 @@ document.querySelectorAll('#curtainForm input')
     .forEach(el => el.addEventListener('input', calculateCurtain));
 
 @endif
-
 @if($isCurtain)
 
 function updateCurtainWhatsapp(){
