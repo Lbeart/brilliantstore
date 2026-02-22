@@ -75,17 +75,31 @@ class CheckoutController extends Controller
                 'status'  => 'new',
             ]);
 
-            foreach ($cart as $it) {
-                OrderItem::create([
-                    'order_id'   => $order->id,
-                    'product_id' => $it['product_id'] ?? null,
-                    'name'       => $it['name'] ?? 'Produkt',
-                    'size'       => $it['size'] ?? null,
-                    'qty'        => (int)($it['qty'] ?? 1),
-                    'price'      => (float)($it['price'] ?? 0),
-                    'image'      => $it['image'] ?? ($it['image_path'] ?? null),
-                ]);
-            }
+           foreach ($cart as $it) {
+
+    // default size
+    $sizeText = $it['size'] ?? null;
+
+    // ✅ nese është perde, shndërro curtain ne tekst dhe ruaje te size
+    if (($it['type'] ?? null) === 'curtain' && !empty($it['curtain']) && is_array($it['curtain'])) {
+        $c = $it['curtain'];
+
+        $sizeText =
+            ($c['width'] ?? '-') . "m x " . ($c['height'] ?? '-') . "m\n" .
+            "Sistemi: " . ($c['fold_label'] ?? ($c['fold_type'] ?? '-')) . "\n" .
+            "Material: " . ($c['meters'] ?? '-') . "m";
+    }
+
+    OrderItem::create([
+        'order_id'   => $order->id,
+        'product_id' => $it['product_id'] ?? null,
+        'name'       => $it['name'] ?? 'Produkt',
+        'size'       => $sizeText, // ✅ KJO do shfaqet te admin
+        'qty'        => (int)($it['qty'] ?? 1),
+        'price'      => (float)($it['price'] ?? 0),
+        'image'      => $it['image'] ?? ($it['image_path'] ?? null),
+    ]);
+}
         });
 
         // pastro shportën
