@@ -906,17 +906,15 @@
         </a>
       </div>
 
-      @if($isCurtain)
-    <button type="submit" class="btn btn-danger px-4">
+     @if($isCurtain)
+    <button type="submit" form="curtainForm" class="btn btn-danger px-4">
         <i class="bi bi-bag-plus"></i> Shto në shportë
     </button>
 @else
-    <button id="addToCartBtn" class="btn btn-outline-danger px-4">
+    <button id="addToCartBtn" type="button" class="btn btn-outline-danger px-4">
         <i class="bi bi-bag-plus"></i> Shto në shportë
     </button>
 @endif
-        <i class="bi bi-bag-plus"></i> Shto në shportë
-      </button>
      @if($isCurtain)
 <form action="{{ route('cart.addCurtain') }}" method="POST" id="curtainForm" class="mt-4">
     @csrf
