@@ -1471,9 +1471,7 @@
       <p class="text-muted mb-0">Produktet e reja që janë shtuar së fundmi në katalog.</p>
     </div>
 
-    <a href="{{ route('products.index') }}" class="btn btn-brand btn-sm pill mt-2 mt-md-0">
-      Shiko të gjitha
-    </a>
+    
   </div>
 
   @if($latestProducts->count())
