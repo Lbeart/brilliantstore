@@ -906,179 +906,145 @@
       .reveal{ opacity:1 !important; transform:none !important; }
     }
     /* ========================= LATEST PRODUCTS (PRO) ========================= */
-.latest-head{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:12px;
-  margin-bottom: 14px;
-}
-.latest-head h2{ margin:0; font-weight:900; }
-.latest-head p{ margin:0; color: var(--muted); }
-
-.products-grid{
+.latest-products .lp-grid{
   display:grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
 @media (max-width: 992px){
-  .products-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .latest-products .lp-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 576px){
-  .products-grid{ grid-template-columns: 1fr; }
+  .latest-products .lp-grid{ grid-template-columns: 1fr; gap: 14px; }
 }
 
-/* Card */
-.product-pro{
+.latest-products .lp-card{
+  background:#fff;
+  border: 1px solid rgba(2,6,23,.08);
   border-radius: 22px;
   overflow:hidden;
-  border: 1px solid rgba(2,6,23,.08);
   box-shadow: var(--shadow-soft);
-  background:#fff;
   transition: transform .22s ease, box-shadow .22s ease;
-  transform: translateZ(0);
 }
-.product-pro:hover{
+.latest-products .lp-card:hover{
   transform: translateY(-6px);
   box-shadow: 0 28px 70px rgba(2,6,23,.14);
 }
 
-.product-pro .media{
-  position: relative;
+/* Media / image wrapper */
+.latest-products .lp-media{
+  position:relative;
   background: linear-gradient(180deg, rgba(2,6,23,.03), rgba(2,6,23,.00));
   overflow:hidden;
 }
-.product-pro .media img{
+
+/* ✅ Desktop: cover (dukët bukur), Mobile: contain (shihet krejt tepihu) */
+.latest-products .lp-img{
   width:100%;
-  height: 265px;
+  height: 270px;
   object-fit: cover;
-  transition: transform .6s ease, filter .6s ease;
+  object-position: center;
+  display:block;
+  transition: transform .6s ease;
 }
-.product-pro:hover .media img{
-  transform: scale(1.06);
-  filter: saturate(1.02);
+.latest-products .lp-card:hover .lp-img{ transform: scale(1.04); }
+
+/* ✅ Mobile fix: mos e pre foto-n e tepihave */
+@media (max-width: 576px){
+  .latest-products .lp-img{
+    height: 240px;              /* ma e shkurte ne telefon */
+    object-fit: contain;        /* me u pa komplet tepihu */
+    padding: 10px;              /* pak hapsire */
+    background: #f8fafc;        /* mos me dal “bosh” */
+  }
 }
 
 /* Badges */
-.badge-new{
-  position:absolute;
-  top: 12px;
-  left: 12px;
-  padding: .35rem .7rem;
-  border-radius: 999px;
-  font-size: .74rem;
-  font-weight: 900;
-  letter-spacing: .10em;
-  text-transform: uppercase;
+.latest-products .lp-badge{
+  position:absolute; top:12px; left:12px;
   background: rgba(255,193,7,.95);
   color:#111;
+  padding:.32rem .7rem;
+  border-radius:999px;
+  font-size:.74rem;
+  font-weight:900;
+  letter-spacing:.10em;
   box-shadow: 0 16px 30px rgba(2,6,23,.18);
 }
-.badge-stock{
-  position:absolute;
-  top: 12px;
-  right: 12px;
-  padding: .35rem .7rem;
-  border-radius: 999px;
-  font-size: .74rem;
-  font-weight: 900;
-  background: rgba(15,23,42,.78);
+.latest-products .lp-stock{
+  position:absolute; top:12px; right:12px;
+  padding:.32rem .7rem;
+  border-radius:999px;
+  font-size:.74rem;
+  font-weight:900;
   color:#fff;
-  border: 1px solid rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(15,23,42,.78);
   box-shadow: 0 16px 30px rgba(2,6,23,.18);
 }
-.badge-stock.out{
-  background: rgba(220,53,69,.88);
-}
+.latest-products .lp-stock.out{ background: rgba(220,53,69,.88); }
 
 /* Body */
-.product-pro .body{
-  padding: 14px 14px 16px;
-}
-.product-pro .catline{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
+.latest-products .lp-body{ padding: 14px 14px 16px; }
+.latest-products .lp-top{
+  display:flex; justify-content:space-between; align-items:center; gap:10px;
   margin-bottom: 8px;
 }
-.product-pro .cat{
-  font-size: .78rem;
-  font-weight: 800;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+.latest-products .lp-cat{
+  font-size:.78rem; font-weight:900; letter-spacing:.08em;
   color: rgba(2,6,23,.55);
 }
-.product-pro .sku{
-  font-size: .78rem;
-  font-weight: 700;
-  color: rgba(2,6,23,.45);
-}
+.latest-products .lp-sku{ font-size:.78rem; font-weight:700; color: rgba(2,6,23,.45); }
 
-.product-pro .title{
+.latest-products .lp-title{
   font-weight: 900;
+  color:#0f172a;
   margin: 0 0 6px;
-  line-height: 1.2;
-  font-size: 1.02rem;
+  line-height:1.2;
+  font-size: 1.03rem;
+  display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow:hidden;
 }
-.product-pro .desc{
-  margin: 0 0 12px;
+.latest-products .lp-desc{
   color: var(--muted);
+  margin: 0 0 12px;
   font-size: .92rem;
   line-height: 1.6;
-
-  /* clamp */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow:hidden;
 }
 
 /* Price row */
-.price-row{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:12px;
-  margin-top: 6px;
+.latest-products .lp-price-row{
+  display:flex; justify-content:space-between; align-items:flex-end; gap:12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(2,6,23,.06);
 }
-.price-main{
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-}
-.price-main .label{
-  font-size: .78rem;
-  color: rgba(2,6,23,.55);
-  font-weight: 700;
-}
-.price-main .price{
+.latest-products .lp-price-label{ font-size:.78rem; font-weight:700; color: rgba(2,6,23,.55); }
+.latest-products .lp-price{
   font-size: 1.25rem;
   font-weight: 900;
   color: var(--brand);
   line-height: 1;
 }
 
-/* Actions */
-.actions{
-  display:flex;
-  gap:10px;
-  margin-top: 12px;
+/* Buttons */
+.latest-products .lp-actions{
+  display:flex; gap:10px; margin-top: 12px;
 }
-.actions .btn{
+.latest-products .lp-actions .btn{
   border-radius: 999px;
   font-weight: 900;
-  padding: .58rem .9rem;
+  min-height: 44px; /* touch friendly */
 }
-.actions .btn-outline-dark{
-  border-width: 2px;
+@media (max-width: 576px){
+  .latest-products .lp-actions{ flex-direction: column; }
+  .latest-products .lp-actions .btn{ width:100% !important; }
 }
-.actions .btn-wa{
+.latest-products .btn-wa{
   background:#16a34a;
-  border-color:#16a34a;
+  border:1px solid #16a34a;
   color:#fff;
 }
-.actions .btn-wa:hover{ color:#fff; filter: brightness(.98); }
+.latest-products .btn-wa:hover{ color:#fff; filter: brightness(.98); }
   </style>
 </head>
 
@@ -1501,7 +1467,7 @@
 @endphp
      <!-- Latest products -->
 <!-- Latest products -->
-<section class="mb-5">
+<section class="mb-5 latest-products">
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-2 mb-3">
     <div>
       <div class="k" style="font-weight:900; letter-spacing:.16em; text-transform:uppercase; color: var(--brand); background: rgba(220,53,69,.08); border:1px solid rgba(220,53,69,.14); padding:.35rem .8rem; border-radius:999px; display:inline-block;">
