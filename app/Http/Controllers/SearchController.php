@@ -8,10 +8,31 @@ class SearchController extends Controller
 {
     public function index(Request $request)
     {
-        $q = mb_strtolower(trim($request->get('q')));
+        $q = mb_strtolower(trim($request->get('q', '')));
 
         if ($q === '') {
             return back();
+        }
+
+        /**
+         * ✅ FIX: Perde nënkategori
+         * - "ditore" duhet me shku te /perde-ditore
+         * - "anesore/anësore" te /anesore
+         * - "perde" pa specifikim -> default /anesore
+         *
+         * Kjo duhet me u bo PARA loop-it, se përndryshe e kap "perde"
+         * dhe kthen /anesore gjithmonë.
+         */
+        if (str_contains($q, 'ditore')) {
+            return redirect('/perde-ditore?q=' . urlencode($q));
+        }
+
+        if (str_contains($q, 'anësore') || str_contains($q, 'anesore')) {
+            return redirect('/anesore?q=' . urlencode($q));
+        }
+
+        if (str_contains($q, 'perde') || str_contains($q, 'perd') || str_contains($q, 'curtain')) {
+            return redirect('/anesore?q=' . urlencode($q));
         }
 
         $categories = [
@@ -46,32 +67,19 @@ class SearchController extends Controller
                     'postava','postav','çar','qar','bedsheet'
                 ]
             ],
-            'perde' => [
-                'route' => '/anesore',
-                'keywords' => [
-                    'perde','perd','curtain','anesore','ditore'
-                ]
-            ],
         ];
 
         foreach ($categories as $cat) {
             foreach ($cat['keywords'] as $keyword) {
-
                 if (str_contains($q, $keyword)) {
 
-                    /**
-                     * 👉 NËSE QUERY = VETËM FJALË KATEGORIE
-                     * p.sh. "shkallore", "garnishte", "batanije"
-                     */
+                    // ✅ nëse query është vetëm keyword (p.sh "batanije")
                     if ($q === $keyword) {
-                        return redirect($cat['route'].'?q='.$keyword);
+                        return redirect($cat['route'] . '?q=' . urlencode($keyword));
                     }
 
-                    /**
-                     * 👉 NËSE KA EDHE FJALË TJERA
-                     * p.sh. "shkallore otto", "garnishte plastik"
-                     */
-                    return redirect($cat['route'].'?q='.urlencode($q));
+                    // ✅ nëse ka edhe fjalë tjera (p.sh "shkallore otto")
+                    return redirect($cat['route'] . '?q=' . urlencode($q));
                 }
             }
         }
