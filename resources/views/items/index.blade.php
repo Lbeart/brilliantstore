@@ -1575,7 +1575,7 @@
       <section class="mb-5">
         <div class="section-title">
           <span class="k">VLERËSIMET</span>
-          <h2>Çka po thonë klientët</h2>
+          <h2>Klientët</h2>
           <p>Përvojë reale — cilësi, shërbim dhe kënaqësi.</p>
         </div>
 
@@ -1585,7 +1585,7 @@
               <div class="carousel-item active">
                 <div class="testi-item">
                   <p class="testi-quote">
-                    “Perdet na dolën perfekt! Matja, këshillimi dhe montimi — krejt profesional. Shtëpia u ndryshua total.”
+                    “Perdet na dolën perfekt! Matja,  dhe montimi — krejt profesional. Shtëpia u ndryshua total.”
                   </p>
                   <div class="testi-meta">
                     <p class="testi-name mb-0">Kliente — Prishtinë</p>
@@ -1599,7 +1599,7 @@
               <div class="carousel-item">
                 <div class="testi-item">
                   <p class="testi-quote">
-                    “Tepihat janë super cilësi. Ngjyra nuk zbehet edhe pas pastrimit. Dërgesa erdhi shpejt.”
+                    “Tepihat janë super cilësi. Akrill dhe antibakterial. Dërgesa erdhi shpejt.”
                   </p>
                   <div class="testi-meta">
                     <p class="testi-name mb-0">Klient — Lipjan</p>
@@ -1613,7 +1613,7 @@
               <div class="carousel-item">
                 <div class="testi-item">
                   <p class="testi-quote">
-                    “Setet e çarçafëve janë shumë të buta dhe të rehatshme. Paketim i pastër dhe shërbim i mirë.”
+                    “Setet e çarçafëve ishin 100% Pambuk”
                   </p>
                   <div class="testi-meta">
                     <p class="testi-name mb-0">Kliente — Ferizaj</p>
