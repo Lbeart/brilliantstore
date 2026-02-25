@@ -910,15 +910,7 @@
 
 <body>
   <!-- ANNOUNCEMENT (NEW) -->
-  <div class="announce">
-    <div class="container">
-      <div class="inner">
-        <i class="bi bi-truck"></i>
-        Dërgesë në gjithë Kosovën ·
-        <a href="{{ route('contact') }}">Kontakto për matje &amp; konsultim</a>
-      </div>
-    </div>
-  </div>
+
 
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-dark navbar-custom" id="mainNav">
