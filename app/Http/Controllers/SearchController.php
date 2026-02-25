@@ -3,15 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
 
 class SearchController extends Controller
 {
     private function normalize(string $s): string
     {
         $s = mb_strtolower(trim($s), 'UTF-8');
-        // normalizo ë/ç që "anësore" = "anesore"
         $s = str_replace(['ë', 'ç'], ['e', 'c'], $s);
-        // hiq hapësira të dyfishta
         $s = preg_replace('/\s+/', ' ', $s);
         return $s ?? '';
     }
@@ -19,7 +18,7 @@ class SearchController extends Controller
     private function containsAny(string $haystack, array $needles): bool
     {
         foreach ($needles as $n) {
-            $n = $this->normalize((string)$n);
+            $n = $this->normalize((string) $n);
             if ($n !== '' && str_contains($haystack, $n)) return true;
         }
         return false;
@@ -41,7 +40,6 @@ class SearchController extends Controller
         $path = rtrim($path, '/');
         if ($path === '') $path = '/';
 
-        // context sipas faqes ku je
         if (str_starts_with($path, '/perde-ditore')) return 'perde-ditore';
         if (str_starts_with($path, '/anesore')) return 'anesore';
         if (str_starts_with($path, '/tepiha')) return 'tepiha';
@@ -50,7 +48,35 @@ class SearchController extends Controller
         if (str_starts_with($path, '/postava')) return 'postava';
         if (str_starts_with($path, '/garnishte')) return 'garnishte';
 
-        return null; // home ose tjera
+        return null;
+    }
+
+    /**
+     * ✅ Kthen TRUE nëse ekziston të paktën 1 produkt në atë subkategori
+     * që i përshtatet query-t (name/description).
+     */
+    private function perdeHasMatch(string $rawQ, string $subCategory): bool
+    {
+        $qNorm = $this->normalize($rawQ);
+        $tokens = array_values(array_filter(explode(' ', $qNorm)));
+
+        return Product::query()
+            ->where('is_active', 1)
+            ->where('category', 'perde')
+            ->where('subcategory', $subCategory) // supozojmë vlerat: 'ditore' / 'anesore'
+            ->where(function ($qq) use ($rawQ, $tokens) {
+                // match komplet
+                $qq->where('name', 'like', "%{$rawQ}%")
+                   ->orWhere('description', 'like', "%{$rawQ}%");
+
+                // match edhe për fjalë (p.sh. "perde kumash" => "kumash")
+                foreach ($tokens as $t) {
+                    $qq->orWhere('name', 'like', "%{$t}%")
+                       ->orWhere('description', 'like', "%{$t}%");
+                }
+            })
+            ->limit(1)
+            ->exists();
     }
 
     public function index(Request $request)
@@ -62,14 +88,12 @@ class SearchController extends Controller
 
         $ctx = $this->inferContextFromReferer($request);
 
-        /**
-         * ✅ PERDE: prioritet absolut (ditore/anësore)
-         * kap edhe gabime shkrimi: dior/ditor
-         */
+        // ✅ Perde synonyms + gabime shkrimi
         $perdeWords   = ['perde', 'perd', 'curtain'];
-        $ditoreWords  = ['ditore', 'ditor', 'dior', 'diore'];
+        $ditoreWords  = ['ditore', 'ditor', 'dior', 'diore', 'kumash', 'kumas', 'tulle', 'voile', 'voal'];
         $anesoreWords = ['anesore', 'anesor']; // "anësore" normalizohet -> "anesore"
 
+        // 1) Nëse e specifikon qartë ditore/anësore, shko direkt
         if ($this->containsAny($q, $ditoreWords)) {
             return redirect($this->withQ('/perde-ditore', $raw));
         }
@@ -78,17 +102,33 @@ class SearchController extends Controller
             return redirect($this->withQ('/anesore', $raw));
         }
 
+        // 2) Nëse ka "perde" por pa nënkategori -> VENDOS ME DB
         if ($this->containsAny($q, $perdeWords)) {
-            // nese je te perde-ditore dhe shkruan "perde", rri aty
+            // nëse je tashmë brenda perde-ditore, rri aty
             if ($ctx === 'perde-ditore') {
                 return redirect($this->withQ('/perde-ditore', $raw));
             }
+            if ($ctx === 'anesore') {
+                return redirect($this->withQ('/anesore', $raw));
+            }
+
+            // ✅ smart choice: ku ka rezultate?
+            $hasDitore  = $this->perdeHasMatch($raw, 'ditore');
+            $hasAnesore = $this->perdeHasMatch($raw, 'anesore');
+
+            if ($hasDitore && !$hasAnesore) {
+                return redirect($this->withQ('/perde-ditore', $raw));
+            }
+
+            if ($hasAnesore && !$hasDitore) {
+                return redirect($this->withQ('/anesore', $raw));
+            }
+
+            // nëse dyjat kanë ose dyjat s’kanë -> default
             return redirect($this->withQ('/anesore', $raw));
         }
 
-        /**
-         * ✅ KATEGORITË TJERA: nëse query ka keyword -> shko te ajo kategori
-         */
+        // 3) Kategoritë tjera (siç i ke pas)
         $categories = [
             [
                 'route' => '/tepiha',
@@ -120,10 +160,7 @@ class SearchController extends Controller
             }
         }
 
-        /**
-         * ✅ FALLBACK: nëse s’u gjet keyword, rri te faqja ku je (ctx)
-         * p.sh. je te /perde-ditore dhe shkruan "white" -> rri te /perde-ditore?q=white
-         */
+        // 4) fallback: rri ku je (nëse ke context)
         if ($ctx) {
             $ctxRoute = match ($ctx) {
                 'perde-ditore' => '/perde-ditore',
