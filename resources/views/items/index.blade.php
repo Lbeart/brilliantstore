@@ -11,14 +11,15 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
   <!-- Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="{{ asset('images/llogo.png') }}">
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <style>
     /* =========================================================
-      Brillant Home – Pro CSS (structured, responsive, modern)
+       Brillant Home – PRO CSS v2 (responsive + animations)
+       - sene tjera mos i prek: vetem CSS/JS + elemente te vogla UX
     ========================================================== */
     :root{
       --bg: #0b1020;
@@ -26,25 +27,22 @@
       --surface-2:#111827;
       --card:#ffffff;
       --muted:#6b7280;
-      --text:#111827;
+      --text:#0b1220;
       --light:#f8fafc;
-      --brand:#dc3545;          /* red */
-      --brand-2:#ffc107;        /* gold */
+      --brand:#dc3545; /* red */
+      --brand-2:#ffc107; /* gold */
       --ring: rgba(220,53,69,.28);
       --shadow: 0 18px 45px rgba(2,6,23,.12);
       --shadow-soft: 0 10px 28px rgba(2,6,23,.10);
       --radius: 18px;
       --radius-lg: 24px;
+
+      --navH: 74px; /* per sticky topbar mobile */
     }
 
     *{ box-sizing:border-box; }
     html, body{ height:100%; }
-    html, body, .navbar-custom, .navbar-custom .nav-link, .dropdown-menu, .dropdown-item{
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-    }
-
+    html{ scroll-behavior:smooth; }
     body{
       margin:0;
       font-family:'Poppins',sans-serif;
@@ -53,6 +51,20 @@
         radial-gradient(900px 500px at 90% 0%, rgba(255,193,7,.14), transparent 55%),
         #f6f7fb;
       color:var(--text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+
+    a{ transition: color .2s ease, transform .2s ease, opacity .2s ease; }
+    img{ max-width:100%; height:auto; display:block; }
+
+    /* Better focus */
+    :focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 4px var(--ring) !important;
+      border-color: rgba(220,53,69,.45) !important;
     }
 
     /* ===== Helpers ===== */
@@ -65,23 +77,26 @@
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
-    .pill{
-      border-radius: 999px !important;
-    }
+    .pill{ border-radius: 999px !important; }
+
     .btn-brand{
       background: var(--brand);
       border-color: var(--brand);
       color: #fff;
       box-shadow: 0 10px 24px rgba(220,53,69,.22);
+      font-weight: 800;
+      letter-spacing: .02em;
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
     }
     .btn-brand:hover{
       filter: brightness(.98);
-      box-shadow: 0 14px 30px rgba(220,53,69,.28);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 34px rgba(220,53,69,.28);
+      color:#fff;
     }
+    .btn-brand:active{ transform: translateY(0); }
 
-    /* =========================
-       NAVBAR (New look)
-    ========================== */
+    /* ========================= NAVBAR ========================== */
     .navbar-custom{
       position: sticky;
       top:0;
@@ -92,15 +107,14 @@
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
-
     .navbar-custom .navbar-brand img{
       height: 46px;
       filter: drop-shadow(0 8px 14px rgba(0,0,0,.20));
+      transform: translateZ(0);
     }
-
     .navbar-custom .nav-link{
       color: rgba(248,250,252,.92) !important;
-      font-weight: 500;
+      font-weight: 600;
       font-size: .95rem;
       padding: .55rem .85rem;
       border-radius: 999px;
@@ -131,7 +145,7 @@
     .dropdown-item{
       border-radius: 12px;
       padding: .55rem .75rem;
-      font-weight: 500;
+      font-weight: 600;
     }
     .dropdown-item:hover{
       background: rgba(220,53,69,.08);
@@ -144,23 +158,24 @@
       top:0;
       left:100%;
       margin-left:.25rem;
-      min-width: 190px;
+      min-width: 200px;
       border-radius: 14px;
     }
     .dropdown-submenu:hover .submenu{ display:block; }
 
-    /* Navbar right small button */
     .nav-login-btn{
       border: 1px solid rgba(255,255,255,.28);
       color: rgba(255,255,255,.92);
       background: rgba(255,255,255,.06);
       border-radius: 999px;
       padding: .45rem .85rem;
-      font-weight: 600;
+      font-weight: 800;
+      transition: transform .18s ease, background .18s ease;
     }
     .nav-login-btn:hover{
       background: rgba(255,255,255,.10);
       color:#fff;
+      transform: translateY(-1px);
     }
 
     /* Mobile navbar dropdown */
@@ -170,30 +185,26 @@
         border-color: rgba(255,255,255,.10);
         box-shadow: none;
       }
-      .navbar-custom .dropdown-item{
-        color: rgba(248,250,252,.92);
-      }
+      .navbar-custom .dropdown-item{ color: rgba(248,250,252,.92); }
       .navbar-custom .dropdown-item:hover{
         background: rgba(255,255,255,.06);
         color: var(--brand-2);
       }
+
+      /* submenu: ne mobile mos u hap me hover - e hapim me klik + class show */
       .dropdown-submenu .submenu{
         position: static;
-        display: block;
         margin-left: 0;
-        padding-left: 1rem;
+        padding-left: .75rem;
         background: transparent;
         border: none;
+        display:none;
       }
+      .dropdown-submenu .submenu.show{ display:block; }
     }
 
-    /* =========================
-       TOP ACTION BAR (NEW)
-       - search moved "mas mirti"
-    ========================== */
-    .topbar{
-      margin-top: 18px;
-    }
+    /* ========================= TOP ACTION BAR ========================== */
+    .topbar{ margin-top: 18px; }
     .topbar-inner{
       padding: 14px;
       border-radius: var(--radius-lg);
@@ -202,40 +213,52 @@
       box-shadow: var(--shadow-soft);
     }
 
+    /* sticky topbar ne mobile qe me gjet produkt ma leht */
+    @media (max-width: 992px){
+      .topbar-inner{
+        position: sticky;
+        top: var(--navH);
+        z-index: 900;
+      }
+    }
+
     .chip{
       display:inline-flex;
       align-items:center;
+      justify-content:center;
       gap:.5rem;
       padding:.55rem .85rem;
       border-radius: 999px;
       background: rgba(17,24,39,.04);
       border: 1px solid rgba(17,24,39,.06);
-      font-weight: 600;
+      font-weight: 800;
       color: #0f172a;
       text-decoration:none;
-      transition: transform .18s ease, background .18s ease;
+      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
       white-space: nowrap;
+      box-shadow: 0 8px 18px rgba(2,6,23,.06);
     }
     .chip:hover{
       background: rgba(220,53,69,.08);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
       color: var(--brand);
+      box-shadow: 0 14px 26px rgba(2,6,23,.10);
     }
     .chip i{ opacity:.9; }
 
     /* Search */
-    .search-pro{
-      position: relative;
-    }
+    .search-pro{ position: relative; }
     .search-pro input{
-      height: 50px;
+      height: 52px;
       border-radius: 999px;
       padding-left: 48px;
       padding-right: 120px;
       border: 1px solid rgba(17,24,39,.10);
       box-shadow: 0 10px 28px rgba(2,6,23,.08);
       outline: none;
+      font-weight: 600;
     }
+    .search-pro input::placeholder{ color: rgba(107,114,128,.9); }
     .search-pro input:focus{
       border-color: rgba(220,53,69,.35);
       box-shadow: 0 0 0 5px var(--ring), 0 12px 28px rgba(2,6,23,.10);
@@ -254,8 +277,8 @@
       right: 6px;
       transform: translateY(-50%);
       border-radius: 999px;
-      padding: .55rem 1rem;
-      font-weight: 700;
+      padding: .6rem 1.05rem;
+      font-weight: 900;
     }
 
     /* WhatsApp */
@@ -264,20 +287,39 @@
       border: 1px solid rgba(22,163,74,.25);
       color: #fff;
       border-radius: 999px;
-      padding: .6rem 1rem;
-      font-weight: 700;
+      padding: .65rem 1.05rem;
+      font-weight: 900;
       box-shadow: 0 10px 26px rgba(22,163,74,.18);
       white-space: nowrap;
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
     }
     .wa-btn:hover{
       filter: brightness(.98);
       color:#fff;
+      transform: translateY(-1px);
       box-shadow: 0 14px 34px rgba(22,163,74,.22);
     }
 
-    /* =========================
-       HERO (New layout)
-    ========================== */
+    /* chips grid */
+    .chips-2rows{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .chips-2rows .chip{
+      width:100%;
+      font-size: clamp(11px, 1.6vw, 14px);
+      padding: clamp(8px, 1.2vw, 10px) clamp(10px, 1.4vw, 12px);
+      line-height:1.1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .chips-2rows .chip i{ font-size: clamp(12px, 1.8vw, 16px); }
+    @media (max-width: 576px){
+      .chips-2rows{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    /* ========================= HERO ========================== */
     .hero{
       margin-top: 18px;
       border-radius: 32px;
@@ -290,20 +332,23 @@
       color: #fff;
       box-shadow: 0 30px 80px rgba(2,6,23,.25);
     }
-
     .hero-bg{
       position:absolute;
       inset:0;
-      background: url('{{ asset('slider/foto1.jpg') }}') center/cover no-repeat;
+      background: url("{{ asset('slider/foto1.jpg') }}") center/cover no-repeat;
       filter: brightness(.45) saturate(1.05);
-      transform: scale(1.03);
+      transform: scale(1.05);
       z-index: 0;
+      transition: opacity .6s ease;
     }
+    /* class per fade kur ndrrohet foto me JS */
+    .hero-bg.bg-swap{ opacity: .92; }
+
     .hero::after{
       content:"";
       position:absolute;
       inset:0;
-      background: linear-gradient(90deg, rgba(2,6,23,.70), rgba(2,6,23,.30) 55%, rgba(2,6,23,.70));
+      background: linear-gradient(90deg, rgba(2,6,23,.72), rgba(2,6,23,.28) 55%, rgba(2,6,23,.72));
       z-index: 1;
     }
 
@@ -312,43 +357,47 @@
       z-index: 2;
       padding: 3.2rem 1.5rem;
     }
+
     .hero-badge{
       display:inline-flex;
       align-items:center;
       gap:.6rem;
-      padding:.35rem .85rem;
+      padding:.38rem .9rem;
       border-radius: 999px;
       background: rgba(255,255,255,.10);
       border: 1px solid rgba(255,255,255,.14);
       font-size: .82rem;
       text-transform: uppercase;
       letter-spacing: .12em;
+      animation: fadeUp .7s ease both;
     }
     .hero-badge span{
       background: var(--brand-2);
       color: #111;
       padding: .12rem .55rem;
       border-radius: 999px;
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: .10em;
     }
 
     .hero-title{
-      font-weight: 800;
+      font-weight: 900;
       line-height: 1.06;
       margin-top: 1rem;
       font-size: clamp(2.05rem, 4.2vw, 3.35rem);
+      animation: fadeUp .8s ease both;
+      animation-delay: .06s;
     }
-    .hero-title em{
-      font-style: normal;
-      color: var(--brand-2);
-    }
+    .hero-title em{ font-style: normal; color: var(--brand-2); }
+
     .hero-sub{
       margin-top: 1rem;
       max-width: 560px;
       color: rgba(248,250,252,.92);
       font-size: 1.02rem;
       line-height: 1.65;
+      animation: fadeUp .85s ease both;
+      animation-delay: .10s;
     }
 
     .hero-actions{
@@ -356,37 +405,44 @@
       display:flex;
       gap:.75rem;
       flex-wrap: wrap;
+      animation: fadeUp .9s ease both;
+      animation-delay: .14s;
     }
     .hero-actions .btn{
       border-radius: 999px;
-      padding: .72rem 1.35rem;
-      font-weight: 800;
+      padding: .78rem 1.4rem;
+      font-weight: 900;
+      transition: transform .18s ease;
     }
-    .hero-actions .btn-outline-light{
-      border-width: 2px;
-    }
+    .hero-actions .btn:hover{ transform: translateY(-2px); }
+    .hero-actions .btn-outline-light{ border-width: 2px; }
 
     .hero-stats{
       margin-top: 1.7rem;
       display:flex;
       gap: 14px;
       flex-wrap: wrap;
+      animation: fadeUp 1s ease both;
+      animation-delay: .18s;
     }
     .stat{
-      padding: .75rem .95rem;
+      padding: .8rem 1rem;
       border-radius: 16px;
       background: rgba(255,255,255,.08);
       border: 1px solid rgba(255,255,255,.12);
       min-width: 175px;
+      box-shadow: 0 16px 30px rgba(2,6,23,.18);
+      transition: transform .2s ease;
     }
+    .stat:hover{ transform: translateY(-3px); }
     .stat .n{
-      font-size: 1.35rem;
+      font-size: 1.4rem;
       font-weight: 900;
       color: var(--brand-2);
       line-height: 1;
     }
     .stat .t{
-      font-size: .9rem;
+      font-size: .92rem;
       color: rgba(248,250,252,.88);
       margin-top: .3rem;
     }
@@ -398,47 +454,52 @@
       border: 1px solid rgba(255,255,255,.16);
       box-shadow: 0 18px 55px rgba(2,6,23,.24);
       overflow: hidden;
+      transform: translateZ(0);
     }
-    .weekly-card .head{
-      padding: 1rem 1.1rem .3rem;
-    }
+    .weekly-card .head{ padding: 1rem 1.1rem .3rem; }
     .weekly-card .kicker{
       font-size: .78rem;
       letter-spacing: .16em;
       text-transform: uppercase;
       color: rgba(2,6,23,.55);
       margin-bottom: .35rem;
-      font-weight: 800;
-    }
-    .weekly-card .title{
       font-weight: 900;
-      margin:0;
-      color: #0f172a;
     }
+    .weekly-card .title{ font-weight: 900; margin:0; color: #0f172a; }
+
     .weekly-item{
-      padding: .9rem 1.1rem;
+      padding: .95rem 1.1rem;
       border-top: 1px solid rgba(2,6,23,.06);
     }
     .weekly-item img{
-      width: 110px;
-      height: 110px;
+      width: 112px;
+      height: 112px;
       object-fit: cover;
       border-radius: 16px;
       box-shadow: 0 10px 22px rgba(2,6,23,.12);
+      transition: transform .35s ease;
     }
-    .price{
-      font-weight: 900;
-      color: var(--brand);
-    }
+    .carousel-item.active .weekly-item img{ transform: scale(1.02); }
+
+    .price{ font-weight: 900; color: var(--brand); }
     .old{
       color: rgba(2,6,23,.45);
       text-decoration: line-through;
       font-size: .9rem;
     }
 
-    /* =========================
-       SECTIONS
-    ========================== */
+    /* carousel controls - ma clean */
+    .carousel-control-prev,
+    .carousel-control-next{
+      width: 48px;
+      opacity: 1;
+    }
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon{
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,.25));
+    }
+
+    /* ========================= SECTIONS ========================== */
     .section-title{
       text-align:center;
       margin-bottom: 2.25rem;
@@ -474,49 +535,37 @@
       border: 1px solid rgba(2,6,23,.06);
       box-shadow: var(--shadow-soft);
       overflow:hidden;
-      transition: transform .2s ease, box-shadow .2s ease;
+      transition: transform .22s ease, box-shadow .22s ease;
+      transform: translateZ(0);
     }
     .cat-card:hover{
-      transform: translateY(-5px);
-      box-shadow: 0 22px 55px rgba(2,6,23,.14);
+      transform: translateY(-6px);
+      box-shadow: 0 24px 58px rgba(2,6,23,.14);
     }
-    .cat-media{
-      position: relative;
-      overflow: hidden;
-    }
+    .cat-media{ position: relative; overflow: hidden; }
     .cat-media img{
       width:100%;
       height: 220px;
       object-fit: cover;
-      transition: transform .45s ease;
+      transition: transform .55s ease;
     }
-    .cat-card:hover .cat-media img{
-      transform: scale(1.06);
-    }
+    .cat-card:hover .cat-media img{ transform: scale(1.08); }
     .cat-badge{
       position:absolute;
       top: 12px;
       left: 12px;
       background: rgba(2,6,23,.72);
       color:#fff;
-      padding: .25rem .7rem;
+      padding: .28rem .75rem;
       border-radius: 999px;
       font-size: .76rem;
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: .06em;
+      box-shadow: 0 16px 28px rgba(2,6,23,.18);
     }
-    .cat-body{
-      padding: 1rem 1.1rem 1.2rem;
-    }
-    .cat-body h5{
-      font-weight: 800;
-      margin-bottom: .35rem;
-    }
-    .cat-body p{
-      color: var(--muted);
-      font-size: .93rem;
-      margin-bottom: .8rem;
-    }
+    .cat-body{ padding: 1rem 1.1rem 1.2rem; }
+    .cat-body h5{ font-weight: 900; margin-bottom: .35rem; }
+    .cat-body p{ color: var(--muted); font-size: .93rem; margin-bottom: .85rem; }
     .cat-link{
       display:inline-flex;
       align-items:center;
@@ -537,10 +586,7 @@
       text-transform: uppercase;
       color: rgba(2,6,23,.55);
     }
-    .rugs-head h2{
-      font-weight: 900;
-      margin: .35rem 0;
-    }
+    .rugs-head h2{ font-weight: 900; margin: .35rem 0; }
 
     /* Product cards */
     .product-card{
@@ -550,15 +596,20 @@
       box-shadow: var(--shadow-soft);
       height:100%;
       background:#fff;
+      transition: transform .22s ease, box-shadow .22s ease;
+    }
+    .product-card:hover{
+      transform: translateY(-5px);
+      box-shadow: 0 24px 58px rgba(2,6,23,.14);
     }
     .product-card img{
       height: 260px;
       width:100%;
       object-fit: cover;
+      transition: transform .55s ease;
     }
-    .product-card .card-body{
-      padding: 1rem 1.1rem 1.2rem;
-    }
+    .product-card:hover img{ transform: scale(1.06); }
+    .product-card .card-body{ padding: 1rem 1.1rem 1.2rem; }
 
     /* Why choose us block */
     .why-wrap{
@@ -572,20 +623,8 @@
       padding: 2rem;
       background: linear-gradient(180deg, rgba(220,53,69,.08), rgba(255,255,255,0));
     }
-    .why-wrap .why-points{
-      padding: 2rem;
-    }
-    .why-bullet h5{
-      font-weight: 900;
-      font-size: 1rem;
-      margin-bottom: .25rem;
-    }
-    .why-bullet p{
-      color: var(--muted);
-      margin-bottom: 0;
-      font-size: .95rem;
-      line-height: 1.6;
-    }
+    .why-wrap .why-points{ padding: 2rem; }
+
     .why-bullet{
       padding: .95rem 1rem;
       border-radius: 18px;
@@ -593,6 +632,18 @@
       background: rgba(255,255,255,.70);
       box-shadow: 0 10px 26px rgba(2,6,23,.07);
       margin-bottom: .85rem;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .why-bullet:hover{
+      transform: translateY(-3px);
+      box-shadow: 0 18px 36px rgba(2,6,23,.10);
+    }
+    .why-bullet h5{ font-weight: 900; font-size: 1rem; margin-bottom: .25rem; }
+    .why-bullet p{
+      color: var(--muted);
+      margin-bottom: 0;
+      font-size: .95rem;
+      line-height: 1.6;
     }
 
     /* SEO text */
@@ -606,10 +657,7 @@
       padding: 1.6rem;
       box-shadow: var(--shadow-soft);
     }
-    .seo-text h2{
-      font-weight: 900;
-      margin-bottom: .85rem;
-    }
+    .seo-text h2{ font-weight: 900; margin-bottom: .85rem; }
 
     /* Footer */
     footer{
@@ -620,9 +668,54 @@
       -webkit-backdrop-filter: blur(10px);
     }
 
-    /* =========================
-       Responsive tweaks
-    ========================== */
+    /* ========================= Animations + Scroll reveal ========================== */
+    @keyframes fadeUp{
+      from{ opacity:0; transform: translateY(14px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+    @keyframes popIn{
+      from{ opacity:0; transform: scale(.96); }
+      to{ opacity:1; transform: scale(1); }
+    }
+
+    .reveal{ opacity: 0; transform: translateY(14px); }
+    .reveal.in{ opacity:1; transform: translateY(0); transition: opacity .6s ease, transform .6s ease; }
+
+    /* disable animations if user prefers */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+      .reveal{ opacity:1 !important; transform:none !important; }
+    }
+
+    /* ========================= Floating actions ========================== */
+    .floating-actions{
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 1200;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .fab{
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-decoration: none;
+      box-shadow: 0 18px 38px rgba(2,6,23,.22);
+      transform: translateZ(0);
+      transition: transform .18s ease, filter .18s ease;
+    }
+    .fab:hover{ transform: translateY(-2px); filter: brightness(.98); }
+    .fab-whatsapp{ background: #16a34a; }
+    .fab-top{ background: rgba(15,23,42,.92); border: 1px solid rgba(255,255,255,.14); opacity: 0; pointer-events:none; }
+    .fab-top.show{ opacity: 1; pointer-events:auto; }
+
+    /* ========================= Responsive tweaks ========================== */
     @media (max-width: 992px){
       .hero-content{ padding: 2.5rem 1.1rem; }
       .weekly-card{ margin-top: 16px; }
@@ -635,39 +728,15 @@
       .hero-stats{ justify-content: center; }
       .stat{ min-width: 160px; }
       .search-pro input{ height: 52px; }
+      .section-pad{ padding: 3.2rem 0; }
     }
     @media (max-width: 576px){
       .search-pro input{ padding-right: 100px; }
       .hero-actions .btn{ width: 100%; }
       .weekly-item img{ width: 92px; height: 92px; }
+      .floating-actions{ right: 12px; bottom: 12px; }
+      .fab{ width: 50px; height: 50px; }
     }
-    .chips-2rows{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px; /* mundesh me bo 8px nese don ma ngusht */
-}
-
-/* chips mos me u bo te gjata */
-.chips-2rows .chip{
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-
-  /* responsive pa e ndrru layout-in */
-  font-size: clamp(11px, 1.6vw, 14px);
-  padding: clamp(6px, 1.2vw, 10px) clamp(8px, 1.4vw, 12px);
-
-  line-height:1.1;
-  white-space: nowrap;       /* mos me ra ne 2 rreshta */
-  overflow: hidden;          /* mos me dal jasht */
-  text-overflow: ellipsis;   /* ... nese nuk nxan */
-}
-
-.chips-2rows .chip i{
-  font-size: clamp(12px, 1.8vw, 16px);
-}
   </style>
 </head>
 
@@ -679,9 +748,8 @@
         <img src="{{ asset('images/brillant.png') }}" alt="Brillant Logo">
       </a>
 
-      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
-        data-bs-target="#navbarContent" aria-controls="navbarContent"
-        aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -692,8 +760,7 @@
           </li>
 
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="catalogDropdown" role="button"
-              data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="catalogDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Products
             </a>
             <ul class="dropdown-menu" aria-labelledby="catalogDropdown">
@@ -725,58 +792,46 @@
           </li>
 
           @auth
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
-                href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-person-circle"></i>
-                <span class="user-name">{{ Auth::user()->name }}</span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                @if(auth()->user()->role === 'admin')
-                  <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Admin</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                @endif
-                <li>
-                  <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                    @csrf
-                    <button type="submit" class="dropdown-item">Log out</button>
-                  </form>
-                </li>
-              </ul>
-            </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle"></i>
+              <span class="user-name">{{ Auth::user()->name }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              @if(auth()->user()->role === 'admin')
+              <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Admin</a></li>
+              <li><hr class="dropdown-divider"></li>
+              @endif
+              <li>
+                <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                  @csrf
+                  <button type="submit" class="dropdown-item">Log out</button>
+                </form>
+              </li>
+            </ul>
+          </li>
           @else
-            <li class="nav-item ms-lg-1">
-              <a href="{{ route('login') }}" class="nav-login-btn btn btn-sm">Log in</a>
-            </li>
+          <li class="nav-item ms-lg-1">
+            <a href="{{ route('login') }}" class="nav-login-btn btn btn-sm">Log in</a>
+          </li>
           @endauth
 
           <!-- CART / TRACK -->
           <li class="nav-item dropdown ms-lg-1">
-            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
-               href="#" id="cartDropdown" role="button"
-               data-bs-toggle="dropdown" aria-expanded="false" onclick="return false;">
+            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="cartDropdown" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false" onclick="return false;">
               <i class="bi bi-bag"></i> Shporta
-              <span class="badge bg-danger rounded-pill ms-1 cart-badge">
-                {{ session('cart_total_qty', 0) }}
-              </span>
+              <span class="badge bg-danger rounded-pill ms-1 cart-badge">{{ session('cart_total_qty', 0) }}</span>
             </a>
-
             <div class="dropdown-menu dropdown-menu-end p-3 shadow" aria-labelledby="cartDropdown" style="min-width: 320px;">
               <div class="small text-muted mb-2">Gjurmo porosinë</div>
-
-              <form class="d-flex align-items-stretch gap-2"
-                    onsubmit="event.preventDefault();
-                              const el=this.querySelector('#trackCodeNav');
-                              const v=(el?.value||'').trim();
-                              if(v){ window.location='{{ url('/track') }}/'+encodeURIComponent(v); }">
+              <form class="d-flex align-items-stretch gap-2" onsubmit="event.preventDefault(); const el=this.querySelector('#trackCodeNav'); const v=(el?.value||'').trim(); if(v){ window.location='{{ url('/track') }}/'+encodeURIComponent(v); }">
                 <div class="input-group input-group-sm">
                   <span class="input-group-text"><i class="bi bi-search"></i></span>
-                  <input id="trackCodeNav" type="text" class="form-control"
-                         placeholder="p.sh. BRL-LKNJ-0YXN" autocomplete="off" required>
+                  <input id="trackCodeNav" type="text" class="form-control" placeholder="p.sh. BRL-LKNJ-0YXN" autocomplete="off" required>
                   <button class="btn btn-danger" type="submit">Gjurmo</button>
                 </div>
               </form>
-
               <div class="mt-3 d-grid">
                 <a class="btn btn-outline-secondary btn-sm" href="{{ route('cart.index') }}">
                   <i class="bi bi-bag"></i> Shiko shportën
@@ -790,44 +845,39 @@
     </div>
   </nav>
 
-  <!-- TOPBAR: categories + NEW SEARCH + WhatsApp -->
+  <!-- TOPBAR: categories + SEARCH + WhatsApp -->
   <div class="container topbar">
-  <div class="topbar-inner">
-    <div class="row g-3 align-items-center">
+    <div class="topbar-inner">
+      <div class="row g-3 align-items-center">
+        <div class="col-lg-4">
+          <div class="chips-2rows">
+            <!-- RRESHTI 1 -->
+            <a class="chip" href="/tepiha"><i class="bi bi-grid"></i> Tepiha</a>
+            <a class="chip" href="/mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
+            <a class="chip" href="/anesore"><i class="bi bi-layout-text-window"></i> Perde</a>
+            <!-- RRESHTI 2 -->
+            <a class="chip" href="/garnishte"><i class="bi bi-layout-text-window"></i> Garnishte</a>
+            <a class="chip" href="/batanije"><i class="bi bi-snow"></i> Batanije</a>
+            <a class="chip" href="/postava"><i class="bi bi-bag-check"></i> Set çarçafesh</a>
+          </div>
+        </div>
 
-      <div class="col-lg-4">
-        <div class="chips-2rows">
-          <!-- RRESHTI 1 -->
-          <a class="chip" href="/tepiha"><i class="bi bi-grid"></i> Tepiha</a>
-          <a class="chip" href="/mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
-          <a class="chip" href="/anesore"><i class="bi bi-layout-text-window"></i> Perde</a>
+        <div class="col-lg-5">
+          <form action="{{ route('search') }}" method="GET" class="search-pro">
+            <i class="bi bi-search icon"></i>
+            <input type="text" name="q" class="form-control" placeholder="Kërko produktin:" value="{{ request('q') }}" required>
+            <button class="btn btn-brand" type="submit">Kërko</button>
+          </form>
+        </div>
 
-          <!-- RRESHTI 2 -->
-          <a class="chip" href="/garnishte"><i class="bi bi-layout-text-window"></i> Garnishte</a>
-          <a class="chip" href="/batanije"><i class="bi bi-snow"></i> Batanije</a>
-          <a class="chip" href="/postava"><i class="bi bi-bag-check"></i> Set çarçafesh</a>
+        <div class="col-lg-3 text-lg-end">
+          <a href="https://wa.me/38344960661" target="_blank" class="wa-btn d-inline-flex align-items-center gap-2">
+            <i class="bi bi-whatsapp"></i> Chat
+          </a>
         </div>
       </div>
-
-      <div class="col-lg-5">
-        <form action="{{ route('search') }}" method="GET" class="search-pro">
-          <i class="bi bi-search icon"></i>
-          <input type="text" name="q" class="form-control"
-                 placeholder="Kërko produktin:"
-                 value="{{ request('q') }}" required>
-          <button class="btn btn-brand" type="submit">Kërko</button>
-        </form>
-      </div>
-
-      <div class="col-lg-3 text-lg-end">
-        <a href="https://wa.me/38344960661" target="_blank" class="wa-btn d-inline-flex align-items-center gap-2">
-          <i class="bi bi-whatsapp"></i> Chat
-        </a>
-      </div>
-
     </div>
   </div>
-</div>
 
   <!-- HERO -->
   <section class="container mt-3">
@@ -846,17 +896,12 @@
             </h1>
 
             <p class="hero-sub">
-              Zgjidh dizajnin ideal për sallon, dhomë gjumi apo zyrë.
-              Tekstura cilësore, ngjyra që nuk zbehen dhe shërbim profesional nga Brillant në Lipjan.
+              Zgjidh dizajnin ideal për sallon, dhomë gjumi apo zyrë. Tekstura cilësore, ngjyra që nuk zbehen dhe shërbim profesional nga Brillant në Lipjan.
             </p>
 
             <div class="hero-actions">
-              <a href="/tepiha" class="btn btn-brand">
-                Shiko tepihat
-              </a>
-              <a href="/anesore" class="btn btn-outline-light">
-                Shiko perdet
-              </a>
+              <a href="/tepiha" class="btn btn-brand">Shiko tepihat</a>
+              <a href="/anesore" class="btn btn-outline-light">Shiko perdet</a>
             </div>
 
             <div class="hero-stats">
@@ -880,7 +925,6 @@
 
               <div id="weeklyOffersCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
                 <div class="carousel-inner">
-
                   <!-- Slide 1 -->
                   <div class="carousel-item active">
                     <div class="weekly-item">
@@ -943,7 +987,6 @@
                       </div>
                     </div>
                   </div>
-
                 </div>
 
                 <button class="carousel-control-prev" type="button" data-bs-target="#weeklyOffersCarousel" data-bs-slide="prev">
@@ -957,13 +1000,10 @@
               </div>
 
               <div class="p-3 pt-2">
-                <a href="/tepiha" class="btn btn-outline-dark w-100 pill btn-sm">
-                  Shiko të gjitha ofertat
-                </a>
+                <a href="/tepiha" class="btn btn-outline-dark w-100 pill btn-sm">Shiko të gjitha ofertat</a>
               </div>
             </div>
           </div>
-
         </div><!-- row -->
       </div><!-- hero-content -->
     </div><!-- hero -->
@@ -1045,7 +1085,6 @@
               </div>
             </a>
           </div>
-
         </div>
       </section>
 
@@ -1065,16 +1104,16 @@
             <div class="carousel-inner">
               @php
                 $rugs = [
-                  ['side.bmp',  'Modern Rose 120x170 cm',  '€45.00'],
-                  ['hali4.jpg', 'Modern Hali 300x200 cm',  '€95.00'],
-                  ['gold.bmp',  'Modern Gold 300x200 cm',  '€55.00'],
-                  ['gold1.bmp', 'Modern Gold 300x200 cm',  '€55.00'],
-                  ['gold2.bmp', 'Modern Gold 300x200 cm',  '€55.00'],
-                  ['rose1.jpg', 'rose 300x200 cm',         '€105.00'],
-                  ['rose2.bmp', 'rose 150x230 cm',         '€75.00'],
-                  ['rose3.bmp', 'rose 150x230 cm',         '€75.00'],
-                  ['hali5.jpg', 'hali 150x230 cm',         '€65.00'],
-                  ['hali3.jpg', 'hali 150x230 cm',         '€65.00'],
+                  ['side.bmp', 'Modern Rose 120x170 cm', '€45.00'],
+                  ['hali4.jpg', 'Modern Hali 300x200 cm', '€95.00'],
+                  ['gold.bmp', 'Modern Gold 300x200 cm', '€55.00'],
+                  ['gold1.bmp', 'Modern Gold 300x200 cm', '€55.00'],
+                  ['gold2.bmp', 'Modern Gold 300x200 cm', '€55.00'],
+                  ['rose1.jpg', 'rose 300x200 cm', '€105.00'],
+                  ['rose2.bmp', 'rose 150x230 cm', '€75.00'],
+                  ['rose3.bmp', 'rose 150x230 cm', '€75.00'],
+                  ['hali5.jpg', 'hali 150x230 cm', '€65.00'],
+                  ['hali3.jpg', 'hali 150x230 cm', '€65.00'],
                 ];
                 $chunks = collect($rugs)->chunk(5);
               @endphp
@@ -1087,11 +1126,9 @@
                         <div class="small text-success mb-1">
                           <i class="bi bi-check-circle-fill"></i> In stock
                         </div>
-                        <img
-                          src="{{ asset('slider/'.$item[0]) }}"
-                          alt="{{ $item[1] }}"
-                          class="img-fluid rounded-4 shadow-sm mb-2"
-                          style="height: 200px; width: auto; object-fit: contain;">
+                        <img src="{{ asset('slider/'.$item[0]) }}" alt="{{ $item[1] }}"
+                             class="img-fluid rounded-4 shadow-sm mb-2"
+                             style="height: 200px; width: auto; object-fit: contain;">
                         <p class="small mb-1">{{ $item[1] }}</p>
                         <h6 class="fw-bold mb-0">{{ $item[2] }}</h6>
                       </div>
@@ -1182,11 +1219,8 @@
       <section class="seo-text">
         <h2>Brillant – Tepiha, Perde dhe Dekorime për Shtëpi</h2>
         <p>Brillant është destinacioni juaj i besueshëm për tepiha modern, perde cilësore, mbulesa të bukura dhe dekorime për shtëpi. Me përvojë shumëvjeçare, synimi ynë është t’ju ofrojmë produkte të cilësisë së lartë që i bëjnë ambientet tuaja më të bukura, më komode dhe më funksionale.</p>
-
         <p>Koleksioni ynë i tapetave përfshin tepihë modern, tepihë klasik, tepihë rrethor, tepihë për sallon dhe tapeta për banjo – të përzgjedhur me kujdes për të garantuar dizajn, qëndrueshmëri dhe cilësi të lartë. Për më shumë ngrohtësi dhe stil, ofrojmë edhe batanije premium, kompleta krevati dhe sete qarqafësh.</p>
-
         <p>Në kategorinë e perdeve dhe mbulesave, do të gjeni materiale të cilësisë së lartë, ngjyra që nuk zbehen dhe dizajne elegante që i përshtaten çdo ambienti. Po ashtu, ofrojmë jastëkë dekorues, garnishte dhe shumë produkte të tjera që e kompletojnë dekorimin e shtëpisë.</p>
-
         <p>Brillant – cilësi, stil dhe shërbim profesional në Lipjan. Porosit online lehtë dhe shpejt, me dërgesë të sigurt në gjithë Kosovën.</p>
       </section>
 
@@ -1200,6 +1234,7 @@
         <div class="col-md-3 text-center text-md-start mb-4 mb-md-0">
           <img src="{{ asset('images/llogo.png') }}" alt="brillant" width="150" class="mb-2">
         </div>
+
         <div class="col-md-3 mb-4 mb-md-0">
           <h6 class="text-uppercase fw-bold mb-3">Products</h6>
           <ul class="list-unstyled">
@@ -1211,6 +1246,7 @@
             <li><a href="/batanije" class="text-dark text-decoration-none">Blankets</a></li>
           </ul>
         </div>
+
         <div class="col-md-3 mb-4 mb-md-0">
           <h6 class="text-uppercase fw-bold mb-3">Information</h6>
           <ul class="list-unstyled">
@@ -1220,6 +1256,7 @@
             <li><a href="{{ route('about') }}" class="text-dark text-decoration-none">About Us</a></li>
           </ul>
         </div>
+
         <div class="col-md-3 text-center text-md-start">
           <h6 class="text-uppercase fw-bold mb-3">Find Us</h6>
           <ul class="list-unstyled">
@@ -1237,6 +1274,7 @@
           <small class="text-muted">Copyright © {{ date('Y') }} Brillant</small>
         </div>
       </div>
+
       <div class="row mt-2">
         <div class="col text-center">
           <small class="text-muted">crafted by RDR Digital L.L.C</small>
@@ -1244,6 +1282,16 @@
       </div>
     </div>
   </footer>
+
+  <!-- Floating quick actions (NEW) -->
+  <div class="floating-actions">
+    <a class="fab fab-whatsapp" href="https://wa.me/38344960661" target="_blank" aria-label="WhatsApp">
+      <i class="bi bi-whatsapp fs-4"></i>
+    </a>
+    <button id="backToTop" class="fab fab-top" type="button" aria-label="Back to top">
+      <i class="bi bi-arrow-up fs-4"></i>
+    </button>
+  </div>
 
   <script>
     // përditëso badge në të gjitha menutë
@@ -1257,6 +1305,65 @@
         updateCartBadges(e.detail.totalQty);
       }
     });
+
+    // ===== PRO JS: mobile submenu toggle + hero bg slideshow + scroll reveal + back to top
+    (function(){
+      const isMobile = () => window.matchMedia('(max-width: 991.98px)').matches;
+
+      // mobile: open submenu with click
+      document.querySelectorAll('.dropdown-submenu > a').forEach(a => {
+        a.addEventListener('click', function(e){
+          if(!isMobile()) return;
+          e.preventDefault();
+          const submenu = this.nextElementSibling;
+          if(submenu) submenu.classList.toggle('show');
+        });
+      });
+
+      // back to top
+      const topBtn = document.getElementById('backToTop');
+      const onScroll = () => {
+        if(!topBtn) return;
+        topBtn.classList.toggle('show', window.scrollY > 500);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+      topBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+      // hero background "carousel" (auto change)
+      const heroBg = document.querySelector('.hero-bg');
+      if(heroBg){
+        const imgs = [
+          "{{ asset('slider/foto1.jpg') }}",
+          "{{ asset('slider/hali4.jpg') }}",
+          "{{ asset('slider/raffaello.jpg') }}"
+        ];
+        let i = 0;
+        setInterval(() => {
+          i = (i + 1) % imgs.length;
+          heroBg.style.backgroundImage = `url('${imgs[i]}')`;
+          heroBg.classList.remove('bg-swap');
+          void heroBg.offsetWidth;
+          heroBg.classList.add('bg-swap');
+        }, 6500);
+      }
+
+      // scroll reveal animations
+      const revealEls = document.querySelectorAll('.cat-card, .product-card, .why-bullet, .seo-text, .weekly-card, .soft-card');
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(en => {
+          if(en.isIntersecting){
+            en.target.classList.add('in');
+            io.unobserve(en.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      revealEls.forEach(el => {
+        el.classList.add('reveal');
+        io.observe(el);
+      });
+    })();
   </script>
 </body>
 </html>
