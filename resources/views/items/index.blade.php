@@ -1500,26 +1500,28 @@
       ->get();
 @endphp
      <!-- Latest products -->
+<!-- Latest products -->
 <section class="mb-5">
-  <div class="latest-head">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-2 mb-3">
     <div>
-      <div class="section-title text-start mb-0">
-        <span class="k">PRODUKTET E FUNDIT</span>
-        <h2 class="mt-3">Zbuloni çfarë ka ardhur rishtazi</h2>
-        <p class="text-muted">Produktet e reja që janë shtuar së fundmi në katalog.</p>
+      <div class="k" style="font-weight:900; letter-spacing:.16em; text-transform:uppercase; color: var(--brand); background: rgba(220,53,69,.08); border:1px solid rgba(220,53,69,.14); padding:.35rem .8rem; border-radius:999px; display:inline-block;">
+        PRODUKTET E FUNDIT
       </div>
+      <h2 class="mt-3 mb-1" style="font-weight:900;">Zbuloni çfarë ka ardhur rishtazi</h2>
+      <p class="text-muted mb-0">Produktet e reja që janë shtuar së fundmi në katalog.</p>
     </div>
 
-    <a href="{{ url('/products') }}" class="btn btn-brand btn-sm pill">Shiko të gjitha</a>
+    <a href="{{ route('products.index') }}" class="btn btn-brand btn-sm pill mt-2 mt-md-0">
+      Shiko të gjitha
+    </a>
   </div>
 
-  @if(isset($items) && $items->count())
-    <div class="products-grid">
-      @foreach($items->take(3) as $item)
+  @if($latestProducts->count())
+    <div class="row g-4">
+      @foreach($latestProducts as $item)
         @php
           // ===== FOTO (image_path mundet me qenë JSON ose array) =====
           $imgs = $item->image_path;
-
           if (is_string($imgs)) {
             $decoded = json_decode($imgs, true);
             $imgs = is_array($decoded) ? $decoded : [];
@@ -1527,11 +1529,11 @@
           if (!is_array($imgs)) $imgs = [];
           $img = $imgs[0] ?? null;
 
-          // ===== SIZE PRICING (nëse ke sizes JSON/array) =====
+          // ===== SIZES (opsionale) -> min price =====
           $sizes = $item->sizes ?? null;
           if (is_string($sizes)) {
-            $decodedSizes = json_decode($sizes, true);
-            $sizes = is_array($decodedSizes) ? $decodedSizes : [];
+            $d = json_decode($sizes, true);
+            $sizes = is_array($d) ? $d : [];
           }
           if (!is_array($sizes)) $sizes = [];
 
@@ -1540,8 +1542,8 @@
             $prices = array_filter(array_map(fn($s) => $s['price'] ?? null, $sizes), fn($p) => $p !== null);
             if (!empty($prices)) $priceValue = min($prices);
           }
-
           $priceLabel = $priceValue !== null ? '€' . number_format((float)$priceValue, 2) : 'Në kërkesë';
+
           $inStock = (int)($item->stock ?? 0) > 0;
 
           $cat = $item->category ?? '';
@@ -1549,62 +1551,78 @@
           $catLabel = $cat ? strtoupper($cat) : 'PRODUKT';
           if ($cat === 'perde' && $sub) $catLabel = strtoupper($cat).' • '.strtoupper($sub);
 
-          $sku = $item->sku ?? null;
-
-          // WhatsApp text
-          $waText = "Përshëndetje! Jam i interesuar për produktin: {$item->name}. A ka në stock dhe sa është çmimi?";
+          // ✅ LINKU I SAKTË sipas routes/web.php (me slug)
+          $detailsUrl = $item->slug ? route('products.show', $item->slug) : route('products.index');
         @endphp
 
-        <article class="product-pro">
-          <div class="media">
-            @if($img)
-              <img src="{{ asset('storage/'.$img) }}" alt="{{ $item->name }}">
-            @else
-              <img src="{{ asset('images/llogo.png') }}" alt="{{ $item->name }}" style="object-fit:contain; padding:22px;">
-            @endif
-
-            <span class="badge-new">I RI</span>
-            <span class="badge-stock {{ $inStock ? '' : 'out' }}">
-              {{ $inStock ? 'IN STOCK' : 'S’KA STOCK' }}
-            </span>
-          </div>
-
-          <div class="body">
-            <div class="catline">
-              <div class="cat">{{ $catLabel }}</div>
-              @if($sku)
-                <div class="sku">SKU: {{ $sku }}</div>
+        <div class="col-md-4">
+          <article class="product-card" style="border-radius:22px; overflow:hidden;">
+            <div style="position:relative;">
+              @if($img)
+                <img src="{{ asset('storage/'.$img) }}" alt="{{ $item->name }}" style="height:260px; width:100%; object-fit:cover;">
+              @else
+                <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:260px;">
+                  <span class="text-white">Pa foto</span>
+                </div>
               @endif
+
+              <span style="position:absolute; top:12px; left:12px; background: rgba(255,193,7,.95); color:#111; padding:.32rem .7rem; border-radius:999px; font-size:.74rem; font-weight:900; letter-spacing:.10em;">
+                I RI
+              </span>
+
+              <span style="position:absolute; top:12px; right:12px; background: {{ $inStock ? 'rgba(15,23,42,.78)' : 'rgba(220,53,69,.88)' }}; color:#fff; padding:.32rem .7rem; border-radius:999px; font-size:.74rem; font-weight:900; border:1px solid rgba(255,255,255,.18);">
+                {{ $inStock ? 'IN STOCK' : 'S’KA STOCK' }}
+              </span>
             </div>
 
-            <h3 class="title">{{ $item->name }}</h3>
-            <p class="desc">{{ $item->description ? \Illuminate\Support\Str::limit($item->description, 120) : 'Përshkrimi do të shtohet së shpejti.' }}</p>
-
-            <div class="price-row">
-              <div class="price-main">
-                <div class="label">Çmimi</div>
-                <div class="price">{{ $priceLabel }}</div>
+            <div class="card-body" style="padding: 14px 14px 16px;">
+              <div class="d-flex justify-content-between align-items-center mb-2" style="gap:10px;">
+                <div style="font-size:.78rem; font-weight:900; letter-spacing:.08em; color: rgba(2,6,23,.55);">
+                  {{ $catLabel }}
+                </div>
+                @if(!empty($item->sku))
+                  <div class="text-muted" style="font-size:.78rem; font-weight:700;">SKU: {{ $item->sku }}</div>
+                @endif
               </div>
 
-              <div class="small text-muted text-end">
-                <i class="bi bi-shield-check"></i> Cilësi & garanci
+              <h5 class="fw-bold mb-1" style="color:#0f172a; font-weight:900;">
+                {{ $item->name }}
+              </h5>
+
+              <p class="text-muted mb-3" style="font-size:.92rem; line-height:1.6; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+                {{ $item->description ? \Illuminate\Support\Str::limit($item->description, 130) : 'Përshkrimi do të shtohet së shpejti.' }}
+              </p>
+
+              <div class="d-flex justify-content-between align-items-end mb-3">
+                <div>
+                  <div class="text-muted" style="font-size:.78rem; font-weight:700;">Çmimi</div>
+                  <div style="font-size:1.25rem; font-weight:900; color: var(--brand); line-height:1;">
+                    {{ $priceLabel }}
+                  </div>
+                </div>
+                <div class="small text-muted text-end">
+                  <i class="bi bi-shield-check"></i> Cilësi & garanci
+                </div>
+              </div>
+
+              <div class="d-flex gap-2">
+                <!-- ✅ Detaje (punon touch/click) -->
+                <a href="{{ $detailsUrl }}"
+                   class="btn btn-outline-dark w-50"
+                   style="border-radius:999px; font-weight:900; border-width:2px;">
+                  Detaje
+                </a>
+
+                <a class="btn w-50"
+                   href="https://wa.me/38344960661?text={{ urlencode('Pershendetje! Jam i interesuar per: '.$item->name.' ('.$priceLabel.'). A ka ne stock?') }}"
+                   target="_blank" rel="noopener"
+                   style="border-radius:999px; font-weight:900; background:#16a34a; border:1px solid #16a34a; color:#fff;">
+                  <i class="bi bi-whatsapp"></i> WhatsApp
+                </a>
               </div>
             </div>
-
-            <div class="actions">
-              {{-- Nëse e ki route për show, përdore këtë: route('products.show', $item) --}}
-              <a href="{{ url('/products/'.$item->id) }}" class="btn btn-outline-dark w-50">
-                Detaje
-              </a>
-
-              <a class="btn btn-wa w-50"
-                 href="https://wa.me/38344960661?text={{ urlencode($waText) }}"
-                 target="_blank" rel="noopener">
-                <i class="bi bi-whatsapp"></i> WhatsApp
-              </a>
-            </div>
-          </div>
-        </article>
+          </article>
+        </div>
       @endforeach
     </div>
   @endif
