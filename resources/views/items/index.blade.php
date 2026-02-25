@@ -931,10 +931,13 @@
   box-shadow: 0 28px 70px rgba(2,6,23,.14);
 }
 
+/* Media wrapper (tash është <a>) */
 .latest-products .lp-media{
   position:relative;
   background: linear-gradient(180deg, rgba(2,6,23,.03), rgba(2,6,23,.00));
   overflow:hidden;
+  display:block;
+  cursor:pointer;
 }
 
 .latest-products .lp-img{
@@ -1001,6 +1004,9 @@
   font-size: 1.03rem;
   display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow:hidden;
 }
+.latest-products .lp-title a{ color:#0f172a; text-decoration:none; }
+.latest-products .lp-title a:hover{ text-decoration:underline; text-underline-offset: 3px; }
+
 .latest-products .lp-desc{
   color: var(--muted);
   margin: 0 0 12px;
@@ -1022,18 +1028,26 @@
   line-height: 1;
 }
 
+/* Actions */
 .latest-products .lp-actions{
-  display:flex; gap:10px; margin-top: 12px;
+  display:flex;
+  gap:10px;
+  margin-top: 12px;
 }
+.latest-products .lp-actions > *{ flex: 1; }   /* form + a gjys/gjys */
+.latest-products .lp-actions form{ margin:0; }
+
 .latest-products .lp-actions .btn{
   border-radius: 999px;
   font-weight: 900;
   min-height: 44px;
+  width:100%;
 }
+
 @media (max-width: 576px){
   .latest-products .lp-actions{ flex-direction: column; }
-  .latest-products .lp-actions .btn{ width:100% !important; }
 }
+
 .latest-products .btn-wa{
   background:#16a34a;
   border:1px solid #16a34a;
@@ -1453,7 +1467,7 @@
       </section>
 
       <!-- Latest products -->
-     @php
+    @php
   $latestProducts = \App\Models\Product::query()
       ->where('is_active', 1)
       ->orderByDesc('id')
@@ -1513,24 +1527,24 @@
 
           // ✅ Detaje sipas routes/web.php (me slug)
           $detailsUrl = $item->slug ? route('products.show', $item->slug) : route('products.index');
+
+          $waText = 'Pershendetje! Jam i interesuar per: '.$item->name.' ('.$priceLabel.'). A ka ne stock?';
         @endphp
 
         <article class="lp-card">
-          <div class="lp-media">
-            <a href="{{ $detailsUrl }}" class="lp-media d-block text-decoration-none" aria-label="Hap detajet: {{ $item->name }}">
-  @if($img)
-    <img class="lp-img" src="{{ asset('storage/'.$img) }}" alt="{{ $item->name }}">
-  @else
-    <img class="lp-img" src="{{ asset('images/llogo.png') }}" alt="{{ $item->name }}" style="object-fit:contain;">
-  @endif
+          <!-- ✅ FOTO KLIKUESE -> shkon te produkti -->
+          <a href="{{ $detailsUrl }}" class="lp-media text-decoration-none" aria-label="Hap detajet: {{ $item->name }}">
+            @if($img)
+              <img class="lp-img" src="{{ asset('storage/'.$img) }}" alt="{{ $item->name }}">
+            @else
+              <img class="lp-img" src="{{ asset('images/llogo.png') }}" alt="{{ $item->name }}" style="object-fit:contain;">
+            @endif
 
-  <span class="lp-badge">I RI</span>
-  <span class="lp-stock {{ $inStock ? '' : 'out' }}">
-    {{ $inStock ? 'IN STOCK' : 'S’KA STOCK' }}
-  </span>
-</a>
-             
-          </div>
+            <span class="lp-badge">I RI</span>
+            <span class="lp-stock {{ $inStock ? '' : 'out' }}">
+              {{ $inStock ? 'IN STOCK' : 'S’KA STOCK' }}
+            </span>
+          </a>
 
           <div class="lp-body">
             <div class="lp-top">
@@ -1540,7 +1554,10 @@
               @endif
             </div>
 
-            <h5 class="lp-title">{{ $item->name }}</h5>
+            <!-- ✅ Titulli edhe ai klikues -->
+            <h5 class="lp-title">
+              <a href="{{ $detailsUrl }}">{{ $item->name }}</a>
+            </h5>
 
             <p class="lp-desc">
               {{ $item->description ? \Illuminate\Support\Str::limit($item->description, 130) : 'Përshkrimi do të shtohet së shpejti.' }}
@@ -1556,13 +1573,20 @@
               </div>
             </div>
 
+            <!-- ✅ Gjys/gjys: Shto në shportë + WhatsApp -->
             <div class="lp-actions">
-              <a href="{{ $detailsUrl }}" class="btn btn-outline-dark w-50" style="border-width:2px;">
-                Detaje
-              </a>
+              <form action="{{ route('cart.add') }}" method="POST">
+                @csrf
+                <input type="hidden" name="product_id" value="{{ $item->id }}">
+                <input type="hidden" name="qty" value="1">
 
-              <a class="btn btn-wa w-50"
-                 href="https://wa.me/38344960661?text={{ urlencode('Pershendetje! Jam i interesuar per: '.$item->name.' ('.$priceLabel.'). A ka ne stock?') }}"
+                <button type="submit" class="btn btn-brand" {{ $inStock ? '' : 'disabled' }}>
+                  <i class="bi bi-bag-plus"></i> {{ $inStock ? 'Shto në shportë' : 'S’ka stock' }}
+                </button>
+              </form>
+
+              <a class="btn btn-wa"
+                 href="https://wa.me/38344960661?text={{ urlencode($waText) }}"
                  target="_blank" rel="noopener">
                 <i class="bi bi-whatsapp"></i> WhatsApp
               </a>
