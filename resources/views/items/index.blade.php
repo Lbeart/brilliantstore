@@ -1,151 +1,210 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sq">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Brillant Tepiha & Perde | b-brillant.com</title>
-  <meta name="description" content="Tepiha moderne, perde, set qarqafësh, mbulesa, jastakë dekorues dhe tepiha për banjo. Cilësi dhe dizajn për shtëpinë tuaj në Lipjan.">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Brillant Tepiha &amp; Perde | b-brillant.com</title>
+  <meta name="description" content="Tepiha moderne, perde, set qarqafësh, mbulesa, jastakë dekorues dhe tepiha për banjo. Cilësi dhe dizajn për shtëpinë tuaj në Lipjan." />
+  <meta name="theme-color" content="#dc3545" />
+  <meta name="color-scheme" content="light" />
+
+  <!-- Open Graph / Social -->
+  <meta property="og:title" content="Brillant Tepiha & Perde" />
+  <meta property="og:description" content="Tepiha & perde premium, sete çarçafësh, mbulesa dhe dekorime për shtëpi. Porosit online në Kosovë." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="{{ asset('images/llogo.png') }}" />
 
   <!-- Bootstrap CSS & Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
   <!-- Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="{{ asset('images/llogo.png') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="icon" type="image/png" href="{{ asset('images/llogo.png') }}" />
 
   <style>
     /* =========================================================
-       Brillant Home – PRO CSS v2 (responsive + animations)
-       - sene tjera mos i prek: vetem CSS/JS + elemente te vogla UX
+      BRILLANT HOME — ULTRA RESPONSIVE PRO CSS (Mobile-First)
+      - Rrugët e path-ve nuk janë prek
+      - Shtuar: mobile dock, animacione ma smooth, layout ma clean
+      - Bootstrap 5.3 compatible
     ========================================================== */
-    :root{
-      --bg: #0b1020;
-      --surface: #0f172a;
-      --surface-2:#111827;
-      --card:#ffffff;
-      --muted:#6b7280;
-      --text:#0b1220;
-      --light:#f8fafc;
-      --brand:#dc3545; /* red */
-      --brand-2:#ffc107; /* gold */
-      --ring: rgba(220,53,69,.28);
-      --shadow: 0 18px 45px rgba(2,6,23,.12);
-      --shadow-soft: 0 10px 28px rgba(2,6,23,.10);
-      --radius: 18px;
-      --radius-lg: 24px;
 
-      --navH: 74px; /* per sticky topbar mobile */
+    :root{
+      --bg: #f6f7fb;
+      --text: #0b1220;
+      --muted: #6b7280;
+      --surface: rgba(255,255,255,.78);
+      --surface-2: rgba(255,255,255,.92);
+      --brand: #dc3545;
+      --brand-2: #ffc107;
+      --success: #16a34a;
+      --ring: rgba(220,53,69,.25);
+
+      --shadow: 0 22px 60px rgba(2,6,23,.12);
+      --shadow-soft: 0 12px 30px rgba(2,6,23,.10);
+
+      --radius: 18px;
+      --radius-lg: 26px;
+
+      --navH: 74px;            /* setohet edhe me JS */
+      --dockH: 64px;           /* mobile bottom dock */
+      --safeTop: env(safe-area-inset-top, 0px);
+      --safeBottom: env(safe-area-inset-bottom, 0px);
+
+      --containerPad: 16px;
     }
 
-    *{ box-sizing:border-box; }
-    html, body{ height:100%; }
-    html{ scroll-behavior:smooth; }
+    *{ box-sizing: border-box; }
+    html, body{ height: 100%; }
+    html{ scroll-behavior: smooth; }
     body{
-      margin:0;
-      font-family:'Poppins',sans-serif;
+      margin: 0;
+      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background:
         radial-gradient(1200px 700px at 10% -10%, rgba(220,53,69,.18), transparent 55%),
         radial-gradient(900px 500px at 90% 0%, rgba(255,193,7,.14), transparent 55%),
-        #f6f7fb;
-      color:var(--text);
+        var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-      overflow-x: hidden;
+
+      /* mos u mshef content poshte mobile dock */
+      padding-bottom: calc(var(--dockH) + var(--safeBottom));
     }
 
-    a{ transition: color .2s ease, transform .2s ease, opacity .2s ease; }
-    img{ max-width:100%; height:auto; display:block; }
+    a{ text-decoration: none; transition: transform .18s ease, opacity .18s ease, color .18s ease; }
+    img{ max-width: 100%; height: auto; display: block; }
 
-    /* Better focus */
+    ::selection{ background: rgba(220,53,69,.18); }
+
     :focus-visible{
-      outline: none;
-      box-shadow: 0 0 0 4px var(--ring) !important;
+      outline: none !important;
+      box-shadow: 0 0 0 5px var(--ring) !important;
       border-color: rgba(220,53,69,.45) !important;
     }
 
+    .container{ padding-left: var(--containerPad); padding-right: var(--containerPad); }
+
     /* ===== Helpers ===== */
-    .section-pad{ padding: 4rem 0; }
+    .section-pad{ padding: 3.25rem 0; }
+    @media (min-width: 992px){
+      .section-pad{ padding: 4.2rem 0; }
+    }
+
     .soft-card{
-      background: rgba(255,255,255,.72);
+      background: var(--surface);
       border: 1px solid rgba(17,24,39,.06);
       box-shadow: var(--shadow-soft);
       border-radius: var(--radius-lg);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
+
     .pill{ border-radius: 999px !important; }
 
     .btn-brand{
       background: var(--brand);
       border-color: var(--brand);
       color: #fff;
-      box-shadow: 0 10px 24px rgba(220,53,69,.22);
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: .02em;
+      box-shadow: 0 12px 28px rgba(220,53,69,.22);
       transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
     }
     .btn-brand:hover{
       filter: brightness(.98);
       transform: translateY(-1px);
-      box-shadow: 0 14px 34px rgba(220,53,69,.28);
+      box-shadow: 0 16px 38px rgba(220,53,69,.28);
       color:#fff;
     }
     .btn-brand:active{ transform: translateY(0); }
 
+    /* ========================= ANNOUNCEMENT BAR (NEW) ========================== */
+    .announce{
+      position: sticky;
+      top: 0;
+      z-index: 1200;
+      padding-top: var(--safeTop);
+      background: linear-gradient(90deg, rgba(220,53,69,.96), rgba(255,193,7,.92));
+      color: #0b1220;
+      border-bottom: 1px solid rgba(2,6,23,.06);
+    }
+    .announce .inner{
+      display:flex;
+      align-items:center;
+      justify-content: center;
+      gap: .6rem;
+      padding: .55rem 0;
+      font-weight: 800;
+      font-size: .92rem;
+      text-align: center;
+    }
+    .announce .inner i{ opacity: .95; }
+    .announce a{
+      color: #0b1220;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      font-weight: 900;
+    }
+    @media (min-width: 992px){
+      .announce .inner{ font-size: .95rem; }
+    }
+
     /* ========================= NAVBAR ========================== */
     .navbar-custom{
       position: sticky;
-      top:0;
-      z-index: 1000;
-      padding: .75rem 0;
+      top: calc(0px + var(--safeTop));
+      z-index: 1100;
+      padding: .72rem 0;
       background: linear-gradient(90deg, rgba(15,23,42,.92), rgba(17,24,39,.92));
       border-bottom: 1px solid rgba(255,255,255,.08);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
+
     .navbar-custom .navbar-brand img{
-      height: 46px;
-      filter: drop-shadow(0 8px 14px rgba(0,0,0,.20));
-      transform: translateZ(0);
+      height: 44px;
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.22));
     }
+
     .navbar-custom .nav-link{
       color: rgba(248,250,252,.92) !important;
-      font-weight: 600;
+      font-weight: 700;
       font-size: .95rem;
       padding: .55rem .85rem;
       border-radius: 999px;
-      transition: background .2s ease, color .2s ease, transform .2s ease;
+      transition: background .2s ease, transform .2s ease;
     }
     .navbar-custom .nav-link:hover,
     .navbar-custom .nav-link:focus{
-      color: #fff !important;
       background: rgba(255,255,255,.08);
       transform: translateY(-1px);
     }
 
     .navbar-custom .navbar-toggler{
-      border-color: rgba(255,255,255,.28);
-      border-radius: 12px;
+      border-color: rgba(255,255,255,.30);
+      border-radius: 14px;
       padding: .45rem .6rem;
     }
     .navbar-custom .navbar-toggler-icon{
-      background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28 255, 255, 255, 0.85 %29)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28 255, 255, 255, 0.90 %29)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
     }
 
     .dropdown-menu{
       border: 1px solid rgba(2,6,23,.08);
-      border-radius: 14px;
-      box-shadow: 0 18px 50px rgba(2,6,23,.18);
-      padding: .55rem;
+      border-radius: 16px;
+      box-shadow: 0 20px 55px rgba(2,6,23,.18);
+      padding: .6rem;
     }
     .dropdown-item{
       border-radius: 12px;
-      padding: .55rem .75rem;
-      font-weight: 600;
+      padding: .6rem .8rem;
+      font-weight: 700;
     }
     .dropdown-item:hover{
       background: rgba(220,53,69,.08);
@@ -158,8 +217,8 @@
       top:0;
       left:100%;
       margin-left:.25rem;
-      min-width: 200px;
-      border-radius: 14px;
+      min-width: 220px;
+      border-radius: 16px;
     }
     .dropdown-submenu:hover .submenu{ display:block; }
 
@@ -168,8 +227,8 @@
       color: rgba(255,255,255,.92);
       background: rgba(255,255,255,.06);
       border-radius: 999px;
-      padding: .45rem .85rem;
-      font-weight: 800;
+      padding: .45rem .9rem;
+      font-weight: 900;
       transition: transform .18s ease, background .18s ease;
     }
     .nav-login-btn:hover{
@@ -180,6 +239,9 @@
 
     /* Mobile navbar dropdown */
     @media (max-width: 992px){
+      .navbar-custom{ padding: .62rem 0; }
+      .navbar-custom .navbar-brand img{ height: 40px; }
+
       .navbar-custom .dropdown-menu{
         background: rgba(17,24,39,.98);
         border-color: rgba(255,255,255,.10);
@@ -191,11 +253,10 @@
         color: var(--brand-2);
       }
 
-      /* submenu: ne mobile mos u hap me hover - e hapim me klik + class show */
       .dropdown-submenu .submenu{
         position: static;
         margin-left: 0;
-        padding-left: .75rem;
+        padding-left: .85rem;
         background: transparent;
         border: none;
         display:none;
@@ -203,23 +264,33 @@
       .dropdown-submenu .submenu.show{ display:block; }
     }
 
-    /* ========================= TOP ACTION BAR ========================== */
-    .topbar{ margin-top: 18px; }
+    /* ========================= TOPBAR ========================== */
+    .topbar{ margin-top: 14px; }
     .topbar-inner{
       padding: 14px;
       border-radius: var(--radius-lg);
-      background: rgba(255,255,255,.72);
+      background: var(--surface);
       border: 1px solid rgba(17,24,39,.06);
       box-shadow: var(--shadow-soft);
     }
 
-    /* sticky topbar ne mobile qe me gjet produkt ma leht */
+    /* sticky topbar ne mobile */
     @media (max-width: 992px){
       .topbar-inner{
         position: sticky;
-        top: var(--navH);
-        z-index: 900;
+        top: calc(var(--navH) + var(--safeTop));
+        z-index: 1000;
       }
+    }
+
+    /* Chips grid */
+    .chips-2rows{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    @media (max-width: 576px){
+      .chips-2rows{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
     }
 
     .chip{
@@ -227,42 +298,40 @@
       align-items:center;
       justify-content:center;
       gap:.5rem;
-      padding:.55rem .85rem;
+      width: 100%;
+      padding: .6rem .85rem;
       border-radius: 999px;
       background: rgba(17,24,39,.04);
       border: 1px solid rgba(17,24,39,.06);
-      font-weight: 800;
+      font-weight: 900;
       color: #0f172a;
-      text-decoration:none;
-      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
       white-space: nowrap;
-      box-shadow: 0 8px 18px rgba(2,6,23,.06);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-shadow: 0 10px 22px rgba(2,6,23,.06);
+      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
     }
     .chip:hover{
       background: rgba(220,53,69,.08);
       transform: translateY(-2px);
       color: var(--brand);
-      box-shadow: 0 14px 26px rgba(2,6,23,.10);
+      box-shadow: 0 16px 30px rgba(2,6,23,.10);
     }
     .chip i{ opacity:.9; }
 
     /* Search */
     .search-pro{ position: relative; }
     .search-pro input{
-      height: 52px;
+      height: 54px;
       border-radius: 999px;
-      padding-left: 48px;
-      padding-right: 120px;
+      padding-left: 46px;
+      padding-right: 118px;
       border: 1px solid rgba(17,24,39,.10);
-      box-shadow: 0 10px 28px rgba(2,6,23,.08);
+      box-shadow: 0 12px 30px rgba(2,6,23,.08);
       outline: none;
-      font-weight: 600;
+      font-weight: 700;
     }
     .search-pro input::placeholder{ color: rgba(107,114,128,.9); }
-    .search-pro input:focus{
-      border-color: rgba(220,53,69,.35);
-      box-shadow: 0 0 0 5px var(--ring), 0 12px 28px rgba(2,6,23,.10);
-    }
     .search-pro .icon{
       position:absolute;
       top:50%;
@@ -277,19 +346,19 @@
       right: 6px;
       transform: translateY(-50%);
       border-radius: 999px;
-      padding: .6rem 1.05rem;
+      padding: .65rem 1.05rem;
       font-weight: 900;
     }
 
     /* WhatsApp */
     .wa-btn{
-      background: #16a34a;
+      background: var(--success);
       border: 1px solid rgba(22,163,74,.25);
       color: #fff;
       border-radius: 999px;
-      padding: .65rem 1.05rem;
+      padding: .75rem 1.1rem;
       font-weight: 900;
-      box-shadow: 0 10px 26px rgba(22,163,74,.18);
+      box-shadow: 0 12px 30px rgba(22,163,74,.18);
       white-space: nowrap;
       transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
     }
@@ -297,31 +366,23 @@
       filter: brightness(.98);
       color:#fff;
       transform: translateY(-1px);
-      box-shadow: 0 14px 34px rgba(22,163,74,.22);
+      box-shadow: 0 16px 40px rgba(22,163,74,.22);
     }
 
-    /* chips grid */
-    .chips-2rows{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
+    /* Topbar mobile stacking */
+    @media (max-width: 768px){
+      .topbar-inner{ padding: 12px; }
+      .search-pro input{ height: 52px; padding-right: 108px; }
     }
-    .chips-2rows .chip{
-      width:100%;
-      font-size: clamp(11px, 1.6vw, 14px);
-      padding: clamp(8px, 1.2vw, 10px) clamp(10px, 1.4vw, 12px);
-      line-height:1.1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .chips-2rows .chip i{ font-size: clamp(12px, 1.8vw, 16px); }
     @media (max-width: 576px){
-      .chips-2rows{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .topbar{ margin-top: 10px; }
+      .search-pro input{ padding-right: 104px; }
+      .wa-btn{ width: 100%; justify-content: center; }
     }
 
     /* ========================= HERO ========================== */
     .hero{
-      margin-top: 18px;
+      margin-top: 14px;
       border-radius: 32px;
       overflow: hidden;
       position: relative;
@@ -330,39 +391,42 @@
         radial-gradient(900px 500px at 80% 40%, rgba(220,53,69,.22), transparent 60%),
         linear-gradient(180deg, rgba(15,23,42,.92), rgba(2,6,23,.92));
       color: #fff;
-      box-shadow: 0 30px 80px rgba(2,6,23,.25);
+      box-shadow: 0 32px 90px rgba(2,6,23,.26);
     }
+
     .hero-bg{
       position:absolute;
       inset:0;
       background: url("{{ asset('slider/foto1.jpg') }}") center/cover no-repeat;
       filter: brightness(.45) saturate(1.05);
-      transform: scale(1.05);
+      transform: scale(1.06);
       z-index: 0;
-      transition: opacity .6s ease;
+      transition: opacity .65s ease;
     }
-    /* class per fade kur ndrrohet foto me JS */
     .hero-bg.bg-swap{ opacity: .92; }
 
     .hero::after{
       content:"";
       position:absolute;
       inset:0;
-      background: linear-gradient(90deg, rgba(2,6,23,.72), rgba(2,6,23,.28) 55%, rgba(2,6,23,.72));
+      background: linear-gradient(90deg, rgba(2,6,23,.74), rgba(2,6,23,.26) 55%, rgba(2,6,23,.74));
       z-index: 1;
     }
 
     .hero-content{
       position: relative;
       z-index: 2;
-      padding: 3.2rem 1.5rem;
+      padding: 2.2rem 1.15rem;
+    }
+    @media (min-width: 992px){
+      .hero-content{ padding: 3.2rem 1.6rem; }
     }
 
     .hero-badge{
       display:inline-flex;
       align-items:center;
       gap:.6rem;
-      padding:.38rem .9rem;
+      padding:.42rem .9rem;
       border-radius: 999px;
       background: rgba(255,255,255,.10);
       border: 1px solid rgba(255,255,255,.14);
@@ -374,7 +438,7 @@
     .hero-badge span{
       background: var(--brand-2);
       color: #111;
-      padding: .12rem .55rem;
+      padding: .14rem .55rem;
       border-radius: 999px;
       font-weight: 900;
       letter-spacing: .10em;
@@ -383,60 +447,64 @@
     .hero-title{
       font-weight: 900;
       line-height: 1.06;
-      margin-top: 1rem;
-      font-size: clamp(2.05rem, 4.2vw, 3.35rem);
-      animation: fadeUp .8s ease both;
+      margin-top: .95rem;
+      font-size: clamp(1.95rem, 4.7vw, 3.35rem);
+      animation: fadeUp .85s ease both;
       animation-delay: .06s;
     }
     .hero-title em{ font-style: normal; color: var(--brand-2); }
 
     .hero-sub{
-      margin-top: 1rem;
-      max-width: 560px;
+      margin-top: .95rem;
+      max-width: 600px;
       color: rgba(248,250,252,.92);
-      font-size: 1.02rem;
-      line-height: 1.65;
-      animation: fadeUp .85s ease both;
+      font-size: 1rem;
+      line-height: 1.7;
+      animation: fadeUp .9s ease both;
       animation-delay: .10s;
     }
 
     .hero-actions{
-      margin-top: 1.4rem;
+      margin-top: 1.15rem;
       display:flex;
       gap:.75rem;
       flex-wrap: wrap;
-      animation: fadeUp .9s ease both;
+      animation: fadeUp .95s ease both;
       animation-delay: .14s;
     }
     .hero-actions .btn{
       border-radius: 999px;
-      padding: .78rem 1.4rem;
+      padding: .82rem 1.35rem;
       font-weight: 900;
-      transition: transform .18s ease;
     }
     .hero-actions .btn:hover{ transform: translateY(-2px); }
     .hero-actions .btn-outline-light{ border-width: 2px; }
 
+    /* HERO mobile: buttons full width */
+    @media (max-width: 576px){
+      .hero-actions .btn{ width: 100%; }
+    }
+
     .hero-stats{
-      margin-top: 1.7rem;
+      margin-top: 1.25rem;
       display:flex;
-      gap: 14px;
+      gap: 12px;
       flex-wrap: wrap;
       animation: fadeUp 1s ease both;
       animation-delay: .18s;
     }
     .stat{
-      padding: .8rem 1rem;
-      border-radius: 16px;
+      padding: .82rem 1rem;
+      border-radius: 18px;
       background: rgba(255,255,255,.08);
       border: 1px solid rgba(255,255,255,.12);
-      min-width: 175px;
-      box-shadow: 0 16px 30px rgba(2,6,23,.18);
+      min-width: 170px;
+      box-shadow: 0 18px 36px rgba(2,6,23,.18);
       transition: transform .2s ease;
     }
     .stat:hover{ transform: translateY(-3px); }
     .stat .n{
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 900;
       color: var(--brand-2);
       line-height: 1;
@@ -446,17 +514,22 @@
       color: rgba(248,250,252,.88);
       margin-top: .3rem;
     }
+    @media (max-width: 768px){
+      .hero-stats{ justify-content: center; }
+      .stat{ min-width: 155px; }
+    }
 
     /* Weekly offers card */
     .weekly-card{
       border-radius: 26px;
       background: rgba(255,255,255,.92);
       border: 1px solid rgba(255,255,255,.16);
-      box-shadow: 0 18px 55px rgba(2,6,23,.24);
+      box-shadow: 0 20px 60px rgba(2,6,23,.24);
       overflow: hidden;
       transform: translateZ(0);
+      animation: popIn .55s ease both;
     }
-    .weekly-card .head{ padding: 1rem 1.1rem .3rem; }
+    .weekly-card .head{ padding: 1rem 1.1rem .35rem; }
     .weekly-card .kicker{
       font-size: .78rem;
       letter-spacing: .16em;
@@ -468,7 +541,7 @@
     .weekly-card .title{ font-weight: 900; margin:0; color: #0f172a; }
 
     .weekly-item{
-      padding: .95rem 1.1rem;
+      padding: 1rem 1.1rem;
       border-top: 1px solid rgba(2,6,23,.06);
     }
     .weekly-item img{
@@ -476,7 +549,7 @@
       height: 112px;
       object-fit: cover;
       border-radius: 16px;
-      box-shadow: 0 10px 22px rgba(2,6,23,.12);
+      box-shadow: 0 12px 26px rgba(2,6,23,.12);
       transition: transform .35s ease;
     }
     .carousel-item.active .weekly-item img{ transform: scale(1.02); }
@@ -488,21 +561,24 @@
       font-size: .9rem;
     }
 
-    /* carousel controls - ma clean */
-    .carousel-control-prev,
-    .carousel-control-next{
-      width: 48px;
-      opacity: 1;
-    }
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon{
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,.25));
+    /* Weekly mobile layout: img nalt, text poshte */
+    @media (max-width: 576px){
+      .weekly-item .d-flex{ flex-direction: column; align-items: flex-start !important; }
+      .weekly-item img{ width: 100%; height: 160px; }
     }
 
-    /* ========================= SECTIONS ========================== */
+    /* carousel controls */
+    .carousel-control-prev,
+    .carousel-control-next{ width: 48px; opacity: 1; }
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon{
+      filter: drop-shadow(0 12px 24px rgba(0,0,0,.28));
+    }
+
+    /* ========================= SECTION TITLES ========================== */
     .section-title{
       text-align:center;
-      margin-bottom: 2.25rem;
+      margin-bottom: 2.05rem;
     }
     .section-title .k{
       display:inline-block;
@@ -513,7 +589,7 @@
       color: var(--brand);
       background: rgba(220,53,69,.08);
       border: 1px solid rgba(220,53,69,.14);
-      padding: .35rem .8rem;
+      padding: .35rem .85rem;
       border-radius: 999px;
     }
     .section-title h2{
@@ -527,7 +603,7 @@
       color: var(--muted);
     }
 
-    /* Category cards */
+    /* ========================= CATEGORY CARDS ========================== */
     .cat-card{
       height: 100%;
       border-radius: 22px;
@@ -540,7 +616,7 @@
     }
     .cat-card:hover{
       transform: translateY(-6px);
-      box-shadow: 0 24px 58px rgba(2,6,23,.14);
+      box-shadow: 0 26px 62px rgba(2,6,23,.14);
     }
     .cat-media{ position: relative; overflow: hidden; }
     .cat-media img{
@@ -570,7 +646,6 @@
       display:inline-flex;
       align-items:center;
       gap:.45rem;
-      text-decoration: none;
       font-weight: 900;
       letter-spacing: .12em;
       text-transform: uppercase;
@@ -578,7 +653,7 @@
       color: var(--brand);
     }
 
-    /* Rugs carousel title */
+    /* ========================= RUGS CAROUSEL ========================== */
     .rugs-head .k{
       font-size: .82rem;
       font-weight: 900;
@@ -588,7 +663,21 @@
     }
     .rugs-head h2{ font-weight: 900; margin: .35rem 0; }
 
-    /* Product cards */
+    /* modern rugs: make images consistent + mobile */
+    .rugs-img{
+      height: 190px !important;
+      width: 100% !important;
+      object-fit: contain !important;
+      background: rgba(2,6,23,.02);
+      border: 1px solid rgba(2,6,23,.06);
+      border-radius: 18px;
+      padding: 10px;
+    }
+    @media (max-width: 576px){
+      .rugs-img{ height: 160px !important; }
+    }
+
+    /* ========================= PRODUCT CARDS ========================== */
     .product-card{
       border: 1px solid rgba(2,6,23,.06);
       border-radius: 22px;
@@ -600,7 +689,7 @@
     }
     .product-card:hover{
       transform: translateY(-5px);
-      box-shadow: 0 24px 58px rgba(2,6,23,.14);
+      box-shadow: 0 26px 62px rgba(2,6,23,.14);
     }
     .product-card img{
       height: 260px;
@@ -611,32 +700,41 @@
     .product-card:hover img{ transform: scale(1.06); }
     .product-card .card-body{ padding: 1rem 1.1rem 1.2rem; }
 
-    /* Why choose us block */
+    @media (max-width: 576px){
+      .product-card img{ height: 240px; }
+    }
+
+    /* ========================= WHY CHOOSE US ========================== */
     .why-wrap{
-      background: rgba(255,255,255,.78);
+      background: var(--surface);
       border: 1px solid rgba(17,24,39,.06);
       border-radius: 28px;
       box-shadow: var(--shadow);
       overflow:hidden;
     }
     .why-wrap .why-side{
-      padding: 2rem;
+      padding: 1.6rem;
       background: linear-gradient(180deg, rgba(220,53,69,.08), rgba(255,255,255,0));
     }
-    .why-wrap .why-points{ padding: 2rem; }
+    .why-wrap .why-points{ padding: 1.6rem; }
+
+    @media (min-width: 992px){
+      .why-wrap .why-side{ padding: 2rem; }
+      .why-wrap .why-points{ padding: 2rem; }
+    }
 
     .why-bullet{
       padding: .95rem 1rem;
       border-radius: 18px;
       border: 1px solid rgba(2,6,23,.06);
       background: rgba(255,255,255,.70);
-      box-shadow: 0 10px 26px rgba(2,6,23,.07);
+      box-shadow: 0 12px 30px rgba(2,6,23,.07);
       margin-bottom: .85rem;
       transition: transform .2s ease, box-shadow .2s ease;
     }
     .why-bullet:hover{
       transform: translateY(-3px);
-      box-shadow: 0 18px 36px rgba(2,6,23,.10);
+      box-shadow: 0 20px 44px rgba(2,6,23,.10);
     }
     .why-bullet h5{ font-weight: 900; font-size: 1rem; margin-bottom: .25rem; }
     .why-bullet p{
@@ -646,7 +744,44 @@
       line-height: 1.6;
     }
 
-    /* SEO text */
+    /* ========================= TESTIMONIALS (NEW carousel) ========================== */
+    .testi-wrap{
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(2,6,23,.06);
+      background: rgba(255,255,255,.86);
+    }
+    .testi-item{
+      padding: 1.4rem 1.2rem;
+    }
+    .testi-quote{
+      font-size: 1rem;
+      line-height: 1.75;
+      color: rgba(2,6,23,.78);
+      margin: 0;
+    }
+    .testi-meta{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 1rem;
+      padding-top: .9rem;
+      border-top: 1px solid rgba(2,6,23,.06);
+    }
+    .testi-name{
+      font-weight: 900;
+      color: #0f172a;
+      margin: 0;
+    }
+    .stars i{ color: #f59e0b; }
+    @media (max-width: 576px){
+      .testi-item{ padding: 1.2rem 1rem; }
+      .testi-meta{ flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ========================= SEO TEXT ========================== */
     .seo-text{
       font-size: .98rem;
       line-height: 1.75;
@@ -654,12 +789,12 @@
       background: rgba(255,255,255,.72);
       border: 1px solid rgba(17,24,39,.06);
       border-radius: 22px;
-      padding: 1.6rem;
+      padding: 1.35rem;
       box-shadow: var(--shadow-soft);
     }
     .seo-text h2{ font-weight: 900; margin-bottom: .85rem; }
 
-    /* Footer */
+    /* ========================= FOOTER ========================== */
     footer{
       font-size: .92rem;
       background: rgba(255,255,255,.75) !important;
@@ -668,30 +803,11 @@
       -webkit-backdrop-filter: blur(10px);
     }
 
-    /* ========================= Animations + Scroll reveal ========================== */
-    @keyframes fadeUp{
-      from{ opacity:0; transform: translateY(14px); }
-      to{ opacity:1; transform: translateY(0); }
-    }
-    @keyframes popIn{
-      from{ opacity:0; transform: scale(.96); }
-      to{ opacity:1; transform: scale(1); }
-    }
-
-    .reveal{ opacity: 0; transform: translateY(14px); }
-    .reveal.in{ opacity:1; transform: translateY(0); transition: opacity .6s ease, transform .6s ease; }
-
-    /* disable animations if user prefers */
-    @media (prefers-reduced-motion: reduce){
-      *{ animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-      .reveal{ opacity:1 !important; transform:none !important; }
-    }
-
     /* ========================= Floating actions ========================== */
     .floating-actions{
       position: fixed;
-      right: 16px;
-      bottom: 16px;
+      right: 14px;
+      bottom: calc(var(--dockH) + 14px + var(--safeBottom));
       z-index: 1200;
       display: flex;
       flex-direction: column;
@@ -706,46 +822,109 @@
       justify-content: center;
       color: #fff;
       text-decoration: none;
-      box-shadow: 0 18px 38px rgba(2,6,23,.22);
-      transform: translateZ(0);
-      transition: transform .18s ease, filter .18s ease;
+      box-shadow: 0 20px 44px rgba(2,6,23,.22);
+      transition: transform .18s ease, filter .18s ease, opacity .18s ease;
     }
     .fab:hover{ transform: translateY(-2px); filter: brightness(.98); }
-    .fab-whatsapp{ background: #16a34a; }
-    .fab-top{ background: rgba(15,23,42,.92); border: 1px solid rgba(255,255,255,.14); opacity: 0; pointer-events:none; }
+    .fab-whatsapp{ background: var(--success); }
+    .fab-top{
+      background: rgba(15,23,42,.92);
+      border: 1px solid rgba(255,255,255,.14);
+      opacity: 0;
+      pointer-events:none;
+    }
     .fab-top.show{ opacity: 1; pointer-events:auto; }
 
-    /* ========================= Responsive tweaks ========================== */
-    @media (max-width: 992px){
-      .hero-content{ padding: 2.5rem 1.1rem; }
-      .weekly-card{ margin-top: 16px; }
-      .search-pro input{ padding-right: 110px; }
+    /* ========================= Mobile Bottom Dock (NEW) ========================== */
+    .mobile-dock{
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1300;
+      padding-bottom: var(--safeBottom);
+      background: rgba(255,255,255,.92);
+      border-top: 1px solid rgba(2,6,23,.08);
+      box-shadow: 0 -18px 45px rgba(2,6,23,.10);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      height: calc(var(--dockH) + var(--safeBottom));
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    @media (max-width: 768px){
-      .topbar{ margin-top: 12px; }
-      .hero-content{ padding: 2.2rem 1rem; }
-      .hero-sub{ font-size: .98rem; }
-      .hero-stats{ justify-content: center; }
-      .stat{ min-width: 160px; }
-      .search-pro input{ height: 52px; }
-      .section-pad{ padding: 3.2rem 0; }
+    .dock-inner{
+      width: min(520px, 100%);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding: 8px 12px;
     }
-    @media (max-width: 576px){
-      .search-pro input{ padding-right: 100px; }
-      .hero-actions .btn{ width: 100%; }
-      .weekly-item img{ width: 92px; height: 92px; }
-      .floating-actions{ right: 12px; bottom: 12px; }
-      .fab{ width: 50px; height: 50px; }
+    .dock-btn{
+      display:flex;
+      flex-direction: column;
+      align-items:center;
+      justify-content:center;
+      gap: 4px;
+      padding: 8px 8px;
+      border-radius: 16px;
+      color: rgba(2,6,23,.86);
+      font-weight: 800;
+      font-size: .72rem;
+      position: relative;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .dock-btn i{ font-size: 1.22rem; }
+    .dock-btn:hover{ background: rgba(220,53,69,.08); transform: translateY(-1px); color: var(--brand); }
+    .dock-badge{
+      position:absolute;
+      top: 6px;
+      right: 20%;
+      transform: translateX(50%);
+      font-size: .68rem;
+      font-weight: 900;
+      background: var(--brand);
+      color: #fff;
+      border-radius: 999px;
+      padding: 2px 6px;
+      box-shadow: 0 10px 22px rgba(220,53,69,.22);
+    }
+    @media (min-width: 992px){
+      .mobile-dock{ display: none; }
+      body{ padding-bottom: 0; }
+    }
+
+    /* ========================= Animations + Scroll reveal ========================== */
+    @keyframes fadeUp{ from{ opacity:0; transform: translateY(14px); } to{ opacity:1; transform: translateY(0);} }
+    @keyframes popIn{ from{ opacity:0; transform: scale(.97); } to{ opacity:1; transform: scale(1);} }
+
+    .reveal{ opacity: 0; transform: translateY(14px); }
+    .reveal.in{ opacity:1; transform: translateY(0); transition: opacity .7s ease, transform .7s ease; }
+
+    @media (prefers-reduced-motion: reduce){
+      *{ animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+      .reveal{ opacity:1 !important; transform:none !important; }
     }
   </style>
 </head>
 
 <body>
+  <!-- ANNOUNCEMENT (NEW) -->
+  <div class="announce">
+    <div class="container">
+      <div class="inner">
+        <i class="bi bi-truck"></i>
+        Dërgesë në gjithë Kosovën ·
+        <a href="{{ route('contact') }}">Kontakto për matje &amp; konsultim</a>
+      </div>
+    </div>
+  </div>
+
   <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom" id="mainNav">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center" href="/">
-        <img src="{{ asset('images/brillant.png') }}" alt="Brillant Logo">
+        <img src="{{ asset('images/brillant.png') }}" alt="Brillant Logo" />
       </a>
 
       <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
@@ -825,10 +1004,11 @@
             </a>
             <div class="dropdown-menu dropdown-menu-end p-3 shadow" aria-labelledby="cartDropdown" style="min-width: 320px;">
               <div class="small text-muted mb-2">Gjurmo porosinë</div>
-              <form class="d-flex align-items-stretch gap-2" onsubmit="event.preventDefault(); const el=this.querySelector('#trackCodeNav'); const v=(el?.value||'').trim(); if(v){ window.location='{{ url('/track') }}/'+encodeURIComponent(v); }">
+              <form class="d-flex align-items-stretch gap-2"
+                onsubmit="event.preventDefault(); const el=this.querySelector('#trackCodeNav'); const v=(el?.value||'').trim(); if(v){ window.location='{{ url('/track') }}/'+encodeURIComponent(v); }">
                 <div class="input-group input-group-sm">
                   <span class="input-group-text"><i class="bi bi-search"></i></span>
-                  <input id="trackCodeNav" type="text" class="form-control" placeholder="p.sh. BRL-LKNJ-0YXN" autocomplete="off" required>
+                  <input id="trackCodeNav" type="text" class="form-control" placeholder="p.sh. BRL-LKNJ-0YXN" autocomplete="off" required />
                   <button class="btn btn-danger" type="submit">Gjurmo</button>
                 </div>
               </form>
@@ -845,33 +1025,32 @@
     </div>
   </nav>
 
-  <!-- TOPBAR: categories + SEARCH + WhatsApp -->
-  <div class="container topbar">
+  <!-- TOPBAR -->
+  <div class="container topbar" id="topbar">
     <div class="topbar-inner">
       <div class="row g-3 align-items-center">
         <div class="col-lg-4">
           <div class="chips-2rows">
-            <!-- RRESHTI 1 -->
             <a class="chip" href="/tepiha"><i class="bi bi-grid"></i> Tepiha</a>
             <a class="chip" href="/mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
             <a class="chip" href="/anesore"><i class="bi bi-layout-text-window"></i> Perde</a>
-            <!-- RRESHTI 2 -->
+
             <a class="chip" href="/garnishte"><i class="bi bi-layout-text-window"></i> Garnishte</a>
             <a class="chip" href="/batanije"><i class="bi bi-snow"></i> Batanije</a>
             <a class="chip" href="/postava"><i class="bi bi-bag-check"></i> Set çarçafesh</a>
           </div>
         </div>
 
-        <div class="col-lg-5">
-          <form action="{{ route('search') }}" method="GET" class="search-pro">
-            <i class="bi bi-search icon"></i>
-            <input type="text" name="q" class="form-control" placeholder="Kërko produktin:" value="{{ request('q') }}" required>
+        <div class="col-lg-5" id="searchSection">
+          <form action="{{ route('search') }}" method="GET" class="search-pro" role="search" aria-label="Kërko produktet">
+            <i class="bi bi-search icon" aria-hidden="true"></i>
+            <input type="text" name="q" class="form-control" placeholder="Kërko produktin:" value="{{ request('q') }}" required />
             <button class="btn btn-brand" type="submit">Kërko</button>
           </form>
         </div>
 
         <div class="col-lg-3 text-lg-end">
-          <a href="https://wa.me/38344960661" target="_blank" class="wa-btn d-inline-flex align-items-center gap-2">
+          <a href="https://wa.me/38344960661" target="_blank" class="wa-btn d-inline-flex align-items-center justify-content-center gap-2">
             <i class="bi bi-whatsapp"></i> Chat
           </a>
         </div>
@@ -888,11 +1067,11 @@
         <div class="row align-items-center gy-4">
           <div class="col-lg-7">
             <div class="hero-badge">
-              <span>KOLEKSION I RI</span> Tepiha & perde për çdo ambient
+              <span>KOLEKSION I RI</span> Tepiha &amp; perde për çdo ambient
             </div>
 
             <h1 class="hero-title">
-              Tepiha & perde <em>premium</em> për shtëpi moderne.
+              Tepiha &amp; perde <em>premium</em> për shtëpi moderne.
             </h1>
 
             <p class="hero-sub">
@@ -925,11 +1104,10 @@
 
               <div id="weeklyOffersCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
                 <div class="carousel-inner">
-                  <!-- Slide 1 -->
                   <div class="carousel-item active">
                     <div class="weekly-item">
                       <div class="d-flex gap-3 align-items-center">
-                        <img src="{{ asset('slider/side.bmp') }}" alt="Tepiha Modern 150x230">
+                        <img src="{{ asset('slider/side.bmp') }}" alt="Tepiha Modern 150x230" loading="lazy" />
                         <div class="flex-grow-1">
                           <span class="badge bg-danger-subtle text-danger border border-danger mb-2">Tepiha</span>
                           <div class="fw-bold">Tepiha Modern 150x230 cm</div>
@@ -946,11 +1124,10 @@
                     </div>
                   </div>
 
-                  <!-- Slide 2 -->
                   <div class="carousel-item">
                     <div class="weekly-item">
                       <div class="d-flex gap-3 align-items-center">
-                        <img src="{{ asset('slider/hali4.jpg') }}" alt="Tepiha Hali 200x300">
+                        <img src="{{ asset('slider/hali4.jpg') }}" alt="Tepiha Hali 200x300" loading="lazy" />
                         <div class="flex-grow-1">
                           <span class="badge bg-danger-subtle text-danger border border-danger mb-2">Tepiha</span>
                           <div class="fw-bold">Tepiha Hali 200x300 cm</div>
@@ -967,11 +1144,10 @@
                     </div>
                   </div>
 
-                  <!-- Slide 3 -->
                   <div class="carousel-item">
                     <div class="weekly-item">
                       <div class="d-flex gap-3 align-items-center">
-                        <img src="{{ asset('slider/bedshet.jpg') }}" alt="Set çarçafësh">
+                        <img src="{{ asset('slider/bedshet.jpg') }}" alt="Set çarçafësh" loading="lazy" />
                         <div class="flex-grow-1">
                           <span class="badge bg-warning-subtle text-warning border border-warning mb-2">Set çarçafësh</span>
                           <div class="fw-bold">Set çarçafësh pambuk</div>
@@ -1026,11 +1202,11 @@
             <a href="/tepiha" class="text-decoration-none text-dark">
               <div class="cat-card">
                 <div class="cat-media">
-                  <img src="{{ asset('slider/tepihali600cream.png') }}" alt="Tepiha">
+                  <img src="{{ asset('slider/tepihali600cream.png') }}" alt="Tepiha" loading="lazy" />
                   <span class="cat-badge">Tepiha</span>
                 </div>
                 <div class="cat-body">
-                  <h5>Tepiha modern & klasik</h5>
+                  <h5>Tepiha modern &amp; klasik</h5>
                   <p>Modele për sallon, korridor, dhoma fëmijësh dhe banjo.</p>
                   <span class="cat-link">Shiko tepihat <i class="bi bi-arrow-right"></i></span>
                 </div>
@@ -1042,11 +1218,11 @@
             <a href="/anesore" class="text-decoration-none text-dark">
               <div class="cat-card">
                 <div class="cat-media">
-                  <img src="{{ asset('slider/raffaello.jpg') }}" alt="Perde">
+                  <img src="{{ asset('slider/raffaello.jpg') }}" alt="Perde" loading="lazy" />
                   <span class="cat-badge">Perde</span>
                 </div>
                 <div class="cat-body">
-                  <h5>Perde anësore & ditore</h5>
+                  <h5>Perde anësore &amp; ditore</h5>
                   <p>Tekstile cilësore me sisteme amerikane dhe dizajn modern.</p>
                   <span class="cat-link">Shiko perdet <i class="bi bi-arrow-right"></i></span>
                 </div>
@@ -1058,11 +1234,11 @@
             <a href="/postava" class="text-decoration-none text-dark">
               <div class="cat-card">
                 <div class="cat-media">
-                  <img src="{{ asset('slider/bedshet.jpg') }}" alt="Set çarçafësh">
+                  <img src="{{ asset('slider/bedshet.jpg') }}" alt="Set çarçafësh" loading="lazy" />
                   <span class="cat-badge">Shtrat</span>
                 </div>
                 <div class="cat-body">
-                  <h5>Set çarçafësh & kompleta krevati</h5>
+                  <h5>Set çarçafësh &amp; kompleta krevati</h5>
                   <p>Material i butë, i qëndrueshëm dhe ngjyra që nuk zbehen.</p>
                   <span class="cat-link">Shiko setet <i class="bi bi-arrow-right"></i></span>
                 </div>
@@ -1074,11 +1250,11 @@
             <a href="/mbulesa" class="text-decoration-none text-dark">
               <div class="cat-card">
                 <div class="cat-media">
-                  <img src="{{ asset('slider/paris.jpg') }}" alt="Mbulesa & batanije">
+                  <img src="{{ asset('slider/paris.jpg') }}" alt="Mbulesa & batanije" loading="lazy" />
                   <span class="cat-badge">Komfor</span>
                 </div>
                 <div class="cat-body">
-                  <h5>Mbulesa & batanije</h5>
+                  <h5>Mbulesa &amp; batanije</h5>
                   <p>Batanije të ngrohta, mbulesa karrigesh dhe garnishte dekoruese.</p>
                   <span class="cat-link">Shiko mbulesat <i class="bi bi-arrow-right"></i></span>
                 </div>
@@ -1127,8 +1303,7 @@
                           <i class="bi bi-check-circle-fill"></i> In stock
                         </div>
                         <img src="{{ asset('slider/'.$item[0]) }}" alt="{{ $item[1] }}"
-                             class="img-fluid rounded-4 shadow-sm mb-2"
-                             style="height: 200px; width: auto; object-fit: contain;">
+                             class="img-fluid rugs-img shadow-sm mb-2" loading="lazy" />
                         <p class="small mb-1">{{ $item[1] }}</p>
                         <h6 class="fw-bold mb-0">{{ $item[2] }}</h6>
                       </div>
@@ -1164,7 +1339,7 @@
               <div class="col-md-4">
                 <div class="card product-card">
                   @if($item->image_path)
-                    <img src="{{ asset('storage/'.$item->image_path) }}" class="card-img-top" alt="{{ $item->name }}">
+                    <img src="{{ asset('storage/'.$item->image_path) }}" class="card-img-top" alt="{{ $item->name }}" loading="lazy" />
                   @else
                     <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:260px;">
                       <span class="text-white">Pa foto</span>
@@ -1182,6 +1357,72 @@
         </div>
       </section>
 
+      <!-- Testimonials (NEW Carousel) -->
+      <section class="mb-5">
+        <div class="section-title">
+          <span class="k">VLERËSIMET</span>
+          <h2>Çka po thonë klientët</h2>
+          <p>Përvojë reale — cilësi, shërbim dhe kënaqësi.</p>
+        </div>
+
+        <div class="testi-wrap">
+          <div id="testimonialsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <div class="testi-item">
+                  <p class="testi-quote">
+                    “Perdet na dolën perfekt! Matja, këshillimi dhe montimi — krejt profesional. Shtëpia u ndryshua total.”
+                  </p>
+                  <div class="testi-meta">
+                    <p class="testi-name mb-0">Kliente — Prishtinë</p>
+                    <div class="stars" aria-label="5 yje">
+                      <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-item">
+                <div class="testi-item">
+                  <p class="testi-quote">
+                    “Tepihat janë super cilësi. Ngjyra nuk zbehet edhe pas pastrimit. Dërgesa erdhi shpejt.”
+                  </p>
+                  <div class="testi-meta">
+                    <p class="testi-name mb-0">Klient — Lipjan</p>
+                    <div class="stars" aria-label="5 yje">
+                      <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-item">
+                <div class="testi-item">
+                  <p class="testi-quote">
+                    “Setet e çarçafëve janë shumë të buta dhe të rehatshme. Paketim i pastër dhe shërbim i mirë.”
+                  </p>
+                  <div class="testi-meta">
+                    <p class="testi-name mb-0">Kliente — Ferizaj</p>
+                    <div class="stars" aria-label="5 yje">
+                      <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
       <!-- Why choose us -->
       <section class="why-wrap mb-5">
         <div class="row g-0 align-items-stretch">
@@ -1191,7 +1432,7 @@
               <h2 class="mt-3">Tekstil i zgjedhur, shërbim i kujdesshëm.</h2>
               <p class="mt-2 text-muted">Matje, konsulencë dhe qepje profesionale – me fokus në cilësi dhe kënaqësi.</p>
             </div>
-            <img src="{{ asset('slider/raffaello.jpg') }}" class="img-fluid rounded-4 shadow-sm mt-3" alt="Why Choose Us">
+            <img src="{{ asset('slider/raffaello.jpg') }}" class="img-fluid rounded-4 shadow-sm mt-3" alt="Why Choose Us" loading="lazy" />
           </div>
 
           <div class="col-md-7 why-points">
@@ -1204,7 +1445,7 @@
               <p>Tepiha akrilik me mbrojtje antibakteriale, rezistent ndaj shtypjes dhe i lehtë për t’u pastruar.</p>
             </div>
             <div class="why-bullet">
-              <h5>Plush bed covers & sheets</h5>
+              <h5>Plush bed covers &amp; sheets</h5>
               <p>Mbulesa dhe çarçafë pelushi të butë, të rehatshëm dhe miqësorë me mjedisin.</p>
             </div>
             <div class="why-bullet mb-0">
@@ -1232,15 +1473,15 @@
     <div class="container">
       <div class="row">
         <div class="col-md-3 text-center text-md-start mb-4 mb-md-0">
-          <img src="{{ asset('images/llogo.png') }}" alt="brillant" width="150" class="mb-2">
+          <img src="{{ asset('images/llogo.png') }}" alt="brillant" width="150" class="mb-2" loading="lazy" />
         </div>
 
         <div class="col-md-3 mb-4 mb-md-0">
           <h6 class="text-uppercase fw-bold mb-3">Products</h6>
           <ul class="list-unstyled">
-            <li><a href="/tepiha" class="text-dark text-decoration-none">Carpet & Rugs</a></li>
+            <li><a href="/tepiha" class="text-dark text-decoration-none">Carpet &amp; Rugs</a></li>
             <li><a href="/tepiha" class="text-dark text-decoration-none">Decorative Carpets</a></li>
-            <li><a href="/tepihebanjo" class="text-dark text-decoration-none">Bath Mats & Rugs</a></li>
+            <li><a href="/tepihebanjo" class="text-dark text-decoration-none">Bath Mats &amp; Rugs</a></li>
             <li><a href="/mbulesa" class="text-dark text-decoration-none">Sofa Covers</a></li>
             <li><a href="/postava" class="text-dark text-decoration-none">Bed Sheets</a></li>
             <li><a href="/batanije" class="text-dark text-decoration-none">Blankets</a></li>
@@ -1283,7 +1524,7 @@
     </div>
   </footer>
 
-  <!-- Floating quick actions (NEW) -->
+  <!-- Floating quick actions -->
   <div class="floating-actions">
     <a class="fab fab-whatsapp" href="https://wa.me/38344960661" target="_blank" aria-label="WhatsApp">
       <i class="bi bi-whatsapp fs-4"></i>
@@ -1293,8 +1534,37 @@
     </button>
   </div>
 
+  <!-- MOBILE BOTTOM DOCK (NEW) -->
+  <nav class="mobile-dock d-lg-none" aria-label="Mobile quick navigation">
+    <div class="dock-inner">
+      <a class="dock-btn" href="/" aria-label="Home">
+        <i class="bi bi-house"></i>
+        <span>Home</span>
+      </a>
+
+      <a class="dock-btn" href="/tepiha" aria-label="Products">
+        <i class="bi bi-grid"></i>
+        <span>Products</span>
+      </a>
+
+      <a class="dock-btn" href="#searchSection" aria-label="Search">
+        <i class="bi bi-search"></i>
+        <span>Search</span>
+      </a>
+
+      <a class="dock-btn" href="{{ route('cart.index') }}" aria-label="Shporta">
+        <i class="bi bi-bag"></i>
+        <span>Shporta</span>
+        <span class="dock-badge cart-badge">{{ session('cart_total_qty', 0) }}</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Bootstrap JS (në fund për performancë) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
   <script>
-    // përditëso badge në të gjitha menutë
+    // përditëso badge në të gjitha menutë (navbar + dock)
     window.updateCartBadges = function(totalQty){
       document.querySelectorAll('.cart-badge').forEach(b => b.textContent = totalQty);
     };
@@ -1306,9 +1576,19 @@
       }
     });
 
-    // ===== PRO JS: mobile submenu toggle + hero bg slideshow + scroll reveal + back to top
     (function(){
       const isMobile = () => window.matchMedia('(max-width: 991.98px)').matches;
+
+      // Set dynamic nav height -> sticky topbar work perfect
+      const nav = document.getElementById('mainNav');
+      const setNavH = () => {
+        if(!nav) return;
+        const h = nav.getBoundingClientRect().height || 74;
+        document.documentElement.style.setProperty('--navH', `${Math.round(h)}px`);
+      };
+      window.addEventListener('resize', setNavH, { passive: true });
+      window.addEventListener('load', setNavH, { passive: true });
+      setNavH();
 
       // mobile: open submenu with click
       document.querySelectorAll('.dropdown-submenu > a').forEach(a => {
@@ -1320,17 +1600,34 @@
         });
       });
 
+      // smooth scroll for anchors (mobile dock search)
+      document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', function(e){
+          const id = this.getAttribute('href');
+          if(!id || id === '#') return;
+          const target = document.querySelector(id);
+          if(!target) return;
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // focus input if search section
+          if(id === '#searchSection'){
+            const input = target.querySelector('input[name="q"]');
+            setTimeout(() => input?.focus(), 350);
+          }
+        });
+      });
+
       // back to top
       const topBtn = document.getElementById('backToTop');
       const onScroll = () => {
         if(!topBtn) return;
-        topBtn.classList.toggle('show', window.scrollY > 500);
+        topBtn.classList.toggle('show', window.scrollY > 520);
       };
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
       topBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-      // hero background "carousel" (auto change)
+      // hero background slideshow (auto change)
       const heroBg = document.querySelector('.hero-bg');
       if(heroBg){
         const imgs = [
@@ -1349,7 +1646,9 @@
       }
 
       // scroll reveal animations
-      const revealEls = document.querySelectorAll('.cat-card, .product-card, .why-bullet, .seo-text, .weekly-card, .soft-card');
+      const revealEls = document.querySelectorAll(
+        '.cat-card, .product-card, .why-bullet, .seo-text, .weekly-card, .soft-card, .testi-wrap'
+      );
       const io = new IntersectionObserver(entries => {
         entries.forEach(en => {
           if(en.isIntersecting){
