@@ -9,22 +9,48 @@ class SearchController extends Controller
     private function normalize(string $s): string
     {
         $s = mb_strtolower(trim($s), 'UTF-8');
-
-        // normalizo ë/ç (që "anësore" dhe "anesore" me qenë njësoj)
+        // normalizo ë/ç që "anësore" = "anesore"
         $s = str_replace(['ë', 'ç'], ['e', 'c'], $s);
-
         // hiq hapësira të dyfishta
         $s = preg_replace('/\s+/', ' ', $s);
-
         return $s ?? '';
     }
 
     private function containsAny(string $haystack, array $needles): bool
     {
         foreach ($needles as $n) {
+            $n = $this->normalize((string)$n);
             if ($n !== '' && str_contains($haystack, $n)) return true;
         }
         return false;
+    }
+
+    private function withQ(string $route, string $rawQ): string
+    {
+        return $route . '?' . http_build_query(['q' => $rawQ], '', '&', PHP_QUERY_RFC3986);
+    }
+
+    private function inferContextFromReferer(Request $request): ?string
+    {
+        $ref = $request->headers->get('referer') ?: url()->previous();
+        if (!$ref) return null;
+
+        $path = parse_url($ref, PHP_URL_PATH);
+        if (!is_string($path) || $path === '') return null;
+
+        $path = rtrim($path, '/');
+        if ($path === '') $path = '/';
+
+        // context sipas faqes ku je
+        if (str_starts_with($path, '/perde-ditore')) return 'perde-ditore';
+        if (str_starts_with($path, '/anesore')) return 'anesore';
+        if (str_starts_with($path, '/tepiha')) return 'tepiha';
+        if (str_starts_with($path, '/mbulesa')) return 'mbulesa';
+        if (str_starts_with($path, '/batanije')) return 'batanije';
+        if (str_starts_with($path, '/postava')) return 'postava';
+        if (str_starts_with($path, '/garnishte')) return 'garnishte';
+
+        return null; // home ose tjera
     }
 
     public function index(Request $request)
@@ -34,25 +60,35 @@ class SearchController extends Controller
 
         if ($q === '') return back();
 
-        // ✅ PERDE: kap edhe gabime shkrimi si "dior"
-        $perdeWords  = ['perde', 'perd', 'curtain'];
-        $ditoreWords = ['ditore', 'ditor', 'dior', 'diore'];     // shto këtu çka don
-        $anesoreWords = ['anesore', 'anesor', 'anësore'];        // "anësore" normalizohet në "anesore"
+        $ctx = $this->inferContextFromReferer($request);
 
-        if ($this->containsAny($q, $perdeWords)) {
-            if ($this->containsAny($q, $ditoreWords)) {
-                return redirect('/perde-ditore?q=' . urlencode($raw));
-            }
+        /**
+         * ✅ PERDE: prioritet absolut (ditore/anësore)
+         * kap edhe gabime shkrimi: dior/ditor
+         */
+        $perdeWords   = ['perde', 'perd', 'curtain'];
+        $ditoreWords  = ['ditore', 'ditor', 'dior', 'diore'];
+        $anesoreWords = ['anesore', 'anesor']; // "anësore" normalizohet -> "anesore"
 
-            if ($this->containsAny($q, $anesoreWords)) {
-                return redirect('/anesore?q=' . urlencode($raw));
-            }
-
-            // default për perde
-            return redirect('/anesore?q=' . urlencode($raw));
+        if ($this->containsAny($q, $ditoreWords)) {
+            return redirect($this->withQ('/perde-ditore', $raw));
         }
 
-        // ✅ kategoritë tjera
+        if ($this->containsAny($q, $anesoreWords)) {
+            return redirect($this->withQ('/anesore', $raw));
+        }
+
+        if ($this->containsAny($q, $perdeWords)) {
+            // nese je te perde-ditore dhe shkruan "perde", rri aty
+            if ($ctx === 'perde-ditore') {
+                return redirect($this->withQ('/perde-ditore', $raw));
+            }
+            return redirect($this->withQ('/anesore', $raw));
+        }
+
+        /**
+         * ✅ KATEGORITË TJERA: nëse query ka keyword -> shko te ajo kategori
+         */
         $categories = [
             [
                 'route' => '/tepiha',
@@ -72,15 +108,36 @@ class SearchController extends Controller
             ],
             [
                 'route' => '/postava',
-                'keywords' => ['postava','postav','car','qar','bedsheet','çar'] // "çar" e normalizon në "car"
+                'keywords' => ['postava','postav','car','qar','bedsheet','çar']
             ],
         ];
 
         foreach ($categories as $cat) {
-            foreach ($cat['keywords'] as $keyword) {
-                if (str_contains($q, $this->normalize($keyword))) {
-                    return redirect($cat['route'] . '?q=' . urlencode($raw));
+            foreach ($cat['keywords'] as $kw) {
+                if (str_contains($q, $this->normalize($kw))) {
+                    return redirect($this->withQ($cat['route'], $raw));
                 }
+            }
+        }
+
+        /**
+         * ✅ FALLBACK: nëse s’u gjet keyword, rri te faqja ku je (ctx)
+         * p.sh. je te /perde-ditore dhe shkruan "white" -> rri te /perde-ditore?q=white
+         */
+        if ($ctx) {
+            $ctxRoute = match ($ctx) {
+                'perde-ditore' => '/perde-ditore',
+                'anesore'      => '/anesore',
+                'tepiha'       => '/tepiha',
+                'mbulesa'      => '/mbulesa',
+                'batanije'     => '/batanije',
+                'postava'      => '/postava',
+                'garnishte'    => '/garnishte',
+                default        => null,
+            };
+
+            if ($ctxRoute) {
+                return redirect($this->withQ($ctxRoute, $raw));
             }
         }
 
