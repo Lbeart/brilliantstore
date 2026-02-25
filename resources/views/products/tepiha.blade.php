@@ -58,16 +58,19 @@
   <style>
     /* ============================================================
       B-BRILLANT — UI V2 (Premium)
-      - glass navbar, hover micro-interactions
-      - mobile offcanvas search (small)
-      - reveal-on-scroll animations
-      - better focus styles & accessibility
-      - performance-friendly animations + reduced motion support
+      FIXES (RESPONSIVE):
+      ✅ Navbar z-index fixed (modals/offcanvas now always above)
+      ✅ Mobile navbar width/transform fixed (no weird centering)
+      ✅ Body padding-top is auto based on navbar height (no overlap)
+      ✅ Product grid: 1 col on XS, 2 on SM, 3 on MD, 4 on LG
+      ✅ Dropdown/cart width fixed on mobile (no overflow)
+      ✅ Submenu works on resize (mobile ↔ desktop)
     ============================================================ */
 
     :root{
       --brand: #dc3545;
       --brand-2: #ff4d5f;
+
       --dark: #0b1220;
       --dark-2: #0f172a;
 
@@ -87,18 +90,19 @@
       --shadow-md: 0 12px 30px rgba(2,6,23,.10);
       --shadow-lg: 0 18px 42px rgba(2,6,23,.14);
 
-      --glass: rgba(17,24,39,.62);
-      --glass-2: rgba(2,6,23,.55);
-
       --ease: cubic-bezier(.2,.9,.2,1);
       --ease2: cubic-bezier(.2,.75,.25,1);
       --speed: .22s;
 
       --focus: 0 0 0 .22rem rgba(220,53,69,.22);
+
+      /* default fallback; JS updates this dynamically */
+      --nav-offset: 104px;
     }
 
     *{ box-sizing: border-box; }
     html{ scroll-behavior: smooth; }
+
     body{
       background:
         radial-gradient(900px 400px at 20% 0%, rgba(220,53,69,.12) 0%, rgba(220,53,69,0) 60%),
@@ -106,14 +110,18 @@
         linear-gradient(180deg, #fbfbff 0%, #f6f7fb 40%, #f3f4f6 100%);
       color: var(--text);
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-      padding-top: 104px;
+      padding-top: var(--nav-offset);
       overflow-x: hidden;
     }
 
     /* reduced motion */
     @media (prefers-reduced-motion: reduce){
       html{ scroll-behavior: auto; }
-      *, *::before, *::after{ animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+      *, *::before, *::after{
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
     }
 
     /* Skip to content */
@@ -128,7 +136,12 @@
       box-shadow: var(--shadow-sm);
       z-index: 2000;
     }
-    .skip-link:focus{ left: 10px; top: 10px; outline: none; box-shadow: var(--focus), var(--shadow-sm); }
+    .skip-link:focus{
+      left: 10px;
+      top: 10px;
+      outline: none;
+      box-shadow: var(--focus), var(--shadow-sm);
+    }
 
     /* Top progress bar */
     .top-progress{
@@ -137,13 +150,13 @@
       height: 3px;
       width: 0%;
       background: linear-gradient(90deg, var(--brand), #f59e0b, #22c55e);
-      z-index: 3000;
+      z-index: 1031; /* above navbar */
       box-shadow: 0 8px 18px rgba(220,53,69,.25);
     }
 
-    /* ===========================
+    /* =========================================
       NAVBAR (GLASS + ANIMATIONS)
-    =========================== */
+    ========================================= */
     .navbar-custom{
       position: fixed;
       top: 14px;
@@ -152,7 +165,9 @@
       width: min(1180px, 94%);
       border-radius: var(--radius-xl);
       padding: .6rem .85rem;
-      z-index: 1500;
+
+      /* IMPORTANT: keep below bootstrap overlays */
+      z-index: 1030;
 
       background:
         linear-gradient(135deg, rgba(2,6,23,.78) 0%, rgba(17,24,39,.74) 50%, rgba(15,23,42,.70) 100%);
@@ -247,6 +262,7 @@
       transform-origin: top;
       animation: pop .20s var(--ease2);
     }
+
     @keyframes pop{
       from{ opacity: 0; transform: translateY(8px) scale(.98); }
       to{ opacity: 1; transform: translateY(0) scale(1); }
@@ -257,6 +273,7 @@
       font-size: .92rem;
       padding: .55rem .7rem;
       transition: background var(--speed) var(--ease), transform var(--speed) var(--ease);
+      white-space: nowrap;
     }
     .dropdown-item:hover{
       background: rgba(15,23,42,.06);
@@ -268,50 +285,6 @@
       top: 0;
       left: 100%;
       margin-left: .35rem;
-    }
-
-    /* Mobile behavior */
-    @media (max-width: 991.98px){
-      body{ padding-top: 92px; }
-      .navbar-custom{ padding: .55rem .75rem; top: 10px; }
-      .navbar-brand img{ height: 40px; }
-
-      .navbar-custom .dropdown-menu{
-        background: rgba(2,6,23,.88);
-        border: 1px solid rgba(255,255,255,.10);
-        box-shadow: none;
-      }
-
-      .navbar-custom .dropdown-item{
-        color: rgba(229,231,235,.95);
-      }
-      .navbar-custom .dropdown-item:hover{
-        background: rgba(255,255,255,.06);
-        color: #fff;
-      }
-
-      /* Submenu mobile: hidden by default, opens on click (fixed) */
-      .dropdown-submenu > .dropdown-menu{
-        position: static;
-        display: none;
-        margin: .25rem 0 .25rem .6rem;
-        background: transparent;
-        border: 0;
-        padding: .25rem 0 0;
-        box-shadow: none;
-      }
-      .dropdown-submenu.open > .dropdown-menu{ display: block; }
-
-      .submenu-toggle{
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: .6rem;
-      }
-      .submenu-toggle i.chev{
-        transition: transform var(--speed) var(--ease);
-      }
-      .dropdown-submenu.open .submenu-toggle i.chev{ transform: rotate(180deg); }
     }
 
     /* ===========================
@@ -327,6 +300,7 @@
       transform: translateY(-1px);
       box-shadow: 0 12px 26px rgba(0,0,0,.18);
     }
+
     .nav-icon-btn{
       width: 40px;
       height: 40px;
@@ -342,9 +316,95 @@
     .nav-icon-btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
     .nav-icon-btn:focus-visible{ box-shadow: var(--focus); }
 
-    /* ===========================
+    /* =========================================
+      MOBILE NAVBAR FIX (IMPORTANT)
+      - remove translate centering
+      - make dropdowns full width (no overflow)
+      - fix cart dropdown width (no min-width issues)
+    ========================================= */
+    @media (max-width: 991.98px){
+      .navbar-custom{
+        left: 8px;
+        right: 8px;
+        width: auto;
+        transform: none;
+        top: 10px;
+        padding: .55rem .75rem;
+        border-radius: 18px;
+      }
+
+      .navbar-brand img{ height: 40px; }
+
+      /* collapsed menu container */
+      .navbar-custom .navbar-collapse{
+        margin-top: .65rem;
+        padding: .65rem;
+        border-radius: 16px;
+        background: rgba(2,6,23,.88);
+        border: 1px solid rgba(255,255,255,.10);
+      }
+
+      .navbar-custom .nav-link{
+        padding: .7rem .75rem;
+        border-radius: 14px;
+      }
+
+      /* Make dropdowns not popper-absolute in collapsed nav */
+      .navbar-custom .dropdown-menu,
+      .navbar-custom .dropdown-menu[data-bs-popper]{
+        position: static !important;
+        transform: none !important;
+        float: none !important;
+        width: 100%;
+        margin-top: .35rem;
+        background: transparent;
+        border: 0;
+        padding: .25rem 0 0;
+        box-shadow: none;
+      }
+
+      .navbar-custom .dropdown-item{
+        color: rgba(229,231,235,.95);
+        padding: .65rem .75rem;
+        border-radius: 12px;
+        white-space: normal;
+      }
+      .navbar-custom .dropdown-item:hover{
+        background: rgba(255,255,255,.06);
+        color: #fff;
+      }
+
+      /* Submenu mobile: hidden by default, opens on click */
+      .dropdown-submenu > .dropdown-menu{
+        display: none;
+        margin: .25rem 0 .25rem .6rem;
+        padding: .25rem 0 0;
+      }
+      .dropdown-submenu.open > .dropdown-menu{ display: block; }
+
+      .submenu-toggle{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .6rem;
+      }
+      .submenu-toggle i.chev{
+        transition: transform var(--speed) var(--ease);
+      }
+      .dropdown-submenu.open .submenu-toggle i.chev{
+        transform: rotate(180deg);
+      }
+
+      /* Cart dropdown menu: avoid overflow on small screens */
+      #cartDropdown + .dropdown-menu{
+        min-width: auto !important;
+        width: 100% !important;
+      }
+    }
+
+    /* =========================================
       HEADER
-    =========================== */
+    ========================================= */
     .page-header{
       text-align: center;
       margin-top: 18px;
@@ -364,18 +424,16 @@
       color: var(--muted);
       font-size: .98rem;
       margin-top: .35rem;
+      padding: 0 .75rem;
     }
 
-    /* ===========================
-      SEARCH (better UX)
-      - Desktop: inline "search-card"
-      - Mobile: tiny button -> offcanvas search
-    =========================== */
+    /* =========================================
+      SEARCH
+    ========================================= */
     .search-shell{
       width: min(980px, 92%);
       margin: 0 auto 12px;
     }
-
     .search-card{
       background: rgba(255,255,255,.92);
       border: 1px solid rgba(15,23,42,.08);
@@ -389,7 +447,6 @@
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
-
     .search-meta{
       display: flex;
       align-items: center;
@@ -451,13 +508,13 @@
         border-radius: 18px;
         padding: .5rem .55rem;
       }
-      .search-meta{ display: none; } /* e bën ma clean në telefon */
+      .search-meta{ display: none; }
       .search-input{
         font-size: .88rem;
         padding: .52rem .85rem;
       }
       .search-btn{ padding: .5rem .7rem; }
-      .search-btn span{ display: none; } /* only icon on very small screens */
+      .search-btn span{ display: none; }
     }
 
     /* Offcanvas search for mobile */
@@ -468,9 +525,9 @@
       border-bottom: 1px solid rgba(15,23,42,.08);
     }
 
-    /* ===========================
-      FILTER / INFO BAR
-    =========================== */
+    /* =========================================
+      FILTER BAR
+    ========================================= */
     .filter-bar{
       display: flex;
       flex-wrap: wrap;
@@ -518,9 +575,9 @@
     }
     .sort-select:focus{ box-shadow: var(--focus); border-color: rgba(220,53,69,.40); }
 
-    /* ===========================
+    /* =========================================
       PRODUCT GRID
-    =========================== */
+    ========================================= */
     .product-card{
       position: relative;
       border: 1px solid rgba(15,23,42,.06);
@@ -599,7 +656,6 @@
     .bf-label span{ font-weight: 900; }
     .bf-label small{ opacity: .95; font-weight: 800; letter-spacing: .08em; }
 
-    /* animated pulse for discount */
     .bf-label.is-discount{
       animation: pulse 2.2s var(--ease) infinite;
     }
@@ -634,6 +690,7 @@
       font-weight: 900;
       color: #111827;
       margin-bottom: .12rem;
+
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -646,7 +703,6 @@
       min-height: 1.2em;
     }
 
-    /* rating + shipping row (nice micro details) */
     .meta-row{
       display: flex;
       align-items: center;
@@ -655,6 +711,7 @@
       margin: .15rem 0 .55rem;
       flex-wrap: wrap;
     }
+
     .rating-pill, .ship-pill{
       display: inline-flex;
       align-items: center;
@@ -692,7 +749,7 @@
       color: #6b7280;
     }
 
-    /* quick actions (pure UI; no routes required) */
+    /* quick actions */
     .quick-actions{
       position: absolute;
       top: 10px;
@@ -704,12 +761,13 @@
       opacity: 0;
       transform: translateY(-4px);
       transition: opacity .22s var(--ease), transform .22s var(--ease);
-      pointer-events: none; /* avoids blocking stretched-link */
+      pointer-events: none;
     }
     .product-card:hover .quick-actions{
       opacity: 1;
       transform: translateY(0);
     }
+
     .qa-btn{
       width: 38px;
       height: 38px;
@@ -731,7 +789,7 @@
     .qa-btn i{ color: rgba(15,23,42,.86); }
     .qa-btn:hover i{ color: var(--brand); }
 
-    /* make stretched-link behave */
+    /* stretched link */
     .stretched-link{ position: absolute; inset: 0; z-index: 2; }
 
     /* reveal animation */
@@ -746,6 +804,20 @@
       transform: translateY(0);
     }
 
+    /* XS: make cards cleaner */
+    @media (max-width: 575.98px){
+      .product-body{ padding: .75rem .85rem .85rem; }
+      .product-desc, .meta-row{ display: none; }
+
+      .product-title{
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    }
+
     /* EMPTY STATE */
     .empty{
       background: rgba(255,255,255,.92);
@@ -756,9 +828,9 @@
       color: var(--muted);
     }
 
-    /* ===========================
+    /* =========================================
       PAGINATION
-    =========================== */
+    ========================================= */
     .pagination-container{
       margin-top: 1.9rem;
       display: flex;
@@ -812,9 +884,9 @@
       .page-indicator{ display: none; }
     }
 
-    /* ===========================
-      SEO TEXT SECTION
-    =========================== */
+    /* =========================================
+      SEO TEXT
+    ========================================= */
     .seo-text{
       font-size: .98rem;
       line-height: 1.75;
@@ -827,14 +899,14 @@
       margin-bottom: .8rem;
     }
 
-    /* ===========================
-      FLOATING UI (back to top)
-    =========================== */
+    /* =========================================
+      FLOATING UI
+    ========================================= */
     .fab{
       position: fixed;
       right: 16px;
       bottom: 18px;
-      z-index: 2500;
+      z-index: 1040;
       display: flex;
       flex-direction: column;
       gap: .6rem;
@@ -862,6 +934,11 @@
     .fab .fab-btn:hover{ transform: translateY(-1px); }
     .fab .fab-btn:focus-visible{ box-shadow: var(--focus), var(--shadow-md); outline: none; }
 
+    /* overlays MUST be above navbar */
+    .offcanvas, .offcanvas-backdrop{ z-index: 2600; }
+    .modal{ z-index: 2700; }
+    .modal-backdrop{ z-index: 2690; }
+
     /* subtle custom scrollbar (desktop) */
     @media (min-width: 992px){
       ::-webkit-scrollbar{ width: 10px; }
@@ -888,11 +965,22 @@
 
       <div class="d-flex align-items-center gap-2 ms-auto">
         <!-- tiny mobile search button -->
-        <button class="nav-icon-btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#searchOffcanvas" aria-controls="searchOffcanvas" aria-label="Hap kërkimin">
+        <button
+          class="nav-icon-btn d-lg-none"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#searchOffcanvas"
+          aria-controls="searchOffcanvas"
+          aria-label="Hap kërkimin">
           <i class="bi bi-search"></i>
         </button>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-label="Toggle navigation">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#nav"
+          aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
       </div>
@@ -905,7 +993,13 @@
           </li>
 
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button" aria-expanded="false" data-nav="products">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              data-bs-toggle="dropdown"
+              role="button"
+              aria-expanded="false"
+              data-nav="products">
               Products
             </a>
 
@@ -942,11 +1036,17 @@
 
           @auth
             <li class="nav-item dropdown ms-lg-2">
-              <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
-                 href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <a
+                class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+                href="#"
+                id="userDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
                 <i class="bi bi-person-circle"></i>
                 <span class="user-name">{{ Auth::user()->name }}</span>
               </a>
+
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 @if(auth()->user()->role === 'admin')
                   <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Admin</a></li>
@@ -968,27 +1068,40 @@
 
           <!-- Shporta + Gjurmo porosinë -->
           <li class="nav-item dropdown ms-lg-2">
-            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
-               href="#" id="cartDropdown" role="button"
-               data-bs-toggle="dropdown" aria-expanded="false">
+            <a
+              class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+              href="#"
+              id="cartDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
               <i class="bi bi-bag"></i> Shporta
               <span class="badge bg-danger rounded-pill ms-1 cart-badge">
                 {{ session('cart_total_qty', 0) }}
               </span>
             </a>
 
-            <div class="dropdown-menu dropdown-menu-end p-3 shadow" aria-labelledby="cartDropdown" style="min-width: 320px; border-radius: 16px;">
+            <div
+              class="dropdown-menu dropdown-menu-end p-3 shadow"
+              aria-labelledby="cartDropdown"
+              style="min-width: 320px; border-radius: 16px;">
               <div class="small text-muted mb-2">Gjurmo porosinë</div>
 
-              <form class="d-flex align-items-stretch gap-2"
-                    onsubmit="event.preventDefault();
-                              const el=this.querySelector('#trackCodeNav');
-                              const v=(el?.value||'').trim();
-                              if(v){ window.location='{{ url('/track') }}/'+encodeURIComponent(v); }">
+              <form
+                class="d-flex align-items-stretch gap-2"
+                onsubmit="event.preventDefault();
+                          const el=this.querySelector('#trackCodeNav');
+                          const v=(el?.value||'').trim();
+                          if(v){ window.location='{{ url('/track') }}/'+encodeURIComponent(v); }">
                 <div class="input-group input-group-sm">
                   <span class="input-group-text"><i class="bi bi-search"></i></span>
-                  <input id="trackCodeNav" type="text" class="form-control"
-                         placeholder="p.sh. BRL-LKNJ-0YXN" autocomplete="off" required>
+                  <input
+                    id="trackCodeNav"
+                    type="text"
+                    class="form-control"
+                    placeholder="p.sh. BRL-LKNJ-0YXN"
+                    autocomplete="off"
+                    required>
                   <button class="btn btn-danger" type="submit">Gjurmo</button>
                 </div>
               </form>
@@ -1088,9 +1201,12 @@
           <option>Rendit sipas: Koleksionit</option>
         </select>
 
-        <!-- small hint button -->
-        <button type="button" class="btn btn-light btn-sm" style="border-radius:999px; font-weight:900;"
-                data-bs-toggle="modal" data-bs-target="#tipsModal">
+        <button
+          type="button"
+          class="btn btn-light btn-sm"
+          style="border-radius:999px; font-weight:900;"
+          data-bs-toggle="modal"
+          data-bs-target="#tipsModal">
           <i class="bi bi-lightbulb"></i>
           Këshilla
         </button>
@@ -1131,8 +1247,8 @@
       </div>
     @endif
 
-    <!-- Lista e produkteve -->
-    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 g-md-4">
+    <!-- Lista e produkteve (RESPONSIVE GRID FIX) -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 g-md-4">
       @foreach($products as $product)
         @php
           $price = $product->price;
@@ -1172,16 +1288,30 @@
 
               <!-- Quick actions -->
               <div class="quick-actions" aria-hidden="false">
-                <button class="qa-btn" type="button" title="Shto në të preferuara" aria-label="Shto në të preferuara"
-                        onclick="event.stopPropagation(); toast('U shtua në të preferuara (UI)!');">
+                <button
+                  class="qa-btn"
+                  type="button"
+                  title="Shto në të preferuara"
+                  aria-label="Shto në të preferuara"
+                  onclick="event.stopPropagation(); toast('U shtua në të preferuara (UI)!');">
                   <i class="bi bi-heart"></i>
                 </button>
-                <button class="qa-btn" type="button" title="Shpërndaje" aria-label="Shpërndaje"
-                        onclick="event.stopPropagation(); shareProduct('{{ route('products.show', $product->slug) }}','{{ $product->name }}');">
+
+                <button
+                  class="qa-btn"
+                  type="button"
+                  title="Shpërndaje"
+                  aria-label="Shpërndaje"
+                  onclick="event.stopPropagation(); shareProduct('{{ route('products.show', $product->slug) }}','{{ $product->name }}');">
                   <i class="bi bi-share"></i>
                 </button>
-                <button class="qa-btn" type="button" title="Kopjo linkun" aria-label="Kopjo linkun"
-                        onclick="event.stopPropagation(); copyLink('{{ route('products.show', $product->slug) }}');">
+
+                <button
+                  class="qa-btn"
+                  type="button"
+                  title="Kopjo linkun"
+                  aria-label="Kopjo linkun"
+                  onclick="event.stopPropagation(); copyLink('{{ route('products.show', $product->slug) }}');">
                   <i class="bi bi-link-45deg"></i>
                 </button>
               </div>
@@ -1220,7 +1350,8 @@
 
               <div class="meta-row" aria-hidden="true">
                 <span class="rating-pill">
-                  <i class="bi bi-star-fill"></i> {{ number_format($rating, 1) }} <span style="opacity:.75;">({{ $reviews }})</span>
+                  <i class="bi bi-star-fill"></i> {{ number_format($rating, 1) }}
+                  <span style="opacity:.75;">({{ $reviews }})</span>
                 </span>
                 <span class="ship-pill">
                   <i class="bi bi-truck"></i> Dërgesë e shpejtë
@@ -1248,7 +1379,7 @@
       @endforeach
     </div>
 
-    <!-- PAGINATION (keeps query string) -->
+    <!-- PAGINATION -->
     @if($products instanceof \Illuminate\Contracts\Pagination\Paginator || $products instanceof \Illuminate\Pagination\LengthAwarePaginator)
       @if($products->hasPages())
         <div class="pagination-container">
@@ -1259,28 +1390,27 @@
                 $nextUrl = method_exists($products, 'appends') ? $products->appends(request()->query())->nextPageUrl() : $products->nextPageUrl();
               @endphp
 
-              <!-- Previous -->
               <li class="page-item {{ $products->onFirstPage() ? 'disabled' : '' }}">
-                <a class="page-link page-pill"
-                   href="{{ $prevUrl ?? '#' }}"
-                   @if($products->onFirstPage()) tabindex="-1" aria-disabled="true" @endif>
+                <a
+                  class="page-link page-pill"
+                  href="{{ $prevUrl ?? '#' }}"
+                  @if($products->onFirstPage()) tabindex="-1" aria-disabled="true" @endif>
                   <i class="bi bi-chevron-left me-1"></i>
                   Faqja paraprake
                 </a>
               </li>
 
-              <!-- Current page info (fshehet në mobile) -->
               <li class="page-item disabled d-none d-sm-block">
                 <span class="page-link page-indicator">
                   Faqja {{ $products->currentPage() }} nga {{ $products->lastPage() }}
                 </span>
               </li>
 
-              <!-- Next -->
               <li class="page-item {{ $products->hasMorePages() ? '' : 'disabled' }}">
-                <a class="page-link page-pill"
-                   href="{{ $nextUrl ?? '#' }}"
-                   @unless($products->hasMorePages()) tabindex="-1" aria-disabled="true" @endunless>
+                <a
+                  class="page-link page-pill"
+                  href="{{ $nextUrl ?? '#' }}"
+                  @unless($products->hasMorePages()) tabindex="-1" aria-disabled="true" @endunless>
                   Faqja tjetër
                   <i class="bi bi-chevron-right ms-1"></i>
                 </a>
@@ -1368,6 +1498,25 @@
     }
 
     /* ===========================
+      Auto body offset based on navbar height
+      (fix overlap on mobile/desktop)
+    =========================== */
+    (function () {
+      const nav = document.querySelector('.navbar-custom');
+      if (!nav) return;
+
+      const setOffset = () => {
+        const h = Math.ceil(nav.getBoundingClientRect().height);
+        const offset = h + 34; // buffer for top spacing
+        document.documentElement.style.setProperty('--nav-offset', offset + 'px');
+      };
+
+      window.addEventListener('resize', setOffset, { passive: true });
+      window.addEventListener('load', setOffset);
+      setOffset();
+    })();
+
+    /* ===========================
       Nav active link (simple)
     =========================== */
     (function(){
@@ -1386,52 +1535,57 @@
 
     /* ===========================
       Submenu: desktop hover + mobile click
+      (works correctly on resize)
     =========================== */
     (function(){
-      const isDesktop = window.matchMedia('(min-width: 992px)').matches;
+      const mq = window.matchMedia('(min-width: 992px)');
 
       document.querySelectorAll('.dropdown-submenu').forEach((item) => {
         const toggle = item.querySelector('.submenu-toggle');
         const menu = item.querySelector('.dropdown-menu');
-
         if(!toggle || !menu) return;
 
-        // MOBILE: click to open/close
-        if(!isDesktop){
-          toggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const open = item.classList.toggle('open');
-            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-          });
+        // MOBILE click toggle
+        toggle.addEventListener('click', (e) => {
+          if(mq.matches) return; // desktop ignore click behavior
+          e.preventDefault();
+          e.stopPropagation();
+          const open = item.classList.toggle('open');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
 
-          // close submenu when main dropdown closes
-          const parentDropdown = item.closest('.dropdown');
-          if(parentDropdown){
-            parentDropdown.addEventListener('hide.bs.dropdown', () => {
-              item.classList.remove('open');
-              toggle.setAttribute('aria-expanded', 'false');
-            });
-          }
+        // DESKTOP hover
+        let enterTimer = null;
+        let leaveTimer = null;
+
+        item.addEventListener('mouseenter', () => {
+          if(!mq.matches) return;
+          clearTimeout(leaveTimer);
+          enterTimer = setTimeout(() => menu.classList.add('show'), 70);
+        });
+
+        item.addEventListener('mouseleave', () => {
+          if(!mq.matches) return;
+          clearTimeout(enterTimer);
+          leaveTimer = setTimeout(() => menu.classList.remove('show'), 110);
+        });
+
+        // close submenu when main dropdown closes
+        const parentDropdown = item.closest('.dropdown');
+        if(parentDropdown){
+          parentDropdown.addEventListener('hide.bs.dropdown', () => {
+            item.classList.remove('open');
+            menu.classList.remove('show');
+            toggle.setAttribute('aria-expanded', 'false');
+          });
         }
 
-        // DESKTOP: open submenu on hover (smooth)
-        if(isDesktop){
-          let enterTimer = null;
-          let leaveTimer = null;
-
-          item.addEventListener('mouseenter', () => {
-            clearTimeout(leaveTimer);
-            enterTimer = setTimeout(() => {
-              menu.classList.add('show');
-            }, 80);
-          });
-
-          item.addEventListener('mouseleave', () => {
-            clearTimeout(enterTimer);
-            leaveTimer = setTimeout(() => {
-              menu.classList.remove('show');
-            }, 120);
+        // reset on breakpoint change
+        if(mq.addEventListener){
+          mq.addEventListener('change', () => {
+            item.classList.remove('open');
+            menu.classList.remove('show');
+            toggle.setAttribute('aria-expanded', 'false');
           });
         }
       });
@@ -1486,7 +1640,7 @@
     })();
 
     /* ===========================
-      Cart badge updater (same)
+      Cart badge updater
     =========================== */
     window.updateCartBadges = function(totalQty){
       document.querySelectorAll('.cart-badge').forEach(b => b.textContent = totalQty);
@@ -1496,6 +1650,25 @@
         updateCartBadges(e.detail.totalQty);
       }
     });
+
+    /* ===========================
+      OPTIONAL: close navbar collapse on click (mobile UX)
+    =========================== */
+    (function(){
+      const navCollapse = document.getElementById('nav');
+      if(!navCollapse) return;
+
+      navCollapse.addEventListener('click', (e) => {
+        const a = e.target.closest('a');
+        if(!a) return;
+        // only close on mobile when navbar is expanded
+        const isShown = navCollapse.classList.contains('show');
+        if(isShown){
+          const bsCollapse = bootstrap.Collapse.getOrCreateInstance(navCollapse, { toggle: false });
+          bsCollapse.hide();
+        }
+      });
+    })();
   </script>
 </body>
 </html>
