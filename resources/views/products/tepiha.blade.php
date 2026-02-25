@@ -1594,21 +1594,31 @@
     /* ===========================
       OPTIONAL: close navbar collapse on click (mobile UX)
     =========================== */
-    (function(){
-      const navCollapse = document.getElementById('nav');
-      if(!navCollapse) return;
+   (function(){
+  const navCollapse = document.getElementById('nav');
+  if(!navCollapse) return;
 
-      navCollapse.addEventListener('click', (e) => {
-        const a = e.target.closest('a');
-        if(!a) return;
-        // only close on mobile when navbar is expanded
-        const isShown = navCollapse.classList.contains('show');
-        if(isShown){
-          const bsCollapse = bootstrap.Collapse.getOrCreateInstance(navCollapse, { toggle: false });
-          bsCollapse.hide();
-        }
-      });
-    })();
+  navCollapse.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if(!a) return;
+
+    // ✅ Mos e mbyll kur klikon dropdown toggle (p.sh. Products)
+    if (a.classList.contains('dropdown-toggle')) return;
+
+    // ✅ Mos e mbyll kur klikon brenda dropdown menus (opsionale)
+    // (nëse don me e mbyll kur zgjedh item, hiqe këtë rresht)
+    if (a.closest('.dropdown-menu')) return;
+
+    // Mos mbyll për href="#"
+    const href = (a.getAttribute('href') || '').trim();
+    if (!href || href === '#') return;
+
+    if (navCollapse.classList.contains('show')) {
+      const bsCollapse = bootstrap.Collapse.getOrCreateInstance(navCollapse, { toggle: false });
+      bsCollapse.hide();
+    }
+  });
+})();
   </script>
 </body>
 </html>
