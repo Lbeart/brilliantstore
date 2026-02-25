@@ -56,17 +56,6 @@
   <link rel="icon" type="image/png" href="{{ asset('images/llogo.png') }}">
 
   <style>
-    /* ============================================================
-      B-BRILLANT — UI V2 (Premium)
-      FIXES (RESPONSIVE):
-      ✅ Navbar z-index fixed (modals/offcanvas now always above)
-      ✅ Mobile navbar width/transform fixed (no weird centering)
-      ✅ Body padding-top is auto based on navbar height (no overlap)
-      ✅ Product grid: 1 col on XS, 2 on SM, 3 on MD, 4 on LG
-      ✅ Dropdown/cart width fixed on mobile (no overflow)
-      ✅ Submenu works on resize (mobile ↔ desktop)
-    ============================================================ */
-
     :root{
       --brand: #dc3545;
       --brand-2: #ff4d5f;
@@ -114,7 +103,6 @@
       overflow-x: hidden;
     }
 
-    /* reduced motion */
     @media (prefers-reduced-motion: reduce){
       html{ scroll-behavior: auto; }
       *, *::before, *::after{
@@ -124,7 +112,6 @@
       }
     }
 
-    /* Skip to content */
     .skip-link{
       position: absolute;
       left: -999px;
@@ -143,20 +130,16 @@
       box-shadow: var(--focus), var(--shadow-sm);
     }
 
-    /* Top progress bar */
     .top-progress{
       position: fixed;
       top: 0; left: 0;
       height: 3px;
       width: 0%;
       background: linear-gradient(90deg, var(--brand), #f59e0b, #22c55e);
-      z-index: 1031; /* above navbar */
+      z-index: 1031;
       box-shadow: 0 8px 18px rgba(220,53,69,.25);
     }
 
-    /* =========================================
-      NAVBAR (GLASS + ANIMATIONS)
-    ========================================= */
     .navbar-custom{
       position: fixed;
       top: 14px;
@@ -165,8 +148,6 @@
       width: min(1180px, 94%);
       border-radius: var(--radius-xl);
       padding: .6rem .85rem;
-
-      /* IMPORTANT: keep below bootstrap overlays */
       z-index: 1030;
 
       background:
@@ -205,7 +186,6 @@
       outline: none;
     }
 
-    /* underline animation */
     .navbar-custom .nav-link::after{
       content:"";
       position:absolute;
@@ -250,7 +230,6 @@
       background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.92)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
     }
 
-    /* Dropdown menu (desktop) */
     .dropdown-menu{
       border: 1px solid rgba(15,23,42,.08);
       border-radius: 16px;
@@ -287,9 +266,6 @@
       margin-left: .35rem;
     }
 
-    /* ===========================
-      NAV ACTIONS (buttons)
-    =========================== */
     .nav-btn{
       border-radius: 999px;
       padding: .38rem .75rem;
@@ -316,12 +292,6 @@
     .nav-icon-btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
     .nav-icon-btn:focus-visible{ box-shadow: var(--focus); }
 
-    /* =========================================
-      MOBILE NAVBAR FIX (IMPORTANT)
-      - remove translate centering
-      - make dropdowns full width (no overflow)
-      - fix cart dropdown width (no min-width issues)
-    ========================================= */
     @media (max-width: 991.98px){
       .navbar-custom{
         left: 8px;
@@ -335,7 +305,6 @@
 
       .navbar-brand img{ height: 40px; }
 
-      /* collapsed menu container */
       .navbar-custom .navbar-collapse{
         margin-top: .65rem;
         padding: .65rem;
@@ -349,7 +318,6 @@
         border-radius: 14px;
       }
 
-      /* Make dropdowns not popper-absolute in collapsed nav */
       .navbar-custom .dropdown-menu,
       .navbar-custom .dropdown-menu[data-bs-popper]{
         position: static !important;
@@ -374,7 +342,6 @@
         color: #fff;
       }
 
-      /* Submenu mobile: hidden by default, opens on click */
       .dropdown-submenu > .dropdown-menu{
         display: none;
         margin: .25rem 0 .25rem .6rem;
@@ -395,16 +362,12 @@
         transform: rotate(180deg);
       }
 
-      /* Cart dropdown menu: avoid overflow on small screens */
       #cartDropdown + .dropdown-menu{
         min-width: auto !important;
         width: 100% !important;
       }
     }
 
-    /* =========================================
-      HEADER
-    ========================================= */
     .page-header{
       text-align: center;
       margin-top: 18px;
@@ -427,9 +390,7 @@
       padding: 0 .75rem;
     }
 
-    /* =========================================
-      SEARCH
-    ========================================= */
+    /* SEARCH */
     .search-shell{
       width: min(980px, 92%);
       margin: 0 auto 12px;
@@ -517,7 +478,6 @@
       .search-btn span{ display: none; }
     }
 
-    /* Offcanvas search for mobile */
     .offcanvas-search{
       border-radius: 18px 18px 0 0;
     }
@@ -525,59 +485,7 @@
       border-bottom: 1px solid rgba(15,23,42,.08);
     }
 
-    /* =========================================
-      FILTER BAR
-    ========================================= */
-    .filter-bar{
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: .75rem;
-      margin-bottom: 1.15rem;
-    }
-    .filter-bar-left{
-      font-size: .88rem;
-      color: rgba(75,85,99,1);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: .4rem;
-    }
-
-    .filter-chip{
-      display: inline-flex;
-      align-items: center;
-      gap: .35rem;
-      padding: .28rem .7rem;
-      border-radius: 999px;
-      background: rgba(255,255,255,.92);
-      border: 1px solid rgba(15,23,42,.08);
-      font-size: .82rem;
-      color: #374151;
-      box-shadow: 0 1px 3px rgba(0,0,0,.05);
-      transition: transform var(--speed) var(--ease), box-shadow var(--speed) var(--ease);
-      user-select: none;
-    }
-    .filter-chip:hover{
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .sort-select{
-      font-size: .84rem;
-      padding: .4rem .85rem;
-      border-radius: 999px;
-      border: 1px solid rgba(15,23,42,.12);
-      background: rgba(255,255,255,.92);
-      color: #374151;
-      outline: none;
-    }
-    .sort-select:focus{ box-shadow: var(--focus); border-color: rgba(220,53,69,.40); }
-
-    /* =========================================
-      PRODUCT GRID
-    ========================================= */
+    /* PRODUCT GRID */
     .product-card{
       position: relative;
       border: 1px solid rgba(15,23,42,.06);
@@ -598,7 +506,6 @@
       border-color: rgba(220,53,69,.18);
     }
 
-    /* subtle shine on hover */
     .product-card::before{
       content:"";
       position:absolute;
@@ -690,7 +597,6 @@
       font-weight: 900;
       color: #111827;
       margin-bottom: .12rem;
-
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -749,7 +655,6 @@
       color: #6b7280;
     }
 
-    /* quick actions */
     .quick-actions{
       position: absolute;
       top: 10px;
@@ -789,10 +694,8 @@
     .qa-btn i{ color: rgba(15,23,42,.86); }
     .qa-btn:hover i{ color: var(--brand); }
 
-    /* stretched link */
     .stretched-link{ position: absolute; inset: 0; z-index: 2; }
 
-    /* reveal animation */
     .reveal{
       opacity: 0;
       transform: translateY(14px);
@@ -804,7 +707,6 @@
       transform: translateY(0);
     }
 
-    /* XS: make cards cleaner */
     @media (max-width: 575.98px){
       .product-body{ padding: .75rem .85rem .85rem; }
       .product-desc, .meta-row{ display: none; }
@@ -818,7 +720,6 @@
       }
     }
 
-    /* EMPTY STATE */
     .empty{
       background: rgba(255,255,255,.92);
       border: 1px solid rgba(15,23,42,.08);
@@ -828,9 +729,6 @@
       color: var(--muted);
     }
 
-    /* =========================================
-      PAGINATION
-    ========================================= */
     .pagination-container{
       margin-top: 1.9rem;
       display: flex;
@@ -884,9 +782,6 @@
       .page-indicator{ display: none; }
     }
 
-    /* =========================================
-      SEO TEXT
-    ========================================= */
     .seo-text{
       font-size: .98rem;
       line-height: 1.75;
@@ -899,9 +794,6 @@
       margin-bottom: .8rem;
     }
 
-    /* =========================================
-      FLOATING UI
-    ========================================= */
     .fab{
       position: fixed;
       right: 16px;
@@ -934,12 +826,10 @@
     .fab .fab-btn:hover{ transform: translateY(-1px); }
     .fab .fab-btn:focus-visible{ box-shadow: var(--focus), var(--shadow-md); outline: none; }
 
-    /* overlays MUST be above navbar */
     .offcanvas, .offcanvas-backdrop{ z-index: 2600; }
     .modal{ z-index: 2700; }
     .modal-backdrop{ z-index: 2690; }
 
-    /* subtle custom scrollbar (desktop) */
     @media (min-width: 992px){
       ::-webkit-scrollbar{ width: 10px; }
       ::-webkit-scrollbar-thumb{
@@ -1136,8 +1026,9 @@
           class="form-control"
           placeholder="Kërko brenda tepihave..."
           style="border-radius:999px; padding:.65rem .9rem;"
+          autocomplete="off"
         >
-        <button class="btn btn-danger" style="border-radius:999px; font-weight:900;">
+        <button class="btn btn-danger" type="submit" style="border-radius:999px; font-weight:900;">
           <i class="bi bi-search"></i>
         </button>
       </form>
@@ -1151,8 +1042,8 @@
     <div class="page-sub">Tepiha modern & klasik me zbritje sezonale. Modele për sallon, dhomë gjumi dhe çdo ambient.</div>
   </header>
 
-  <!-- Desktop Search Card -->
-  <div class="search-shell d-none d-lg-block">
+  <!-- ✅ SEARCH CARD tani shfaqet edhe në telefon (jo vetëm desktop) -->
+  <div class="search-shell">
     <div class="search-card">
       <div class="search-meta">
         <i class="bi bi-stars"></i>
@@ -1166,6 +1057,7 @@
           value="{{ request('q') }}"
           class="form-control search-input"
           placeholder="Kërko brenda tepihave... p.sh. 150x230, modern, klasik"
+          autocomplete="off"
         >
         @if(request('q'))
           <a href="{{ url('/tepiha') }}" class="search-clear" aria-label="Pastro kërkimin">
@@ -1182,7 +1074,7 @@
   <main id="mainContent" class="container py-3 pb-5">
 
     <!-- Info / Filter bar -->
-    <section class="filter-bar">
+    <section class="filter-bar d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
       <div class="filter-bar-left">
         @php
           $totalProducts = ($products instanceof \Illuminate\Support\Collection) ? $products->count() : $products->total();
@@ -1247,8 +1139,9 @@
       </div>
     @endif
 
-    <!-- Lista e produkteve (RESPONSIVE GRID FIX) -->
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 g-md-4">
+    <!-- ✅ GRID FIX: 2 produkte në telefon (XS) -->
+    <!-- ✅ Height fix: col d-flex + article w-100 (mos me u duk njo ma posht) -->
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2 g-sm-3 g-md-4">
       @foreach($products as $product)
         @php
           $price = $product->price;
@@ -1257,7 +1150,6 @@
             ? round(100 - ($price / $oldPrice * 100))
             : null;
 
-          // ✅ FOTO (punon edhe kur image_path është JSON array)
           $src = asset('images/placeholder.jpg');
           if (!empty($product->image_path)) {
             $decoded = json_decode($product->image_path, true);
@@ -1277,16 +1169,14 @@
           preg_match('/\d{2,3}x\d{2,3}/', $product->name, $sizeMatch);
           $sizeLabel = $sizeMatch[0] ?? null;
 
-          // simple pseudo rating based on discount existence (just UI feel)
           $rating = $discountPercent ? 4.8 : 4.6;
           $reviews = $discountPercent ? 120 : 72;
         @endphp
 
-        <div class="col reveal">
-          <article class="product-card" data-product-card>
+        <div class="col reveal d-flex">
+          <article class="product-card w-100" data-product-card>
             <div class="product-thumb-wrap">
 
-              <!-- Quick actions -->
               <div class="quick-actions" aria-hidden="false">
                 <button
                   class="qa-btn"
@@ -1444,14 +1334,12 @@
     </div>
   </section>
 
-  <!-- Floating buttons -->
   <div class="fab" aria-hidden="false">
     <button class="fab-btn" id="backToTop" type="button" aria-label="Kthehu lart">
       <i class="bi bi-arrow-up"></i>
     </button>
   </div>
 
-  <!-- Toast container -->
   <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 3000;">
     <div id="uiToast" class="toast align-items-center text-bg-dark border-0" role="status" aria-live="polite" aria-atomic="true" style="border-radius:14px;">
       <div class="d-flex">
@@ -1461,12 +1349,8 @@
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    /* ===========================
-      Helpers: Toast, Copy, Share
-    =========================== */
     function toast(msg){
       const el = document.getElementById('uiToast');
       const body = document.getElementById('uiToastBody');
@@ -1492,22 +1376,17 @@
         }else{
           await copyLink(url);
         }
-      }catch(e){
-        // user cancelled or error
-      }
+      }catch(e){}
     }
 
-    /* ===========================
-      Auto body offset based on navbar height
-      (fix overlap on mobile/desktop)
-    =========================== */
+    /* ✅ navbar offset */
     (function () {
       const nav = document.querySelector('.navbar-custom');
       if (!nav) return;
 
       const setOffset = () => {
         const h = Math.ceil(nav.getBoundingClientRect().height);
-        const offset = h + 34; // buffer for top spacing
+        const offset = h + 34;
         document.documentElement.style.setProperty('--nav-offset', offset + 'px');
       };
 
@@ -1516,9 +1395,7 @@
       setOffset();
     })();
 
-    /* ===========================
-      Nav active link (simple)
-    =========================== */
+    /* ✅ active link */
     (function(){
       const path = (window.location.pathname || '').toLowerCase();
       document.querySelectorAll('.navbar-custom .nav-link').forEach(a => {
@@ -1533,10 +1410,7 @@
       }
     })();
 
-    /* ===========================
-      Submenu: desktop hover + mobile click
-      (works correctly on resize)
-    =========================== */
+    /* ✅ submenu */
     (function(){
       const mq = window.matchMedia('(min-width: 992px)');
 
@@ -1545,16 +1419,14 @@
         const menu = item.querySelector('.dropdown-menu');
         if(!toggle || !menu) return;
 
-        // MOBILE click toggle
         toggle.addEventListener('click', (e) => {
-          if(mq.matches) return; // desktop ignore click behavior
+          if(mq.matches) return;
           e.preventDefault();
           e.stopPropagation();
           const open = item.classList.toggle('open');
           toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         });
 
-        // DESKTOP hover
         let enterTimer = null;
         let leaveTimer = null;
 
@@ -1570,7 +1442,6 @@
           leaveTimer = setTimeout(() => menu.classList.remove('show'), 110);
         });
 
-        // close submenu when main dropdown closes
         const parentDropdown = item.closest('.dropdown');
         if(parentDropdown){
           parentDropdown.addEventListener('hide.bs.dropdown', () => {
@@ -1580,7 +1451,6 @@
           });
         }
 
-        // reset on breakpoint change
         if(mq.addEventListener){
           mq.addEventListener('change', () => {
             item.classList.remove('open');
@@ -1591,9 +1461,7 @@
       });
     })();
 
-    /* ===========================
-      Scroll reveal for cards
-    =========================== */
+    /* ✅ reveal */
     (function(){
       const els = document.querySelectorAll('.reveal');
       if(!('IntersectionObserver' in window) || !els.length){
@@ -1612,9 +1480,7 @@
       els.forEach(e => obs.observe(e));
     })();
 
-    /* ===========================
-      Back to top + progress bar
-    =========================== */
+    /* ✅ back to top + progress */
     (function(){
       const btn = document.getElementById('backToTop');
       const bar = document.getElementById('topProgress');
@@ -1639,9 +1505,6 @@
       }
     })();
 
-    /* ===========================
-      Cart badge updater
-    =========================== */
     window.updateCartBadges = function(totalQty){
       document.querySelectorAll('.cart-badge').forEach(b => b.textContent = totalQty);
     };
@@ -1651,9 +1514,6 @@
       }
     });
 
-    /* ===========================
-      OPTIONAL: close navbar collapse on click (mobile UX)
-    =========================== */
     (function(){
       const navCollapse = document.getElementById('nav');
       if(!navCollapse) return;
@@ -1661,11 +1521,24 @@
       navCollapse.addEventListener('click', (e) => {
         const a = e.target.closest('a');
         if(!a) return;
-        // only close on mobile when navbar is expanded
         const isShown = navCollapse.classList.contains('show');
         if(isShown){
           const bsCollapse = bootstrap.Collapse.getOrCreateInstance(navCollapse, { toggle: false });
           bsCollapse.hide();
+        }
+      });
+    })();
+
+    /* ✅ FIX: kur hapet offcanvas search në telefon, fokus input-in direkt */
+    (function(){
+      const off = document.getElementById('searchOffcanvas');
+      if(!off) return;
+      off.addEventListener('shown.bs.offcanvas', () => {
+        const inp = off.querySelector('input[name="q"]');
+        if(inp){
+          setTimeout(() => {
+            try { inp.focus({ preventScroll: true }); } catch(e){ inp.focus(); }
+          }, 80);
         }
       });
     })();
