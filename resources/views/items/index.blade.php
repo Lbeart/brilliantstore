@@ -1492,11 +1492,11 @@
       </section>
 
       <!-- Latest products -->
-       @php
-  $items = \App\Models\Product::query()
+      @php
+  $latestProducts = \App\Models\Product::query()
       ->where('is_active', 1)
       ->orderByDesc('id')
-      ->take(3)
+      ->take(6)   // mundesh 3/6/9
       ->get();
 @endphp
      <!-- Latest products -->
