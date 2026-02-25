@@ -905,6 +905,180 @@
       *{ animation: none !important; transition: none !important; scroll-behavior: auto !important; }
       .reveal{ opacity:1 !important; transform:none !important; }
     }
+    /* ========================= LATEST PRODUCTS (PRO) ========================= */
+.latest-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom: 14px;
+}
+.latest-head h2{ margin:0; font-weight:900; }
+.latest-head p{ margin:0; color: var(--muted); }
+
+.products-grid{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+@media (max-width: 992px){
+  .products-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 576px){
+  .products-grid{ grid-template-columns: 1fr; }
+}
+
+/* Card */
+.product-pro{
+  border-radius: 22px;
+  overflow:hidden;
+  border: 1px solid rgba(2,6,23,.08);
+  box-shadow: var(--shadow-soft);
+  background:#fff;
+  transition: transform .22s ease, box-shadow .22s ease;
+  transform: translateZ(0);
+}
+.product-pro:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 28px 70px rgba(2,6,23,.14);
+}
+
+.product-pro .media{
+  position: relative;
+  background: linear-gradient(180deg, rgba(2,6,23,.03), rgba(2,6,23,.00));
+  overflow:hidden;
+}
+.product-pro .media img{
+  width:100%;
+  height: 265px;
+  object-fit: cover;
+  transition: transform .6s ease, filter .6s ease;
+}
+.product-pro:hover .media img{
+  transform: scale(1.06);
+  filter: saturate(1.02);
+}
+
+/* Badges */
+.badge-new{
+  position:absolute;
+  top: 12px;
+  left: 12px;
+  padding: .35rem .7rem;
+  border-radius: 999px;
+  font-size: .74rem;
+  font-weight: 900;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  background: rgba(255,193,7,.95);
+  color:#111;
+  box-shadow: 0 16px 30px rgba(2,6,23,.18);
+}
+.badge-stock{
+  position:absolute;
+  top: 12px;
+  right: 12px;
+  padding: .35rem .7rem;
+  border-radius: 999px;
+  font-size: .74rem;
+  font-weight: 900;
+  background: rgba(15,23,42,.78);
+  color:#fff;
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 16px 30px rgba(2,6,23,.18);
+}
+.badge-stock.out{
+  background: rgba(220,53,69,.88);
+}
+
+/* Body */
+.product-pro .body{
+  padding: 14px 14px 16px;
+}
+.product-pro .catline{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom: 8px;
+}
+.product-pro .cat{
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(2,6,23,.55);
+}
+.product-pro .sku{
+  font-size: .78rem;
+  font-weight: 700;
+  color: rgba(2,6,23,.45);
+}
+
+.product-pro .title{
+  font-weight: 900;
+  margin: 0 0 6px;
+  line-height: 1.2;
+  font-size: 1.02rem;
+}
+.product-pro .desc{
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: .92rem;
+  line-height: 1.6;
+
+  /* clamp */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Price row */
+.price-row{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin-top: 6px;
+}
+.price-main{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.price-main .label{
+  font-size: .78rem;
+  color: rgba(2,6,23,.55);
+  font-weight: 700;
+}
+.price-main .price{
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--brand);
+  line-height: 1;
+}
+
+/* Actions */
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top: 12px;
+}
+.actions .btn{
+  border-radius: 999px;
+  font-weight: 900;
+  padding: .58rem .9rem;
+}
+.actions .btn-outline-dark{
+  border-width: 2px;
+}
+.actions .btn-wa{
+  background:#16a34a;
+  border-color:#16a34a;
+  color:#fff;
+}
+.actions .btn-wa:hover{ color:#fff; filter: brightness(.98); }
   </style>
 </head>
 
@@ -1325,42 +1499,116 @@
       ->take(3)
       ->get();
 @endphp
-      <div class="row g-4">
-  @foreach($items as $item)
-    @php
-      // image_path: mundet me qenë JSON string ose array (casts)
-      $imgs = $item->image_path;
-
-      if (is_string($imgs)) {
-        $decoded = json_decode($imgs, true);
-        $imgs = is_array($decoded) ? $decoded : [];
-      }
-
-      if (!is_array($imgs)) $imgs = [];
-
-      $img = $imgs[0] ?? null;
-    @endphp
-
-    <div class="col-md-4">
-      <div class="card product-card">
-        @if($img)
-          <img src="{{ asset('storage/'.$img) }}" class="card-img-top" alt="{{ $item->name }}">
-        @else
-          <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:260px;">
-            <span class="text-white">Pa foto</span>
-          </div>
-        @endif
-
-        <div class="card-body">
-          <h5 class="card-title fw-bold text-danger mb-1">{{ $item->name }}</h5>
-          <p class="card-text text-muted mb-0">
-            {{ \Illuminate\Support\Str::limit($item->description, 100) }}
-          </p>
-        </div>
+     <!-- Latest products -->
+<section class="mb-5">
+  <div class="latest-head">
+    <div>
+      <div class="section-title text-start mb-0">
+        <span class="k">PRODUKTET E FUNDIT</span>
+        <h2 class="mt-3">Zbuloni çfarë ka ardhur rishtazi</h2>
+        <p class="text-muted">Produktet e reja që janë shtuar së fundmi në katalog.</p>
       </div>
     </div>
-  @endforeach
-</div>
+
+    <a href="{{ url('/products') }}" class="btn btn-brand btn-sm pill">Shiko të gjitha</a>
+  </div>
+
+  @if(isset($items) && $items->count())
+    <div class="products-grid">
+      @foreach($items->take(3) as $item)
+        @php
+          // ===== FOTO (image_path mundet me qenë JSON ose array) =====
+          $imgs = $item->image_path;
+
+          if (is_string($imgs)) {
+            $decoded = json_decode($imgs, true);
+            $imgs = is_array($decoded) ? $decoded : [];
+          }
+          if (!is_array($imgs)) $imgs = [];
+          $img = $imgs[0] ?? null;
+
+          // ===== SIZE PRICING (nëse ke sizes JSON/array) =====
+          $sizes = $item->sizes ?? null;
+          if (is_string($sizes)) {
+            $decodedSizes = json_decode($sizes, true);
+            $sizes = is_array($decodedSizes) ? $decodedSizes : [];
+          }
+          if (!is_array($sizes)) $sizes = [];
+
+          $priceValue = $item->price;
+          if (!empty($sizes)) {
+            $prices = array_filter(array_map(fn($s) => $s['price'] ?? null, $sizes), fn($p) => $p !== null);
+            if (!empty($prices)) $priceValue = min($prices);
+          }
+
+          $priceLabel = $priceValue !== null ? '€' . number_format((float)$priceValue, 2) : 'Në kërkesë';
+          $inStock = (int)($item->stock ?? 0) > 0;
+
+          $cat = $item->category ?? '';
+          $sub = $item->subcategory ?? '';
+          $catLabel = $cat ? strtoupper($cat) : 'PRODUKT';
+          if ($cat === 'perde' && $sub) $catLabel = strtoupper($cat).' • '.strtoupper($sub);
+
+          $sku = $item->sku ?? null;
+
+          // WhatsApp text
+          $waText = "Përshëndetje! Jam i interesuar për produktin: {$item->name}. A ka në stock dhe sa është çmimi?";
+        @endphp
+
+        <article class="product-pro">
+          <div class="media">
+            @if($img)
+              <img src="{{ asset('storage/'.$img) }}" alt="{{ $item->name }}">
+            @else
+              <img src="{{ asset('images/llogo.png') }}" alt="{{ $item->name }}" style="object-fit:contain; padding:22px;">
+            @endif
+
+            <span class="badge-new">I RI</span>
+            <span class="badge-stock {{ $inStock ? '' : 'out' }}">
+              {{ $inStock ? 'IN STOCK' : 'S’KA STOCK' }}
+            </span>
+          </div>
+
+          <div class="body">
+            <div class="catline">
+              <div class="cat">{{ $catLabel }}</div>
+              @if($sku)
+                <div class="sku">SKU: {{ $sku }}</div>
+              @endif
+            </div>
+
+            <h3 class="title">{{ $item->name }}</h3>
+            <p class="desc">{{ $item->description ? \Illuminate\Support\Str::limit($item->description, 120) : 'Përshkrimi do të shtohet së shpejti.' }}</p>
+
+            <div class="price-row">
+              <div class="price-main">
+                <div class="label">Çmimi</div>
+                <div class="price">{{ $priceLabel }}</div>
+              </div>
+
+              <div class="small text-muted text-end">
+                <i class="bi bi-shield-check"></i> Cilësi & garanci
+              </div>
+            </div>
+
+            <div class="actions">
+              {{-- Nëse e ki route për show, përdore këtë: route('products.show', $item) --}}
+              <a href="{{ url('/products/'.$item->id) }}" class="btn btn-outline-dark w-50">
+                Detaje
+              </a>
+
+              <a class="btn btn-wa w-50"
+                 href="https://wa.me/38344960661?text={{ urlencode($waText) }}"
+                 target="_blank" rel="noopener">
+                <i class="bi bi-whatsapp"></i> WhatsApp
+              </a>
+            </div>
+          </div>
+        </article>
+      @endforeach
+    </div>
+  @endif
+</section>
 
       <!-- Testimonials (NEW Carousel) -->
       <section class="mb-5">
