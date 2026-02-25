@@ -30,5 +30,16 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    'whatsapp' => [
+    'enabled' => env('WHATSAPP_NOTIFICATIONS_ENABLED', false),
+    'provider' => env('WHATSAPP_PROVIDER', 'twilio'),
+    'to' => env('WHATSAPP_TO'),
+],
+
+'twilio' => [
+    'sid' => env('TWILIO_ACCOUNT_SID'),
+    'token' => env('TWILIO_AUTH_TOKEN'),
+    'whatsapp_from' => env('TWILIO_WHATSAPP_FROM', 'whatsapp:+14155238886'),
+],
 
 ];
