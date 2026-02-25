@@ -1324,36 +1324,42 @@
       ->orderByDesc('id')
       ->take(3)
       ->get();
-@endph
+@endphp
       <div class="row g-4">
-  @if($items->count())
-    @foreach($items as $item)
-      @php
-        // image_path te ti osht JSON (multi images) - merre foton e pare
-        $imgs = json_decode($item->image_path, true);
-        $img  = is_array($imgs) ? ($imgs[0] ?? null) : $item->image_path;
-      @endphp
+  @foreach($items as $item)
+    @php
+      // image_path: mundet me qenë JSON string ose array (casts)
+      $imgs = $item->image_path;
 
-      <div class="col-md-4">
-        <div class="card product-card">
-          @if($img)
-            <img src="{{ asset('storage/'.$img) }}" class="card-img-top" alt="{{ $item->name }}">
-          @else
-            <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:260px;">
-              <span class="text-white">Pa foto</span>
-            </div>
-          @endif
+      if (is_string($imgs)) {
+        $decoded = json_decode($imgs, true);
+        $imgs = is_array($decoded) ? $decoded : [];
+      }
 
-          <div class="card-body">
-            <h5 class="card-title fw-bold text-danger mb-1">{{ $item->name }}</h5>
-            <p class="card-text text-muted mb-0">
-              {{ \Illuminate\Support\Str::limit($item->description, 100) }}
-            </p>
+      if (!is_array($imgs)) $imgs = [];
+
+      $img = $imgs[0] ?? null;
+    @endphp
+
+    <div class="col-md-4">
+      <div class="card product-card">
+        @if($img)
+          <img src="{{ asset('storage/'.$img) }}" class="card-img-top" alt="{{ $item->name }}">
+        @else
+          <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:260px;">
+            <span class="text-white">Pa foto</span>
           </div>
+        @endif
+
+        <div class="card-body">
+          <h5 class="card-title fw-bold text-danger mb-1">{{ $item->name }}</h5>
+          <p class="card-text text-muted mb-0">
+            {{ \Illuminate\Support\Str::limit($item->description, 100) }}
+          </p>
         </div>
       </div>
-    @endforeach
-  @endif
+    </div>
+  @endforeach
 </div>
 
       <!-- Testimonials (NEW Carousel) -->
