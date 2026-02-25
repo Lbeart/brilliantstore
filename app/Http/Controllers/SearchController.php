@@ -15,15 +15,6 @@ class SearchController extends Controller
         return $s ?? '';
     }
 
-    private function containsAny(string $haystack, array $needles): bool
-    {
-        foreach ($needles as $n) {
-            $n = $this->normalize((string)$n);
-            if ($n !== '' && str_contains($haystack, $n)) return true;
-        }
-        return false;
-    }
-
     private function withQ(string $route, string $rawQ): string
     {
         return $route . '?' . http_build_query(['q' => $rawQ], '', '&', PHP_QUERY_RFC3986);
@@ -32,9 +23,7 @@ class SearchController extends Controller
     private function inferContextFromReferer(Request $request): ?string
     {
         $ref = $request->headers->get('referer') ?: url()->previous();
-        if (!$ref) return null;
-
-        $path = parse_url($ref, PHP_URL_PATH);
+        $path = $ref ? parse_url($ref, PHP_URL_PATH) : null;
         if (!is_string($path) || $path === '') return null;
 
         $path = rtrim($path, '/');
@@ -51,24 +40,35 @@ class SearchController extends Controller
         return null;
     }
 
-    private function perdeHasMatch(string $rawQ, array $subcats): bool
+    /**
+     * ✅ Kontrollon a ka MATCH në perde + subcategory (ditore/anesore)
+     * Kërkon në: name, description, sku, sizes(JSON)
+     */
+    private function perdeHasMatch(string $rawQ, string $subcat): bool
     {
-        $qNorm  = $this->normalize($rawQ);
+        $qNorm = $this->normalize($rawQ);
         $tokens = array_values(array_filter(explode(' ', $qNorm)));
+
+        // hiq fjalët “perde” (janë të përgjithshme, ta prishin match-in)
+        $tokens = array_values(array_filter($tokens, fn($t) => !in_array($t, ['perde','perd','curtain'], true)));
 
         return Product::query()
             ->where('is_active', 1)
             ->where('category', 'perde')
-            ->whereIn('subcategory', $subcats)
+            ->where('subcategory', $subcat) // ✅ vetëm 'ditore' ose 'anesore'
             ->where(function ($qq) use ($rawQ, $tokens) {
-                // match komplet
+                // match komplet (nëse ekziston)
                 $qq->where('name', 'like', "%{$rawQ}%")
-                   ->orWhere('description', 'like', "%{$rawQ}%");
+                   ->orWhere('description', 'like', "%{$rawQ}%")
+                   ->orWhere('sku', 'like', "%{$rawQ}%")
+                   ->orWhere('sizes', 'like', "%{$rawQ}%"); // JSON text search
 
-                // match edhe për fjalë (p.sh. "perde kumash" -> "kumash")
+                // match për fjalë (p.sh. "kumash")
                 foreach ($tokens as $t) {
                     $qq->orWhere('name', 'like', "%{$t}%")
-                       ->orWhere('description', 'like', "%{$t}%");
+                       ->orWhere('description', 'like', "%{$t}%")
+                       ->orWhere('sku', 'like', "%{$t}%")
+                       ->orWhere('sizes', 'like', "%{$t}%");
                 }
             })
             ->limit(1)
@@ -78,56 +78,50 @@ class SearchController extends Controller
     public function index(Request $request)
     {
         $raw = (string) $request->get('q', '');
-        $q   = $this->normalize($raw);
+        $q = $this->normalize($raw);
 
         if ($q === '') return back();
 
         $ctx = $this->inferContextFromReferer($request);
 
-        // ================== PERDE LOGIC ==================
-        $perdeWords   = ['perde', 'perd', 'curtain'];
-        $ditoreWords  = ['ditore', 'ditor', 'dior', 'diore'];     // gabime shkrimi
-        $anesoreWords = ['anesore', 'anesor'];                    // "anësore" normalizohet -> "anesore"
+        // ========= 1) PERDE LOGIC (smart) =========
+        $isPerdeQuery =
+            str_contains($q, 'perde') ||
+            str_contains($q, 'perd') ||
+            str_contains($q, 'curtain') ||
+            $ctx === 'perde-ditore' ||
+            $ctx === 'anesore';
 
-        // subcategory values të mundshme në DB (mbulo të dyja formatet)
-        $ditoreSubs  = ['ditore', 'perde-ditore', 'perde ditore', 'dior', 'ditor'];
-        $anesoreSubs = ['anesore', 'perde-anesore', 'perde anesore', 'anësore'];
-
-        // 1) Nëse e specifikon qartë (ditore/anësore) -> direkt
-        if ($this->containsAny($q, $ditoreWords)) {
-            return redirect($this->withQ('/perde-ditore', $raw));
-        }
-        if ($this->containsAny($q, $anesoreWords)) {
-            return redirect($this->withQ('/anesore', $raw));
-        }
-
-        // 2) Nëse shkruan "perde ..." pa nënkategori -> vendos me DB (KJO TA ZGJIDH "perde kumash")
-        if ($this->containsAny($q, $perdeWords)) {
-            $hasDitore  = $this->perdeHasMatch($raw, $ditoreSubs);
-            $hasAnesore = $this->perdeHasMatch($raw, $anesoreSubs);
-
-            // nëse vetëm njëra ka rezultate -> shko aty
-            if ($hasDitore && !$hasAnesore) {
+        // nëse specifikon qartë “ditore” ose “anesore”
+        if ($isPerdeQuery) {
+            if (str_contains($q, 'ditore') || str_contains($q, 'ditor') || str_contains($q, 'dior')) {
                 return redirect($this->withQ('/perde-ditore', $raw));
             }
-            if ($hasAnesore && !$hasDitore) {
+            if (str_contains($q, 'anesore') || str_contains($q, 'anesor')) {
                 return redirect($this->withQ('/anesore', $raw));
             }
 
-            // nëse të dyja kanë -> rri ku je (ctx) si tie-breaker
+            // ✅ këtu është FIX-i për "perde kumash"
+            $hasDitore  = $this->perdeHasMatch($raw, 'ditore');
+            $hasAnesore = $this->perdeHasMatch($raw, 'anesore');
+
+            if ($hasDitore && !$hasAnesore) return redirect($this->withQ('/perde-ditore', $raw));
+            if ($hasAnesore && !$hasDitore) return redirect($this->withQ('/anesore', $raw));
+
+            // nëse të dyja kanë rezultate -> rri ku je (ctx)
             if ($hasDitore && $hasAnesore) {
                 if ($ctx === 'perde-ditore') return redirect($this->withQ('/perde-ditore', $raw));
                 if ($ctx === 'anesore')      return redirect($this->withQ('/anesore', $raw));
-                return redirect($this->withQ('/anesore', $raw)); // default
+                return redirect($this->withQ('/perde-ditore', $raw)); // default ma logjike
             }
 
             // nëse asnjëra s’ka -> rri ku je ose default
             if ($ctx === 'perde-ditore') return redirect($this->withQ('/perde-ditore', $raw));
             if ($ctx === 'anesore')      return redirect($this->withQ('/anesore', $raw));
-            return redirect($this->withQ('/anesore', $raw));
+            return redirect($this->withQ('/perde-ditore', $raw));
         }
 
-        // ================== CATEGORIES (tjera) ==================
+        // ========= 2) KATEGORITË TJERA =========
         $categories = [
             ['route' => '/tepiha',    'keywords' => ['tepiha','tepih','tepija','tepia','tepi','shkallore','hali','otto','rrethore','rrumbullake','round']],
             ['route' => '/garnishte', 'keywords' => ['garnishte','garnish','kanal','plastik','alumin','metal']],
@@ -147,8 +141,6 @@ class SearchController extends Controller
         // fallback: rri ku je (nëse je në ndonjë kategori)
         if ($ctx) {
             $ctxRoute = match ($ctx) {
-                'perde-ditore' => '/perde-ditore',
-                'anesore'      => '/anesore',
                 'tepiha'       => '/tepiha',
                 'mbulesa'      => '/mbulesa',
                 'batanije'     => '/batanije',
@@ -156,7 +148,6 @@ class SearchController extends Controller
                 'garnishte'    => '/garnishte',
                 default        => null,
             };
-
             if ($ctxRoute) return redirect($this->withQ($ctxRoute, $raw));
         }
 
