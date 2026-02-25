@@ -1517,16 +1517,19 @@
 
         <article class="lp-card">
           <div class="lp-media">
-            @if($img)
-              <img class="lp-img" src="{{ asset('storage/'.$img) }}" alt="{{ $item->name }}">
-            @else
-              <img class="lp-img" src="{{ asset('images/llogo.png') }}" alt="{{ $item->name }}" style="object-fit:contain;">
-            @endif
+            <a href="{{ $detailsUrl }}" class="lp-media d-block text-decoration-none" aria-label="Hap detajet: {{ $item->name }}">
+  @if($img)
+    <img class="lp-img" src="{{ asset('storage/'.$img) }}" alt="{{ $item->name }}">
+  @else
+    <img class="lp-img" src="{{ asset('images/llogo.png') }}" alt="{{ $item->name }}" style="object-fit:contain;">
+  @endif
 
-            <span class="lp-badge">I RI</span>
-            <span class="lp-stock {{ $inStock ? '' : 'out' }}">
-              {{ $inStock ? 'IN STOCK' : 'S’KA STOCK' }}
-            </span>
+  <span class="lp-badge">I RI</span>
+  <span class="lp-stock {{ $inStock ? '' : 'out' }}">
+    {{ $inStock ? 'IN STOCK' : 'S’KA STOCK' }}
+  </span>
+</a>
+             
           </div>
 
           <div class="lp-body">
