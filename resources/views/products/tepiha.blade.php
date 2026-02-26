@@ -1098,7 +1098,7 @@
       <div class="search-card">
         <div class="search-meta">
           <i class="bi bi-stars"></i>
-          <span>Kërko shpejt & gjej modelin</span>
+          <span>Kërko shpejt & gjej modelinn</span>
         </div>
 
         <form method="GET" action="{{ url('/tepiha') }}" class="search-form">
