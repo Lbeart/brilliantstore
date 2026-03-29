@@ -204,24 +204,17 @@ class ProductController extends Controller
 
    private function saveUploadedImage($img): string
 {
-    $filename = (string) \Illuminate\Support\Str::uuid() . '.jpg';
+    $filename = uniqid() . '.jpg';
 
-    $path = public_path('storage/products');
+    $path = public_path('images/products');
 
     if (!file_exists($path)) {
         mkdir($path, 0777, true);
     }
 
-    $image = \Intervention\Image\Facades\Image::make($img)
-        ->orientate()
-        ->resize(800, null, function ($c) {
-            $c->aspectRatio();
-            $c->upsize();
-        });
+    $img->move($path, $filename);
 
-    $image->save($path . '/' . $filename, 70);
-
-    return "storage/products/" . $filename;
+    return 'images/products/' . $filename;
 }
 
     private function decodeImagePaths($value): array
