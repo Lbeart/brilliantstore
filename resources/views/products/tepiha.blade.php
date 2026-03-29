@@ -1090,6 +1090,7 @@
     <h1>Tepiha – Koleksioni ynë</h1>
     <div class="page-sub">Tepiha modern & klasik me zbritje sezonale. Modele për sallon, dhomë gjumi dhe çdo ambient.</div>
   </header>
+  <h1>baba</h1>
 
   <main id="mainContent" class="container py-3 pb-5">
 
