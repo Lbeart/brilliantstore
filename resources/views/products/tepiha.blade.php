@@ -1211,7 +1211,7 @@
 
               $src = preg_match('#^https?://#i', $path)
                 ? $path
-                : asset($path)
+                : asset($path);
             }
           }
 
