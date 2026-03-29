@@ -263,8 +263,9 @@
   }
 
   $src = $mainImg
-      ? \Illuminate\Support\Facades\Storage::disk('public')->url($mainImg)
-      : asset('images/placeholder.jpg');
+    ? asset($mainImg)
+    : asset('images/placeholder.jpg');
+        @endphp
 @endphp
 
         <div class="col-6 col-md-4 col-lg-3">
