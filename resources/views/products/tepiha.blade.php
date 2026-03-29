@@ -1274,7 +1274,7 @@
 
               <img
                 class="product-thumb"
-                src="{{ $src }}"
+                src="{{ asset($src) }}"
                 alt="{{ $product->name }}"
                 loading="lazy"
                 decoding="async"
