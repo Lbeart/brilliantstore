@@ -320,7 +320,7 @@
 
 <img
   class="product-thumb"
-  src="{{ $mainImg ? asset('storage/'.$mainImg) : asset('images/placeholder.jpg') }}"
+  src="{{ $mainImg ? asset($mainImg) : asset('images/placeholder.jpg') }}"
   alt="{{ $p->name }}"
   loading="lazy"
   onerror="this.onerror=null;this.src='{{ asset('images/placeholder.jpg') }}'">

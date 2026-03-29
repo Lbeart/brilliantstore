@@ -1517,7 +1517,7 @@
           <div class="lp-media">
             <a href="{{ $detailsUrl }}" class="lp-media d-block text-decoration-none" aria-label="Hap detajet: {{ $item->name }}">
   @if($img)
-    <img class="lp-img" src="{{ asset('storage/'.$img) }}" alt="{{ $item->name }}">
+    <img class="lp-img" src="{{ asset('images/products/'.$img) }}" alt="{{ $item->name }}">
   @else
     <img class="lp-img" src="{{ asset('images/llogo.png') }}" alt="{{ $item->name }}" style="object-fit:contain;">
   @endif
