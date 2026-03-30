@@ -59,13 +59,16 @@
     $clean = preg_replace('#^(public/)+#', '', $clean);
 
     // nëse vjen storage/...
-    if (str_starts_with($clean, 'storage/')) return asset($clean);
+   if (str_starts_with($clean, 'storage/images/')) {
+    $clean = str_replace('storage/images/', 'images/', $clean);
+    return asset($clean);
+}
 
     // images/...
     if (str_starts_with($clean, 'images/')) return asset($clean);
 
     // ✅ default: disk public -> /storage/...
-    return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
+          return asset('images/products/'.$clean);
   };
 @endphp
 
