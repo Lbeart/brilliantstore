@@ -1516,11 +1516,17 @@
         <article class="lp-card">
           <div class="lp-media">
             <a href="{{ $detailsUrl }}" class="lp-media d-block text-decoration-none" aria-label="Hap detajet: {{ $item->name }}">
-  @if($img)
-    <img class="lp-img" src="{{ asset('images/products/'.$img) }}" alt="{{ $item->name }}">
-  @else
-    <img class="lp-img" src="{{ asset('images/llogo.png') }}" alt="{{ $item->name }}" style="object-fit:contain;">
-  @endif
+@php
+    $path = $img;
+
+    if($path && str_starts_with($path, 'products/')){
+        $path = 'images/'.$path; // → images/products/...
+    } elseif($path && !str_starts_with($path, 'images/')){
+        $path = 'images/products/'.$path;
+    }
+@endphp
+
+<img class="lp-img" src="{{ $path ? asset($path) : asset('images/llogo.png') }}" alt="{{ $item->name }}">
 
   <span class="lp-badge">I RI</span>
   <span class="lp-stock {{ $inStock ? '' : 'out' }}">
