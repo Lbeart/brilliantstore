@@ -765,17 +765,20 @@
     <!-- FOTO -->
     <div class="col-lg-7">
       <div class="product-hero">
-        @if($mainImg)
-          <img id="productImage"
-               src="{{ asset('images/products/'.$mainImg) }}"
-              data-zoom="{{ asset('storage/'.$mainImg) }}"
-               alt="{{ $product->name }}">
-        @else
-          <img id="productImage"
-               src="{{ asset('images/placeholder-product.png') }}"
-               data-zoom="{{ asset('images/placeholder-product.png') }}"
-               alt="{{ $product->name }}">
-        @endif
+        @php
+    $path = $mainImg;
+
+    if($path && str_starts_with($path, 'products/')){
+        $path = 'images/'.$path;
+    } elseif($path && !str_starts_with($path, 'images/')){
+        $path = 'images/products/'.$path;
+    }
+@endphp
+
+<img id="productImage"
+     src="{{ $path ? asset($path) : asset('images/placeholder-product.png') }}"
+     data-zoom="{{ $path ? asset($path) : asset('images/placeholder-product.png') }}"
+     alt="{{ $product->name }}">
 
         <div class="zoom-lens" id="zoomLens" aria-hidden="true"></div>
         <div class="zoom-pane" id="zoomPane" aria-hidden="true"></div>
