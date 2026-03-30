@@ -58,28 +58,49 @@
     $cart = $cart ?? session('cart', []);
 
     // ✅ FIX FOTO: e trajton JSON array, URL absolute, dhe rastin: .../storage/[...]
-   $cart_img_url = function($raw){
-    $placeholder = asset('images/placeholder-product.png');
+    $cart_img_url = function($raw){
+      $placeholder = asset('images/placeholder-product.png');
+      if (empty($raw)) return $placeholder;
 
-    if(empty($raw)) return $placeholder;
+      // nese vjen array direkt
+      if (is_array($raw)) $raw = $raw[0] ?? null;
+      if (empty($raw)) return $placeholder;
 
-    if(str_starts_with($raw, '[')){
-        $arr = json_decode($raw, true);
-        $raw = $arr[0] ?? null;
-    }
+      $raw = trim((string)$raw);
 
-    if(empty($raw)) return $placeholder;
+      // ✅ nese është JSON array string: ["a.png","b.png"]
+      if (str_starts_with($raw, '[')) {
+        $d = json_decode($raw, true);
+        if (is_array($d) && !empty($d)) $raw = $d[0];
+      }
 
-    $raw = trim($raw);
+      // ✅ nese është URL që përmban JSON array: https://domain.com/storage/[...]
+      if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
+        $d = json_decode($m[0], true);
+        if (is_array($d) && !empty($d)) $raw = $d[0];
+      }
 
-    // nëse tashmë ka images/
-    if(str_starts_with($raw, 'images/')){
-        return asset($raw);
-    }
+      if (empty($raw)) return $placeholder;
 
-    // përndryshe
-    return asset('images/products/'.$raw);
-};
+      // nese është URL absolute, merre veç path-in
+      if (preg_match('#^https?://#i', $raw)) {
+        $raw = parse_url($raw, PHP_URL_PATH) ?? $raw;
+      }
+
+      $clean = ltrim($raw, '/');
+      $clean = preg_replace('#^(storage|public)/#', '', $clean);
+
+      // nese është image në public/images
+      if (str_starts_with($clean, 'images/')) return asset($clean);
+
+      // storage public url korrekt
+      return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
+    };
+
+    $subtotal = 0;
+    foreach ($cart as $it) { $subtotal += (float)($it['price'] ?? 0) * (int)($it['qty'] ?? 1); }
+    $shipping = 0.00;
+    $grandTotal = isset($totalPrice) ? (float)$totalPrice : (float)$subtotal;
   @endphp
 
   @if(empty($cart) || (is_countable($cart) && count($cart)===0))
