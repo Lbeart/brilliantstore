@@ -55,42 +55,34 @@
 
 @php
   // ✅ FIX FOTO vetëm për TRACK ITEMS (lexon JSON, storage path, absolute url)
-  $item_img_url = function($raw){
+ $item_img_url = function($raw){
     $placeholder = asset('images/placeholder-product.png');
-    if (empty($raw)) return $placeholder;
 
-    if (is_array($raw)) $raw = $raw[0] ?? null;
-    if (empty($raw)) return $placeholder;
+    if(empty($raw)) return $placeholder;
 
-    $raw = trim((string)$raw);
-
-    // JSON string: ["a","b"]
-    if (str_starts_with($raw, '[')) {
-      $d = json_decode($raw, true);
-      if (is_array($d) && !empty($d)) $raw = $d[0];
+    // JSON
+    if(str_starts_with($raw, '[')){
+        $arr = json_decode($raw, true);
+        $raw = $arr[0] ?? null;
     }
 
-    // URL që përmban JSON: https://domain.com/storage/[...]
-    if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
-      $d = json_decode($m[0], true);
-      if (is_array($d) && !empty($d)) $raw = $d[0];
+    if(empty($raw)) return $placeholder;
+
+    $raw = trim($raw);
+
+    // ✅ FIX KRYESOR – nëse është URL absolute
+    if(str_starts_with($raw, 'http')){
+        return $raw;
     }
 
-    if (empty($raw)) return $placeholder;
+    // nëse është images/
+    if(str_starts_with($raw, 'images/')){
+        return asset($raw);
+    }
 
-    // absolute URL
-    if (preg_match('#^https?://#i', $raw)) return $raw;
-
-    // normalizo path
-    $clean = ltrim($raw, '/');
-    $clean = preg_replace('#^(storage|public)/#', '', $clean);
-
-    // public/images/...
-    if (str_starts_with($clean, 'images/')) return asset($clean);
-
-    // storage disk public -> /storage/...
-    return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
-  };
+    // default
+    return asset('images/products/'.$raw);
+};
 @endphp
 
 <div class="container page-wrap py-4">
