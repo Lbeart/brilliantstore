@@ -55,7 +55,7 @@
 
 @php
   // ✅ FIX FOTO vetëm për TRACK ITEMS (lexon JSON, storage path, absolute url)
-  $item_img_url = function($raw){
+ $item_img_url = function($raw){
     $placeholder = asset('images/placeholder-product.png');
     if (empty($raw)) return $placeholder;
 
@@ -64,16 +64,10 @@
 
     $raw = trim((string)$raw);
 
-    // JSON string: ["a","b"]
+    // JSON
     if (str_starts_with($raw, '[')) {
-      $d = json_decode($raw, true);
-      if (is_array($d) && !empty($d)) $raw = $d[0];
-    }
-
-    // URL që përmban JSON: https://domain.com/storage/[...]
-    if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
-      $d = json_decode($m[0], true);
-      if (is_array($d) && !empty($d)) $raw = $d[0];
+        $d = json_decode($raw, true);
+        if (is_array($d) && !empty($d)) $raw = $d[0];
     }
 
     if (empty($raw)) return $placeholder;
@@ -81,16 +75,17 @@
     // absolute URL
     if (preg_match('#^https?://#i', $raw)) return $raw;
 
-    // normalizo path
-    $clean = ltrim($raw, '/');
-    $clean = preg_replace('#^(storage|public)/#', '', $clean);
+    $path = ltrim($raw, '/');
 
-    // public/images/...
-    if (str_starts_with($clean, 'images/')) return asset($clean);
+    // FIX KRYESOR 🔥
+    if(str_starts_with($path, 'products/')){
+        $path = 'images/'.$path;
+    } elseif(!str_starts_with($path, 'images/')){
+        $path = 'images/products/'.$path;
+    }
 
-    // storage disk public -> /storage/...
-    return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
-  };
+    return asset($path);
+};
 @endphp
 
 <div class="container page-wrap py-4">
