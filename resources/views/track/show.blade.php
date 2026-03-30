@@ -208,6 +208,7 @@
         <tbody>
         @foreach($order->items as $it)
           @php
+          dd($it->image, $it->image_path);
             $name  = $it->name ?? 'Produkt';
             $price = (float)($it->price ?? 0);
             $qty   = (int)($it->qty ?? 1);
