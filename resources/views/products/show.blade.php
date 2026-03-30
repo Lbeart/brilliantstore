@@ -767,8 +767,8 @@
       <div class="product-hero">
         @if($mainImg)
           <img id="productImage"
-               src="{{ asset('storage/'.$mainImg) }}"
-               data-zoom="{{ asset('storage/'.$mainImg) }}"
+               src="{{ asset('images/products/'.$mainImg) }}"
+              data-zoom="{{ asset('storage/'.$mainImg) }}"
                alt="{{ $product->name }}">
         @else
           <img id="productImage"
@@ -787,7 +787,7 @@
           @foreach($imgs as $i => $imgPath)
             <button type="button"
                     class="thumb-btn {{ $i === 0 ? 'active' : '' }}"
-                    onclick="setMainImg('{{ asset('storage/'.$imgPath) }}', this)"
+                    onclick="setMainImg('{{ asset('images/products/'.$imgPath) }}', this)"
                     aria-label="Foto {{ $i+1 }}">
               <img src="{{ asset('storage/'.$imgPath) }}" alt="thumb {{ $i+1 }}" loading="lazy">
             </button>
@@ -1038,7 +1038,7 @@
             <div class="similar-card-inner">
               <div class="similar-img">
                 <img
-                  src="{{ $simImg ? asset('storage/'.$simImg) : asset('images/placeholder-product.png') }}"
+                  src="{{ $simImg ? asset('images/products/'.$simImg) : asset('images/placeholder-product.png') }}"
                   alt="{{ $p->name }}"
                   loading="lazy"
                 >
