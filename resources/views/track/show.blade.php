@@ -70,17 +70,22 @@
 
     $raw = trim($raw);
 
-    // ✅ FIX KRYESOR – nëse është URL absolute
+    // 🔥 FIX KRYESOR
+    if(str_contains($raw, '/storage/images/')){
+        $raw = str_replace('/storage/images/', '/images/', $raw);
+        return $raw;
+    }
+
+    // absolute URL
     if(str_starts_with($raw, 'http')){
         return $raw;
     }
 
-    // nëse është images/
+    // images path
     if(str_starts_with($raw, 'images/')){
         return asset($raw);
     }
 
-    // default
     return asset('images/products/'.$raw);
 };
 @endphp
