@@ -21,55 +21,38 @@
     $placeholder = asset('images/placeholder-product.png');
     if (empty($raw)) return $placeholder;
 
-    // array -> merr të parën
     if (is_array($raw)) {
-      $raw = collect($raw)->first(fn($x)=>!empty($x)) ?? null;
-      if (empty($raw)) return $placeholder;
+        $raw = collect($raw)->first(fn($x)=>!empty($x)) ?? null;
+        if (empty($raw)) return $placeholder;
     }
 
     $raw = trim((string)$raw);
-
-    // ✅ nëse vjen URL-encoded (p.sh. %5B%22...%22%5D)
     $decodedRaw = urldecode($raw);
 
-    // ✅ 1) Kap JSON brenda URL-së: .../storage/[...]
     if (preg_match('/\[[^\]]+\]/', $decodedRaw, $m)) {
-      $json = $m[0];
-      $json = str_replace(['\/','\\\/'], '/', $json);
-      $arr = json_decode($json, true);
-      if (is_array($arr) && !empty($arr)) $decodedRaw = $arr[0];
-    }
-    // ✅ 2) Kap JSON string direkt: ["a","b"]
-    elseif (str_starts_with($decodedRaw, '[')) {
-      $json = str_replace(['\/','\\\/'], '/', $decodedRaw);
-      $arr = json_decode($json, true);
-      if (is_array($arr) && !empty($arr)) $decodedRaw = $arr[0];
+        $arr = json_decode($m[0], true);
+        if ($arr && !empty($arr)) $decodedRaw = $arr[0];
+    } elseif (str_starts_with($decodedRaw, '[')) {
+        $arr = json_decode($decodedRaw, true);
+        if ($arr && !empty($arr)) $decodedRaw = $arr[0];
     }
 
-    $decodedRaw = trim((string)$decodedRaw, " \t\n\r\0\x0B\"'"); // heq thonjëzat
+    $decodedRaw = trim((string)$decodedRaw, " \t\n\r\0\x0B\"'");
 
     if (empty($decodedRaw)) return $placeholder;
 
-    // ✅ nëse është URL absolute (e rregullt)
+    // 🔥 FIX KRYESOR
+    if (str_contains($decodedRaw, '/storage/images/')) {
+        $decodedRaw = str_replace('/storage/images/', '/images/', $decodedRaw);
+        return $decodedRaw;
+    }
+
     if (preg_match('#^https?://#i', $decodedRaw)) return $decodedRaw;
 
-    // ✅ normalizo path
-    $clean = ltrim($decodedRaw, '/');
-    $clean = str_replace('\\', '/', $clean);
-    $clean = preg_replace('#^(public/)+#', '', $clean);
+    if (str_starts_with($decodedRaw, 'images/')) return asset($decodedRaw);
 
-    // nëse vjen storage/...
-   if (str_starts_with($clean, 'storage/images/')) {
-    $clean = str_replace('storage/images/', 'images/', $clean);
-    return asset($clean);
-}
-
-    // images/...
-    if (str_starts_with($clean, 'images/')) return asset($clean);
-
-    // ✅ default: disk public -> /storage/...
-          return asset('images/products/'.$clean);
-  };
+    return asset('images/products/'.$decodedRaw);
+};
 @endphp
 
 <div class="container py-4">
