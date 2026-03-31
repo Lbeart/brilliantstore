@@ -1337,6 +1337,7 @@
                   <h5>Tepiha modern &amp; klasik</h5>
                   <p>Modele për sallon, korridor, dhoma fëmijësh dhe banjo.</p>
                   <span class="cat-link">Shiko tepihat <i class="bi bi-arrow-right"></i></span>
+                  <h2>Baba</h2>
                 </div>
               </div>
             </a>
