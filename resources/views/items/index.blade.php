@@ -1195,7 +1195,7 @@
           <div class="col-lg-7">
             <div class="hero-badge">
               <span>KOLEKSION I RI</span> Tepiha &amp; perde për çdo ambient
-              <h1>Baba</h1>
+             
             </div>
 
             <h1 class="hero-title">
@@ -1337,7 +1337,7 @@
                   <h5>Tepiha modern &amp; klasik</h5>
                   <p>Modele për sallon, korridor, dhoma fëmijësh dhe banjo.</p>
                   <span class="cat-link">Shiko tepihat <i class="bi bi-arrow-right"></i></span>
-                  <h2>Baba</h2>
+                
                 </div>
               </div>
             </a>
