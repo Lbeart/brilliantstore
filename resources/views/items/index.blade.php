@@ -1195,6 +1195,7 @@
           <div class="col-lg-7">
             <div class="hero-badge">
               <span>KOLEKSION I RI</span> Tepiha &amp; perde për çdo ambient
+              <h1>Baba</h1>
             </div>
 
             <h1 class="hero-title">
