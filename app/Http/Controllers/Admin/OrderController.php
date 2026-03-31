@@ -82,7 +82,7 @@ class OrderController extends Controller
 
     public function sendConfirmationEmail(Order $order)
     {
-         dd(config('mail.mailers.smtp'));
+         
         if (!$order->email) {
             return back()->with('error', 'Kjo porosi nuk ka email të klientit.');
         }
