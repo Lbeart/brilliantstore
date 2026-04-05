@@ -11,6 +11,7 @@ use App\Mail\OrderConfirmationMail;
 use App\Mail\OrderShippedMail;
 use App\Models\Order;
 use Barryvdh\DomPDF\Facade\Pdf;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 
 class OrderController extends Controller
@@ -197,10 +198,17 @@ public function invoicePdf(Order $order)
 {
     $order->load('items');
 
+    $qr = base64_encode(
+        QrCode::format('png')
+            ->size(120)
+            ->generate(route('admin.orders.show', $order->id))
+    );
+
     $pdf = Pdf::loadView('admin.fatura', [
-    'order' => $order,
-    'isPdf' => true
-]);
+        'order' => $order,
+        'isPdf' => true,
+        'qr' => $qr
+    ]);
 
     return $pdf->download('fatura-'.$order->id.'.pdf');
 }

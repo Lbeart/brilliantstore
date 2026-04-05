@@ -198,6 +198,12 @@ tr:hover{
 <div class="total">
 TOTAL: {{ number_format($order->total ?? 0,2) }} €
 </div>
+@if(isset($qr))
+<div style="margin-top:30px; text-align:right;">
+    <div style="font-size:12px;">Scan për detaje</div>
+    <img src="data:image/png;base64,{{ $qr }}">
+</div>
+@endif
 
 <!-- ACTION BUTTONS -->
 @if(!$isPdf)
