@@ -30,6 +30,8 @@ use App\Http\Controllers\OrderTrackingController;
 |--------------------------------------------------------------------------
 */
 // routes/web.php
+Route::get('/invoice/{id}', [OrderController::class, 'invoicePublic'])
+    ->name('orders.invoice.public');
 
 
 Route::get('/track', [OrderTrackingController::class, 'form'])->name('track.form');//

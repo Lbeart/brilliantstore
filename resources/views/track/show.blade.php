@@ -258,7 +258,7 @@
         </button>
 
         <!-- PDF -->
-        <a href="{{ route('admin.orders.invoice.pdf', $order->id) }}" 
+        <a href="{{ route('orders.invoice.public', $order->id) }}" 
            class="btn btn-danger" target="_blank">
             <i class="bi bi-file-earmark-pdf"></i> Shkarko PDF
         </a>

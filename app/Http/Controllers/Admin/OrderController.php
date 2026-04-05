@@ -240,4 +240,22 @@ $pdf = Pdf::loadView('admin.fatura', [
 
     return back()->with('success', 'Fatura u dërgua me sukses!');
 }
+public function invoicePublic($id)
+{
+    $order = Order::with('items')->findOrFail($id);
+
+    $qr = base64_encode(
+        \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')
+            ->size(120)
+            ->generate(route('orders.track', $order->tracking_code))
+    );
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.fatura', [
+        'order' => $order,
+        'isPdf' => true,
+        'qr' => $qr
+    ]);
+
+    return $pdf->download('fatura-'.$order->id.'.pdf');
+}
 }
