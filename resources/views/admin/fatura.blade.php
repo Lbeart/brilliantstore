@@ -176,6 +176,7 @@ tr:hover{
 <thead>
 <tr>
     <th>Produkti</th>
+    <th>Dimensioni</th> {{-- shtuar --}}
     <th>Sasia</th>
     <th>Çmimi</th>
     <th>Total</th>
@@ -184,8 +185,36 @@ tr:hover{
 
 <tbody>
 @foreach($order->items ?? [] as $item)
+
+@php
+    $curtain = null;
+
+    if(isset($item->curtain) && !empty($item->curtain)){
+        $curtain = is_array($item->curtain)
+            ? $item->curtain
+            : json_decode($item->curtain, true);
+
+        if(!is_array($curtain)) $curtain = null;
+    }
+@endphp
+
 <tr>
     <td>{{ $item->name ?? '' }}</td>
+
+    <td>
+        @if($curtain)
+            <div style="font-size:12px; line-height:1.4;">
+                <strong>Gjerësia:</strong> {{ $curtain['width'] ?? '-' }} m<br>
+                <strong>Lartësia:</strong> {{ $curtain['height'] ?? '-' }} m<br>
+                <strong>Metra:</strong> {{ $curtain['meters'] ?? '-' }} m<br>
+                <strong>Multiplier:</strong> {{ $curtain['multiplier'] ?? '-' }} x<br>
+                <strong>Sistemi:</strong> {{ $curtain['fold_label'] ?? ($curtain['fold_type'] ?? '-') }}
+            </div>
+        @else
+            {{ $item->size ?? '—' }}
+        @endif
+    </td>
+
     <td>{{ $item->qty ?? 0 }}</td>
     <td>{{ number_format($item->price ?? 0,2) }} €</td>
     <td>{{ number_format(($item->price ?? 0)*($item->qty ?? 0),2) }} €</td>
