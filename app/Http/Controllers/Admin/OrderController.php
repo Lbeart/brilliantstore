@@ -220,7 +220,17 @@ public function sendInvoice(Order $order)
 
     $order->load('items');
 
-    $pdf = Pdf::loadView('admin.fatura', compact('order'));
+   $qr = base64_encode(
+    QrCode::format('png')
+        ->size(120)
+        ->generate(route('admin.orders.show', $order->id))
+);
+
+$pdf = Pdf::loadView('admin.fatura', [
+    'order' => $order,
+    'isPdf' => true,
+    'qr' => $qr
+]);
 
     Mail::send([], [], function ($message) use ($order, $pdf) {
         $message->to($order->email)
