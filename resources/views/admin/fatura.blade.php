@@ -212,12 +212,12 @@ TOTAL: {{ number_format($order->total ?? 0,2) }} €
         📥 Shkarko PDF
     </a>
 
-    <form method="POST" action="{{ route('admin.orders.sendInvoice',$order->id) }}">
+    <!-- <form method="POST" action="{{ route('admin.orders.sendInvoice',$order->id) }}">
         @csrf
         <button class="btn email">
             📧 Dërgo në Email
         </button>
-    </form>
+    </form> -->
 
 </div>
 
