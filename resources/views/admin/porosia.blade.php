@@ -183,7 +183,6 @@
           <button class="btn btn-danger">Ruaj</button>
           
           
-          
         </form>
       </div>
 
@@ -218,7 +217,6 @@
           <div class="small text-muted mt-2">Email dërgohet te: {{ $order->email }}</div>
         @endif
       </div>
-
       
 
     </div>
