@@ -181,8 +181,13 @@
             @endforeach
           </select>
           <button class="btn btn-danger">Ruaj</button>
-          
-          
+          @if(isset($order))
+<a href="{{ route('admin.orders.invoice', $order->id) }}"
+   target="_blank"
+   class="btn btn-dark btn-sm">
+   🧾 Fatura
+</a>
+@endif
         </form>
       </div>
 

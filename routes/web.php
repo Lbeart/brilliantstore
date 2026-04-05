@@ -167,6 +167,8 @@ Route::middleware(['auth','verified','admin'])
         Route::get('/orders/all', [AdminOrderController::class, 'all'])->name('orders.all');
 
         // Show / Update / Email / Delete (with numeric constraint)
+        Route::get('/orders/{order}/invoice', [AdminOrderController::class, 'invoice'])
+    ->name('admin.orders.invoice');
         Route::get('/orders/{order}', [AdminOrderController::class, 'show'])
             ->whereNumber('order')->name('orders.show');
 
@@ -185,8 +187,7 @@ Route::middleware(['auth','verified','admin'])
         // Stats
         Route::get('/statistika', [StatsController::class, 'index'])->name('stats');
 
-        Route::get('/orders/{order}/invoice', [AdminOrderController::class, 'invoice'])
-    ->name('admin.orders.invoice');
+        
 
         
     });
