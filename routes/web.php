@@ -185,8 +185,10 @@ Route::middleware(['auth','verified','admin'])
         // Stats
         Route::get('/statistika', [StatsController::class, 'index'])->name('stats');
 
-        Route::get('/admin/orders/{order}/invoice', [AdminOrderController::class, 'invoice'])
+        Route::get('/orders/{order}/invoice', [AdminOrderController::class, 'invoice'])
     ->name('admin.orders.invoice');
+
+        
     });
 
 /*
