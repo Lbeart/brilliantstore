@@ -20,7 +20,7 @@
     <div>
         <div class="title">FATURA</div>
         <div>Nr: {{ $order->id }}</div>
-        <div>Data: {{ $order->created_at->format('d.m.Y') }}</div>
+        <div>Data: {{ optional($order->created_at)->format('d.m.Y') }}</div>
     </div>
 
     <div>
@@ -34,9 +34,9 @@
 
 <h4>Klienti:</h4>
 <p>
-    {{ $order->name }} <br>
-    {{ $order->phone }} <br>
-    {{ $order->email }}
+    {{ $order->name ?? '' }} <br>
+    {{ $order->phone ?? '' }} <br>
+    {{ $order->email ?? '' }}
 </p>
 
 <table>
@@ -49,20 +49,21 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($order->items as $item)
+        @foreach($order->items ?? [] as $item)
         <tr>
-            <td>{{ $item->name }}</td>
-            <td>{{ $item->qty }}</td>
-            <td>{{ number_format($item->price,2) }} €</td>
-            <td>{{ number_format($item->price * $item->qty,2) }} €</td>
+            <td>{{ $item->name ?? '' }}</td>
+            <td>{{ $item->qty ?? 0 }}</td>
+            <td>{{ number_format($item->price ?? 0,2) }} €</td>
+            <td>{{ number_format(($item->price ?? 0)*($item->qty ?? 0),2) }} €</td>
         </tr>
         @endforeach
     </tbody>
 </table>
 
 <div class="total">
-    TOTAL: {{ number_format($order->total,2) }} €
+    TOTAL: {{ number_format($order->total ?? 0,2) }} €
 </div>
+
 <button onclick="window.print()">Printo</button>
 
 </body>
