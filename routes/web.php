@@ -169,11 +169,12 @@ Route::middleware(['auth','verified','admin'])
         // Show / Update / Email / Delete (with numeric constraint)
         Route::get('/orders/{order}/invoice', [AdminOrderController::class, 'invoice'])
     ->name('orders.invoice');
-    Route::get('/orders/{order}/invoice-pdf', [OrderController::class, 'invoicePdf'])
+    Route::get('/orders/{order}/invoice-pdf', [AdminOrderController::class, 'invoicePdf'])
     ->name('orders.invoice.pdf');
 
-Route::post('/orders/{order}/send-invoice', [OrderController::class, 'sendInvoice'])
+Route::post('/orders/{order}/send-invoice', [AdminOrderController::class, 'sendInvoice'])
     ->name('orders.sendInvoice');
+   
         Route::get('/orders/{order}', [AdminOrderController::class, 'show'])
             ->whereNumber('order')->name('orders.show');
 
