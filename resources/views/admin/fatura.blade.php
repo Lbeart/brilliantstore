@@ -1,139 +1,121 @@
 <!DOCTYPE html>
-<html lang="sq">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fatura #{{ $order->id }}</title>
 
 <style>
-body{
-    font-family: DejaVu Sans, Arial, sans-serif;
-    background:#f4f6f9;
-    margin:0;
-    padding:20px;
-    color:#333;
+body {
+    font-family: DejaVu Sans;
+    font-size: 13px;
+    color: #333;
+    margin: 0;
+    padding: 0;
 }
 
-.container{
-    max-width:900px;
-    margin:auto;
-    background:#fff;
-    padding:25px;
-    border-radius:10px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+/* CONTAINER */
+.container {
+    width: 100%;
+    padding: 20px;
 }
 
 /* HEADER */
-.header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    margin-bottom:20px;
+.header {
+    width: 100%;
+    border-bottom: 2px solid #e60023;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
 }
 
-.logo img{
-    height:60px;
+.logo {
+    width: 160px;
 }
 
-.company{
-    font-size:14px;
-    color:#666;
+.company-info {
+    font-size: 12px;
+    color: #555;
 }
 
-.invoice-info{
-    text-align:right;
+.right {
+    text-align: right;
 }
 
-.title{
-    font-size:28px;
-    font-weight:bold;
-    color:#e60023;
+.title {
+    font-size: 26px;
+    font-weight: bold;
+    color: #e60023;
 }
 
-/* CLIENT BOX */
-.box{
-    background:#f9f9f9;
-    padding:15px;
-    border-radius:8px;
-    margin-bottom:20px;
+/* BOXES */
+.box {
+    width: 100%;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
 }
 
 /* TABLE */
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:20px;
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
 }
 
-th, td{
-    border:1px solid #ddd;
-    padding:12px;
-    text-align:left;
+.table th {
+    background: #e60023;
+    color: #fff;
+    padding: 10px;
+    border: 1px solid #ddd;
+    font-size: 13px;
 }
 
-th{
-    background:#f2f2f2;
-}
-
-tr:hover{
-    background:#fafafa;
+.table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    font-size: 13px;
 }
 
 /* TOTAL */
-.total{
-    text-align:right;
-    font-size:22px;
-    font-weight:bold;
-    margin-top:20px;
-    color:#e60023;
+.total-box {
+    margin-top: 20px;
+    width: 100%;
 }
 
-/* BUTTONS */
-.actions{
-    margin-top:20px;
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
+.total-table {
+    width: 300px;
+    float: right;
+    border-collapse: collapse;
 }
 
-.btn{
-    padding:10px 15px;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
-    font-size:14px;
-    text-decoration:none;
+.total-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
 }
 
-.print{ background:#000; color:#fff; }
-.back{ background:#6c757d; color:#fff; }
-.pdf{ background:#dc3545; color:#fff; }
-.email{ background:#28a745; color:#fff; }
+.total-final {
+    font-size: 18px;
+    font-weight: bold;
+    background: #f2f2f2;
+}
 
 /* FOOTER */
-.footer{
-    margin-top:40px;
-    text-align:center;
-    font-size:13px;
-    color:#777;
+.footer {
+    margin-top: 60px;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+    text-align: center;
+    font-size: 12px;
+    color: #777;
 }
 
-/* RESPONSIVE */
-@media(max-width:600px){
-    .header{
-        flex-direction:column;
-        align-items:flex-start;
-    }
+/* EXTRA */
+.note {
+    margin-top: 30px;
+    font-size: 12px;
+}
 
-    .invoice-info{
-        text-align:left;
-        margin-top:10px;
-    }
-
-    table{
-        font-size:13px;
-    }
+.clearfix {
+    clear: both;
 }
 </style>
 </head>
@@ -143,87 +125,94 @@ tr:hover{
 <div class="container">
 
 <!-- HEADER -->
-<div class="header">
-    <div>
-        <div class="logo">
-            <img src="{{ asset('images/llogo.png') }}" alt="Logo">
-        </div>
-        <div class="company">
-            Rruga Gjergj Fishta, Lipjan<br>
-            📞 044 996 926
-        </div>
-    </div>
+<table class="header">
+<tr>
+<td width="60%">
+    <img src="{{ public_path('images/llogo.png') }}" class="logo"><br>
 
-    <div class="invoice-info">
-        <div class="title">FATURA</div>
-        <div><strong>Nr:</strong> BRL-{{ $order->id }}</div>
-        <div><strong>Data:</strong> {{ optional($order->created_at)->format('d.m.Y') }}</div>
+    <div class="company-info">
+        <strong>Brillant</strong><br>
+        Rruga Gjergj Fishta, Lipjan<br>
+        📞 044 996 926<br>
+        ✉️ info@brillant.com
     </div>
-</div>
+</td>
 
-<hr>
+<td class="right">
+    <div class="title">FATURA</div>
+    <div><strong>Nr:</strong> BRL-{{ $order->id }}</div>
+    <div><strong>Data:</strong> {{ optional($order->created_at)->format('d.m.Y') }}</div>
+</td>
+</tr>
+</table>
 
 <!-- CLIENT -->
 <div class="box">
-    <strong>Klienti:</strong><br>
-    {{ $order->name ?? '' }} <br>
-    📞 {{ $order->phone ?? '' }} <br>
-    ✉️ {{ $order->email ?? '' }}
+<strong>Klienti:</strong><br><br>
+Emri: {{ $order->name ?? '' }}<br>
+Telefoni: {{ $order->phone ?? '' }}<br>
+Email: {{ $order->email ?? '' }}
 </div>
 
 <!-- TABLE -->
-<table>
+<table class="table">
 <thead>
 <tr>
-    <th>Produkti</th>
-    <th>Sasia</th>
-    <th>Çmimi</th>
-    <th>Total</th>
+<th>#</th>
+<th>Produkti</th>
+<th>Sasia</th>
+<th>Çmimi (€)</th>
+<th>Total (€)</th>
 </tr>
 </thead>
 
 <tbody>
+@php $i = 1; @endphp
 @foreach($order->items ?? [] as $item)
 <tr>
-    <td>{{ $item->name ?? '' }}</td>
-    <td>{{ $item->qty ?? 0 }}</td>
-    <td>{{ number_format($item->price ?? 0,2) }} €</td>
-    <td>{{ number_format(($item->price ?? 0)*($item->qty ?? 0),2) }} €</td>
+<td>{{ $i++ }}</td>
+<td>{{ $item->name ?? '' }}</td>
+<td>{{ $item->qty ?? 0 }}</td>
+<td>{{ number_format($item->price ?? 0,2) }}</td>
+<td>{{ number_format(($item->price ?? 0)*($item->qty ?? 0),2) }}</td>
 </tr>
 @endforeach
 </tbody>
 </table>
 
 <!-- TOTAL -->
-<div class="total">
-TOTAL: {{ number_format($order->total ?? 0,2) }} €
+<div class="total-box">
+
+<table class="total-table">
+<tr>
+<td><strong>Nëntotali</strong></td>
+<td>{{ number_format($order->total ?? 0,2) }} €</td>
+</tr>
+
+<tr>
+<td><strong>TVSH (0%)</strong></td>
+<td>0.00 €</td>
+</tr>
+
+<tr class="total-final">
+<td><strong>TOTAL</strong></td>
+<td>{{ number_format($order->total ?? 0,2) }} €</td>
+</tr>
+</table>
+
+<div class="clearfix"></div>
 </div>
 
-<!-- ACTION BUTTONS -->
-<div class="actions">
-
-    <button class="btn print" onclick="window.print()">🖨️ Printo</button>
-
-    <a href="{{ route('admin.orders.index') }}" class="btn back">
-        ⬅️ Kthehu
-    </a>
-
-    <a href="{{ route('admin.orders.invoice.pdf',$order->id) }}" class="btn pdf">
-        📥 Shkarko PDF
-    </a>
-
-    <form method="POST" action="{{ route('admin.orders.sendInvoice',$order->id) }}">
-        @csrf
-        <button class="btn email">
-            📧 Dërgo në Email
-        </button>
-    </form>
-
+<!-- NOTE -->
+<div class="note">
+<strong>Shënim:</strong><br>
+Kjo faturë është gjeneruar automatikisht nga sistemi.<br>
+Faleminderit për besimin tuaj!
 </div>
 
 <!-- FOOTER -->
 <div class="footer">
-    Faleminderit për besimin ❤️ – Brillant
+© {{ date('Y') }} Brillant — Të gjitha të drejtat e rezervuara.
 </div>
 
 </div>
