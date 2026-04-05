@@ -788,13 +788,13 @@
       @if(count($imgs) > 1)
         <div class="thumb-row" aria-label="Fotot e produktit">
           @foreach($imgs as $i => $imgPath)
-            <button type="button"
-                    class="thumb-btn {{ $i === 0 ? 'active' : '' }}"
-                    onclick="setMainImg('{{ asset('images/products/'.$imgPath) }}', this)"
-                    aria-label="Foto {{ $i+1 }}">
-              <img src="{{ asset('storage/'.$imgPath) }}" alt="thumb {{ $i+1 }}" loading="lazy">
-            </button>
-          @endforeach
+  <button type="button"
+    class="thumb-btn {{ $i === 0 ? 'active' : '' }}"
+    onclick="setMainImg('{{ asset($imgPath) }}', this)">
+
+    <img src="{{ asset($imgPath) }}" alt="thumb {{ $i+1 }}">
+  </button>
+@endforeach
         </div>
       @endif
     </div>
