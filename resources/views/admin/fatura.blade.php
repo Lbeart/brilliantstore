@@ -146,7 +146,7 @@ tr:hover{
 <div class="header">
     <div>
         <div class="logo">
-            <img src="{{ public_path('images/llogo.png') }}" alt="Logo">
+           <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/llogo.png'))) }}">
         </div>
         <div class="company">
             Rruga Gjergj Fishta, Lipjan<br>
