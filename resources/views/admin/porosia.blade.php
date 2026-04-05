@@ -218,11 +218,7 @@
         @endif
       </div>
 
-      <a href="{{ route('admin.orders.invoice', $order) }}"
-   target="_blank"
-   class="btn btn-dark btn-sm">
-   🧾 Fatura
-</a>
+      
 
     </div>
   </div>
