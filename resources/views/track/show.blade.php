@@ -244,13 +244,28 @@
   </div>
 
   <div class="d-flex justify-content-between mt-3">
+
+    <!-- BACK -->
     <a href="{{ url('/') }}" class="btn btn-outline-secondary">
-      <i class="bi bi-arrow-left"></i> Vazhdo blerjet
+        <i class="bi bi-arrow-left"></i> Vazhdo blerjet
     </a>
 
-      <i class="bi bi-printer"></i> Printo faturën
-    </a>
-  </div>
+    <div class="d-flex gap-2">
+
+        <!-- PRINT -->
+        <button onclick="window.print()" class="btn btn-dark">
+            <i class="bi bi-printer"></i> Printo
+        </button>
+
+        <!-- PDF -->
+        <a href="{{ route('admin.orders.invoice.pdf', $order->id) }}" 
+           class="btn btn-danger" target="_blank">
+            <i class="bi bi-file-earmark-pdf"></i> Shkarko PDF
+        </a>
+
+    </div>
+
+</div>
 
 </div>
 
