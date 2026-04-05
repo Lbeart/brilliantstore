@@ -208,9 +208,9 @@ TOTAL: {{ number_format($order->total ?? 0,2) }} €
         ⬅️ Kthehu
     </a>
 
-    <a href="{{ route('admin.orders.invoice.pdf',$order->id) }}" class="btn pdf">
+    <!-- <a href="{{ route('admin.orders.invoice.pdf',$order->id) }}" class="btn pdf">
         📥 Shkarko PDF
-    </a>
+    </a> -->
 
     <!-- <form method="POST" action="{{ route('admin.orders.sendInvoice',$order->id) }}">
         @csrf
