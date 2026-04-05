@@ -181,11 +181,7 @@
             @endforeach
           </select>
           <button class="btn btn-danger">Ruaj</button>
-          <a href="{{ route('admin.orders.invoice', $order) }}"
-   target="_blank"
-   class="btn btn-dark btn-sm">
-   🧾 Fatura
-</a>
+          
           
         </form>
       </div>
@@ -221,6 +217,12 @@
           <div class="small text-muted mt-2">Email dërgohet te: {{ $order->email }}</div>
         @endif
       </div>
+
+      <a href="{{ route('admin.orders.invoice', $order) }}"
+   target="_blank"
+   class="btn btn-dark btn-sm">
+   🧾 Fatura
+</a>
 
     </div>
   </div>
