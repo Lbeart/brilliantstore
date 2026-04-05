@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Schema; // ⬅️ SHTUAR
 use App\Mail\OrderConfirmationMail;
 use App\Mail\OrderShippedMail;
 use App\Models\Order;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class OrderController extends Controller
 {
@@ -187,5 +189,31 @@ class OrderController extends Controller
 {
     $order->load('items');
     return view('admin.fatura', compact('order'));
+}
+public function invoicePdf(Order $order)
+{
+    $order->load('items');
+
+    $pdf = Pdf::loadView('admin.fatura', compact('order'));
+
+    return $pdf->download('fatura-'.$order->id.'.pdf');
+}
+public function sendInvoice(Order $order)
+{
+    if (!$order->email) {
+        return back()->with('error', 'Kjo porosi nuk ka email.');
+    }
+
+    $order->load('items');
+
+    $pdf = Pdf::loadView('admin.fatura', compact('order'));
+
+    Mail::send([], [], function ($message) use ($order, $pdf) {
+        $message->to($order->email)
+            ->subject('Fatura juaj - Brillant')
+            ->attachData($pdf->output(), 'fatura-'.$order->id.'.pdf');
+    });
+
+    return back()->with('success', 'Fatura u dërgua me sukses!');
 }
 }
