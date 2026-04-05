@@ -200,6 +200,7 @@ TOTAL: {{ number_format($order->total ?? 0,2) }} €
 </div>
 
 <!-- ACTION BUTTONS -->
+@if(!$isPdf)
 <div class="actions">
 
     <button class="btn print" onclick="window.print()">🖨️ Printo</button>
@@ -220,6 +221,7 @@ TOTAL: {{ number_format($order->total ?? 0,2) }} €
     </form>
 
 </div>
+@endif
 
 <!-- FOOTER -->
 <div class="footer">

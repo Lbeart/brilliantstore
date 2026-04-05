@@ -188,13 +188,19 @@ class OrderController extends Controller
     public function invoice(Order $order)
 {
     $order->load('items');
-    return view('admin.fatura', compact('order'));
+    return view('admin.fatura', [
+    'order' => $order,
+    'isPdf' => false
+]);
 }
 public function invoicePdf(Order $order)
 {
     $order->load('items');
 
-    $pdf = Pdf::loadView('admin.fatura', compact('order'));
+    $pdf = Pdf::loadView('admin.fatura', [
+    'order' => $order,
+    'isPdf' => true
+]);
 
     return $pdf->download('fatura-'.$order->id.'.pdf');
 }
