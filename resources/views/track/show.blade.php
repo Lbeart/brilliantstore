@@ -226,17 +226,8 @@
                 <div class="fw-semibold">{{ $name }}</div>
               </div>
             </td>
-            <td class="text-muted">
-    @if(!empty($size) && $size !== '—')
-        {{ $qty }} x {{ $size }}
-    @else
-        {{ $qty }}
-    @endif
-</td>
-
-<td class="text-end">
-    € {{ number_format($price, 2) }}
-</td>
+            <td class="text-muted">{{ $size }}</td>
+            <td class="text-end">{{ $qty }}</td>
             <td class="text-end">€ {{ number_format($price, 2) }}</td>
             <td class="text-end price">€ {{ number_format($line, 2) }}</td>
           </tr>
