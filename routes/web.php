@@ -168,7 +168,7 @@ Route::middleware(['auth','verified','admin'])
 
         // Show / Update / Email / Delete (with numeric constraint)
         Route::get('/orders/{order}/invoice', [AdminOrderController::class, 'invoice'])
-    ->name('admin.orders.invoice');
+    ->name('orders.invoice');
         Route::get('/orders/{order}', [AdminOrderController::class, 'show'])
             ->whereNumber('order')->name('orders.show');
 
