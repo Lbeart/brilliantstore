@@ -182,4 +182,10 @@ class OrderController extends Controller
             'orders','count','revenue','avg','itemsQty','byStatus','search','from','to'
         ));
     }
+
+    public function invoice(Order $order)
+{
+    $order->load('items');
+    return view('admin.fatura', compact('order'));
+}
 }
