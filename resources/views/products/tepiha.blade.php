@@ -16,7 +16,7 @@
   <meta name="keywords" content="tepiha, tepiha moderne, tepiha tradicional, tepih, tapeta, tepih Lipjan, tepih Kosove, tepiha akrill, tepiha antibakterial, tepiha hali, tepiha bambo, tepiha staz, tepiha rrethore, oferta tepiha">
 
   <!-- CANONICAL -->
-  <link rel="canonical" href="{{ url('/tepiha') }}">
+  <link rel="canonical" href="{{ url()->current() }}">
 
   <!-- VIEWPORT -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
