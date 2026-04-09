@@ -1040,11 +1040,21 @@
           <a class="similar-card" href="{{ route('products.show', $p) }}">
             <div class="similar-card-inner">
               <div class="similar-img">
-                <img
-                  src="{{ $simImg ? asset('images/products/'.$simImg) : asset('images/placeholder-product.png') }}"
-                  alt="{{ $p->name }}"
-                  loading="lazy"
-                >
+                @php
+  $path = $simImg;
+
+  if($path && str_starts_with($path, 'products/')){
+      $path = 'images/'.$path;
+  } elseif($path && !str_starts_with($path, 'images/')){
+      $path = 'images/products/'.$path;
+  }
+@endphp
+
+<img
+  src="{{ $path ? asset($path) : asset('images/placeholder-product.png') }}"
+  alt="{{ $p->name }}"
+  loading="lazy"
+/>
               </div>
 
               <div class="similar-name">{{ $p->name }}</div>
