@@ -10,6 +10,8 @@
   <!-- LEJO INDEXIMIN -->
   <meta name="robots" content="index,follow">
 
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="https://b-brillant.com/sitemap.xml">
+
   <!-- FJALË KYÇE -->
   <meta name="keywords" content="tepiha, tepiha moderne, tepiha tradicional, tepih, tapeta, tepih Lipjan, tepih Kosove, tepiha akrill, tepiha antibakterial, tepiha hali, tepiha bambo, tepiha staz, tepiha rrethore, oferta tepiha">
 
