@@ -8,6 +8,22 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
+  <script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "Product",
+ "name": "{{ $product->name }}",
+ "image": "{{ $mainImg ? asset('storage/'.$mainImg) : '' }}",
+ "description": "{{ $metaDesc }}",
+ "offers": {
+   "@type": "Offer",
+   "price": "{{ $product->price }}",
+   "priceCurrency": "EUR",
+   "availability": "https://schema.org/{{ ($product->stock ?? 0) > 0 ? 'InStock' : 'OutOfStock' }}"
+ }
+}
+</script>
+
   @php
     $isCurtain = str_contains(strtolower($product->category ?? ''), 'perde');
   @endphp
