@@ -7,6 +7,11 @@
   <title>Perde ditore cilësore për shtëpi & zyrë – Brillant Lipjan</title>
   <meta name="description" content="Perde ditore cilësore për dritare shtëpie dhe zyre. Materiale të lehta, elegante dhe me qepje profesionale. Konsultim, matje dhe montim nga Brillant Lipjan.">
 
+
+
+
+  <link rel="sitemap" type="application/xml" href="https://b-brillant.com/sitemap.xml">
+  
   <!-- KEYWORDS -->
   <meta name="keywords" content="perde,sistem amerikan,fallta,anesore,perde ditore, perde dritareje, perde shtepia, perde zyre, perde moderne, perde te lehta, perdja ditore, Brillant Lipjan, perde Kosove,perde bamboo,perde sheqer,perde cenova,perde kumash,">
 
