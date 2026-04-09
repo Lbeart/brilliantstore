@@ -8,21 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-  <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@type": "Product",
- "name": "{{ $product->name }}",
- "image": "{{ $mainImg ? asset('storage/'.$mainImg) : '' }}",
- "description": "{{ $metaDesc }}",
- "offers": {
-   "@type": "Offer",
-   "price": "{{ $product->price }}",
-   "priceCurrency": "EUR",
-   "availability": "https://schema.org/{{ ($product->stock ?? 0) > 0 ? 'InStock' : 'OutOfStock' }}"
- }
-}
-</script>
+  
 
   @php
     $isCurtain = str_contains(strtolower($product->category ?? ''), 'perde');
@@ -667,6 +653,21 @@
     @media(max-width:992px){ .fold-grid{ grid-template-columns:repeat(3, 1fr);} }
     @media(max-width:576px){ .fold-grid{ grid-template-columns:repeat(2, 1fr); gap:10px; } }
   </style>
+  <script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "Product",
+ "name": "{{ $product->name }}",
+ "image": "{{ $mainImg ? asset('storage/'.$mainImg) : '' }}",
+ "description": "{{ $metaDesc }}",
+ "offers": {
+   "@type": "Offer",
+   "price": "{{ $product->price }}",
+   "priceCurrency": "EUR",
+   "availability": "https://schema.org/{{ ($product->stock ?? 0) > 0 ? 'InStock' : 'OutOfStock' }}"
+ }
+}
+</script>
 </head>
 <body>
 
