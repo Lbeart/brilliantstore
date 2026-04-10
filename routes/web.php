@@ -133,6 +133,9 @@ Route::post('/checkout', [CheckoutController::class, 'store'])
     ->name('checkout.store');
 Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
 
+
+use App\Http\Controllers\SitemapController;
+
 /*
 |--------------------------------------------------------------------------
 | Admin (auth + verified + admin)
@@ -199,6 +202,9 @@ Route::post('/orders/{order}/send-invoice', [AdminOrderController::class, 'sendI
 
         
     });
+
+
+Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index']);
 
 /*
 |--------------------------------------------------------------------------
