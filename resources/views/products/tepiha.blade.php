@@ -607,8 +607,8 @@
     }
 
     @media (max-width: 767.98px){
-      .product-thumb{ aspect-ratio: 1 / 1; }
-    }
+  .product-thumb{ aspect-ratio: 3 / 4; }
+}
 
     .bf-label{
       position: absolute;
