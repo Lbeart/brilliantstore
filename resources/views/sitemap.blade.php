@@ -90,12 +90,14 @@
 
 <!-- 🔥 PRODUKTET AUTOMATIKE -->
 @foreach($products as $product)
+@if($product->slug)
 <url>
-<loc>{{ route('products.show', $product->slug) }}</loc>
-<lastmod>{{ $product->updated_at->toAtomString() }}</lastmod>
+<loc>{{ url('/products/'.$product->slug) }}</loc>
+<lastmod>{{ optional($product->updated_at)->toAtomString() }}</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.85</priority>
 </url>
+@endif
 @endforeach
 
 </urlset>
