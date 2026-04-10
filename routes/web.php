@@ -204,8 +204,7 @@ Route::post('/orders/{order}/send-invoice', [AdminOrderController::class, 'sendI
     });
 
 
-Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index']);
-
+Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 /*
 |--------------------------------------------------------------------------
 | Fallback 404 (opsionale)
