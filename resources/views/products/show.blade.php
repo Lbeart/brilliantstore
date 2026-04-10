@@ -1198,49 +1198,63 @@
 
 <script>
 (() => {
-  /* ========== SWIPE + PINCH-ZOOM ========== */
   const track = document.getElementById('swipeTrack');
-  const dots  = document.querySelectorAll('.sdot');
+  const dots = document.querySelectorAll('.sdot');
   const thumbBtns = document.querySelectorAll('.thumb-btn');
   const totalSlides = track ? track.querySelectorAll('.swipe-slide').length : 0;
 
   let current = 0;
-  let startX = 0, startY = 0, isDragging = false;
-
-  // Pinch zoom vars
- // Pinch zoom vars
-  let initDist = 0, curScale = 1, lastScale = 1;
+  let startX = 0, isDragging = false;
+  let curScale = 1, lastScale = 1;
   let panX = 0, panY = 0, startPanX = 0, startPanY = 0;
-  let startMidX = 0, startMidY = 0;
+  let initDist = 0, startMidX = 0, startMidY = 0;
   let isPinching = false;
-  let panStartX = 0, panStartY = 0;
+  let lastTap = 0;
 
-  function resetZoom(){
-    curScale = 1; lastScale = 1;
-    panX = 0; panY = 0;
-    const img = getCurrentImg();
-    if(img){
-      img.style.transition = 'transform .25s ease';
-      img.style.transform = 'translate(0px, 0px) scale(1)';
-    }
+  /* ---- helpers ---- */
+  function getCurrentImg() {
+    if (!track) return null;
+    const slide = track.querySelectorAll('.swipe-slide')[current];
+    return slide ? slide.querySelector('img') : null;
   }
 
-  function applyTransform(img, scale, tx, ty, trans){
-    if(!img) return;
-    img.style.transition = trans || 'none';
-    img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+  function applyTransform(img, scale, tx, ty, anim) {
+    if (!img) return;
+    img.style.transition = anim || 'none';
+    img.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`;
     img.style.transformOrigin = 'center center';
   }
 
-  function dist(t){
-    const dx = t[0].clientX - t[1].clientX;
-    const dy = t[0].clientY - t[1].clientY;
-    return Math.sqrt(dx*dx + dy*dy);
+  function resetZoom() {
+    curScale = 1; lastScale = 1; panX = 0; panY = 0;
+    const img = getCurrentImg();
+    if (img) applyTransform(img, 1, 0, 0, 'transform .25s ease');
   }
 
-  if(track){
+  function dist(t) {
+    const dx = t[0].clientX - t[1].clientX;
+    const dy = t[0].clientY - t[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  /* ---- slide ---- */
+  function goToSlide(n) {
+    if (!track) return;
+    current = Math.max(0, Math.min(n, totalSlides - 1));
+    track.style.transition = 'transform .3s ease';
+    track.style.transform = `translateX(-${current * 100}%)`;
+    dots.forEach((d, i) => {
+      d.style.background = i === current ? '#dc3545' : '#d1d5db';
+    });
+    thumbBtns.forEach((b, i) => b.classList.toggle('active', i === current));
+    resetZoom();
+  }
+  window.goToSlide = goToSlide;
+
+  /* ---- touch ---- */
+  if (track) {
     track.addEventListener('touchstart', (e) => {
-      if(e.touches.length === 2){
+      if (e.touches.length === 2) {
         isPinching = true;
         isDragging = false;
         initDist = dist(e.touches);
@@ -1250,291 +1264,136 @@
         startMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
         startMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
         e.preventDefault();
-      } else if(e.touches.length === 1){
-        if(isPinching) return;
+      } else if (e.touches.length === 1 && !isPinching) {
         startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        panStartX = panX;
-        panStartY = panY;
+        startPanX = panX;
+        startPanY = panY;
         isDragging = true;
-        if(curScale <= 1) track.style.transition = 'none';
+        if (curScale <= 1) track.style.transition = 'none';
       }
     }, { passive: false });
 
     track.addEventListener('touchmove', (e) => {
-      if(e.touches.length === 2 && isPinching){
-        const newDist = dist(e.touches);
-        let scale = lastScale * (newDist / initDist);
+      if (e.touches.length === 2 && isPinching) {
+        let scale = lastScale * (dist(e.touches) / initDist);
         scale = Math.max(1, Math.min(scale, 5));
         curScale = scale;
-
         const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
         const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
         panX = startPanX + (midX - startMidX);
         panY = startPanY + (midY - startMidY);
-
-        const img = getCurrentImg();
-        applyTransform(img, curScale, panX, panY, 'none');
+        applyTransform(getCurrentImg(), curScale, panX, panY, 'none');
         e.preventDefault();
-
-      } else if(e.touches.length === 1 && isDragging){
+      } else if (e.touches.length === 1 && isDragging) {
         const dx = e.touches[0].clientX - startX;
-        const dy = e.touches[0].clientY - startY;
-
-        if(curScale > 1){
-          // PAN foto kur e zmadhuar
-          panX = panStartX + dx;
-          panY = panStartY + dy;
-          const img = getCurrentImg();
-          applyTransform(img, curScale, panX, panY, 'none');
+        const dy = e.touches[0].clientY - (startPanY + panY); // unused but kept
+        if (curScale > 1) {
+          panX = startPanX + dx;
+          panY = startPanY + (e.touches[0].clientY - (e.touches[0].clientY)); 
+          // re-calc Y properly:
+          panY = startPanY + (e.touches[0].clientY - (startPanY === panY ? e.touches[0].clientY : startPanY));
+          applyTransform(getCurrentImg(), curScale, panX, panY, 'none');
           e.preventDefault();
         } else {
-          // SWIPE kalon slide
-          if(Math.abs(dx) > Math.abs(dy)){
+          if (Math.abs(dx) > 8) {
             e.preventDefault();
-            const offset = -(current * 100) + (dx / track.offsetWidth * 100);
-            track.style.transform = `translateX(${offset}%)`;
+            track.style.transform = `translateX(${-(current * 100) + (dx / track.offsetWidth * 100)}%)`;
           }
         }
       }
     }, { passive: false });
 
     track.addEventListener('touchend', (e) => {
-      if(isPinching && e.touches.length < 2){
+      if (e.touches.length < 2 && isPinching) {
         isPinching = false;
-        if(curScale < 1.08) resetZoom();
+        if (curScale < 1.1) resetZoom();
         lastScale = curScale;
         return;
       }
-
-      if(!isDragging) return;
+      if (!isDragging) return;
       isDragging = false;
-
-      if(curScale > 1) return; // mos ndërro slide kur e zmadhuar
+      if (curScale > 1) return;
 
       const dx = e.changedTouches[0].clientX - startX;
-      const threshold = track.offsetWidth * 0.2;
-
-      if(Math.abs(dx) > threshold){
-        if(dx < 0 && current < totalSlides - 1) goToSlide(current + 1);
-        else if(dx > 0 && current > 0) goToSlide(current - 1);
+      if (Math.abs(dx) > track.offsetWidth * 0.2) {
+        if (dx < 0 && current < totalSlides - 1) goToSlide(current + 1);
+        else if (dx > 0 && current > 0) goToSlide(current - 1);
         else goToSlide(current);
       } else {
         goToSlide(current);
       }
-    }, { passive: true });
 
-    // Double-tap: zmadho / reset
-    let lastTap = 0;
-    track.addEventListener('touchend', (e) => {
-      if(isPinching) return;
+      // double-tap
       const now = Date.now();
-      if(now - lastTap < 280 && e.changedTouches.length === 1){
-        if(curScale > 1){
-          resetZoom();
-        } else {
+      if (now - lastTap < 280) {
+        curScale > 1 ? resetZoom() : (() => {
           curScale = 2.5; lastScale = 2.5; panX = 0; panY = 0;
-          const img = getCurrentImg();
-          applyTransform(img, 2.5, 0, 0, 'transform .25s ease');
-        }
+          applyTransform(getCurrentImg(), 2.5, 0, 0, 'transform .25s ease');
+        })();
       }
       lastTap = now;
-    });
-
-    dots.forEach((d,i) => d.addEventListener('click', () => goToSlide(i)));
-  }
-
-  if(track){
-    /* --- TOUCH START --- */
-    track.addEventListener('touchstart', (e) => {
-      if(e.touches.length === 2){
-        // PINCH START
-        isPinching = true;
-        isDragging = false;
-        initDist = dist(e.touches);
-        lastScale = curScale;
-
-        const r = track.getBoundingClientRect();
-        originX = ((e.touches[0].clientX + e.touches[1].clientX)/2) - r.left;
-        originY = ((e.touches[0].clientY + e.touches[1].clientY)/2) - r.top;
-        startPanX = panX;
-        startPanY = panY;
-        e.preventDefault();
-      } else if(e.touches.length === 1 && !isPinching){
-        // SWIPE START
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        isDragging = true;
-        track.style.transition = 'none';
-      }
-    }, { passive: false });
-
-    /* --- TOUCH MOVE --- */
-    track.addEventListener('touchmove', (e) => {
-      if(e.touches.length === 2 && isPinching){
-        // PINCH MOVE
-        const newDist = dist(e.touches);
-        let scale = lastScale * (newDist / initDist);
-        scale = Math.max(1, Math.min(scale, 4));
-        curScale = scale;
-
-        // pan while pinching
-        const r = track.getBoundingClientRect();
-        const cx = ((e.touches[0].clientX + e.touches[1].clientX)/2) - r.left;
-        const cy = ((e.touches[0].clientY + e.touches[1].clientY)/2) - r.top;
-        panX = startPanX + (cx - originX);
-        panY = startPanY + (cy - originY);
-
-        const img = getCurrentImg();
-        applyTransform(img, curScale, panX, panY, 'none');
-        e.preventDefault();
-
-      } else if(e.touches.length === 1 && isDragging && curScale <= 1){
-        // SWIPE MOVE (vetëm kur nuk është i zmadhuar)
-        const dx = e.touches[0].clientX - startX;
-        const dy = e.touches[0].clientY - startY;
-
-        if(Math.abs(dx) > Math.abs(dy)){
-          e.preventDefault();
-          const offset = -(current * 100) + (dx / track.offsetWidth * 100);
-          track.style.transform = `translateX(${offset}%)`;
-        }
-      } else if(e.touches.length === 1 && isDragging && curScale > 1){
-        // PAN kur është i zmadhuar
-        const dx = e.touches[0].clientX - startX;
-        const dy = e.touches[0].clientY - startY;
-        const img = getCurrentImg();
-        applyTransform(img, curScale, panX + dx, panY + dy, 'none');
-        e.preventDefault();
-      }
-    }, { passive: false });
-
-    /* --- TOUCH END --- */
-    track.addEventListener('touchend', (e) => {
-      if(e.touches.length === 0 && isPinching){
-        isPinching = false;
-        // nëse zoom-i është afër 1x, reset
-        if(curScale < 1.1){
-          resetZoom();
-        } else {
-          // ruaj panin
-          const img = getCurrentImg();
-          if(img){
-            const m = new DOMMatrix(getComputedStyle(img).transform);
-            panX = m.m41; panY = m.m42;
-          }
-        }
-        return;
-      }
-
-      if(!isDragging) return;
-      isDragging = false;
-
-      const dx = e.changedTouches[0].clientX - startX;
-      const threshold = track.offsetWidth * 0.2;
-
-      if(Math.abs(dx) > threshold && curScale <= 1){
-        if(dx < 0 && current < totalSlides - 1) goToSlide(current + 1);
-        else if(dx > 0 && current > 0) goToSlide(current - 1);
-        else goToSlide(current);
-      } else {
-        goToSlide(current);
-      }
     }, { passive: true });
 
-    // Double-tap zoom reset
-    let lastTap = 0;
-    track.addEventListener('touchend', (e) => {
-      const now = Date.now();
-      if(now - lastTap < 300 && e.touches.length === 0){
-        if(curScale > 1) resetZoom();
-        else {
-          curScale = 2; panX = 0; panY = 0;
-          const img = getCurrentImg();
-          applyTransform(img, 2, 0, 0, 'transform .25s ease');
-          lastScale = 2;
-        }
-      }
-      lastTap = now;
-    });
-
-    // Dots click
-    dots.forEach((d,i) => d.addEventListener('click', () => goToSlide(i)));
+    dots.forEach((d, i) => d.addEventListener('click', () => goToSlide(i)));
   }
 
-  /* ========== DESKTOP ZOOM (hover) ========== */
-  const mainImg = document.getElementById('productImage');
+  /* ---- desktop zoom (hover) ---- */
   const lens = document.getElementById('zoomLens');
   const pane = document.getElementById('zoomPane');
-
-  // Për desktop zoom, marrim foton e slide-it aktiv
-  function getDesktopImg(){
-    return getCurrentImg() || mainImg;
-  }
-
+  const hero = document.getElementById('heroWrap');
   const isDesktop = () => window.matchMedia('(min-width:992px)').matches;
+  let natW = 0, natH = 0;
+  const ZOOM = 1.5;
 
-  let natW=0, natH=0;
-  const zoom = 1.35;
-
-  function initZoom(){
-    const img = getDesktopImg();
-    if(!img || !pane) return;
-    const src = img.src;
-    pane.style.backgroundImage = `url('${src}')`;
+  function initZoom() {
+    const img = getCurrentImg();
+    if (!img || !pane) return;
+    pane.style.backgroundImage = `url('${img.src}')`;
     const im = new Image();
     im.onload = () => {
       natW = im.naturalWidth; natH = im.naturalHeight;
       pane.style.backgroundRepeat = 'no-repeat';
-      pane.style.backgroundSize = `${natW*zoom}px ${natH*zoom}px`;
+      pane.style.backgroundSize = `${natW * ZOOM}px ${natH * ZOOM}px`;
     };
-    im.src = src;
+    im.src = img.src;
   }
 
-  function moveZoom(e){
-    const img = getDesktopImg();
-    if(!img || !lens || !pane) return;
+  function moveZoom(e) {
+    const img = getCurrentImg();
+    if (!img || !lens || !pane) return;
     const r = img.getBoundingClientRect();
-    const x = e.clientX - r.left;
-    const y = e.clientY - r.top;
-
-    let L = x - lens.offsetWidth/2;
-    let T = y - lens.offsetHeight/2;
+    let L = e.clientX - r.left - lens.offsetWidth / 2;
+    let T = e.clientY - r.top - lens.offsetHeight / 2;
     L = Math.max(0, Math.min(L, img.clientWidth - lens.offsetWidth));
     T = Math.max(0, Math.min(T, img.clientHeight - lens.offsetHeight));
-    lens.style.left = L+'px';
-    lens.style.top  = T+'px';
-
-    const rx = natW / img.clientWidth;
-    const ry = natH / img.clientHeight;
-    pane.style.backgroundPosition = `${-(L*rx)*zoom}px ${-(T*ry)*zoom}px`;
+    lens.style.left = L + 'px';
+    lens.style.top = T + 'px';
+    pane.style.backgroundPosition = `${-(L * natW / img.clientWidth) * ZOOM}px ${-(T * natH / img.clientHeight) * ZOOM}px`;
   }
 
-  const hero = document.getElementById('heroWrap');
-  if(hero && lens && pane){
+  if (hero && lens && pane) {
     hero.addEventListener('mouseenter', () => {
-      if(!isDesktop()) return;
-      lens.style.setProperty('display','block','important');
-      pane.style.setProperty('display','block','important');
+      if (!isDesktop()) return;
+      lens.style.setProperty('display', 'block', 'important');
+      pane.style.setProperty('display', 'block', 'important');
       initZoom();
     });
     hero.addEventListener('mouseleave', () => {
-      lens.style.setProperty('display','none','important');
-      pane.style.setProperty('display','none','important');
+      lens.style.setProperty('display', 'none', 'important');
+      pane.style.setProperty('display', 'none', 'important');
     });
     hero.addEventListener('mousemove', (e) => {
-      if(!isDesktop()) return;
+      if (!isDesktop()) return;
       moveZoom(e);
     });
   }
 
-  // setMainImg thumbs ende funksionon
   window.setMainImg = (src, el) => {
-    const img = getDesktopImg();
-    if(img){ img.src = src; img.dataset.zoom = src; }
+    const img = getCurrentImg();
+    if (img) img.src = src;
     document.querySelectorAll('.thumb-btn').forEach(b => b.classList.remove('active'));
-    if(el) el.classList.add('active');
-    initZoom();
+    if (el) el.classList.add('active');
+    setTimeout(initZoom, 50);
   };
 
   window.addEventListener('resize', initZoom);
