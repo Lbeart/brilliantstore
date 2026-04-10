@@ -1208,52 +1208,26 @@
   let startX = 0, startY = 0, isDragging = false;
 
   // Pinch zoom vars
+ // Pinch zoom vars
   let initDist = 0, curScale = 1, lastScale = 1;
-  let originX = 0, originY = 0;
   let panX = 0, panY = 0, startPanX = 0, startPanY = 0;
+  let startMidX = 0, startMidY = 0;
   let isPinching = false;
-
-  function goToSlide(n){
-    if(!track) return;
-    current = Math.max(0, Math.min(n, totalSlides - 1));
-    track.style.transition = 'transform .3s ease';
-    track.style.transform = `translateX(-${current * 100}%)`;
-
-    dots.forEach((d,i) => {
-      d.style.background = i === current ? '#dc3545' : '#d1d5db';
-      d.classList.toggle('active', i === current);
-    });
-    thumbBtns.forEach((b,i) => b.classList.toggle('active', i === current));
-
-    // reset zoom kur kalon slide
-    resetZoom();
-  }
-
-  window.goToSlide = goToSlide;
+  let panStartX = 0, panStartY = 0;
 
   function resetZoom(){
     curScale = 1; lastScale = 1;
     panX = 0; panY = 0;
-    const slide = getCurrentSlide();
-    if(slide){
-      slide.style.transform = '';
-      slide.style.transition = '';
+    const img = getCurrentImg();
+    if(img){
+      img.style.transition = 'transform .25s ease';
+      img.style.transform = 'translate(0px, 0px) scale(1)';
     }
   }
 
-  function getCurrentSlide(){
-    if(!track) return null;
-    return track.querySelectorAll('.swipe-slide')[current] || null;
-  }
-
-  function getCurrentImg(){
-    const sl = getCurrentSlide();
-    return sl ? sl.querySelector('img') : null;
-  }
-
-  function applyTransform(img, scale, tx, ty, transition){
+  function applyTransform(img, scale, tx, ty, trans){
     if(!img) return;
-    img.style.transition = transition || '';
+    img.style.transition = trans || 'none';
     img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
     img.style.transformOrigin = 'center center';
   }
@@ -1262,6 +1236,112 @@
     const dx = t[0].clientX - t[1].clientX;
     const dy = t[0].clientY - t[1].clientY;
     return Math.sqrt(dx*dx + dy*dy);
+  }
+
+  if(track){
+    track.addEventListener('touchstart', (e) => {
+      if(e.touches.length === 2){
+        isPinching = true;
+        isDragging = false;
+        initDist = dist(e.touches);
+        lastScale = curScale;
+        startPanX = panX;
+        startPanY = panY;
+        startMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        startMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        e.preventDefault();
+      } else if(e.touches.length === 1){
+        if(isPinching) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        panStartX = panX;
+        panStartY = panY;
+        isDragging = true;
+        if(curScale <= 1) track.style.transition = 'none';
+      }
+    }, { passive: false });
+
+    track.addEventListener('touchmove', (e) => {
+      if(e.touches.length === 2 && isPinching){
+        const newDist = dist(e.touches);
+        let scale = lastScale * (newDist / initDist);
+        scale = Math.max(1, Math.min(scale, 5));
+        curScale = scale;
+
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        panX = startPanX + (midX - startMidX);
+        panY = startPanY + (midY - startMidY);
+
+        const img = getCurrentImg();
+        applyTransform(img, curScale, panX, panY, 'none');
+        e.preventDefault();
+
+      } else if(e.touches.length === 1 && isDragging){
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
+
+        if(curScale > 1){
+          // PAN foto kur e zmadhuar
+          panX = panStartX + dx;
+          panY = panStartY + dy;
+          const img = getCurrentImg();
+          applyTransform(img, curScale, panX, panY, 'none');
+          e.preventDefault();
+        } else {
+          // SWIPE kalon slide
+          if(Math.abs(dx) > Math.abs(dy)){
+            e.preventDefault();
+            const offset = -(current * 100) + (dx / track.offsetWidth * 100);
+            track.style.transform = `translateX(${offset}%)`;
+          }
+        }
+      }
+    }, { passive: false });
+
+    track.addEventListener('touchend', (e) => {
+      if(isPinching && e.touches.length < 2){
+        isPinching = false;
+        if(curScale < 1.08) resetZoom();
+        lastScale = curScale;
+        return;
+      }
+
+      if(!isDragging) return;
+      isDragging = false;
+
+      if(curScale > 1) return; // mos ndërro slide kur e zmadhuar
+
+      const dx = e.changedTouches[0].clientX - startX;
+      const threshold = track.offsetWidth * 0.2;
+
+      if(Math.abs(dx) > threshold){
+        if(dx < 0 && current < totalSlides - 1) goToSlide(current + 1);
+        else if(dx > 0 && current > 0) goToSlide(current - 1);
+        else goToSlide(current);
+      } else {
+        goToSlide(current);
+      }
+    }, { passive: true });
+
+    // Double-tap: zmadho / reset
+    let lastTap = 0;
+    track.addEventListener('touchend', (e) => {
+      if(isPinching) return;
+      const now = Date.now();
+      if(now - lastTap < 280 && e.changedTouches.length === 1){
+        if(curScale > 1){
+          resetZoom();
+        } else {
+          curScale = 2.5; lastScale = 2.5; panX = 0; panY = 0;
+          const img = getCurrentImg();
+          applyTransform(img, 2.5, 0, 0, 'transform .25s ease');
+        }
+      }
+      lastTap = now;
+    });
+
+    dots.forEach((d,i) => d.addEventListener('click', () => goToSlide(i)));
   }
 
   if(track){
