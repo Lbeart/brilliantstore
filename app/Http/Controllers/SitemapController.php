@@ -10,7 +10,9 @@ class SitemapController extends Controller
     {
         $products = Product::latest()->get();
 
-        return response()->view('sitemap', compact('products'))
-            ->header('Content-Type', 'text/xml');
+        return response()
+            ->view('sitemap', compact('products'))
+            ->header('Content-Type', 'application/xml')
+            ->header('X-Content-Type-Options', 'nosniff');
     }
 }
