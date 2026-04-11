@@ -764,7 +764,7 @@
     .qa-btn:hover i{ color: var(--brand); }
 
     /* stretched link */
-    .stretched-link{ position: absolute; inset: 0; z-index: 2; }
+    .stretched-link{ position: absolute; inset: 0; z-index: 2; -webkit-tap-highlight-color: transparent; }
 
     /* reveal animation */
     .reveal{
