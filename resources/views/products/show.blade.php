@@ -1602,5 +1602,61 @@ updateCurtainWhatsapp();
 
 @endif
 </script>
+
+<script>
+(() => {
+  const imgs_all = document.querySelectorAll('.thumb-btn');
+  if (imgs_all.length < 2) return;
+
+  function getCurrentIndex() {
+    return Array.from(imgs_all).findIndex(b => b.classList.contains('active'));
+  }
+
+  function goToIndex(idx) {
+    const btns = Array.from(imgs_all);
+    idx = (idx + btns.length) % btns.length;
+    const btn = btns[idx];
+    const src = btn.querySelector('img').src;
+    window.setMainImg(src, btn);
+  }
+
+  const hero = document.querySelector('.product-hero');
+  hero.style.position = 'relative';
+
+  const btnStyle = `
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:50;
+    background:rgba(255,255,255,0.92);
+    border:none;
+    border-radius:999px;
+    width:42px;
+    height:42px;
+    font-size:20px;
+    cursor:pointer;
+    box-shadow:0 4px 14px rgba(0,0,0,0.12);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#111827;
+  `;
+
+  const prev = document.createElement('button');
+  prev.innerHTML = '&#8592;';
+  prev.setAttribute('aria-label', 'Foto e mëparshme');
+  prev.style.cssText = btnStyle + 'left:10px;';
+  prev.addEventListener('click', () => goToIndex(getCurrentIndex() - 1));
+
+  const next = document.createElement('button');
+  next.innerHTML = '&#8594;';
+  next.setAttribute('aria-label', 'Foto e ardhshme');
+  next.style.cssText = btnStyle + 'right:10px;';
+  next.addEventListener('click', () => goToIndex(getCurrentIndex() + 1));
+
+  hero.appendChild(prev);
+  hero.appendChild(next);
+})();
+</script>
 </body>
 </html>
