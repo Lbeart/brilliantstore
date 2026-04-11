@@ -1394,6 +1394,54 @@
 
   if(img.complete) initZoom();
   else img.addEventListener('load', initZoom);
+
+  // ===== SWIPE GALLERY =====
+let touchStartX = 0;
+let touchStartY = 0;
+let isSwiping = false;
+
+const thumbBtns = () => Array.from(document.querySelectorAll('.thumb-btn'));
+
+function getCurrentIndex() {
+  return thumbBtns().findIndex(b => b.classList.contains('active'));
+}
+
+function goToIndex(idx) {
+  const btns = thumbBtns();
+  if (!btns.length) return;
+  idx = (idx + btns.length) % btns.length; // loop
+  const btn = btns[idx];
+  const src = btn.querySelector('img').src;
+  window.setMainImg(src, btn);
+}
+
+img.addEventListener('touchstart', (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  isSwiping = false;
+}, { passive: true });
+
+img.addEventListener('touchmove', (e) => {
+  const dx = Math.abs(e.touches[0].clientX - touchStartX);
+  const dy = Math.abs(e.touches[0].clientY - touchStartY);
+  if (dx > dy && dx > 10) {
+    isSwiping = true;
+  }
+}, { passive: true });
+
+img.addEventListener('touchend', (e) => {
+  if (!isSwiping) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) < 40) return; // threshold
+  const cur = getCurrentIndex();
+  if (dx < 0) {
+    goToIndex(cur + 1); // swipe left → next
+  } else {
+    goToIndex(cur - 1); // swipe right → prev
+  }
+  isSwiping = false;
+}, { passive: true });
+// ===== END SWIPE =====
 })();
 </script>
 
