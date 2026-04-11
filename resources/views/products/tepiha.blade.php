@@ -765,6 +765,8 @@
 
     /* stretched link */
     .stretched-link{ position: absolute; inset: 0; z-index: 2; -webkit-tap-highlight-color: transparent; }
+    
+    .product-card{ cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
     /* reveal animation */
     .reveal{
