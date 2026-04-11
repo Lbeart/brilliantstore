@@ -767,6 +767,9 @@
     .stretched-link{ position: absolute; inset: 0; z-index: 2; -webkit-tap-highlight-color: transparent; }
     
     .product-card{ cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    @media (max-width: 991.98px){
+  .quick-actions{ display: none !important; }
+}
 
     /* reveal animation */
     .reveal{
