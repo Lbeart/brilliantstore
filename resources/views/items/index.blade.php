@@ -1158,13 +1158,13 @@
       <div class="row g-3 align-items-center">
         <div class="col-lg-4">
           <div class="chips-2rows">
-            <a class="chip" href="/tepiha" title="Shiko Tepiha"><i class="bi bi-basket3"></i> Tepiha</a>
-            <a class="chip" href="/mbulesa" title="Shiko Mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
-            <a class="chip" href="/perde-ditore" title="Shiko Perde"><i class="bi bi-layout-text-window"></i> Perde</a>
+            <a class="chip" href="/tepiha"><i class="bi bi-grid"></i> Tepiha</a>
+            <a class="chip" href="/mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
+            <a class="chip" href="/perde-ditore"><i class="bi bi-layout-text-window"></i> Perde</a>
 
-            <a class="chip" href="/garnishte" title="Shiko Garnishte"><i class="bi bi-stack"></i> Garnishte</a>
-            <a class="chip" href="/batanije" title="Shiko Batanije"><i class="bi bi-snow"></i> Batanije</a>
-            <a class="chip" href="/postava" title="Shiko Set çarçafësh"><i class="bi bi-bag-check"></i> Set çarçafesh</a>
+            <a class="chip" href="/garnishte"><i class="bi bi-layout-text-window"></i> Garnishte</a>
+            <a class="chip" href="/batanije"><i class="bi bi-snow"></i> Batanije</a>
+            <a class="chip" href="/postava"><i class="bi bi-bag-check"></i> Set çarçafesh</a>
           </div>
         </div>
 
