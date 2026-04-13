@@ -297,28 +297,27 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      gap:.55rem;
+      gap:.5rem;
       width: 100%;
-      padding: .65rem 1rem;
+      padding: .6rem .85rem;
       border-radius: 999px;
-      background: #ffffff;
-      border: 1px solid rgba(17,24,39,.08);
-      font-weight: 800;
-      color: #111827;
+      background: rgba(17,24,39,.04);
+      border: 1px solid rgba(17,24,39,.06);
+      font-weight: 900;
+      color: #0f172a;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      box-shadow: 0 10px 25px rgba(15,23,42,.08);
-      transition: transform .18s ease, background .18s ease, box-shadow .18s ease, border-color .18s ease;
+      box-shadow: 0 10px 22px rgba(2,6,23,.06);
+      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
     }
     .chip:hover{
-      background: rgba(220,53,69,.10);
-      border-color: rgba(220,53,69,.25);
-      transform: translateY(-1px);
+      background: rgba(220,53,69,.08);
+      transform: translateY(-2px);
       color: var(--brand);
-      box-shadow: 0 18px 32px rgba(15,23,42,.12);
+      box-shadow: 0 16px 30px rgba(2,6,23,.10);
     }
-    .chip i{ opacity:.95; font-size: 1rem; }
+    .chip i{ opacity:.9; }
 
     /* Search */
     .search-pro{ position: relative; }
@@ -1159,13 +1158,13 @@
       <div class="row g-3 align-items-center">
         <div class="col-lg-4">
           <div class="chips-2rows">
-            <a class="chip" href="/tepiha" title="Kalo te Tepiha"><i class="bi bi-grid-3x3-gap"></i> Tepiha</a>
-            <a class="chip" href="/mbulesa" title="Kalo te Mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
-            <a class="chip" href="/perde-ditore" title="Kalo te Perde"><i class="bi bi-window"></i> Perde</a>
+            <a class="chip" href="/tepiha" title="Shiko Tepiha"><i class="bi bi-basket3"></i> Tepiha</a>
+            <a class="chip" href="/mbulesa" title="Shiko Mbulesa"><i class="bi bi-house"></i> Mbulesa</a>
+            <a class="chip" href="/perde-ditore" title="Shiko Perde"><i class="bi bi-layout-text-window"></i> Perde</a>
 
-            <a class="chip" href="/garnishte" title="Kalo te Garnishte"><i class="bi bi-stack"></i> Garnishte</a>
-            <a class="chip" href="/batanije" title="Kalo te Batanije"><i class="bi bi-snow"></i> Batanije</a>
-            <a class="chip" href="/postava" title="Kalo te Set çarçafesh"><i class="bi bi-box-seam"></i> Set çarçafesh</a>
+            <a class="chip" href="/garnishte" title="Shiko Garnishte"><i class="bi bi-stack"></i> Garnishte</a>
+            <a class="chip" href="/batanije" title="Shiko Batanije"><i class="bi bi-snow"></i> Batanije</a>
+            <a class="chip" href="/postava" title="Shiko Set çarçafësh"><i class="bi bi-bag-check"></i> Set çarçafesh</a>
           </div>
         </div>
 
