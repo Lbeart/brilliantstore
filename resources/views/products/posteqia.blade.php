@@ -2,8 +2,54 @@
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <title>Lekur Pelushi  – Katalogu</title>
+
+  <!-- TITULLI & PËRSHKRIMI SEO -->
+  <title>Lekur Pelushi premium për shtëpi & divan – Brillant Lipjan</title>
+  <meta name="description" content="Leku pelushi premium për divan, dhomë gjumi dhe ambient komod. Material të butë, ngjyra të qëndrueshme dhe cilësi profesionale nga Brillant Lipjan.">
+
+  <!-- KEYWORDS -->
+  <meta name="keywords" content="lekur pelushi, lekur pelushi shtëpie, lekur pelushi divan, lekur pelushi modern, tapetë pelushi, Brillant Lipjan, lekur pelushi Kosove">
+
+  <!-- INDEXIMI -->
+  <meta name="robots" content="index, follow">
+
+  <!-- CANONICAL URL -->
+  <link rel="canonical" href="{{ url('/posteqia') }}">
+
+  <!-- VIEWPORT -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Brillant Lipjan">
+  <meta property="og:title" content="Lekur Pelushi premium për shtëpi & divan – Brillant Lipjan">
+  <meta property="og:description" content="Leku pelushi premium për divan dhe dhomë gjumi. Ngjyra të bukura, material të butë dhe cilësi të lartë nga Brillant Lipjan.">
+  <meta property="og:url" content="{{ url('/posteqia') }}">
+  <meta property="og:image" content="{{ asset('images/og-posteqia.jpg') }}">
+
+  <!-- TWITTER CARD -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Lekur Pelushi premium – Brillant Lipjan">
+  <meta name="twitter:description" content="Tapetë pelushi të butë dhe cilësorë për divan, dhomë gjumi dhe ambient shtëpie.">
+  <meta name="twitter:image" content="{{ asset('images/og-posteqia.jpg') }}">
+
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Lekur Pelushi premium – Brillant Lipjan",
+    "description": "Leku pelushi premium për divan dhe dhomë gjumi, me material të butë dhe ngjyra të qëndrueshme.",
+    "url": "{{ url('/posteqia') }}",
+    "image": "{{ asset('images/og-posteqia.jpg') }}",
+    "inLanguage": "sq",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "B-Brillant",
+      "url": "{{ url('/') }}"
+    }
+  }
+  </script>
 
   <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">

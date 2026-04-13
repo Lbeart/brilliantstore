@@ -2,10 +2,54 @@
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <title>Tepiha për banjo antirrëshqitës – Brillant</title>
-<meta name="description" content="Tepiha banjoje me thithje të shpejtë dhe bazë antirrëshqitëse. Ngjyra dhe përmasa të ndryshme për çdo ambient.">
 
+  <!-- TITULLI & PËRSHKRIMI SEO -->
+  <title>Tepiha për banjo antirrëshqitës & të qëndrueshëm – Brillant Lipjan</title>
+  <meta name="description" content="Tepiha banjoje me thithje të shpejtë dhe bazë antirrëshqitëse. Ngjyra dhe përmasa të ndryshme për çdo ambient banjoje.">
+
+  <!-- KEYWORDS -->
+  <meta name="keywords" content="tepiha banjoje, tepiha antirrëshqitës, tepiha dushi, tepiha banje, tepiha sigurie, Brillant Lipjan, tepiha Kosove">
+
+  <!-- INDEXIMI -->
+  <meta name="robots" content="index, follow">
+
+  <!-- CANONICAL URL -->
+  <link rel="canonical" href="{{ url('/tepihebanjo') }}">
+
+  <!-- VIEWPORT -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Brillant Lipjan">
+  <meta property="og:title" content="Tepiha për banjo antirrëshqitës – Brillant Lipjan">
+  <meta property="og:description" content="Tepiha banjoje të sigurta dhe me thithje të mirë. Zgjidh modele të ndryshme me bazë antirrëshqitëse për banjon tënde.">
+  <meta property="og:url" content="{{ url('/tepihebanjo') }}">
+  <meta property="og:image" content="{{ asset('images/og-tepihebanjo.jpg') }}">
+
+  <!-- TWITTER CARD -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tepiha për banjo antirrëshqitës – Brillant Lipjan">
+  <meta name="twitter:description" content="Zgjidh tepiha sigurie dhe të qëndrueshëm për banjo dhe dhoma lagështie.">
+  <meta name="twitter:image" content="{{ asset('images/og-tepihebanjo.jpg') }}">
+
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Tepiha për banjo antirrëshqitës – Brillant Lipjan",
+    "description": "Tepiha banjoje me bazë antirrëshqitëse dhe thithje të shpejtë për çdo ambient banjoje.",
+    "url": "{{ url('/tepihebanjo') }}",
+    "image": "{{ asset('images/og-tepihebanjo.jpg') }}",
+    "inLanguage": "sq",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "B-Brillant",
+      "url": "{{ url('/') }}"
+    }
+  }
+  </script>
 
   <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">

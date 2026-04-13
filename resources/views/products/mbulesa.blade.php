@@ -5,7 +5,7 @@
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
   <title>Mbulesa moderne për dhoma gjumi, karrige & divane – Brillant Lipjan Mbulesa Online</title>
-  <meta name="description" content="Mbulesa moderne dhe cilësore për dhoma gjumi, karrige, divane dhe ambiente të shtëpisë. Dizajne elegante, materiale rezistente dhe çmime të përballueshme nga Brillant Lipjan.Mbulesa,Mbulesa Online">
+  <meta name="description" content="Mbulesa moderne dhe cilësore për dhoma gjumi, karrige, divane dhe ambiente të shtëpisë. Dizajne elegante, materiale rezistente dhe çmime të përballueshme nga Brillant Lipjan. Mbulesa Online">
 
   <!-- FJALË KYÇE (jo vendimtare për Google, por ndihmojnë) -->
   <meta name="keywords" content="mbulesa,mbulesa sallon,mbulesa me meter,mbulesa Kosove, mbulesa krevati, mbulesa dhome gjumi, mbulesa karrigesh, mbulesa divani, mbulesa moderne, Brillant Lipjan, mbulesa Kosove,mbulesa,Mbulesa Online">
