@@ -42,6 +42,8 @@
   <meta name="description" content="{{ $metaDesc }}">
   <link rel="canonical" href="{{ $pageUrl }}">
   <meta property="og:type" content="product">
+  <meta property="og:site_name" content="B-Brillant">
+  <meta property="og:locale" content="sq_AL">
   <meta property="og:url" content="{{ $pageUrl }}">
   <meta property="og:title" content="{{ $pageTitle }}">
   <meta property="og:description" content="{{ $metaDesc }}">
@@ -682,8 +684,16 @@
     'description' => $cleanDescription,
     'sku' => $product->sku ?? (string)$product->id,
     'mpn' => $product->sku ?? (string)$product->id,
-    'brand' => 'B-Brillant',
+    'brand' => [
+      '@type' => 'Brand',
+      'name' => 'B-Brillant',
+    ],
     'url' => $pageUrl,
+    'category' => $pageCategory,
+    'mainEntityOfPage' => [
+      '@type' => 'WebPage',
+      '@id' => $pageUrl,
+    ],
     'aggregateRating' => [
       '@type' => 'AggregateRating',
       'ratingValue' => $ratingValue,
@@ -713,6 +723,11 @@
       'price' => number_format((float)$product->price, 2, '.', ''),
       'priceCurrency' => 'EUR',
       'availability' => 'https://schema.org/' . (($product->stock ?? 0) > 0 ? 'InStock' : 'OutOfStock'),
+      'itemCondition' => 'https://schema.org/NewCondition',
+      'seller' => [
+        '@type' => 'Organization',
+        'name' => 'B-Brillant',
+      ],
       'shippingDetails' => [
         '@type' => 'OfferShippingDetails',
         'shippingRate' => [
@@ -726,6 +741,12 @@
         ],
         'deliveryTime' => [
           '@type' => 'ShippingDeliveryTime',
+          'handlingTime' => [
+            '@type' => 'QuantitativeValue',
+            'minValue' => 1,
+            'maxValue' => 1,
+            'unitCode' => 'DAY',
+          ],
           'transitTime' => [
             '@type' => 'QuantitativeValue',
             'minValue' => 1,
@@ -737,8 +758,12 @@
       'hasMerchantReturnPolicy' => [
         '@type' => 'MerchantReturnPolicy',
         'name' => 'Politika e kthimit',
-        'returnPolicyCategory' => 'https://schema.org/ExchangeOnly',
+        'applicableCountry' => [
+          '@type' => 'Country',
+          'name' => 'XK',
+        ],
         'merchantReturnDays' => 14,
+        'returnMethod' => 'https://schema.org/ReturnByMail',
       ],
     ],
   ];
