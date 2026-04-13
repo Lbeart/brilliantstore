@@ -2,13 +2,10 @@
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <title>{{ $product->name }} – Detaje</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-  
 
   @php
     $isCurtain = str_contains(strtolower($product->category ?? ''), 'perde');
@@ -23,18 +20,37 @@
     }
     $mainImg = $imgs[0] ?? null;
 
-    $metaDesc = Str::limit(strip_tags($product->description ?? $product->name), 160);
+    $cleanDescription = strip_tags($product->description ?? $product->name);
+    $metaDesc = Str::limit($cleanDescription, 160);
+    $pageCategory = trim($product->category ?? 'Produkt');
+    $pageTitle = trim($product->name . ($pageCategory ? ' – ' . $pageCategory : '') . ' | Brillant');
+    $pageUrl = url()->current();
+    if ($mainImg) {
+      if (str_starts_with($mainImg, 'http://') || str_starts_with($mainImg, 'https://')) {
+        $ogImage = $mainImg;
+      } elseif (str_starts_with($mainImg, 'images/') || str_starts_with($mainImg, 'storage/')) {
+        $ogImage = asset($mainImg);
+      } else {
+        $ogImage = asset('storage/'.$mainImg);
+      }
+    } else {
+      $ogImage = asset('images/placeholder-product.png');
+    }
   @endphp
 
+  <title>{{ $pageTitle }}</title>
   <meta name="description" content="{{ $metaDesc }}">
-  <meta property="og:title" content="{{ $product->name }}">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link rel="canonical" href="{{ $pageUrl }}">
+  <meta property="og:type" content="product">
+  <meta property="og:url" content="{{ $pageUrl }}">
+  <meta property="og:title" content="{{ $pageTitle }}">
   <meta property="og:description" content="{{ $metaDesc }}">
-
-  {{-- ✅ OG IMAGE: merre foton e parë --}}
-  @if($mainImg)
-    <meta property="og:image" content="{{ asset('storage/'.$mainImg) }}">
-  @endif
+  <meta property="og:image" content="{{ $ogImage }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ $pageTitle }}">
+  <meta name="twitter:description" content="{{ $metaDesc }}">
+  <meta name="twitter:image" content="{{ $ogImage }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <style>
     :root{
@@ -655,17 +671,23 @@
   </style>
   <script type="application/ld+json">
 {
- "@context": "https://schema.org",
- "@type": "Product",
- "name": "{{ $product->name }}",
- "image": "{{ $mainImg ? asset('storage/'.$mainImg) : '' }}",
- "description": "{{ $metaDesc }}",
- "offers": {
-   "@type": "Offer",
-   "price": "{{ $product->price }}",
-   "priceCurrency": "EUR",
-   "availability": "https://schema.org/{{ ($product->stock ?? 0) > 0 ? 'InStock' : 'OutOfStock' }}"
- }
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ $product->name }}",
+  "image": "{{ $ogImage }}",
+  "description": "{{ $cleanDescription }}",
+  "sku": "{{ $product->sku ?? $product->id ?? '' }}",
+  "brand": {
+    "@type": "Brand",
+    "name": "Brillant"
+  },
+  "url": "{{ $pageUrl }}",
+  "offers": {
+    "@type": "Offer",
+    "price": "{{ $product->price }}",
+    "priceCurrency": "EUR",
+    "availability": "https://schema.org/{{ ($product->stock ?? 0) > 0 ? 'InStock' : 'OutOfStock' }}"
+  }
 }
 </script>
 </head>
