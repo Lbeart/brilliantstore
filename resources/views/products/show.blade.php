@@ -684,10 +684,7 @@
     'description' => $cleanDescription,
     'sku' => $product->sku ?? (string)$product->id,
     'mpn' => $product->sku ?? (string)$product->id,
-    'brand' => [
-      '@type' => 'Brand',
-      'name' => 'B-Brillant',
-    ],
+    'brand' => 'B-Brillant',
     'url' => $pageUrl,
     'category' => $pageCategory,
     'mainEntityOfPage' => [
