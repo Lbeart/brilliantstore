@@ -192,6 +192,9 @@ Route::post('/orders/{order}/send-invoice', [AdminOrderController::class, 'sendI
         Route::post('/orders/{order}/email-shipped', [AdminOrderController::class, 'sendShippedEmail'])
             ->whereNumber('order')->name('orders.email_shipped');
 
+        Route::post('/orders/{order}/email-canceled', [AdminOrderController::class, 'sendCanceledEmail'])
+            ->whereNumber('order')->name('orders.email_canceled');
+
         Route::delete('/orders/{order}', [AdminOrderController::class, 'destroy'])
             ->whereNumber('order')->name('orders.destroy');
 

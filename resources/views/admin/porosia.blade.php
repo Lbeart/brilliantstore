@@ -192,6 +192,29 @@
       </div>
 
       <div class="card-soft p-3 mt-3">
+        <h6 class="mb-3">Njoftim për anulimin</h6>
+        @if($order->email)
+          <div class="small text-muted mb-3">
+            Klikoni butonin për të dërguar email “Porosia juaj është anuluar” dhe shkruani arsye/sugjerim për klientin.
+          </div>
+          <button id="showCancelEmailForm" type="button" class="btn btn-outline-danger mb-3">Porosia juaj është anuluar</button>
+
+          <form id="cancelEmailForm" method="POST" action="{{ route('admin.orders.email_canceled', $order) }}" class="d-none">
+            @csrf
+            <div class="mb-3">
+              <label class="form-label" for="cancel_reason">Shkruaj arsyen e anulimit</label>
+              <textarea name="reason" id="cancel_reason" class="form-control" rows="4" placeholder="Shkruaj pse porosia u anulua dhe nëse klienti dëshiron, ofroji zgjidhje për produkt tjetër."></textarea>
+            </div>
+            <button class="btn btn-danger">Dërgo email anulimi</button>
+          </form>
+        @else
+          <div class="alert alert-warning mb-0">
+            Kjo porosi nuk ka email – nuk mund të dërgosh njoftime për anulim.
+          </div>
+        @endif
+      </div>
+
+      <div class="card-soft p-3 mt-3">
         <h6 class="mb-3">Aksione</h6>
         <div class="d-flex flex-wrap gap-2">
           @if($order->email)
@@ -228,6 +251,24 @@
   </div>
 </div>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var showBtn = document.getElementById('showCancelEmailForm');
+    var form = document.getElementById('cancelEmailForm');
+
+    if (showBtn && form) {
+      showBtn.addEventListener('click', function () {
+        form.classList.toggle('d-none');
+        if (!form.classList.contains('d-none')) {
+          var textarea = form.querySelector('textarea');
+          if (textarea) {
+            textarea.focus();
+          }
+        }
+      });
+    }
+  });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema; // ⬅️ SHTUAR
+use App\Mail\OrderCanceledMail;
 use App\Mail\OrderConfirmationMail;
 use App\Mail\OrderShippedMail;
 use App\Models\Order;
@@ -111,6 +112,26 @@ class OrderController extends Controller
         }
 
         return back()->with('success', 'Emaili “Porosia është nisur” u dërgua.');
+    }
+
+    public function sendCanceledEmail(Request $request, Order $order)
+    {
+        if (!$order->email) {
+            return back()->with('error', 'Kjo porosi nuk ka email të klientit.');
+        }
+
+        $data = $request->validate([
+            'reason' => 'nullable|string|max:1000',
+        ]);
+
+        $order->load('items');
+        Mail::to($order->email)->send(new OrderCanceledMail($order, $data['reason'] ?? null));
+
+        if ($order->status !== 'canceled') {
+            $order->update(['status' => 'canceled']);
+        }
+
+        return back()->with('success', 'Emaili i anullimit u dërgua te klienti.');
     }
 
     public function destroy(Order $order)
