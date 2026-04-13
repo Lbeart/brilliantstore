@@ -672,81 +672,78 @@
   <script type="application/ld+json">
 @php
   $ratingValue = number_format($product->rating ?? 4.7, 1);
-  $reviewCount = $product->review_count ?? 12;
-  if (!$reviewCount || $reviewCount < 1) {
-    $reviewCount = 12;
-  }
+  $reviewCount = max(1, intval($product->review_count ?? 12));
+  $productSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'Product',
+    '@id' => $pageUrl,
+    'name' => $product->name,
+    'image' => $ogImage,
+    'description' => $cleanDescription,
+    'sku' => $product->sku ?? (string)$product->id,
+    'mpn' => $product->sku ?? (string)$product->id,
+    'brand' => 'B-Brillant',
+    'url' => $pageUrl,
+    'aggregateRating' => [
+      '@type' => 'AggregateRating',
+      'ratingValue' => $ratingValue,
+      'reviewCount' => $reviewCount,
+      'bestRating' => '5',
+      'worstRating' => '1',
+    ],
+    'review' => [
+      [
+        '@type' => 'Review',
+        'author' => [
+          '@type' => 'Person',
+          'name' => 'B-Brillant customer',
+        ],
+        'datePublished' => now()->toDateString(),
+        'reviewBody' => 'Një produkt i rekomanduar nga klientët tanë për cilësi dhe shërbim të shpejtë.',
+        'reviewRating' => [
+          '@type' => 'Rating',
+          'ratingValue' => $ratingValue,
+          'bestRating' => '5',
+          'worstRating' => '1',
+        ],
+      ],
+    ],
+    'offers' => [
+      '@type' => 'Offer',
+      'price' => number_format((float)$product->price, 2, '.', ''),
+      'priceCurrency' => 'EUR',
+      'availability' => 'https://schema.org/' . (($product->stock ?? 0) > 0 ? 'InStock' : 'OutOfStock'),
+      'shippingDetails' => [
+        '@type' => 'OfferShippingDetails',
+        'shippingRate' => [
+          '@type' => 'MonetaryAmount',
+          'value' => '0.00',
+          'currency' => 'EUR',
+        ],
+        'shippingDestination' => [
+          '@type' => 'DefinedRegion',
+          'addressCountry' => 'XK',
+        ],
+        'deliveryTime' => [
+          '@type' => 'ShippingDeliveryTime',
+          'transitTime' => [
+            '@type' => 'QuantitativeValue',
+            'minValue' => 1,
+            'maxValue' => 3,
+            'unitCode' => 'DAY',
+          ],
+        ],
+      ],
+      'hasMerchantReturnPolicy' => [
+        '@type' => 'MerchantReturnPolicy',
+        'name' => 'Politika e kthimit',
+        'returnPolicyCategory' => 'https://schema.org/ExchangeOnly',
+        'merchantReturnDays' => 14,
+      ],
+    ],
+  ];
 @endphp
-{
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": "{{ $product->name }}",
-  "image": "{{ $ogImage }}",
-  "description": "{{ $cleanDescription }}",
-  "sku": "{{ $product->sku ?? $product->id ?? '' }}",
-  "brand": {
-    "@type": "Brand",
-    "name": "B-Brillant"
-  },
-  "url": "{{ $pageUrl }}",
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "{{ $ratingValue }}",
-    "reviewCount": {{ $reviewCount }},
-    "bestRating": "5",
-    "worstRating": "1"
-  },
-  "review": [
-    {
-      "@type": "Review",
-      "author": {
-        "@type": "Person",
-        "name": "B-Brillant customer"
-      },
-      "datePublished": "{{ now()->toDateString() }}",
-      "reviewBody": "Një produkt i rekomanduar nga klientët tanë për cilësi dhe shërbim të shpejtë.",
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "{{ $ratingValue }}",
-        "bestRating": "5",
-        "worstRating": "1"
-      }
-    }
-  ],
-  "offers": {
-    "@type": "Offer",
-    "price": "{{ $product->price }}",
-    "priceCurrency": "EUR",
-    "availability": "https://schema.org/{{ ($product->stock ?? 0) > 0 ? 'InStock' : 'OutOfStock' }}",
-    "shippingDetails": {
-      "@type": "OfferShippingDetails",
-      "shippingRate": {
-        "@type": "MonetaryAmount",
-        "value": "0.00",
-        "currency": "EUR"
-      },
-      "shippingDestination": {
-        "@type": "DefinedRegion",
-        "addressCountry": "XK"
-      },
-      "deliveryTime": {
-        "@type": "ShippingDeliveryTime",
-        "transitTime": {
-          "@type": "QuantitativeValue",
-          "minValue": 1,
-          "maxValue": 3,
-          "unitCode": "DAY"
-        }
-      }
-    },
-    "hasMerchantReturnPolicy": {
-      "@type": "MerchantReturnPolicy",
-      "name": "Politika e kthimit",
-      "returnPolicyCategory": "https://schema.org/ExchangeOnly",
-      "merchantReturnDays": 14
-    }
-  }
-}
+{!! json_encode($productSchema, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT) !!}
 </script>
 </head>
 <body>
