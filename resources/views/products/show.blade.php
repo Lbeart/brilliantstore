@@ -675,6 +675,18 @@
 @php
   $ratingValue = round((float)($product->rating ?? 4.7), 1);
   $reviewCount = max(1, intval($product->review_count ?? 12));
+  $rawGtin = trim((string)($product->gtin ?? $product->ean ?? $product->sku ?? ''));
+  $cleanGtin = preg_replace('/\D+/', '', $rawGtin);
+  $gtinKeys = [];
+  if (preg_match('/^\d{8}$/', $cleanGtin)) {
+    $gtinKeys['gtin8'] = $cleanGtin;
+  } elseif (preg_match('/^\d{12}$/', $cleanGtin)) {
+    $gtinKeys['gtin12'] = $cleanGtin;
+  } elseif (preg_match('/^\d{13}$/', $cleanGtin)) {
+    $gtinKeys['gtin13'] = $cleanGtin;
+  } elseif (preg_match('/^\d{14}$/', $cleanGtin)) {
+    $gtinKeys['gtin14'] = $cleanGtin;
+  }
   $productSchema = [
     '@context' => 'https://schema.org',
     '@type' => 'Product',
@@ -768,6 +780,10 @@
       ],
     ],
   ];
+
+  if (!empty($gtinKeys)) {
+    $productSchema = array_merge($productSchema, $gtinKeys);
+  }
 @endphp
 {!! json_encode($productSchema, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT) !!}
 </script>
