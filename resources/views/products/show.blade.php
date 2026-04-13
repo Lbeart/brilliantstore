@@ -23,7 +23,7 @@
     $cleanDescription = strip_tags($product->description ?? $product->name);
     $metaDesc = Str::limit($cleanDescription, 160);
     $pageCategory = trim($product->category ?? 'Produkt');
-    $pageTitle = trim($product->name . ($pageCategory ? ' – ' . $pageCategory : '') . ' | Brillant');
+    $pageTitle = trim($product->name . ($pageCategory ? ' – ' . $pageCategory : '') . ' | B-Brillant');
     $pageUrl = url()->current();
     if ($mainImg) {
       if (str_starts_with($mainImg, 'http://') || str_starts_with($mainImg, 'https://')) {
@@ -679,14 +679,41 @@
   "sku": "{{ $product->sku ?? $product->id ?? '' }}",
   "brand": {
     "@type": "Brand",
-    "name": "Brillant"
+    "name": "B-Brillant"
   },
   "url": "{{ $pageUrl }}",
   "offers": {
     "@type": "Offer",
     "price": "{{ $product->price }}",
     "priceCurrency": "EUR",
-    "availability": "https://schema.org/{{ ($product->stock ?? 0) > 0 ? 'InStock' : 'OutOfStock' }}"
+    "availability": "https://schema.org/{{ ($product->stock ?? 0) > 0 ? 'InStock' : 'OutOfStock' }}",
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0.00",
+        "currency": "EUR"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "XK"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 3,
+          "unitCode": "DAY"
+        }
+      }
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "name": "Politika e kthimit",
+      "returnPolicyCategory": "https://schema.org/ExchangeOnly",
+      "merchantReturnDays": 14
+    }
   }
 }
 </script>
@@ -696,7 +723,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom" aria-label="Kryemeny">
   <div class="container-fluid">
     <a class="navbar-brand" href="{{ url('/') }}">
-      <img src="{{ asset('images/brillant.png') }}" alt="Brillant">
+      <img src="{{ asset('images/brillant.png') }}" alt="B-Brillant">
     </a>
     <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
       <span class="navbar-toggler-icon"></span>
@@ -1121,12 +1148,12 @@
       {{-- LEFT: LOGO + BRAND --}}
       <div class="footer-brand">
         <div class="footer-logo-wrap">
-          <img class="footer-logo" src="{{ asset('images/brillant.png') }}" alt="Brillant" loading="lazy">
+          <img class="footer-logo" src="{{ asset('images/brillant.png') }}" alt="B-Brillant" loading="lazy">
         </div>
 
         <div>
           <small>Salloni i Perdeve, Tepiha</small>
-          <div class="brand-name">BRILLANT</div>
+          <div class="brand-name">B-BRILLANT</div>
         </div>
 
         <div class="footer-social">
@@ -1173,7 +1200,7 @@
     <div class="footer-bottom">
       <div></div>
       <div class="center">crafted by RDR Digital L.L.C</div>
-      <div class="right">Copyright © {{ now()->year }} Brillant</div>
+      <div class="right">Copyright © {{ now()->year }} B-Brillant</div>
     </div>
   </div>
 </footer>
