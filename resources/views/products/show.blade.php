@@ -673,7 +673,7 @@
   </style>
   <script type="application/ld+json">
 @php
-  $ratingValue = number_format($product->rating ?? 4.7, 1);
+  $ratingValue = round((float)($product->rating ?? 4.7), 1);
   $reviewCount = max(1, intval($product->review_count ?? 12));
   $productSchema = [
     '@context' => 'https://schema.org',
@@ -697,9 +697,10 @@
     'aggregateRating' => [
       '@type' => 'AggregateRating',
       'ratingValue' => $ratingValue,
+      'ratingCount' => $reviewCount,
       'reviewCount' => $reviewCount,
-      'bestRating' => '5',
-      'worstRating' => '1',
+      'bestRating' => 5,
+      'worstRating' => 1,
     ],
     'review' => [
       [
@@ -713,15 +714,17 @@
         'reviewRating' => [
           '@type' => 'Rating',
           'ratingValue' => $ratingValue,
-          'bestRating' => '5',
-          'worstRating' => '1',
+          'bestRating' => 5,
+          'worstRating' => 1,
         ],
       ],
     ],
     'offers' => [
       '@type' => 'Offer',
-      'price' => number_format((float)$product->price, 2, '.', ''),
+      'url' => $pageUrl,
+      'price' => round((float)$product->price, 2),
       'priceCurrency' => 'EUR',
+      'priceValidUntil' => now()->addDays(30)->toDateString(),
       'availability' => 'https://schema.org/' . (($product->stock ?? 0) > 0 ? 'InStock' : 'OutOfStock'),
       'itemCondition' => 'https://schema.org/NewCondition',
       'seller' => [
@@ -732,7 +735,7 @@
         '@type' => 'OfferShippingDetails',
         'shippingRate' => [
           '@type' => 'MonetaryAmount',
-          'value' => '0.00',
+          'value' => 0.00,
           'currency' => 'EUR',
         ],
         'shippingDestination' => [
