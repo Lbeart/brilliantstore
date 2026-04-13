@@ -763,6 +763,7 @@
           'name' => 'XK',
         ],
         'merchantReturnDays' => 14,
+        'returnPolicyCategory' => 'MoneyBack',
         'returnMethod' => 'https://schema.org/ReturnByMail',
       ],
     ],
