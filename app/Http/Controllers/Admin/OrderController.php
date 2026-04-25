@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema; // ⬅️ SHTUAR
 use App\Mail\OrderCanceledMail;
@@ -86,15 +87,24 @@ class OrderController extends Controller
 
     public function sendConfirmationEmail(Order $order)
     {
-         
         if (!$order->email) {
             return back()->with('error', 'Kjo porosi nuk ka email të klientit.');
         }
 
-        $order->load('items');
-        Mail::to($order->email)->send(new OrderConfirmationMail($order));
+        try {
+            $order->load('items');
+            Mail::to($order->email)->send(new OrderConfirmationMail($order));
 
-        return back()->with('success', 'Emaili i konfirmimit u dërgua te klienti.');
+            return back()->with('success', 'Emaili i konfirmimit u dërgua te klienti.');
+        } catch (\Throwable $e) {
+            Log::error('Failed to send order confirmation email', [
+                'order_id' => $order->id,
+                'email' => $order->email,
+                'exception' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Emaili nuk u dërgua. Shkak: ' . $e->getMessage());
+        }
     }
 
     public function sendShippedEmail(Order $order)
@@ -103,15 +113,24 @@ class OrderController extends Controller
             return back()->with('error', 'Kjo porosi nuk ka email të klientit.');
         }
 
-        $order->load('items');
-        Mail::to($order->email)->send(new OrderShippedMail($order));
+        try {
+            $order->load('items');
+            Mail::to($order->email)->send(new OrderShippedMail($order));
 
-        // opsionale: nëse ishte "new", kalo në "processing"
-        if ($order->status === 'new') {
-            $order->update(['status' => 'processing']);
+            if ($order->status === 'new') {
+                $order->update(['status' => 'processing']);
+            }
+
+            return back()->with('success', 'Emaili “Porosia është nisur” u dërgua.');
+        } catch (\Throwable $e) {
+            Log::error('Failed to send order shipped email', [
+                'order_id' => $order->id,
+                'email' => $order->email,
+                'exception' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Emaili nuk u dërgua. Shkak: ' . $e->getMessage());
         }
-
-        return back()->with('success', 'Emaili “Porosia është nisur” u dërgua.');
     }
 
     public function sendCanceledEmail(Request $request, Order $order)
@@ -124,16 +143,24 @@ class OrderController extends Controller
             'reason' => 'nullable|string|max:1000',
         ]);
 
-        $order->load('items');
-        \Log::info('Sending canceled email to: ' . $order->email . ' for order ' . $order->id);
-        Mail::to($order->email)->send(new OrderCanceledMail($order, $data['reason'] ?? null));
-        \Log::info('Canceled email sent successfully to: ' . $order->email);
+        try {
+            $order->load('items');
+            Mail::to($order->email)->send(new OrderCanceledMail($order, $data['reason'] ?? null));
 
-        if ($order->status !== 'canceled') {
-            $order->update(['status' => 'canceled']);
+            if ($order->status !== 'canceled') {
+                $order->update(['status' => 'canceled']);
+            }
+
+            return back()->with('success', 'Emaili i anullimit u dërgua te klienti.');
+        } catch (\Throwable $e) {
+            Log::error('Failed to send order canceled email', [
+                'order_id' => $order->id,
+                'email' => $order->email,
+                'exception' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', 'Emaili nuk u dërgua. Shkak: ' . $e->getMessage());
         }
-
-        return back()->with('success', 'Emaili i anullimit u dërgua te klienti.');
     }
 
     public function destroy(Order $order)
