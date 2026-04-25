@@ -215,8 +215,31 @@ class CartController extends Controller
         }
         $main = $imgs[0] ?? null;
 
-        return $main
-            ? asset('storage/'.$main)
-            : asset('images/placeholder-product.png');
+        if (!$main) {
+            return asset('images/placeholder-product.png');
+        }
+
+        $main = trim((string) $main);
+
+        if (preg_match('#^https?://#i', $main)) {
+            if (str_contains($main, '/storage/images/')) {
+                return str_replace('/storage/images/', '/images/', $main);
+            }
+
+            return $main;
+        }
+
+        $main = ltrim($main, '/');
+        $main = preg_replace('#^(storage|public)/#', '', $main);
+
+        if (str_starts_with($main, 'images/')) {
+            return asset($main);
+        }
+
+        if (str_starts_with($main, 'products/')) {
+            return asset('images/'.$main);
+        }
+
+        return asset('images/products/'.$main);
     }
 }

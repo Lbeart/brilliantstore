@@ -20,7 +20,7 @@ class OrderTrackingController extends Controller
 
     {
 
-        return view('track.show');
+        return view('track.form');
 
     }
 

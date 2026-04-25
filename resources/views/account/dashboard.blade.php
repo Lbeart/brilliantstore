@@ -87,6 +87,20 @@
       line-height:1.7;
       font-weight:500;
     }
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+    .hero-actions .btn{
+      border-radius:13px;
+      font-weight:800;
+      min-height:44px;
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+    }
     .card-soft{
       background:#fff;
       border:1px solid rgba(17,24,39,.06);
@@ -151,6 +165,57 @@
     .status-processing{ color:#92400e; background:#fef3c7; }
     .status-completed{ color:#166534; background:#dcfce7; }
     .status-canceled{ color:#6b7280; background:#f3f4f6; }
+    .quick-card{
+      height:100%;
+      padding:18px;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      color:var(--ink);
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .quick-card:hover{
+      transform:translateY(-2px);
+      color:var(--ink);
+      box-shadow:0 22px 55px rgba(15,23,42,.13);
+    }
+    .quick-icon{
+      width:46px;
+      height:46px;
+      border-radius:15px;
+      display:grid;
+      place-items:center;
+      color:var(--brand);
+      background:rgba(220,53,69,.09);
+      flex:0 0 auto;
+      font-size:1.2rem;
+    }
+    .filter-form{
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) auto auto;
+      gap:10px;
+      margin-top:16px;
+    }
+    .filter-pills{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:14px;
+    }
+    .filter-pill{
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:7px 12px;
+      color:#374151;
+      background:#fff;
+      font-size:.84rem;
+      font-weight:800;
+    }
+    .filter-pill.active{
+      color:#fff;
+      background:var(--brand);
+      border-color:var(--brand);
+    }
     .item-row{
       display:flex;
       gap:12px;
@@ -174,6 +239,48 @@
       margin-bottom:2px;
     }
     .money{ color:var(--brand); font-weight:900; }
+    .timeline{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0, 1fr));
+      gap:8px;
+      margin:14px 0 2px;
+    }
+    .timeline-step{
+      min-height:54px;
+      padding:10px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      color:var(--muted);
+      font-size:.76rem;
+      font-weight:800;
+    }
+    .timeline-step.done{
+      border-color:rgba(22,101,52,.18);
+      background:#f0fdf4;
+      color:#166534;
+    }
+    .timeline-step.active{
+      border-color:rgba(220,53,69,.25);
+      background:rgba(220,53,69,.08);
+      color:var(--brand);
+    }
+    .timeline-dot{
+      width:22px;
+      height:22px;
+      display:inline-grid;
+      place-items:center;
+      margin-right:6px;
+      border-radius:999px;
+      background:#eef0f4;
+    }
+    .timeline-step.done .timeline-dot,
+    .timeline-step.active .timeline-dot{
+      color:#fff;
+      background:currentColor;
+    }
+    .timeline-step.done .timeline-dot i,
+    .timeline-step.active .timeline-dot i{ color:#fff; }
     .profile-line{
       display:flex;
       justify-content:space-between;
@@ -218,6 +325,30 @@
       background:rgba(220,53,69,.09);
       font-size:1.6rem;
     }
+    .mini-list{ display:grid; gap:10px; }
+    .mini-item{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fafafa;
+    }
+    .service-list{
+      display:grid;
+      gap:10px;
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+    .service-list li{
+      display:flex;
+      gap:10px;
+      color:#374151;
+      font-weight:600;
+    }
+    .service-list i{ color:var(--brand); margin-top:2px; }
 
     @media (max-width:767.98px){
       .topbar{ align-items:flex-start; flex-direction:column; }
@@ -225,8 +356,11 @@
       .top-actions .btn, .top-actions form{ flex:1; }
       .top-actions form .btn{ width:100%; }
       .hero{ padding:22px; border-radius:22px; }
+      .hero-actions .btn{ width:100%; justify-content:center; }
       .order-head{ flex-direction:column; }
       .profile-line{ flex-direction:column; gap:4px; }
+      .filter-form{ grid-template-columns:1fr; }
+      .timeline{ grid-template-columns:1fr 1fr; }
     }
   </style>
 </head>
@@ -238,6 +372,12 @@
     'completed' => ['label' => 'E përfunduar', 'class' => 'status-completed', 'icon' => 'bi-check-circle'],
     'canceled' => ['label' => 'E anuluar', 'class' => 'status-canceled', 'icon' => 'bi-x-circle'],
   ];
+  $statusSteps = [
+    'new' => ['label' => 'Pranuar', 'icon' => 'bi-receipt'],
+    'processing' => ['label' => 'Në proces', 'icon' => 'bi-hourglass-split'],
+    'completed' => ['label' => 'Përfunduar', 'icon' => 'bi-check2-circle'],
+    'canceled' => ['label' => 'Anuluar', 'icon' => 'bi-x-circle'],
+  ];
 
   $imgUrl = function($raw){
     $placeholder = asset('images/placeholder-product.png');
@@ -246,11 +386,25 @@
     if (empty($raw)) return $placeholder;
 
     $raw = trim((string) $raw);
+    $raw = urldecode($raw);
+    if (preg_match('/\[[^\]]+\]/', $raw, $match)) {
+      $decoded = json_decode($match[0], true);
+      if (is_array($decoded) && !empty($decoded)) $raw = $decoded[0];
+    }
     if (str_starts_with($raw, '[')) {
       $decoded = json_decode($raw, true);
       if (is_array($decoded) && !empty($decoded)) $raw = $decoded[0];
     }
-    if (preg_match('#^https?://#i', $raw)) return $raw;
+
+    $raw = trim((string) $raw, " \t\n\r\0\x0B\"'");
+
+    if (preg_match('#^https?://#i', $raw)) {
+      if (str_contains($raw, '/storage/images/')) {
+        return str_replace('/storage/images/', '/images/', $raw);
+      }
+
+      return $raw;
+    }
 
     $clean = ltrim($raw, '/');
     $clean = preg_replace('#^(storage|public)/#', '', $clean);
@@ -258,6 +412,16 @@
     if (str_starts_with($clean, 'products/')) return asset('images/'.$clean);
 
     return asset('images/products/'.$clean);
+  };
+
+  $progressIndex = function($orderStatus){
+    return match ($orderStatus) {
+      'new' => 0,
+      'processing' => 1,
+      'completed' => 2,
+      'canceled' => 3,
+      default => 0,
+    };
   };
 @endphp
 
@@ -287,6 +451,17 @@
   <section class="hero mb-4">
     <h1>Llogaria ime</h1>
     <p>Mirë se erdhe, {{ $user->name }}. Këtu i sheh porositë, statusin, kodin e gjurmimit dhe mund ta ndryshosh fjalëkalimin.</p>
+    <div class="hero-actions">
+      <a href="{{ route('home') }}" class="btn btn-light">
+        <i class="bi bi-shop"></i> Vazhdo blerjet
+      </a>
+      <a href="{{ route('track.form') }}" class="btn btn-outline-light">
+        <i class="bi bi-geo-alt"></i> Gjurmo porosi
+      </a>
+      <a href="https://wa.me/38344960661?text={{ urlencode('Pershendetje Brillant! Kam pyetje rreth llogarise/porosise sime.') }}" target="_blank" rel="noopener" class="btn btn-outline-light">
+        <i class="bi bi-whatsapp"></i> WhatsApp
+      </a>
+    </div>
   </section>
 
   @if(session('password_success'))
@@ -326,6 +501,36 @@
     </div>
   </section>
 
+  <section class="row g-3 mb-4">
+    <div class="col-md-4">
+      <a class="card-soft quick-card" href="{{ route('cart.index') }}">
+        <span class="quick-icon"><i class="bi bi-bag-check"></i></span>
+        <span>
+          <strong class="d-block">Shporta ime</strong>
+          <small class="muted">Vazhdo porosinë aty ku e le.</small>
+        </span>
+      </a>
+    </div>
+    <div class="col-md-4">
+      <a class="card-soft quick-card" href="{{ route('track.form') }}">
+        <span class="quick-icon"><i class="bi bi-truck"></i></span>
+        <span>
+          <strong class="d-block">Gjurmo porosinë</strong>
+          <small class="muted">Kontrollo statusin me kod.</small>
+        </span>
+      </a>
+    </div>
+    <div class="col-md-4">
+      <a class="card-soft quick-card" href="{{ route('contact') }}">
+        <span class="quick-icon"><i class="bi bi-headset"></i></span>
+        <span>
+          <strong class="d-block">Ndihmë & kontakt</strong>
+          <small class="muted">Pyetje për produkt ose porosi.</small>
+        </span>
+      </a>
+    </div>
+  </section>
+
   <div class="row g-4">
     <div class="col-lg-8">
       <section class="card-soft">
@@ -336,13 +541,38 @@
               <div class="muted small">Shfaqen porositë e lidhura me llogarinë ose emailin tënd.</div>
             </div>
             <div class="d-flex gap-2 flex-wrap">
-              @foreach($byStatus as $status => $count)
-                @php $meta = $statusMap[$status] ?? ['label' => $status, 'class' => 'status-canceled', 'icon' => 'bi-circle']; @endphp
+              @foreach($byStatus as $statusKey => $count)
+                @php $meta = $statusMap[$statusKey] ?? ['label' => $statusKey, 'class' => 'status-canceled', 'icon' => 'bi-circle']; @endphp
                 <span class="status-badge {{ $meta['class'] }}">
                   {{ $meta['label'] }}: {{ $count }}
                 </span>
               @endforeach
             </div>
+          </div>
+
+          <form class="filter-form" method="GET" action="{{ route('account.dashboard') }}">
+            <input
+              type="search"
+              name="q"
+              value="{{ $search }}"
+              class="form-control"
+              placeholder="Kërko me numër porosie, kod gjurmimi, emër ose telefon">
+            @if($status)
+              <input type="hidden" name="status" value="{{ $status }}">
+            @endif
+            <button class="btn btn-dark" type="submit">
+              <i class="bi bi-search me-1"></i> Kërko
+            </button>
+            <a class="btn btn-outline-secondary" href="{{ route('account.dashboard') }}">Pastro</a>
+          </form>
+
+          <div class="filter-pills">
+            <a class="filter-pill {{ !$status ? 'active' : '' }}" href="{{ route('account.dashboard', ['q' => $search ?: null]) }}">Të gjitha</a>
+            @foreach($statusMap as $key => $meta)
+              <a class="filter-pill {{ $status === $key ? 'active' : '' }}" href="{{ route('account.dashboard', ['status' => $key, 'q' => $search ?: null]) }}">
+                {{ $meta['label'] }} ({{ $byStatus[$key] ?? 0 }})
+              </a>
+            @endforeach
           </div>
         </div>
 
@@ -376,11 +606,27 @@
               </div>
             </div>
 
+            @php $currentIndex = $progressIndex($order->status); @endphp
+            <div class="timeline">
+              @foreach($statusSteps as $stepKey => $step)
+                @php
+                  $stepIndex = $progressIndex($stepKey);
+                  $stepClass = $order->status === 'canceled'
+                    ? ($stepKey === 'canceled' ? 'active' : '')
+                    : ($stepIndex < $currentIndex ? 'done' : ($stepIndex === $currentIndex ? 'active' : ''));
+                @endphp
+                <div class="timeline-step {{ $stepClass }}">
+                  <span class="timeline-dot"><i class="bi {{ $step['icon'] }}"></i></span>
+                  {{ $step['label'] }}
+                </div>
+              @endforeach
+            </div>
+
             @foreach($order->items as $item)
               <div class="item-row">
                 <img
                   class="item-thumb"
-                  src="{{ $imgUrl($item->image) }}"
+                  src="{{ $imgUrl($item->image ?: optional($item->product)->image_path) }}"
                   alt="{{ $item->name }}"
                   onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
                 <div class="flex-grow-1">
@@ -393,6 +639,20 @@
                 <div class="money text-end">{{ number_format((float) $item->price * (int) $item->qty, 2) }} €</div>
               </div>
             @endforeach
+
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <a href="https://wa.me/38344960661?text={{ urlencode('Pershendetje! Kam pyetje per porosine #'.$order->id.' - Kodi: '.($order->tracking_code ?? '-')) }}" target="_blank" rel="noopener" class="btn btn-success btn-sm">
+                <i class="bi bi-whatsapp me-1"></i> Pyet për porosinë
+              </a>
+              @if($order->tracking_code)
+                <a href="{{ route('track.show', $order->tracking_code) }}" class="btn btn-outline-dark btn-sm">
+                  <i class="bi bi-truck me-1"></i> Status i plotë
+                </a>
+              @endif
+              <a href="{{ route('home') }}" class="btn btn-outline-danger btn-sm">
+                <i class="bi bi-arrow-repeat me-1"></i> Porosit prapë
+              </a>
+            </div>
           </article>
         @empty
           <div class="empty-state">
@@ -413,6 +673,26 @@
 
     <div class="col-lg-4">
       <aside class="card-soft p-3 p-md-4 mb-4">
+        <h2 class="section-title h5 mb-3">Adresa e fundit</h2>
+        @if($lastOrder)
+          <div class="profile-line">
+            <span class="muted">Klienti</span>
+            <strong>{{ $lastOrder->name }}</strong>
+          </div>
+          <div class="profile-line">
+            <span class="muted">Telefoni</span>
+            <strong>{{ $lastOrder->phone }}</strong>
+          </div>
+          <div class="profile-line">
+            <span class="muted">Adresa</span>
+            <strong class="text-end">{{ $lastOrder->address }}@if($lastOrder->city), {{ $lastOrder->city }}@endif</strong>
+          </div>
+        @else
+          <p class="muted mb-0">Adresa shfaqet pasi të bësh porosinë e parë.</p>
+        @endif
+      </aside>
+
+      <aside class="card-soft p-3 p-md-4 mb-4">
         <h2 class="section-title h5 mb-3">Profili</h2>
         <div class="profile-line">
           <span class="muted">Emri</span>
@@ -426,6 +706,41 @@
           <span class="muted">Llogaria</span>
           <strong>{{ $user->created_at->format('d.m.Y') }}</strong>
         </div>
+      </aside>
+
+      <aside class="card-soft p-3 p-md-4 mb-4">
+        <h2 class="section-title h5 mb-3">Produktet e fundit</h2>
+        @if($recentItems->count())
+          <div class="mini-list">
+            @foreach($recentItems as $recent)
+              <div class="mini-item">
+                <div>
+                  <strong>{{ $recent->name }}</strong>
+                  <div class="muted small">Sasia: {{ $recent->qty }}</div>
+                </div>
+                <span class="money">{{ number_format((float) $recent->price, 2) }} €</span>
+              </div>
+            @endforeach
+          </div>
+        @else
+          <p class="muted mb-0">Sapo të porosisësh, produktet e fundit dalin këtu.</p>
+        @endif
+      </aside>
+
+      <aside class="card-soft p-3 p-md-4 mb-4">
+        <h2 class="section-title h5 mb-3">Më të porositurat</h2>
+        @if($topItems->count())
+          <div class="mini-list">
+            @foreach($topItems as $top)
+              <div class="mini-item">
+                <strong>{{ $top->name }}</strong>
+                <span class="status-badge status-completed">{{ $top->qty }} copë</span>
+              </div>
+            @endforeach
+          </div>
+        @else
+          <p class="muted mb-0">Këtu dalin produktet që i blen më shpesh.</p>
+        @endif
       </aside>
 
       <aside class="card-soft p-3 p-md-4">
@@ -479,6 +794,16 @@
             <i class="bi bi-shield-lock me-1"></i> Ruaj fjalëkalimin
           </button>
         </form>
+      </aside>
+
+      <aside class="card-soft p-3 p-md-4 mt-4">
+        <h2 class="section-title h5 mb-3">Shërbime për klient</h2>
+        <ul class="service-list">
+          <li><i class="bi bi-check-circle"></i> Gjurmo çdo porosi me kodin unik.</li>
+          <li><i class="bi bi-check-circle"></i> Kontakto shpejt në WhatsApp për ndryshime.</li>
+          <li><i class="bi bi-check-circle"></i> Shiko historikun dhe totalet e blerjeve.</li>
+          <li><i class="bi bi-check-circle"></i> Ndrysho fjalëkalimin pa kontaktuar adminin.</li>
+        </ul>
       </aside>
     </div>
   </div>
