@@ -467,116 +467,156 @@
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark navbar-custom" aria-label="Kryemeny">
-  <div class="container-fluid">
-    <a class="navbar-brand d-flex align-items-center" href="/">
-      <img src="{{ asset('images/brillant.png') }}" alt="Brillant">
-    </a>
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom" aria-label="Navigimi kryesor">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/" aria-label="Brillant Home">
+        <img src="{{ asset('images/brillant.png') }}" alt="Brillant">
+      </a>
 
-    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+      <div class="d-flex align-items-center gap-2 ms-auto">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#nav"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
 
-    <div class="collapse navbar-collapse justify-content-center" id="navbarContent">
-      <ul class="navbar-nav ms-auto align-items-lg-center">
-        <li class="nav-item me-lg-2"><a class="nav-link" href="/">Home</a></li>
+      <div id="nav" class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
 
-        <li class="nav-item me-lg-2 dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Products</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/tepiha">Tepiha</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="/" data-nav="home">Home</a>
+          </li>
 
-            <li class="dropdown-submenu position-relative">
-              <a class="dropdown-item dropdown-toggle" href="#">Perde</a>
-              <ul class="dropdown-menu submenu shadow">
-                <li><a class="dropdown-item" href="/anesore">Perde Anësore</a></li>
-                <li><a class="dropdown-item" href="/perde-ditore">Perde Ditore</a></li>
-              </ul>
-            </li>
-
-            <li><a class="dropdown-item" href="/jastekdekorues">JastekDekorues</a></li>
-            <li><a class="dropdown-item" href="/postava">Set çarçafesh</a></li>
-            <li><a class="dropdown-item" href="/mbulesa">Mbulesa</a></li>
-            <li><a class="dropdown-item" href="/batanije">Batanije</a></li>
-            <li><a class="dropdown-item" href="/tepihebanjo">Tepiha për Banjo</a></li>
-            <li><a class="dropdown-item" href="/posteqia">Lekur Pelushi</a></li>
-            <li><a class="dropdown-item" href="/garnishte"><i class="bi bi-dash-square me-2"></i>Garnishte</a></li>
-          </ul>
-        </li>
-
-        <li class="nav-item me-lg-2">
-          <a class="nav-link active" href="#">About Us</a>
-        </li>
-
-        <li class="nav-item me-lg-2">
-          <a class="nav-link" href="{{ route('contact') }}">Contact Us</a>
-        </li>
-
-        @auth
-          <li class="nav-item dropdown ms-lg-2">
-            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
-               href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-circle"></i>
-              <span class="user-name">{{ Auth::user()->name }}</span>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              data-bs-toggle="dropdown"
+              role="button"
+              aria-expanded="false"
+              data-nav="products">
+              Products
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-              @if(auth()->user()->role === 'admin')
-                <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Admin</a></li>
-                <li><hr class="dropdown-divider"></li>
-              @endif
+
+            <ul class="dropdown-menu">
               <li>
-                <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                  @csrf
-                  <button type="submit" class="dropdown-item">Log out</button>
-                </form>
+                <a class="dropdown-item" href="/tepiha">
+                  <i class="bi bi-grid-3x3-gap me-2"></i> Tepiha
+                </a>
               </li>
+
+              <li class="dropdown-submenu">
+                <a class="dropdown-item submenu-toggle" href="#" role="button" aria-expanded="false">
+                  <span><i class="bi bi-columns-gap me-2"></i> Perde</span>
+                  <i class="bi bi-chevron-down chev"></i>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/anesore">Perde Anësore</a></li>
+                  <li><a class="dropdown-item" href="/perde-ditore">Perde Ditore</a></li>
+                </ul>
+              </li>
+
+              <li><a class="dropdown-item" href="/jastekdekorues"><i class="bi bi-square-fill me-2"></i> Jastëk dekorues</a></li>
+              <li><a class="dropdown-item" href="/postava"><i class="bi bi-journal-text me-2"></i> Set çarçafesh</a></li>
+              <li><a class="dropdown-item" href="/mbulesa"><i class="bi bi-collection me-2"></i> Mbulesa</a></li>
+              <li><a class="dropdown-item" href="/batanije"><i class="bi bi-layers me-2"></i> Batanije</a></li>
+              <li><a class="dropdown-item" href="/tepihebanjo"><i class="bi bi-droplet me-2"></i> Tepiha për Banjo</a></li>
+              <li><a class="dropdown-item" href="/posteqia"><i class="bi bi-cloud-fog2 me-2"></i> Lëkurë pelushi</a></li>
+              <li><a class="dropdown-item" href="/garnishte"><i class="bi bi-dash-square me-2"></i> Garnishte</a></li>
             </ul>
           </li>
-        @else
-          <li class="nav-item ms-lg-2">
-            <a href="{{ route('login') }}" class="btn btn-outline-light btn-sm">Log in</a>
-          </li>
-        @endauth
 
-        {{-- Shporta + Gjurmo --}}
-        <li class="nav-item dropdown ms-lg-2">
-          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
-             href="#" id="cartDropdown" role="button"
-             data-bs-toggle="dropdown" aria-expanded="false" onclick="return false;">
-            <i class="bi bi-bag"></i> Shporta
-            <span class="badge bg-danger rounded-pill ms-1 cart-badge">
-              {{ session('cart_total_qty', 0) }}
-            </span>
-          </a>
+          <li class="nav-item"><a class="nav-link" href="{{ route('about') }}" data-nav="about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}" data-nav="contact">Contact</a></li>
 
-          <div class="dropdown-menu dropdown-menu-end p-3 shadow" aria-labelledby="cartDropdown" style="min-width: 320px;">
-            <div class="small text-muted mb-2">Gjurmo porosinë</div>
-
-            <form class="d-flex align-items-stretch gap-2"
-                  onsubmit="event.preventDefault();
-                            const el=this.querySelector('#trackCodeNav');
-                            const v=(el?.value||'').trim();
-                            if(v){ window.location='{{ url('/track') }}/'+encodeURIComponent(v); }">
-              <div class="input-group input-group-sm">
-                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input id="trackCodeNav" type="text" class="form-control"
-                       placeholder="p.sh. BRL-LKNJ-0YXN" autocomplete="off" required>
-                <button class="btn btn-danger" type="submit">Gjurmo</button>
-              </div>
-            </form>
-
-            <div class="mt-3 d-grid">
-              <a class="btn btn-outline-secondary btn-sm" href="{{ route('cart.index') }}">
-                <i class="bi bi-bag"></i> Shiko shportën
+          @auth
+            <li class="nav-item dropdown ms-lg-2">
+              <a
+                class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+                href="#"
+                id="userDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <i class="bi bi-person-circle"></i>
+                <span class="user-name">{{ Auth::user()->name }}</span>
               </a>
-            </div>
-          </div>
-        </li>
 
-      </ul>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                @if(auth()->user()->role === 'admin')
+                  <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Admin</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                @endif
+                <li>
+                  <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="dropdown-item">Log out</button>
+                  </form>
+                </li>
+              </ul>
+            </li>
+          @else
+            <li class="nav-item ms-lg-2">
+              <a href="{{ route('login') }}" class="btn btn-outline-light btn-sm nav-btn">Log in</a>
+            </li>
+          @endauth
+
+          <!-- Shporta + Gjurmo porosinë -->
+          <li class="nav-item dropdown ms-lg-2">
+            <a
+              class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+              href="#"
+              id="cartDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <i class="bi bi-bag"></i> Shporta
+              <span class="badge bg-danger rounded-pill ms-1 cart-badge">
+                {{ session('cart_total_qty', 0) }}
+              </span>
+            </a>
+
+            <div
+              class="dropdown-menu dropdown-menu-end p-3 shadow"
+              aria-labelledby="cartDropdown"
+              style="min-width: 320px; border-radius: 16px;">
+              <div class="small text-muted mb-2">Gjurmo porosinë</div>
+
+              <form
+                class="d-flex align-items-stretch gap-2"
+                onsubmit="event.preventDefault();
+                          const el=this.querySelector('#trackCodeNav');
+                          const v=(el?.value||'').trim();
+                          if(v){ window.location='{{ url('/track') }}/'+encodeURIComponent(v); }">
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text"><i class="bi bi-search"></i></span>
+                  <input
+                    id="trackCodeNav"
+                    type="text"
+                    class="form-control"
+                    placeholder="p.sh. BRL-LKNJ-0YXN"
+                    autocomplete="off"
+                    required>
+                  <button class="btn btn-danger" type="submit">Gjurmo</button>
+                </div>
+              </form>
+
+              <div class="mt-3 d-grid">
+                <a class="btn btn-outline-secondary btn-sm" href="{{ route('cart.index') }}">
+                  <i class="bi bi-bag"></i> Shiko shportën
+                </a>
+              </div>
+            </div>
+          </li>
+
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
 
 
