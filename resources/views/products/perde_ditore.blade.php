@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
-  <title>Perde ditore cilësore për shtëpi & zyrë – Brillant Lipjan</title>
-  <meta name="description" content="Perde ditore cilësore për dritare shtëpie dhe zyre. Materiale të lehta, elegante dhe me qepje profesionale. Konsultim, matje dhe montim nga Brillant Lipjan.">
+  <title>Perde online Kosovë | Perde ditore, perde bamboo & perde kumash – Brillant Lipjan</title>
+  <meta name="description" content="Blej perde online në Kosovë: perde ditore, perde bamboo, perde kumash dhe perde anësore. Materiale cilësore, matje, montim dhe dërgesë e shpejtë nga Brillant Lipjan.">
 
 
 
@@ -13,7 +13,7 @@
   <link rel="sitemap" type="application/xml" href="https://b-brillant.com/sitemap.xml">
   
   <!-- KEYWORDS -->
-  <meta name="keywords" content="perde, sistem amerikan, fallta, anesore, perde ditore, perde dritareje, perde shtepia, perde zyre, perde moderne, perde te lehta, perdja ditore, Brillant Lipjan, perde Kosove, perde bamboo, perde sheqer, perde cenova, perde kumash, perde online, perde me sistem amerikan, perde bambus, perde kumash, perde ditore online, perde moderne online, perde te lehta online, perde shtepia online, perde zyre online, perde Kosove online, perde Lipjan, perde cilësore, perde elegante, perde profesionale, perde matje, perde montim, perde konsultim, perde dritare, perde ditore bambus, perde ditore kumash, perde ditore sheqer, perde ditore cenova, perde ditore sistem amerikan, perde ditore fallta, perde ditore anesore, perde ditore moderne, perde ditore te lehta, perde ditore cilësore, perde ditore elegante, perde ditore profesionale, perde ditore Kosove, perde ditore Lipjan, perde ditore Brillant, perde online Kosove, perde online Lipjan, perde online Brillant, perde bambus online, perde kumash online, perde sheqer online, perde cenova online, perde sistem amerikan online, perde fallta online, perde anesore online, perde ditore Kosove online, perde moderne Lipjan, perde te lehta Kosove, perde elegante online, perde profesionale Kosove, perde matje online, perde montim Kosove, perde konsultim online, perde dritare moderne, perde shtepia cilësore, perde zyre elegante, perde bambus Kosove, perde kumash Lipjan, perde sheqer online, perde cenova Kosove, perde sistem amerikan Lipjan, perde fallta online, perde anesore Kosove, perde ditore pambuk, perde ditore sintetike, perde ditore transparente, perde ditore opake, perde ditore me dizajn, perde ditore custom, perde ditore matje falas, perde ditore montim falas, perde ditore konsultim falas, perde online Shqipëri, perde Kosove online, perde Lipjan online, Brillant perde online, perde ditore Brillant, perde moderne Brillant, perde te lehta Brillant, perde cilësore Brillant, perde elegante Brillant, perde profesionale Brillant, perde matje Brillant, perde montim Brillant, perde konsultim Brillant, perde dritare Brillant, perde shtepia Brillant, perde zyre Brillant, perde bambus Brillant, perde kumash Brillant, perde sheqer Brillant, perde cenova Brillant, perde sistem amerikan Brillant, perde fallta Brillant, perde anesore Brillant, perde ditore Shqipëri, perde moderne Shqipëri, perde te lehta Shqipëri, perde cilësore Shqipëri, perde elegante Shqipëri, perde profesionale Shqipëri, perde matje Shqipëri, perde montim Shqipëri, perde konsultim Shqipëri, perde dritare Shqipëri, perde shtepia Shqipëri, perde zyre Shqipëri, perde bambus Shqipëri, perde kumash Shqipëri, perde sheqer Shqipëri, perde cenova Shqipëri, perde sistem amerikan Shqipëri, perde fallta Shqipëri, perde anesore Shqipëri, perde online Lipjan Kosove, perde ditore online Kosove, perde moderne online Kosove, perde te lehta online Kosove, perde cilësore online Kosove, perde elegante online Kosove, perde profesionale online Kosove, perde matje online Kosove, perde montim online Kosove, perde konsultim online Kosove, perde dritare online Kosove, perde shtepia online Kosove, perde zyre online Kosove, perde bambus online Kosove, perde kumash online Kosove, perde sheqer online Kosove, perde cenova online Kosove, perde sistem amerikan online Kosove, perde fallta online Kosove, perde anesore online Kosove">
+  <meta name="keywords" content="perde online, perde online Kosove, perde ditore, perde bamboo, perde kumash, perde anesore, perde dritareje, perde shtëpie, perde zyre, perde moderne, perde me matje, perde me montim, perde online Lipjan, perde Kosove, perde bamboo online, perde kumash online, perde cilësore, perde elegante, perde profesionale, perde transpante, perde të lehta">
 
   <!-- INDEXIMI -->
   <meta name="robots" content="index, follow">
@@ -27,15 +27,15 @@
   <!-- OPEN GRAPH (Facebook, IG, WhatsApp, Viber) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Brillant Lipjan">
-  <meta property="og:title" content="Perde online cilësore për shtëpi & zyrë – Brillant Perde Bambo,Sheqer">
-  <meta property="og:description" content="Perde online Perde Bambo elegante, materiale cilësore dhe qepje profesionale. Konsultim, matje dhe montim nga Brillant Lipjan.">
+  <meta property="og:title" content="Perde online Kosovë | Perde ditore, perde bamboo & perde kumash – Brillant Lipjan">
+  <meta property="og:description" content="Blej perde online në Kosovë: perde ditore, perde bamboo dhe perde kumash. Matje, montim dhe dërgesë të shpejtë nga Brillant Lipjan.">
   <meta property="og:url" content="{{ url('/perde-ditore') }}">
   <meta property="og:image" content="{{ asset('images/og-perde-ditore.jpg') }}">
 
   <!-- TWITTER CARD -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Perde cilësore për shtëpi & zyrë – Brillant">
-  <meta name="twitter:description" content="Zgjidh perde ditore të lehta dhe elegante për dritare të shtëpisë dhe zyrës.">
+  <meta name="twitter:title" content="Perde online Kosovë | Perde ditore, perde bamboo & perde kumash – Brillant">
+  <meta name="twitter:description" content="Blej perde online në Kosovë: perde ditore, perde bamboo dhe perde kumash me matje dhe montim nga Brillant Lipjan.">
   <meta name="twitter:image" content="{{ asset('images/og-perde-ditore.jpg') }}">
 
   <!-- JSON-LD (Structured Data për Google) -->
@@ -43,8 +43,8 @@
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Perde ditore cilësore – Brillant Lipjan",
-    "description": "Perde moderne dhe cilësore për shtëpi dhe zyrë, me qepje profesionale dhe shërbim matje & montimi.",
+    "name": "Perde online Kosovë – Perde ditore, perde bamboo & perde kumash",
+    "description": "Blej perde online në Kosovë: perde ditore, perde bamboo dhe perde kumash me matje, montim dhe dërgesë nga Brillant Lipjan.",
     "url": "{{ url('/perde-ditore') }}",
     "image": "{{ asset('images/og-perde-ditore.jpg') }}",
     "inLanguage": "sq",
@@ -373,13 +373,13 @@
 <!-- SEO TEXT SECTION -->
 <section class="seo-text mt-5" style="font-size:16px; line-height:1.6;">
   <div class="container">
-    <h2>Perde Ditore – Elegancë, Dritë dhe Stil për Çdo Ambient</h2>
+    <h2>Perde Ditore Online në Kosovë – Perde Bamboo, Perde Kumash dhe Perde Anësore</h2>
 
     <p>Perdet ditore nga Brillant sjellin dritë natyrale dhe elegancë në çdo dhomë të shtëpisë. Ato janë të dizajnuara nga materiale cilësore, të lehta dhe transparente, të cilat krijojnë një ambient të qetë, të ndritshëm dhe modern.</p>
 
-    <p>Koleksioni ynë përfshin perde ditore me modele klasike dhe moderne, të përshtatshme për dhoma dite, sallone, kuzhina dhe çdo hapësirë që kërkon hijeshi dhe dritë natyrale. Materialet tona janë rezistente, nuk zbehen nga dielli dhe mirëmbahen shumë lehtë.</p>
+    <p>Koleksioni ynë përfshin perde ditore, perde bamboo dhe perde kumash, të përshtatshme për dhoma dite, sallone, kuzhina dhe çdo hapësirë që kërkon hijeshi dhe dritë natyrale. Materialet tona janë rezistente, nuk zbehen nga dielli dhe mirëmbahen shumë lehtë.</p>
 
-    <p>Falë larmisë së ngjyrave dhe motiveve minimaliste, perdet tona ditore kombinohen lehtësisht me perde anësore, dekore dhe stile të ndryshme mobilimi. Ato krijojnë një ndjesi të pastër dhe harmonike, duke i dhënë ambientit karakter dhe freski.</p>
+    <p>Nëse kërkon perde online Kosove, Brillant ofron zgjidhje me matje dhe montim, si dhe perde anësore apo perde fabricë të stilit tënd. Përfitoni nga oferta për perde bamboo online dhe perde kumash online me dërgim në të gjithë Republikën e Kosovës.</p>
 
     <p>Zgjidhni perde ditore nga Brillant për një pamje të përkryer, cilësi afatgjatë dhe dërgesë të shpejtë në gjithë Kosovën. Dizajn modern për çdo shije dhe çdo shtëpi.</p>
   </div>
