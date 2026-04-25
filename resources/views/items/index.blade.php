@@ -1040,6 +1040,278 @@
   color:#fff;
 }
 .latest-products .btn-wa:hover{ color:#fff; filter: brightness(.98); }
+
+/* ========================= ANIMATIONS ========================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(220, 53, 69, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(220, 53, 69, 0.6);
+  }
+}
+
+/* Apply animations to major sections */
+.announce {
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.navbar-custom {
+  animation: fadeInDown 0.9s ease-out 0.1s both;
+}
+
+.topbar {
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.hero {
+  animation: scaleIn 1s ease-out 0.3s both;
+}
+
+.hero-content {
+  animation: slideInLeft 1s ease-out 0.5s both;
+}
+
+.hero-btn {
+  animation: fadeInUp 0.8s ease-out 0.7s both;
+}
+
+.chip {
+  animation: fadeInUp 0.6s ease-out;
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chip:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.chip:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.chip:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.chip:nth-child(n+4) {
+  animation-delay: 0.25s;
+}
+
+.latest-products {
+  animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.latest-product-card {
+  animation: fadeInUp 0.7s ease-out;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.latest-product-card:nth-child(1) {
+  animation-delay: 0.7s;
+}
+
+.latest-product-card:nth-child(2) {
+  animation-delay: 0.75s;
+}
+
+.latest-product-card:nth-child(3) {
+  animation-delay: 0.8s;
+}
+
+.latest-product-card:nth-child(4) {
+  animation-delay: 0.85s;
+}
+
+.latest-product-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  animation: glow 2s ease-in-out infinite;
+}
+
+.latest-product-card img {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.latest-product-card:hover img {
+  transform: scale(1.08) rotate(1deg);
+}
+
+.product-img-container {
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+/* Button hover animations */
+.btn-brand {
+  animation: fadeInUp 0.8s ease-out 0.8s both;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, filter 0.3s ease;
+}
+
+.btn-brand:hover {
+  transform: translateY(-4px) scale(1.05);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* Links with underline animation */
+a {
+  position: relative;
+}
+
+a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--brand);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.chip:hover::after {
+  width: 100%;
+}
+
+/* Search input focus animation */
+.search-pro input:focus {
+  animation: pulse 1s ease-in-out;
+  border-color: var(--brand);
+  box-shadow: 0 12px 30px rgba(220, 53, 69, 0.15);
+}
+
+/* WhatsApp button animation */
+.wa-btn {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, filter 0.3s ease;
+}
+
+.wa-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* Hero text animation */
+.hero-title {
+  animation: slideInLeft 1s ease-out 0.4s both;
+}
+
+.hero-desc {
+  animation: slideInLeft 1.1s ease-out 0.5s both;
+}
+
+/* Stagger animations for lists */
+.lp-title, .lp-desc, .lp-price {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.latest-product-card:nth-child(1) .lp-title {
+  animation-delay: 0.7s;
+}
+
+.latest-product-card:nth-child(1) .lp-desc {
+  animation-delay: 0.75s;
+}
+
+.latest-product-card:nth-child(1) .lp-price {
+  animation-delay: 0.8s;
+}
+
+/* Smooth page load */
+body {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Parallax effect on scroll (subtle) */
+@media (min-width: 768px) {
+  .hero-bg {
+    animation: float 6s ease-in-out infinite;
+  }
+}
   </style>
 </head>
 
@@ -1515,8 +1787,8 @@
           $detailsUrl = $item->slug ? route('products.show', $item->slug) : route('products.index');
         @endphp
 
-        <article class="lp-card">
-          <div class="lp-media">
+        <article class="lp-card latest-product-card">
+          <div class="lp-media product-img-container">
             <a href="{{ $detailsUrl }}" class="lp-media d-block text-decoration-none" aria-label="Hap detajet: {{ $item->name }}">
 @php
     $path = $img;
