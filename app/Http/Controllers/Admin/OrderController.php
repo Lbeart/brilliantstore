@@ -125,7 +125,9 @@ class OrderController extends Controller
         ]);
 
         $order->load('items');
+        \Log::info('Sending canceled email to: ' . $order->email . ' for order ' . $order->id);
         Mail::to($order->email)->send(new OrderCanceledMail($order, $data['reason'] ?? null));
+        \Log::info('Canceled email sent successfully to: ' . $order->email);
 
         if ($order->status !== 'canceled') {
             $order->update(['status' => 'canceled']);
