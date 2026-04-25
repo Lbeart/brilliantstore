@@ -320,25 +320,45 @@
     .chip i{ opacity:.9; }
 
     /* Search */
-    .search-pro{ position: relative; }
+    .search-pro{ 
+      position: relative;
+      width: 100%;
+    }
     .search-pro input{
       height: 54px;
       border-radius: 999px;
       padding-left: 46px;
-      padding-right: 118px;
-      border: 1px solid rgba(17,24,39,.10);
+      padding-right: 124px;
+      border: 2px solid rgba(17,24,39,.12);
       box-shadow: 0 12px 30px rgba(2,6,23,.08);
       outline: none;
       font-weight: 700;
+      font-size: 1rem;
+      width: 100%;
+      transition: all 0.3s ease;
+      background: rgba(255,255,255,.96);
     }
-    .search-pro input::placeholder{ color: rgba(107,114,128,.9); }
+    .search-pro input:hover {
+      border-color: rgba(220,53,69,.2);
+      box-shadow: 0 16px 40px rgba(2,6,23,.12);
+    }
+    .search-pro input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 12px 30px rgba(220,53,69,.15);
+    }
+    .search-pro input::placeholder{ 
+      color: rgba(107,114,128,.8);
+      font-weight: 600;
+    }
     .search-pro .icon{
       position:absolute;
       top:50%;
       left: 16px;
       transform: translateY(-50%);
       color: var(--muted);
-      font-size: 1.05rem;
+      font-size: 1.1rem;
+      pointer-events: none;
+      z-index: 1;
     }
     .search-pro .btn{
       position:absolute;
@@ -346,8 +366,30 @@
       right: 6px;
       transform: translateY(-50%);
       border-radius: 999px;
-      padding: .65rem 1.05rem;
+      padding: 0.65rem 1.3rem;
       font-weight: 900;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      background: var(--brand);
+      border: none;
+      color: #fff;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(220,53,69,.2);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 2;
+    }
+    .search-pro .btn:hover {
+      background: rgba(220,53,69,.92);
+      transform: translateY(-50%) scale(1.05);
+      box-shadow: 0 12px 30px rgba(220,53,69,.3);
+    }
+    .search-pro .btn:active {
+      transform: translateY(-50%) scale(0.98);
     }
 
     /* WhatsApp */
@@ -372,11 +414,35 @@
     /* Topbar mobile stacking */
     @media (max-width: 768px){
       .topbar-inner{ padding: 12px; }
-      .search-pro input{ height: 52px; padding-right: 108px; }
+      .search-pro input{ 
+        height: 52px; 
+        padding-right: 112px;
+        font-size: 0.95rem;
+      }
+      .search-pro .btn {
+        padding: 0.6rem 1.1rem;
+        height: 42px;
+        font-size: 0.9rem;
+      }
     }
     @media (max-width: 576px){
       .topbar{ margin-top: 10px; }
-      .search-pro input{ padding-right: 104px; }
+      .search-pro input{ 
+        height: 50px;
+        padding-right: 110px;
+        padding-left: 42px;
+        font-size: 0.9rem;
+      }
+      .search-pro .icon {
+        font-size: 1rem;
+        left: 14px;
+      }
+      .search-pro .btn{ 
+        padding: 0.55rem 0.95rem;
+        height: 40px;
+        font-size: 0.85rem;
+        right: 5px;
+      }
       .wa-btn{ width: 100%; justify-content: center; }
     }
 
@@ -1258,11 +1324,9 @@ a::after {
   width: 100%;
 }
 
-/* Search input focus animation */
-.search-pro input:focus {
-  animation: pulse 1s ease-in-out;
-  border-color: var(--brand);
-  box-shadow: 0 12px 30px rgba(220, 53, 69, 0.15);
+/* Search button animation */
+.search-pro .btn {
+  animation: fadeInUp 0.8s ease-out 0.5s both;
 }
 
 /* WhatsApp button animation */
