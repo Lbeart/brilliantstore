@@ -27,7 +27,7 @@ class LoginController extends Controller
                 return back()->with('error', 'Ju lutem verifikoni emailin tuaj.');
             }
 
-            return redirect()->route(Auth::user()->role === 'admin' ? 'admin.dashboard' : 'home');
+            return redirect()->route(Auth::user()->role === 'admin' ? 'admin.dashboard' : 'account.dashboard');
         }
 
         return back()->with('error', 'Email ose fjalëkalim i pasaktë!');
@@ -39,4 +39,3 @@ class LoginController extends Controller
         return redirect()->route('login');
     }
 }
-

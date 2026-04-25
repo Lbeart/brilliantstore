@@ -128,7 +128,7 @@
                     type="text" id="name" name="name"
                     class="form-control @error('name') is-invalid @enderror"
                     required maxlength="100" autocomplete="name"
-                    value="{{ old('name') }}" placeholder="p.sh. Ardit Krasniqi" />
+                    value="{{ old('name', auth()->user()->name ?? '') }}" placeholder="p.sh. Ardit Krasniqi" />
                   @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
@@ -150,7 +150,7 @@
                     type="email" id="email" name="email"
                     class="form-control @error('email') is-invalid @enderror"
                     autocomplete="email"
-                    value="{{ old('email') }}" placeholder="p.sh. emri@shembull.com" />
+                    value="{{ old('email', auth()->user()->email ?? '') }}" placeholder="p.sh. emri@shembull.com" />
                   @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 

@@ -245,6 +245,8 @@
               </a>
 
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="{{ route('account.dashboard') }}"><i class="bi bi-speedometer2 me-1"></i> Llogaria ime</a></li>
+                <li><hr class="dropdown-divider"></li>
                 @if(auth()->user()->role === 'admin')
                   <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Admin</a></li>
                   <li><hr class="dropdown-divider"></li>

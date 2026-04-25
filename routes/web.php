@@ -9,6 +9,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProductController as ShopProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\AccountController;
 
 // Auth
 use App\Http\Controllers\Auth\LoginController;
@@ -113,6 +114,14 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
 Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password',  [ResetPasswordController::class, 'reset'])->name('password.update');
 
+Route::middleware(['auth', 'verified'])
+    ->prefix('account')
+    ->name('account.')
+    ->group(function () {
+        Route::get('/', [AccountController::class, 'dashboard'])->name('dashboard');
+        Route::put('/password', [AccountController::class, 'updatePassword'])->name('password.update');
+    });
+
 /*
 |--------------------------------------------------------------------------
 | Cart & Checkout (publike)
@@ -214,4 +223,3 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 |--------------------------------------------------------------------------
 */
 // Route::fallback(fn() => abort(404));
-

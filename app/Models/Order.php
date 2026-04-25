@@ -7,12 +7,17 @@ use Illuminate\Support\Str;
 class Order extends Model
 {
     protected $fillable = [
-        'name','phone','email','address','city','zip','notes','payment','total','status','tracking_code'
+        'user_id','name','phone','email','address','city','zip','notes','payment','total','status','tracking_code'
     ];
 
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
      protected static function booted()
     {
