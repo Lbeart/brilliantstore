@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
-  <title>Perde online Kosovë | Perde ditore, perde bamboo & perde kumash – Brillant Lipjan</title>
-  <meta name="description" content="Blej perde online në Kosovë: perde ditore, perde bamboo, perde kumash dhe perde anësore. Materiale cilësore, matje, montim dhe dërgesë e shpejtë nga Brillant Lipjan.">
+  <title>Perde Online Kosovë | Perde Ditore me Matje & Montim | Brillant</title>
+  <meta name="description" content="Perde online në Kosovë nga Brillant Lipjan: perde ditore, bamboo, kumash dhe anësore me matje, montim, cilësi premium dhe dërgesë në gjithë Kosovën.">
 
 
 
@@ -13,7 +13,7 @@
   <link rel="sitemap" type="application/xml" href="https://b-brillant.com/sitemap.xml">
   
   <!-- KEYWORDS -->
-  <meta name="keywords" content="perde online, perde online Kosove, perde ditore, perde bamboo, perde kumash, perde anesore, perde dritareje, perde shtëpie, perde zyre, perde moderne, perde me matje, perde me montim, perde online Lipjan, perde Kosove, perde bamboo online, perde kumash online, perde cilësore, perde elegante, perde profesionale, perde transpante, perde të lehta">
+  <meta name="keywords" content="perde online, perde online Kosove, perde online Kosovë, perde ditore, perde bamboo, perde kumash, perde anesore, perde anësore, perde dritareje, perde shtëpie, perde zyre, perde moderne, perde me matje, perde me montim, perde online Lipjan, perde Kosove, perde Kosovë, perde bamboo online, perde kumash online, perde cilësore, perde elegante, perde transparente">
 
   <!-- INDEXIMI -->
   <meta name="robots" content="index, follow">
@@ -27,32 +27,82 @@
   <!-- OPEN GRAPH (Facebook, IG, WhatsApp, Viber) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Brillant Lipjan">
-  <meta property="og:title" content="Perde online Kosovë | Perde ditore, perde bamboo & perde kumash – Brillant Lipjan">
-  <meta property="og:description" content="Blej perde online në Kosovë: perde ditore, perde bamboo dhe perde kumash. Matje, montim dhe dërgesë të shpejtë nga Brillant Lipjan.">
+  <meta property="og:title" content="Perde Online Kosovë | Perde Ditore, Bamboo & Kumash – Brillant">
+  <meta property="og:description" content="Porosit perde online në Kosovë: perde ditore, perde bamboo, perde kumash dhe perde anësore me matje, montim dhe dërgesë nga Brillant Lipjan.">
   <meta property="og:url" content="{{ url('/perde-ditore') }}">
-  <meta property="og:image" content="{{ asset('images/og-perde-ditore.jpg') }}">
+  <meta property="og:image" content="{{ asset('perdeditoree/perde.jpg') }}">
 
   <!-- TWITTER CARD -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Perde online Kosovë | Perde ditore, perde bamboo & perde kumash – Brillant">
-  <meta name="twitter:description" content="Blej perde online në Kosovë: perde ditore, perde bamboo dhe perde kumash me matje dhe montim nga Brillant Lipjan.">
-  <meta name="twitter:image" content="{{ asset('images/og-perde-ditore.jpg') }}">
+  <meta name="twitter:title" content="Perde Online Kosovë | Perde Ditore me Matje & Montim">
+  <meta name="twitter:description" content="Perde ditore, bamboo dhe kumash online në Kosovë me matje, montim dhe dërgesë nga Brillant Lipjan.">
+  <meta name="twitter:image" content="{{ asset('perdeditoree/perde.jpg') }}">
 
   <!-- JSON-LD (Structured Data për Google) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "name": "Perde online Kosovë – Perde ditore, perde bamboo & perde kumash",
-    "description": "Blej perde online në Kosovë: perde ditore, perde bamboo dhe perde kumash me matje, montim dhe dërgesë nga Brillant Lipjan.",
-    "url": "{{ url('/perde-ditore') }}",
-    "image": "{{ asset('images/og-perde-ditore.jpg') }}",
-    "inLanguage": "sq",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "B-Brillant",
-      "url": "{{ url('/') }}"
-    }
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": "{{ url('/perde-ditore') }}#collection",
+        "name": "Perde Online Kosovë - Perde Ditore, Bamboo dhe Kumash",
+        "description": "Perde online në Kosovë: perde ditore, bamboo, kumash dhe anësore me matje, montim dhe dërgesë nga Brillant Lipjan.",
+        "url": "{{ url('/perde-ditore') }}",
+        "image": "{{ asset('perdeditoree/perde.jpg') }}",
+        "inLanguage": "sq",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "B-Brillant",
+          "url": "{{ url('/') }}",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ url('/search') }}?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "{{ url('/perde-ditore') }}#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Ballina",
+            "item": "{{ url('/') }}"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Perde Online Kosovë",
+            "item": "{{ url('/perde-ditore') }}"
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "{{ url('/perde-ditore') }}#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "A mund të porosis perde online në Kosovë?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Po, te Brillant mund të zgjidhni perde ditore, bamboo, kumash dhe anësore online, me këshillim, matje, montim dhe dërgesë në Kosovë."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "A ofroni matje dhe montim për perde?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Po, Brillant ofron matje dhe montim profesional për perde në Lipjan dhe sipas mundësisë edhe në qytete të tjera të Kosovës."
+            }
+          }
+        ]
+      }
+    ]
   }
   </script>
 
@@ -109,10 +159,19 @@
     /* ======= HEADER ======= */
     .page-header{ text-align:center; margin-top:18px; margin-bottom:8px; }
     .page-header h1{
-      font-size: clamp(1.35rem, 1.2rem + 1vw, 2rem);
+      font-size: clamp(1.55rem, 1.25rem + 1.45vw, 2.45rem);
       font-weight: 800; color:#111827; margin:0;
     }
-    .page-sub{ color:#6b7280; font-size:.95rem }
+    .page-sub{ color:#6b7280; font-size:.98rem; max-width:760px; margin:.45rem auto 0; padding:0 1rem; }
+    .seo-intro{
+      max-width: 920px;
+      margin: 0 auto 1.25rem;
+      color:#4b5563;
+      font-size:1rem;
+      line-height:1.7;
+      text-align:center;
+      padding:0 1rem;
+    }
 
     /* ======= GRID ======= */
     .product-card{
@@ -142,10 +201,49 @@
     .pagination .page-link:focus{ box-shadow:none }
     .pagination .page-item.active .page-link{ background: var(--brand); }
 
+    .seo-text{
+      background:#fff;
+      border-top:1px solid #eef0f4;
+      padding:2.4rem 0 2.8rem;
+    }
+    .seo-text h2{
+      color:#111827;
+      font-size:clamp(1.35rem, 1.1rem + 1vw, 2rem);
+      font-weight:800;
+      margin-bottom:1rem;
+    }
+    .seo-text h3{
+      color:#111827;
+      font-size:1.08rem;
+      font-weight:800;
+      margin-top:1.4rem;
+      margin-bottom:.45rem;
+    }
+    .seo-text p{ color:#4b5563; }
+    .seo-list{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:.75rem;
+      padding:0;
+      margin:1rem 0;
+      list-style:none;
+    }
+    .seo-list li{
+      background:#f7f8fb;
+      border:1px solid #eef0f4;
+      border-radius:12px;
+      padding:.85rem 1rem;
+      color:#374151;
+      font-weight:600;
+    }
+
     @media (max-width: 991.98px){
       body{ padding-top: 86px; }
       .navbar-custom{ padding:.55rem .7rem }
       .navbar-brand img{ height:40px }
+    }
+    @media (max-width: 575.98px){
+      .seo-list{ grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -305,10 +403,13 @@
 
 <!-- Koka e faqes -->
 <header class="page-header">
-  <h1>Perde Ditore</h1>
-  <div class="page-sub">Dizajne elegante për dritë të butë dhe privatësi.</div>
+  <h1>Perde Online Kosovë - Perde Ditore, Bamboo dhe Kumash</h1>
+  <div class="page-sub">Zgjidh perde moderne për shtëpi, sallon, kuzhinë dhe zyrë me matje, montim dhe dërgesë nga Brillant Lipjan.</div>
 </header>
-<div class="mb-4">
+<p class="seo-intro">
+  Te Brillant mund të porosisni perde online në Kosovë: perde ditore transparente, perde bamboo, perde kumash dhe perde anësore me materiale cilësore dhe dizajn elegant.
+</p>
+<div class="mb-4 container">
     <form method="GET" action="{{ url()->current() }}" class="row g-2 align-items-center">
         <div class="col-9 col-md-10">
             <input
@@ -316,7 +417,7 @@
                 name="q"
                 value="{{ request('q') }}"
                 class="form-control"
-                placeholder="Kërko produkte (p.sh. shkallore, otto, plastik, rodos...)"
+                placeholder="Kërko perde online (p.sh. perde ditore, bamboo, kumash...)"
             >
         </div>
         <div class="col-3 col-md-2 d-grid">
@@ -419,17 +520,28 @@
   @endif
 </main>
 <!-- SEO TEXT SECTION -->
-<section class="seo-text mt-5" style="font-size:16px; line-height:1.6;">
+<section class="seo-text mt-5">
   <div class="container">
-    <h2>Perde Ditore Online në Kosovë – Perde Bamboo, Perde Kumash dhe Perde Anësore</h2>
+    <h2>Perde Online në Kosovë - Perde Ditore, Bamboo, Kumash dhe Anësore</h2>
 
-    <p>Perdet ditore nga Brillant sjellin dritë natyrale dhe elegancë në çdo dhomë të shtëpisë. Ato janë të dizajnuara nga materiale cilësore, të lehta dhe transparente, të cilat krijojnë një ambient të qetë, të ndritshëm dhe modern.</p>
+    <p>Perdet ditore nga Brillant sjellin dritë natyrale, privatësi dhe elegancë në çdo dhomë të shtëpisë. Nëse po kërkon <strong>perde online Kosovë</strong>, këtu mund të gjesh modele të lehta, transparente dhe moderne për sallon, dhomë gjumi, kuzhinë, zyrë dhe ambiente hoteliere.</p>
 
-    <p>Koleksioni ynë përfshin perde ditore, perde bamboo dhe perde kumash, të përshtatshme për dhoma dite, sallone, kuzhina dhe çdo hapësirë që kërkon hijeshi dhe dritë natyrale. Materialet tona janë rezistente, nuk zbehen nga dielli dhe mirëmbahen shumë lehtë.</p>
+    <p>Koleksioni ynë përfshin <strong>perde ditore</strong>, <strong>perde bamboo</strong>, <strong>perde kumash</strong> dhe perde anësore, të përshtatshme për çdo stil të enterierit. Materialet janë të zgjedhura për pamje të pastër, rënie elegante, qëndrueshmëri dhe mirëmbajtje të lehtë.</p>
 
-    <p>Nëse kërkon perde online Kosove, Brillant ofron zgjidhje me matje dhe montim, si dhe perde anësore apo perde fabricë të stilit tënd. Përfitoni nga oferta për perde bamboo online dhe perde kumash online me dërgim në të gjithë Republikën e Kosovës.</p>
+    <ul class="seo-list">
+      <li>Perde me matje dhe montim profesional</li>
+      <li>Perde ditore për sallon, dhomë dhe kuzhinë</li>
+      <li>Perde bamboo dhe kumash me dizajne moderne</li>
+      <li>Dërgesë dhe shërbim në Kosovë nga Brillant Lipjan</li>
+    </ul>
 
-    <p>Zgjidhni perde ditore nga Brillant për një pamje të përkryer, cilësi afatgjatë dhe dërgesë të shpejtë në gjithë Kosovën. Dizajn modern për çdo shije dhe çdo shtëpi.</p>
+    <p>Nëse dëshiron perde sipas masës, ekipi ynë mund të ndihmojë me këshillim për materialin, ngjyrën, modelin dhe mënyrën e montimit. Zgjidh Brillant për perde cilësore, pamje elegante dhe porosi të lehtë online.</p>
+
+    <h3>A mund të porosis perde online në Kosovë?</h3>
+    <p>Po. Te Brillant mund të shikosh modelet online dhe të na kontaktosh për porosi, matje, montim dhe dërgesë në Kosovë.</p>
+
+    <h3>Cilat perde janë më të kërkuara?</h3>
+    <p>Modelet më të kërkuara janë perde ditore transparente, perde bamboo, perde kumash dhe kombinime me perde anësore për privatësi dhe dekor më të plotë.</p>
   </div>
 </section>
 
