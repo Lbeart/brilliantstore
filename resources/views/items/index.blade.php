@@ -362,9 +362,10 @@
     }
     .search-pro .btn{
       position:absolute;
-      top:50%;
+      top: 5px;
       right: 6px;
-      transform: translateY(-50%);
+      bottom: 5px;
+      transform: none;
       border-radius: 999px;
       padding: 0.65rem 1.3rem;
       font-weight: 900;
@@ -374,7 +375,7 @@
       background: var(--brand);
       border: none;
       color: #fff;
-      height: 44px;
+      height: auto;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -385,11 +386,11 @@
     }
     .search-pro .btn:hover {
       background: rgba(220,53,69,.92);
-      transform: translateY(-50%) scale(1.05);
+      transform: scale(1.03);
       box-shadow: 0 12px 30px rgba(220,53,69,.3);
     }
     .search-pro .btn:active {
-      transform: translateY(-50%) scale(0.98);
+      transform: scale(0.98);
     }
 
     /* WhatsApp */
@@ -421,7 +422,6 @@
       }
       .search-pro .btn {
         padding: 0.6rem 1.1rem;
-        height: 42px;
         font-size: 0.9rem;
       }
     }
@@ -439,7 +439,6 @@
       }
       .search-pro .btn{ 
         padding: 0.55rem 0.95rem;
-        height: 40px;
         font-size: 0.85rem;
         right: 5px;
       }
@@ -1326,7 +1325,7 @@ a::after {
 
 /* Search button animation */
 .search-pro .btn {
-  animation: fadeInUp 0.8s ease-out 0.5s both;
+  animation: none;
 }
 
 /* WhatsApp button animation */
