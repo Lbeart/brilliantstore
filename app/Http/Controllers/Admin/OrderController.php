@@ -297,7 +297,7 @@ public function invoicePublic($id)
     $qr = base64_encode(
         \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')
             ->size(120)
-            ->generate(route('orders.track', $order->tracking_code))
+            ->generate(route('track.show', $order->tracking_code))
     );
 
     $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.fatura', [

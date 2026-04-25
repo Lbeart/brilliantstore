@@ -47,6 +47,19 @@ class DashboardController extends Controller
             $monthRevenue  = Order::whereBetween('created_at', [$monthStart, now()])->sum('total');
 
             $avgOrderValue = $ordersCount ? round($revenue / $ordersCount, 2) : 0;
+            $pendingOrders = Order::whereIn('status', ['new', 'processing'])->count();
+
+            $statusCounts = [
+                'new'        => Order::where('status', 'new')->count(),
+                'processing' => Order::where('status', 'processing')->count(),
+                'completed'  => Order::where('status', 'completed')->count(),
+                'canceled'   => Order::where('status', 'canceled')->count(),
+            ];
+
+            $recentOrders = Order::query()
+                ->latest()
+                ->limit(6)
+                ->get(['id', 'name', 'phone', 'total', 'status', 'tracking_code', 'created_at']);
 
             // top 5 produktet e 30 ditëve (nga order_items)
             $since = Carbon::now()->subDays(30);
@@ -68,6 +81,9 @@ class DashboardController extends Controller
                 'todayRevenue'  => $todayRevenue,
                 'monthRevenue'  => $monthRevenue,
                 'avgOrderValue' => $avgOrderValue,
+                'pendingOrders' => $pendingOrders,
+                'statusCounts'  => $statusCounts,
+                'recentOrders'  => $recentOrders,
                 'topProducts'   => $topProducts,
             ];
         });

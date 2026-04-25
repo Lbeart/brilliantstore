@@ -22,6 +22,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\StatsController;
 use App\Http\Controllers\OrderTrackingController;
 
@@ -31,7 +32,7 @@ use App\Http\Controllers\OrderTrackingController;
 |--------------------------------------------------------------------------
 */
 // routes/web.php
-Route::get('/invoice/{id}', [OrderController::class, 'invoicePublic'])
+Route::get('/invoice/{id}', [AdminOrderController::class, 'invoicePublic'])
     ->name('orders.invoice.public');
 
 
@@ -158,7 +159,7 @@ Route::middleware(['auth','verified','admin'])
 
         // Dashboard
         Route::get('/', fn () => redirect()->route('admin.dashboard'));
-        Route::get('/dashboard', fn () => view('admin.dashboard'))->name('dashboard');
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
         // Users
         Route::get('/users',                 [UserController::class, 'index'])->name('users');
