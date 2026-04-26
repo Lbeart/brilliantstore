@@ -546,6 +546,9 @@
     <p>Modelet më të kërkuara janë perde ditore transparente, perde bamboo, perde kumash dhe kombinime me perde anësore për privatësi dhe dekor më të plotë.</p>
     <h3>Perde ditore online ne Kosove</h3>
     <p>B-Brillant ofron perde ditore online, perde bamboo, perde kumash dhe perde anesore per shtepi moderne. Porosit perde cilesore me matje te pershtatshme, dizajn elegant dhe dergese te shpejte ne Lipjan, Prishtine dhe ne gjithe Kosoven.</p>
+    <h3>Perde ditore, bamboo, kumash dhe perde moderne</h3>
+    <p>Perdet ditore jane zgjedhje ideale per klientet qe duan drite natyrale, privatese dhe pamje te paster ne sallon, kuzhine, dhome gjumi ose zyre. Materialet e lehta krijojne ndjesi te fresket, ndersa kombinimi me perde anesore e ben dritaren te duket me e kompletuar.</p>
+    <p>Ne kete kategori gjeni perde online Kosove, perde ditore, perde bamboo, perde kumash, perde moderne, perde per sallon, perde per dhome gjumi dhe perde me dergese ne Lipjan, Prishtine, Ferizaj, Gjilan, Prizren, Peje dhe qytete te tjera. B-Brillant ndihmon klientet te zgjedhin modelin qe i pershtatet shtepise dhe buxhetit.</p>
   </div>
 </section>
 

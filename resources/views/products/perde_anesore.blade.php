@@ -434,6 +434,9 @@
     <p>Porosit perde anësore nga Brillant dhe sjell elegancë, ngrohtësi dhe stil të pakrahasueshëm në shtëpinë tuaj. Dërgesë e shpejtë dhe shërbim profesional në të gjithë Kosovën.</p>
     <h3>Perde anesore online ne Kosove</h3>
     <p>Te B-Brillant gjeni perde anesore online per sallon, dhome gjumi dhe ambiente moderne. Perdet tona kombinohen me perde ditore, perde blackout dhe aksesore perdeje per nje pamje elegante me dergese ne gjithe Kosoven.</p>
+    <h3>Perde anesore per sallon dhe dhome gjumi</h3>
+    <p>Perdet anesore i japin ambientit thellesi, privatese dhe pamje me elegante. Ato mund te kombinohen me perde ditore per drite natyrale ose me perde me material me te trashe per me shume mbulim dhe rehati ne mbremje.</p>
+    <p>Klientet shpesh kerkojne perde anesore Kosove, perde per sallon, perde per dhome gjumi, perde moderne, perde ne Lipjan dhe perde online. B-Brillant ofron modele te ndryshme qe pershtaten me interiere klasike, moderne dhe familjare.</p>
   </div>
 </section>
 

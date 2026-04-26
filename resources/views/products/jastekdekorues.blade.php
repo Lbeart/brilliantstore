@@ -431,6 +431,9 @@
     <p>Zgjidh një set jastëkësh dekorativ ose kombino ngjyrat dhe modelet sipas stilit të shtëpisë tënde. Brillant ofron dërgesë të shpejtë në gjithë Kosovën, me cilësi të garantuar dhe shërbim profesional.</p>
     <h3>Jasteke dekorues online ne Kosove</h3>
     <p>Zgjidh jasteke dekorues online nga B-Brillant per sallon, divan, krevat dhe dhoma moderne. Modelet tona kombinojne ngjyra te bukura, materiale cilesore dhe dizajn elegant per shtepi ne Lipjan, Prishtine dhe ne gjithe Kosoven.</p>
+    <h3>Jasteke per divan, krevat dhe dekor modern</h3>
+    <p>Jasteket dekorues jane menyra me e lehte per ta rifreskuar sallonin ose dhomen e gjumit. Mjafton te kombinohen me ngjyren e divanit, perdeve, tepihut ose mbuleses dhe ambienti merr pamje me te ngrohte, me moderne dhe me te kompletuar.</p>
+    <p>Klientet qe kerkojne jasteke dekorues Kosove, jasteke per divan, jasteke per krevat, jasteke modern, jasteke online dhe dekor shtepie mund te gjejne ne B-Brillant modele te ndryshme per perdorim familjar, dekor sezonal dhe arredim te brendshem.</p>
   </div>
 </section>
 

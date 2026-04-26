@@ -1393,6 +1393,10 @@
       <p>B-Brillant është një nga dyqanet më të besuara për tepih në Kosovë, duke ofruar dizajne moderne, materiale cilësore dhe çmime të përballueshme për çdo familje. Nëse po kërkoni “tepih Kosovë”, koleksioni ynë është ndër më të mirët në treg.</p>
       <h3>Tepiha online Kosove - akril, akrill, Hali dhe modele moderne</h3>
       <p>Te B-Brillant mund te porosisni tepiha online ne Kosove per sallon, dhome gjumi, korridor dhe ambiente familjare. Koleksioni perfshin tepiha akril, tepiha akrill, tepiha Hali, tepiha moderne, klasik, rrethore, staza dhe modele antibakteriale me dergese te shpejte ne Lipjan, Prishtine dhe qytete te tjera te Kosoves.</p>
+      <h3>Si te zgjedhesh tepihun e duhur per shtepi?</h3>
+      <p>Nese kerkon tepih per sallon, zakonisht zgjidhen madhesi me te medha si 200x300 ose 160x230, ndersa per dhome gjumi pershtaten modele me teksture me te bute dhe ngjyra me te qeta. Per korridor dhe hyrje, stazat dhe tepiha me material rezistent jane zgjedhje praktike sepse pastrohen lehte dhe e mbajne ambientin te rregullt.</p>
+      <p>Klientet shpesh kerkojne ne Google fjale si tepiha Kosove, tepih online, tepiha ne Lipjan, tepiha ne Prishtine, tapeta moderne, tepiha akril, tepiha Hali, tepiha per sallon, tepiha per dhome gjumi dhe tepiha me oferta. Ne kete faqe gjeni modele te ndryshme per shtepi moderne, klasike dhe ambiente familjare.</p>
+      <p>B-Brillant punon me perzgjedhje te kujdesshme te modeleve, materialeve dhe ngjyrave qe pershtaten me interierin e shtepise. Per cdo tepih mund te shikoni foton, emrin, cmimin dhe detajet e produktit, pastaj te vazhdoni porosine online ose te kontaktoni ekipin per me shume informacion.</p>
     </div>
   </section>
 

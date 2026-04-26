@@ -436,6 +436,9 @@
     <p>Me shërbim të shpejtë dhe dërgesë në gjithë Kosovën, Brillant garanton cilësi të padiskutueshme dhe dizajn të nivelit premium për shtëpinë tuaj. Mbështilleni ambientin me elegancë dhe komoditet – zgjidhni mbulesat tona profesionale.</p>
     <h3>Mbulesa online ne Kosove per krevat dhe divan</h3>
     <p>Porosit mbulesa online nga B-Brillant per krevat, divan dhe dekor shtepie. Mbulesat tona jane praktike, te buta, rezistente dhe te pershtatshme per klientet qe kerkojne mbulesa moderne me dergese te shpejte ne Kosove.</p>
+    <h3>Mbulesa per divan, krevat dhe dekor shtepie</h3>
+    <p>Mbulesat ndihmojne ne mbrojtjen e divanit dhe krevatit, por edhe e ndryshojne pamjen e dhomes pa pasur nevoje per shpenzime te medha. Ato jane te pershtatshme per sallon, dhome gjumi, dhoma femijesh dhe ambiente ku kerkohet pastrim i lehte dhe dekor i rregullt.</p>
+    <p>Ne B-Brillant gjeni mbulesa per krevat, mbulesa per divan, mbulesa dekorative, mbulesa moderne, mbulesa online Kosove dhe modele me ngjyra qe kombinohen lehte me perde, tepiha dhe jasteke dekorues. Dergesa realizohet ne Lipjan, Prishtine, Ferizaj, Gjilan, Prizren, Peje, Mitrovice dhe qytete te tjera.</p>
   </div>
 </section>
 

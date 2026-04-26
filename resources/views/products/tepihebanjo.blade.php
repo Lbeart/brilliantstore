@@ -435,6 +435,9 @@
     <p>Porosit online tepihun tuaj për banjo nga Brillant dhe sjellni komoditet, siguri dhe dizajn të bukur në çdo hap të ditës. Dërgesë e shpejtë në gjithë Kosovën.</p>
     <h3>Tepiha banjo online ne Kosove</h3>
     <p>Porosit tepiha per banjo online nga B-Brillant me modele antirreshqitese, thithje te mire dhe pastrim te lehte. Dergese e shpejte ne Lipjan, Prishtine dhe ne gjithe Kosoven per klientet qe kerkojne tepiha banjo cilesore, moderne dhe praktike.</p>
+    <h3>Tapeta banjoje antirreshqitese per perdorim te perditshem</h3>
+    <p>Tepihu i banjos duhet te jete i sigurt, i bute dhe praktik. Modelet antirreshqitese jane te pershtatshme per dush, lavaman, hyrje te banjos dhe ambiente ku ka lageshti. Ato ndihmojne qe dyshemeja te qendroje me e thate dhe e bejne banjon me komode per perdorim familjar.</p>
+    <p>Ne kete kategori mund te gjeni tepiha banjoje, tapeta dushi, tepih banjo antirreshqites, sete per banjo dhe modele moderne me ngjyra te ndryshme. B-Brillant eshte zgjedhje e mire per klientet qe kerkojne tepiha banjo online ne Kosove me cmime te arsyeshme dhe dergese te shpejte.</p>
   </div>
 </section>
 

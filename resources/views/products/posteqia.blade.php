@@ -433,6 +433,9 @@
     <p>Zgjidhni posteqia dhe lëkur pelushi nga Brillant për të shtuar elegancë, butësi dhe komoditet në çdo dhomë. Dërgesë e shpejtë në të gjithë Kosovën.</p>
     <h3>Posteqia online dhe lekur pelushi ne Kosove</h3>
     <p>B-Brillant ofron posteqia, lekur pelushi dhe tapeta pelushi online ne Kosove per sallon, dhome gjumi, divan dhe dekor modern. Modelet jane te buta, elegante dhe te pershtatshme per ambiente qe kerkojne rehati, ngrohtesi dhe stil.</p>
+    <h3>Lekur pelushi per dekor, dhome gjumi dhe sallon</h3>
+    <p>Posteqiat dhe lekurat e pelushit perdoren si dekor pran krevatit, mbi karrige, ne divan, ne dhoma rinore dhe ne kendet e relaksit. Ato i japin shtepise pamje me te ngrohte dhe jane shume te kerkuara nga klientet qe duan nje ambient modern, te bute dhe te rehatshem.</p>
+    <p>Klientet shpesh kerkojne posteqia online, lekur pelushi Kosove, tapet pelushi, tepih pelushi, posteqia per dhome gjumi dhe dekor pelushi per shtepi. Ne B-Brillant mund te gjeni modele qe pershtaten me ngjyra te ndryshme mobiljesh dhe me stile moderne apo klasike.</p>
   </div>
 </section>
 

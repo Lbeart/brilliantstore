@@ -431,6 +431,9 @@
     <p>Brillant ofron batanije cilësore për çdo buxhet, me dizajne të përzgjedhura dhe dërgesë të shpejtë në të gjithë Kosovën. Zgjidh komoditetin – zgjidh batanijet nga Brillant.</p>
     <h3>Batanije online ne Kosove</h3>
     <p>B-Brillant ofron batanije online per dimer, dhome gjumi, divan dhe perdorim familjar. Zgjidh batanije te buta, te ngrohta dhe cilesore me dergese te shpejte ne Lipjan, Prishtine dhe ne gjithe Kosoven.</p>
+    <h3>Batanije te buta, qebe dhe mbulesa te ngrohta</h3>
+    <p>Batanijet jane te nevojshme per cdo shtepi, sidomos ne sezonin e ftohte. Ne kete kategori mund te gjeni batanije per krevat, batanije per divan, qebe te buta, batanije moderne dhe modele qe kombinohen bukur me mbulesa, postava dhe jasteke dekorues.</p>
+    <p>Nese klientet kerkojne batanije Kosove, qebe online, batanije dimri, batanije te buta, batanije per dhome gjumi ose batanije ne Lipjan, B-Brillant ofron zgjedhje praktike me cmim te qarte, foto te produktit dhe mundesi porosie online.</p>
   </div>
 </section>
 

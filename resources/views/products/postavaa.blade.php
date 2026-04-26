@@ -467,6 +467,9 @@
     <p>Brillant ju sjell cilësi premium, rehati të garantuar dhe dizajn që i jep dhomës suaj një pamje të freskët dhe moderne. Porosit online me dërgesë të shpejtë në gjithë Kosovën.</p>
     <h3>Set carcafesh online ne Kosove</h3>
     <p>Gjeni set carcafesh online ne B-Brillant per krevat dopio, dhome gjumi dhe perdorim te perditshem. Koleksioni perfshin carcafe pambuku, materiale te buta, ngjyra moderne dhe dergese te shpejte ne Lipjan, Prishtine dhe ne gjithe Kosoven.</p>
+    <h3>Postava dhe carcafe per dhome gjumi</h3>
+    <p>Setet e carcafeve jane nder produktet me te kerkuara per dhome gjumi sepse ndikojne direkt ne rehati, pasterti dhe pamjen e krevatit. Ne B-Brillant mund te zgjidhni postava, carcafe per krevat dopio, carcafe per krevat teke, sete moderne dhe materiale te pershtatshme per perdorim te perditshem.</p>
+    <p>Per klientet qe kerkojne ne Google postava Kosove, set carcafesh online, carcafe pambuku, postava per krevat dhe carcafe ne Lipjan, kjo faqe ofron perzgjedhje praktike me foto, cmim dhe mundesi porosie. Modelet jane te menduara per shtepi familjare, dhoma moderne dhe dhurata praktike.</p>
   </div>
 </section>
 
