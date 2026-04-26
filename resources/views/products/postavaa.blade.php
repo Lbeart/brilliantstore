@@ -5,7 +5,7 @@
 
   <!-- SEO TITLE + DESCRIPTION -->
   <title>Set çarçafësh premium pambuku  – Material i butë & rezistent | Brillant Lipjan</title>
-  <meta name="description" content="Set çarçafësh premium me material të butë, ngjyra rezistente dhe dizajn modern. Përmasa të ndryshme për krevat dopio dhe tek. Cilësi e lartë nga Brillant Lipjan.">
+  <meta name="description" content="Set çarçafësh dhe postava online në Kosovë për krevat dopio dhe tek. Materiale të buta, moderne dhe cilësore nga Brillant Lipjan.">
 
   <!-- KEYWORDS (jo vendimtare, por ndihmojnë) -->
   <meta name="keywords" content="set çarçafësh, çarçafë krevati,postava,damas,postava per nje person,postava pambuk, sets çarçafësh, çarçafë modern, çarçaf dopio, çarçaf tek, sete krevati, Brillant Lipjan, posteqa, set qaraqafesh">

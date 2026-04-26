@@ -5,7 +5,7 @@
 
   <!-- TITULLI & PERSHKRIMI KRYESOR SEO -->
   <title>Tepiha moderne & tradicionale | B-Brillant</title>
-  <meta name="description" content="Tepiha moderne dhe tradicionale në Lipjan. Tepiha akrilik, antibakterial, madhësi 150x230 & 200x300 për sallon, dhomë gjumi dhe çdo ambient. B-Brillant Tepiha.">
+  <meta name="description" content="Tepiha online në Kosovë: akril, Hali, modernë dhe klasikë për sallon, dhomë gjumi e korridor. Dërgesë nga B-Brillant Lipjan.">
 
   <!-- LEJO INDEXIMIN -->
   <meta name="robots" content="index,follow">

@@ -5,7 +5,7 @@
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
   <title>Perde Online Kosovë | Perde Ditore me Matje & Montim | Brillant</title>
-  <meta name="description" content="Perde online në Kosovë nga Brillant Lipjan: perde ditore, bamboo, kumash dhe anësore me matje, montim, cilësi premium dhe dërgesë në gjithë Kosovën.">
+  <meta name="description" content="Perde online në Kosovë: perde ditore, bamboo, kumash dhe anësore me matje, montim dhe dërgesë nga Brillant Lipjan.">
 
 
 

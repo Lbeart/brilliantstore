@@ -5,7 +5,7 @@
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
   <title>Perde anësore cilësore për shtëpi & zyrë – Brillant Lipjan</title>
-  <meta name="description" content="Perde anësore moderne me materiale cilësore, qepje profesionale dhe mekanizma të qëndrueshëm. Konsultim, matje dhe montim nga Brillant Lipjan.">
+  <meta name="description" content="Perde anësore online në Kosovë për sallon dhe dhomë gjumi. Modele moderne, matje, montim dhe shërbim nga Brillant Lipjan.">
 
   <!-- KEYWORDS -->
   <meta name="keywords" content="perde anësore, perde anesore, perde moderne, perde shtëpie, perde zyre, perde dritareje, perde elegante, perde amerikane, Brillant Lipjan, perde Kosove">

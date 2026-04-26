@@ -6,7 +6,7 @@
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
   <title>Batanije të buta & cilësore – Modele moderne për çdo sezon | Brillant Lipjan</title>
-  <meta name="description" content="Batanije të buta, të ngrohta dhe cilësore për dimër dhe verë. Modele moderne, materiale rezistente dhe ngjyra që nuk zbehen – nga Brillant Lipjan.">
+  <meta name="description" content="Batanije të buta dhe të ngrohta online në Kosovë. Modele moderne për krevat, divan dhe dhomë gjumi nga Brillant Lipjan.">
 
   <!-- KEYWORDS -->
   <meta name="keywords" content="batanije, batanije moderne, batanije të buta, batanije dimri, batanije vere, batanije për shtrat, batanije premium, Brillant Lipjan, batanije Kosove">

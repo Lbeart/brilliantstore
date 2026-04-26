@@ -6,7 +6,7 @@
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
   <title>Garnishte cilësore për kuzhinë & dhoma | Modele moderne – Brillant Lipjan</title>
-  <meta name="description" content="Garnishte moderne dhe praktike për kuzhinë, sallon dhe dhoma. Materiale të qëndrueshme, dizajn elegant dhe ngjyra që nuk zbehen. Zgjidhja ideale nga Brillant Lipjan.">
+  <meta name="description" content="Garnishte dhe aksesorë perdeje online në Kosovë. Mbajtëse, shirita dhe unaza perdeje nga Brillant Lipjan.">
 
   <!-- KEYWORDS -->
   <meta name="keywords" content="garnishte, garnitura, set kuzhine, sete kuzhine, tapete kuzhine, garnitura moderne, garnishte Kosove, Brillant Lipjan">

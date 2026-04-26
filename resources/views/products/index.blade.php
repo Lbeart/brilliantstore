@@ -2,7 +2,10 @@
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <title>Dyqani – Produktet</title>
+  <title>Produktet | B-Brillant - Tepiha, Perde dhe Dekor Shtëpie</title>
+  <meta name="description" content="Shfleto produktet B-Brillant: tepiha, perde, mbulesa, postava, batanije dhe dekor shtëpie me porosi online në Kosovë.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{ url('/products') }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>

@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Brillant Tepiha &amp; Perde | b-brillant.com</title>
   <meta name="description" content="Tepiha moderne, perde, set qarqafësh, mbulesa, jastakë dekorues dhe tepiha për banjo. Cilësi dhe dizajn për shtëpinë tuaj në Lipjan." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="{{ url('/') }}" />
   <meta name="theme-color" content="#dc3545" />
   <meta name="color-scheme" content="light" />
 
@@ -12,6 +14,7 @@
   <meta property="og:title" content="Brillant Tepiha & Perde" />
   <meta property="og:description" content="Tepiha & perde premium, sete çarçafësh, mbulesa dhe dekorime për shtëpi. Porosit online në Kosovë." />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="{{ url('/') }}" />
   <meta property="og:image" content="{{ asset('images/llogo.png') }}" />
 
   <!-- Bootstrap CSS & Icons -->

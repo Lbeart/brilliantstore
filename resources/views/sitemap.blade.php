@@ -25,6 +25,13 @@
 
 <!-- CATEGORIES -->
 <url>
+<loc>{{ url('/products') }}</loc>
+<lastmod>{{ now()->toAtomString() }}</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.90</priority>
+</url>
+
+<url>
 <loc>{{ url('/tepiha') }}</loc>
 <lastmod>{{ now()->toAtomString() }}</lastmod>
 <changefreq>weekly</changefreq>
@@ -75,6 +82,13 @@
 
 <url>
 <loc>{{ url('/posteqia') }}</loc>
+<lastmod>{{ now()->toAtomString() }}</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.88</priority>
+</url>
+
+<url>
+<loc>{{ url('/jastekdekorues') }}</loc>
 <lastmod>{{ now()->toAtomString() }}</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.88</priority>

@@ -5,7 +5,7 @@
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
   <title>Jastakë dekorues modern & elegant – Për sallon & dhoma gjumi | Brillant Lipjan</title>
-  <meta name="description" content="Jastakë dekorues modern me materiale cilësore, ngjyra që nuk zbehen dhe dizajne elegante për sallon, dhomë gjumi dhe ambiente pune. Stili dhe rehatia që kërkoni – nga Brillant Lipjan.">
+  <meta name="description" content="Jastëkë dekorues online në Kosovë për divan, krevat dhe sallon. Modele moderne, materiale cilësore dhe dërgesë nga Brillant Lipjan.">
 
   <!-- KEYWORDS (ndihmojnë pak SEO) -->
   <meta name="keywords" content="jastak dekorues, jastekë dekorativë, jastakë modern, jastakë salloni, jastakë dhome gjumi, jastak dekor, Brillant Lipjan, decor pillow, jastekdekorues">

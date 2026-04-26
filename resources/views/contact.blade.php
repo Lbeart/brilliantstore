@@ -1,8 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <title>Contact Us</title>
+  <title>Kontakt | B-Brillant Lipjan - Tepiha, Perde dhe Dekor Shtëpie</title>
+  <meta name="description" content="Kontaktoni B-Brillant në Lipjan për tepiha, perde, mbulesa, postava dhe produkte dekor shtëpie me dërgesë në Kosovë.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{ url('/contact') }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="B-Brillant">
+  <meta property="og:title" content="Kontakt | B-Brillant Lipjan">
+  <meta property="og:description" content="Na kontaktoni për porosi, pyetje dhe dërgesë të produkteve të shtëpisë në Kosovë.">
+  <meta property="og:url" content="{{ url('/contact') }}">
+  <meta property="og:image" content="{{ asset('images/llogo.png') }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Bootstrap CSS + Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">

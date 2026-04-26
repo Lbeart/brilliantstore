@@ -3,7 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Brillant - About Us</title>
+  <title>Rreth B-Brillant | Tepiha, Perde dhe Tekstil Shtëpie në Lipjan</title>
+  <meta name="description" content="B-Brillant në Lipjan ofron tepiha, perde, mbulesa, postava, batanije dhe dekor shtëpie me cilësi dhe dërgesë në Kosovë.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{ url('/about') }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="B-Brillant">
+  <meta property="og:title" content="Rreth B-Brillant | Tekstil dhe Dekor Shtëpie">
+  <meta property="og:description" content="Njihuni me B-Brillant në Lipjan: tepiha, perde dhe produkte tekstili për shtëpi me shërbim profesional në Kosovë.">
+  <meta property="og:url" content="{{ url('/about') }}">
+  <meta property="og:image" content="{{ asset('images/llogo.png') }}">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -5,7 +5,7 @@
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
   <title>Tepiha për banjo antirrëshqitës & të qëndrueshëm – Brillant Lipjan</title>
-  <meta name="description" content="Tepiha banjoje me thithje të shpejtë dhe bazë antirrëshqitëse. Ngjyra dhe përmasa të ndryshme për çdo ambient banjoje.">
+  <meta name="description" content="Tepiha banjo online në Kosovë me bazë antirrëshqitëse, thithje të mirë dhe pastrim të lehtë. Modele nga Brillant Lipjan.">
 
   <!-- KEYWORDS -->
   <meta name="keywords" content="tepiha banjoje, tepiha antirrëshqitës, tepiha dushi, tepiha banje, tepiha sigurie, Brillant Lipjan, tepiha Kosove">

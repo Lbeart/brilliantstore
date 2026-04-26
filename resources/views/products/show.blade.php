@@ -20,9 +20,12 @@
     }
     $mainImg = $imgs[0] ?? null;
 
-    $cleanDescription = strip_tags($product->description ?? $product->name);
-    $metaDesc = Str::limit($cleanDescription, 160);
     $pageCategory = trim($product->category ?? 'Produkt');
+    $cleanDescription = trim(strip_tags($product->description ?? ''));
+    if ($cleanDescription === '') {
+      $cleanDescription = $product->name . ' nga B-Brillant Lipjan. Porosit online ne Kosove me detaje, cmim dhe dergese te shpejte.';
+    }
+    $metaDesc = Str::limit($cleanDescription, 155);
     $pageTitle = trim($product->name . ($pageCategory ? ' – ' . $pageCategory : '') . ' | B-Brillant');
     $pageUrl = url()->current();
     $categoryLower = strtolower($pageCategory . ' ' . $product->name);
@@ -715,8 +718,9 @@
   </style>
   <script type="application/ld+json">
 @php
-  $ratingValue = round((float)($product->rating ?? 4.7), 1);
-  $reviewCount = max(1, intval($product->review_count ?? 12));
+  $hasRealRating = is_numeric($product->rating ?? null) && intval($product->review_count ?? 0) > 0;
+  $ratingValue = $hasRealRating ? round((float)$product->rating, 1) : null;
+  $reviewCount = $hasRealRating ? intval($product->review_count) : null;
   $rawGtin = trim((string)($product->gtin ?? $product->ean ?? $product->sku ?? ''));
   $cleanGtin = preg_replace('/\D+/', '', $rawGtin);
   $gtinKeys = [];
@@ -744,31 +748,6 @@
     'mainEntityOfPage' => [
       '@type' => 'WebPage',
       '@id' => $pageUrl,
-    ],
-    'aggregateRating' => [
-      '@type' => 'AggregateRating',
-      'ratingValue' => $ratingValue,
-      'ratingCount' => $reviewCount,
-      'reviewCount' => $reviewCount,
-      'bestRating' => 5,
-      'worstRating' => 1,
-    ],
-    'review' => [
-      [
-        '@type' => 'Review',
-        'author' => [
-          '@type' => 'Person',
-          'name' => 'B-Brillant customer',
-        ],
-        'datePublished' => now()->toDateString(),
-        'reviewBody' => 'Një produkt i rekomanduar nga klientët tanë për cilësi dhe shërbim të shpejtë.',
-        'reviewRating' => [
-          '@type' => 'Rating',
-          'ratingValue' => $ratingValue,
-          'bestRating' => 5,
-          'worstRating' => 1,
-        ],
-      ],
     ],
     'offers' => [
       '@type' => 'Offer',
@@ -817,7 +796,7 @@
           'name' => 'XK',
         ],
         'merchantReturnDays' => 14,
-        'returnPolicyCategory' => 'MoneyBack',
+        'returnPolicyCategory' => 'https://schema.org/MerchantReturnFiniteReturnWindow',
         'returnMethod' => 'https://schema.org/ReturnByMail',
       ],
     ],
@@ -825,6 +804,17 @@
 
   if (!empty($gtinKeys)) {
     $productSchema = array_merge($productSchema, $gtinKeys);
+  }
+
+  if ($hasRealRating) {
+    $productSchema['aggregateRating'] = [
+      '@type' => 'AggregateRating',
+      'ratingValue' => $ratingValue,
+      'ratingCount' => $reviewCount,
+      'reviewCount' => $reviewCount,
+      'bestRating' => 5,
+      'worstRating' => 1,
+    ];
   }
 @endphp
 {!! json_encode($productSchema, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT) !!}

@@ -5,7 +5,7 @@
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
   <title>Lekur Pelushi premium për shtëpi & divan – Brillant Lipjan</title>
-  <meta name="description" content="Leku pelushi premium për divan, dhomë gjumi dhe ambient komod. Material të butë, ngjyra të qëndrueshme dhe cilësi profesionale nga Brillant Lipjan.">
+  <meta name="description" content="Posteqia dhe lëkur pelushi online në Kosovë për dhomë gjumi, sallon dhe dekor modern. Modele të buta nga Brillant Lipjan.">
 
   <!-- KEYWORDS -->
   <meta name="keywords" content="lekur pelushi, lekur pelushi shtëpie, lekur pelushi divan, lekur pelushi modern, tapetë pelushi, Brillant Lipjan, lekur pelushi Kosove">
