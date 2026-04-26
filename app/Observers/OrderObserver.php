@@ -12,10 +12,17 @@ class OrderObserver
 {
     public function created(Order $order): void
     {
-        // Dërgoji email administratorit me të dhënat e porosisë
-        $admins = User::where('role', 'admin')->get();
-        foreach ($admins as $admin) {
-            Mail::to($admin->email)->queue(new AdminOrderNotificationMail($order));
+        // Dërgoji email administratorëve - pavarur nga queue
+        try {
+            $admins = User::where('role', 'admin')->pluck('email')->toArray();
+            if (!empty($admins)) {
+                foreach ($admins as $email) {
+                    Mail::to($email)->send(new AdminOrderNotificationMail($order));
+                }
+            }
+        } catch (\Exception $e) {
+            // Log error por mos e bllokoje porosinë
+            \Log::error('Admin email send failed: ' . $e->getMessage());
         }
 
         SendWhatsAppOrderNotification::dispatch($order->id);
