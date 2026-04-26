@@ -29,7 +29,7 @@ Nje porosi e re u regjistrua në website! Detajet e porosisë:
 **Metoda e Pagesës:** {{ strtoupper($order->payment) }}  
 **Statusi:** {{ strtoupper($order->status) }}
 
-<x-mail::button :url="route('admin.orders.show', $order)">
+<x-mail::button :url="url('/admin/orders/' . $order->id)">
 Shiko Porosinë në Admin
 </x-mail::button>
 
