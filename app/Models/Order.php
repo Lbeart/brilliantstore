@@ -3,7 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str; 
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema; 
 class Order extends Model
 {
     protected $fillable = [
@@ -22,8 +23,15 @@ class Order extends Model
      protected static function booted()
     {
         static::creating(function (Order $order) {
-            if (empty($order->tracking_code)) {
-                $order->tracking_code = self::generateTrackingCode();
+            // Generate tracking code only if the DB has the column.
+            try {
+                if (Schema::hasColumn('orders', 'tracking_code')) {
+                    if (empty($order->tracking_code)) {
+                        $order->tracking_code = self::generateTrackingCode();
+                    }
+                }
+            } catch (\Throwable $e) {
+                // If schema check fails (DB not migrated/available), skip generating tracking code.
             }
         });
     }

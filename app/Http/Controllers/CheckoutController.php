@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class CheckoutController extends Controller
 {
@@ -62,8 +63,7 @@ class CheckoutController extends Controller
         $order = null;
 
         DB::transaction(function() use ($data, $cart, $total, &$order) {
-            $order = Order::create([
-                'user_id' => auth()->id(),
+            $orderData = [
                 'name'    => $data['name'],
                 'phone'   => $data['phone'],
                 'email'   => $data['email'] ?? (auth()->user()->email ?? null),
@@ -74,7 +74,13 @@ class CheckoutController extends Controller
                 'payment' => $data['payment'],
                 'total'   => $total,
                 'status'  => 'new',
-            ]);
+            ];
+
+            if (Schema::hasColumn('orders', 'user_id')) {
+                $orderData['user_id'] = auth()->id();
+            }
+
+            $order = Order::create($orderData);
 
            foreach ($cart as $it) {
 
