@@ -12,19 +12,21 @@ class OrderObserver
 {
     public function created(Order $order): void
     {
-        // Dërgoji email administratorëve - pavarur nga queue
+        // Dërgoji email administratorëve pas transaction-it (use queued/async)
         try {
             $admins = User::where('role', 'admin')->pluck('email')->toArray();
             if (!empty($admins)) {
                 foreach ($admins as $email) {
-                    Mail::to($email)->send(new AdminOrderNotificationMail($order));
+                    // Dërgoj në background job, jo direktë në transaction
+                    \Illuminate\Support\Facades\Queue::fake(false);
+                    Mail::to($email)->queue(new AdminOrderNotificationMail($order));
                 }
             }
         } catch (\Exception $e) {
-            // Log error por mos e bllokoje porosinë
-            \Log::error('Admin email send failed: ' . $e->getMessage());
+            \Log::error('Admin email queue failed: ' . $e->getMessage());
         }
 
+        // WhatsApp notification
         SendWhatsAppOrderNotification::dispatch($order->id);
     }
 }
