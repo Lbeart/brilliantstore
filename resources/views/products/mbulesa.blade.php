@@ -434,6 +434,8 @@
     <p>Për krevate të mëdhenj apo dyshekë standard, ne ofrojmë përmasa të ndryshme për të siguruar përshtatje të përkryer. Materialet tona rezistente mund të lahen shpesh pa humbur formën, fleksibilitetin apo ngjyrën. Mbulesat Brillant janë të punuara me kujdes për të qëndruar bukur, pavarësisht përdorimit të përditshëm.</p>
 
     <p>Me shërbim të shpejtë dhe dërgesë në gjithë Kosovën, Brillant garanton cilësi të padiskutueshme dhe dizajn të nivelit premium për shtëpinë tuaj. Mbështilleni ambientin me elegancë dhe komoditet – zgjidhni mbulesat tona profesionale.</p>
+    <h3>Mbulesa online ne Kosove per krevat dhe divan</h3>
+    <p>Porosit mbulesa online nga B-Brillant per krevat, divan dhe dekor shtepie. Mbulesat tona jane praktike, te buta, rezistente dhe te pershtatshme per klientet qe kerkojne mbulesa moderne me dergese te shpejte ne Kosove.</p>
   </div>
 </section>
 

@@ -32,8 +32,10 @@ return [
     ],
     'whatsapp' => [
     'enabled' => env('WHATSAPP_NOTIFICATIONS_ENABLED', false),
-    'provider' => env('WHATSAPP_PROVIDER', 'twilio'),
+    'provider' => env('WHATSAPP_PROVIDER', 'meta'),
     'to' => env('WHATSAPP_TO'),
+    'phone_id' => env('WHATSAPP_PHONE_ID'),
+    'token' => env('WHATSAPP_TOKEN'),
 ],
 
 'twilio' => [

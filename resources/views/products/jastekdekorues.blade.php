@@ -429,6 +429,8 @@
     <p>Përveç dizajnit, jastëkët dekorues të Brillant ofrojnë mbështetje të rehatshme dhe janë të lehtë për t’u mirëmbajtur falë materialeve të cilësisë së lartë. Fercat rezistente dhe mbulesat e heqshme sigurojnë jetëgjatësi dhe pastërti pa kompromis.</p>
 
     <p>Zgjidh një set jastëkësh dekorativ ose kombino ngjyrat dhe modelet sipas stilit të shtëpisë tënde. Brillant ofron dërgesë të shpejtë në gjithë Kosovën, me cilësi të garantuar dhe shërbim profesional.</p>
+    <h3>Jasteke dekorues online ne Kosove</h3>
+    <p>Zgjidh jasteke dekorues online nga B-Brillant per sallon, divan, krevat dhe dhoma moderne. Modelet tona kombinojne ngjyra te bukura, materiale cilesore dhe dizajn elegant per shtepi ne Lipjan, Prishtine dhe ne gjithe Kosoven.</p>
   </div>
 </section>
 

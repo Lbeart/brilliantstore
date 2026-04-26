@@ -544,6 +544,8 @@
 
     <h3>Cilat perde janë më të kërkuara?</h3>
     <p>Modelet më të kërkuara janë perde ditore transparente, perde bamboo, perde kumash dhe kombinime me perde anësore për privatësi dhe dekor më të plotë.</p>
+    <h3>Perde ditore online ne Kosove</h3>
+    <p>B-Brillant ofron perde ditore online, perde bamboo, perde kumash dhe perde anesore per shtepi moderne. Porosit perde cilesore me matje te pershtatshme, dizajn elegant dhe dergese te shpejte ne Lipjan, Prishtine dhe ne gjithe Kosoven.</p>
   </div>
 </section>
 

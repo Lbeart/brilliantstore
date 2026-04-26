@@ -1391,6 +1391,8 @@
       <p>Tepiha Online · Tepiha Hali · Tepiha Bambo · Tepiha pelushi · Staz · Tepiha Rrethore · Tepiha Moderne</p>
 
       <p>B-Brillant është një nga dyqanet më të besuara për tepih në Kosovë, duke ofruar dizajne moderne, materiale cilësore dhe çmime të përballueshme për çdo familje. Nëse po kërkoni “tepih Kosovë”, koleksioni ynë është ndër më të mirët në treg.</p>
+      <h3>Tepiha online Kosove - akril, akrill, Hali dhe modele moderne</h3>
+      <p>Te B-Brillant mund te porosisni tepiha online ne Kosove per sallon, dhome gjumi, korridor dhe ambiente familjare. Koleksioni perfshin tepiha akril, tepiha akrill, tepiha Hali, tepiha moderne, klasik, rrethore, staza dhe modele antibakteriale me dergese te shpejte ne Lipjan, Prishtine dhe qytete te tjera te Kosoves.</p>
     </div>
   </section>
 

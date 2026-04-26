@@ -429,6 +429,8 @@
     <p>Zgjedhja e ngjyrave, modeleve dhe teksturave moderne ju lejon të dekoroni dhomën tuaj sipas stilit personal – nga minimaliste deri te klasike e elegante. Batanijet tona janë gjithashtu të lehta për t’u mirëmbajtur, me materiale që nuk zbehen dhe që i rezistojnë përdorimit të përditshëm.</p>
 
     <p>Brillant ofron batanije cilësore për çdo buxhet, me dizajne të përzgjedhura dhe dërgesë të shpejtë në të gjithë Kosovën. Zgjidh komoditetin – zgjidh batanijet nga Brillant.</p>
+    <h3>Batanije online ne Kosove</h3>
+    <p>B-Brillant ofron batanije online per dimer, dhome gjumi, divan dhe perdorim familjar. Zgjidh batanije te buta, te ngrohta dhe cilesore me dergese te shpejte ne Lipjan, Prishtine dhe ne gjithe Kosoven.</p>
   </div>
 </section>
 

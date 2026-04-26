@@ -433,6 +433,8 @@
     <p>Tapetat tona për banjo ofrohen në ngjyra moderne, modele elegante dhe madhësi të ndryshme, në mënyrë që të përshtaten me çdo lloj interieri. Ato janë të lehta për t’u pastruar dhe rezistente ndaj lagështirës, duke garantuar jetëgjatësi dhe higjienë të lartë.</p>
 
     <p>Porosit online tepihun tuaj për banjo nga Brillant dhe sjellni komoditet, siguri dhe dizajn të bukur në çdo hap të ditës. Dërgesë e shpejtë në gjithë Kosovën.</p>
+    <h3>Tepiha banjo online ne Kosove</h3>
+    <p>Porosit tepiha per banjo online nga B-Brillant me modele antirreshqitese, thithje te mire dhe pastrim te lehte. Dergese e shpejte ne Lipjan, Prishtine dhe ne gjithe Kosoven per klientet qe kerkojne tepiha banjo cilesore, moderne dhe praktike.</p>
   </div>
 </section>
 

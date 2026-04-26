@@ -431,6 +431,8 @@
     <p>Posteqiat janë të lehta për t’u pastruar, rezistente ndaj përdorimit të përditshëm dhe të disponueshme në ngjyra të ndryshme për t’u kombinuar me çdo stil dekorimi. Ato janë gjithashtu perfekte për foto aesthetike, dhoma rinore dhe kënde të brendshme Instagram-friendly.</p>
 
     <p>Zgjidhni posteqia dhe lëkur pelushi nga Brillant për të shtuar elegancë, butësi dhe komoditet në çdo dhomë. Dërgesë e shpejtë në të gjithë Kosovën.</p>
+    <h3>Posteqia online dhe lekur pelushi ne Kosove</h3>
+    <p>B-Brillant ofron posteqia, lekur pelushi dhe tapeta pelushi online ne Kosove per sallon, dhome gjumi, divan dhe dekor modern. Modelet jane te buta, elegante dhe te pershtatshme per ambiente qe kerkojne rehati, ngrohtesi dhe stil.</p>
   </div>
 </section>
 

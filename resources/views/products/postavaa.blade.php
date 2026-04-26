@@ -465,6 +465,8 @@
     <p>Çdo set përfshin çarçafin e poshtëm, çarçafin e sipërm dhe jastëkët dekorues që kombinohen me dizajne moderne, motive elegante dhe ngjyra të qëndrueshme ndaj larjes. Produktet tona nuk zbehen, nuk rrudhen lehtë dhe janë të lehta për t’u pastruar.</p>
 
     <p>Brillant ju sjell cilësi premium, rehati të garantuar dhe dizajn që i jep dhomës suaj një pamje të freskët dhe moderne. Porosit online me dërgesë të shpejtë në gjithë Kosovën.</p>
+    <h3>Set carcafesh online ne Kosove</h3>
+    <p>Gjeni set carcafesh online ne B-Brillant per krevat dopio, dhome gjumi dhe perdorim te perditshem. Koleksioni perfshin carcafe pambuku, materiale te buta, ngjyra moderne dhe dergese te shpejte ne Lipjan, Prishtine dhe ne gjithe Kosoven.</p>
   </div>
 </section>
 

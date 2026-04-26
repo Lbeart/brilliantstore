@@ -449,6 +449,8 @@
     <p>Disponojmë modele të ndryshme – nga ato minimaliste deri te dizajnet më luksoze – duke ju lejuar të zgjidhni aksesorët që i përshtaten më së miri stilit të shtëpisë suaj. Materialet cilësore sigurojnë që garnishtet të jenë të qëndrueshme, të forta dhe të lehta për t’u instaluar.</p>
 
     <p>Zgjidh garnishte profesionale nga Brillant për një pamje të harmonizuar dhe plot stil. Dërgesë e shpejtë dhe e sigurt në gjithë Kosovën.</p>
+    <h3>Garnishte per perde online ne Kosove</h3>
+    <p>Porosit garnishte per perde online nga B-Brillant: mbajtese, shirita, unaza dhe aksesore per perde ditore, anesore dhe blackout. Modelet jane praktike, elegante dhe te pershtatshme per shtepi ne Kosove.</p>
   </div>
 </section>
 

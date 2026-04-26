@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use App\Jobs\SendWhatsAppOrderNotification;
 
 class CheckoutController extends Controller
 {
@@ -108,6 +109,15 @@ class CheckoutController extends Controller
     ]);
 }
         });
+
+        // dërgo njoftim WhatsApp për pronarin (në background)
+        if (config('services.whatsapp.enabled')) {
+            try {
+                SendWhatsAppOrderNotification::dispatch($order->id);
+            } catch (\Throwable $e) {
+                // mos thyhet checkout nëse notifikimi dështon
+            }
+        }
 
         // pastro shportën
         session()->forget('cart');

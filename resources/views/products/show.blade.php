@@ -25,6 +25,26 @@
     $pageCategory = trim($product->category ?? 'Produkt');
     $pageTitle = trim($product->name . ($pageCategory ? ' – ' . $pageCategory : '') . ' | B-Brillant');
     $pageUrl = url()->current();
+    $categoryLower = strtolower($pageCategory . ' ' . $product->name);
+    if (str_contains($categoryLower, 'tepih')) {
+      $seoTitle = 'Tepiha online Kosove nga B-Brillant';
+      $seoText = 'Ky produkt eshte pjese e koleksionit B-Brillant per tepiha online ne Kosove, duke perfshire tepiha akril, tepiha akrill, tepiha Hali, modele moderne, klasik, rrethore dhe tepiha per sallon apo dhome gjumi.';
+    } elseif (str_contains($categoryLower, 'perde')) {
+      $seoTitle = 'Perde online ne Kosove nga B-Brillant';
+      $seoText = 'Ky produkt eshte zgjedhje e mire per klientet qe kerkojne perde online ne Kosove, perde ditore, perde anesore, bamboo, kumash ose perde moderne per shtepi.';
+    } elseif (str_contains($categoryLower, 'mbules')) {
+      $seoTitle = 'Mbulesa online ne Kosove nga B-Brillant';
+      $seoText = 'Ky produkt i takon koleksionit tone te mbulesave online per krevat, divan dhe dekor shtepie, me materiale cilesore dhe dergese te shpejte ne gjithe Kosoven.';
+    } elseif (str_contains($categoryLower, 'batan')) {
+      $seoTitle = 'Batanije online ne Kosove nga B-Brillant';
+      $seoText = 'Ky produkt eshte pjese e koleksionit te batanijeve online per dhome gjumi, divan dhe perdorim familjar, me butesi, ngrohtesi dhe cilesi te larte.';
+    } elseif (str_contains($categoryLower, 'jast')) {
+      $seoTitle = 'Jasteke dekorues online ne Kosove nga B-Brillant';
+      $seoText = 'Ky produkt eshte ideal per dekorimin e sallonit, divanit, krevatit dhe ambienteve moderne, me dizajn elegant dhe materiale te zgjedhura.';
+    } else {
+      $seoTitle = 'Produkte shtepie online ne Kosove nga B-Brillant';
+      $seoText = 'B-Brillant ofron produkte shtepie online ne Kosove me dizajn modern, cilesi te larte dhe dergese te shpejte ne Lipjan, Prishtine dhe qytete te tjera.';
+    }
     if ($mainImg) {
       if (str_starts_with($mainImg, 'http://') || str_starts_with($mainImg, 'https://')) {
         $ogImage = $mainImg;
@@ -1260,6 +1280,13 @@
     </div>
   </div>
 @endif
+
+<section class="container mb-5" style="font-size:16px; line-height:1.65;">
+  <h2 class="h4 mb-3">{{ $seoTitle }}</h2>
+  <p class="mb-2">{{ $seoText }}</p>
+  <h3 class="h5 mb-2">{{ $product->name }} - porosi online ne Kosove</h3>
+  <p class="mb-0">Porosit {{ $product->name }} nga B-Brillant dhe kontakto ekipin tone per detaje, disponueshmeri dhe dergese. Faqja eshte e optimizuar per kerkime lokale si B-Brillant Lipjan, produkte online Kosove dhe dyqan tekstili per shtepi.</p>
+</section>
 
 <br><br><br>
 

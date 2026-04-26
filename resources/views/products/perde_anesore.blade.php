@@ -432,6 +432,8 @@
     <p>Perdet anësore janë të përshtatshme për sallon, dhomë gjumi, korridor dhe çdo ambient tjetër që kërkon stil dhe privatësi të shtuar. Materialet janë të lehta për mirëmbajtje dhe të dizajnuara për t’i rezistuar përdorimit të përditshëm.</p>
 
     <p>Porosit perde anësore nga Brillant dhe sjell elegancë, ngrohtësi dhe stil të pakrahasueshëm në shtëpinë tuaj. Dërgesë e shpejtë dhe shërbim profesional në të gjithë Kosovën.</p>
+    <h3>Perde anesore online ne Kosove</h3>
+    <p>Te B-Brillant gjeni perde anesore online per sallon, dhome gjumi dhe ambiente moderne. Perdet tona kombinohen me perde ditore, perde blackout dhe aksesore perdeje per nje pamje elegante me dergese ne gjithe Kosoven.</p>
   </div>
 </section>
 
