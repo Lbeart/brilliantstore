@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Item;
+use App\Models\Product;
 
 class ItemController extends Controller
 {
     public function index()
     {
-        $items = Item::all();
-        return view('items.index', compact('items'));
+        $latestProducts = Product::query()
+            ->where('is_active', 1)
+            ->orderByDesc('id')
+            ->take(6)
+            ->get();
+
+        return view('items.index', compact('latestProducts'));
     }
 }
-

@@ -15,4 +15,17 @@ class SitemapController extends Controller
             ->header('Content-Type', 'application/xml')
             ->header('X-Content-Type-Options', 'nosniff');
     }
+
+    public function products()
+    {
+        $products = Product::whereNotNull('slug')
+            ->where('slug', '!=', '')
+            ->latest('updated_at')
+            ->get(['slug', 'updated_at']);
+
+        return response()
+            ->view('sitemap-products', compact('products'))
+            ->header('Content-Type', 'application/xml')
+            ->header('X-Content-Type-Options', 'nosniff');
+    }
 }

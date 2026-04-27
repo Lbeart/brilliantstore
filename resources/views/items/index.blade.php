@@ -27,6 +27,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
   <link rel="icon" type="image/png" href="{{ asset('images/llogo.png') }}" />
+  <link rel="preload" as="image" href="{{ asset('optimized/home/hero-mobile.jpg') }}" media="(max-width: 767px)" fetchpriority="high" />
+  <link rel="preload" as="image" href="{{ asset('optimized/home/hero.jpg') }}" media="(min-width: 768px)" fetchpriority="high" />
 
   <style>
     /* =========================================================
@@ -454,6 +456,7 @@
       border-radius: 32px;
       overflow: hidden;
       position: relative;
+      min-height: 620px;
       background:
         radial-gradient(900px 500px at 20% 20%, rgba(255,193,7,.18), transparent 55%),
         radial-gradient(900px 500px at 80% 40%, rgba(220,53,69,.22), transparent 60%),
@@ -465,7 +468,7 @@
     .hero-bg{
       position:absolute;
       inset:0;
-      background: url("{{ asset('slider/foto1.jpg') }}") center/cover no-repeat;
+      background: url("{{ asset('optimized/home/hero-mobile.jpg') }}") center/cover no-repeat;
       filter: brightness(.45) saturate(1.05);
       transform: scale(1.06);
       z-index: 0;
@@ -485,9 +488,17 @@
       position: relative;
       z-index: 2;
       padding: 2.2rem 1.15rem;
+      min-height: 620px;
+      display: flex;
+      align-items: center;
     }
     @media (min-width: 992px){
-      .hero-content{ padding: 3.2rem 1.6rem; }
+      .hero{ min-height: 560px; }
+      .hero-bg{ background-image: url("{{ asset('optimized/home/hero.jpg') }}"); }
+      .hero-content{
+        min-height: 560px;
+        padding: 3.2rem 1.6rem;
+      }
     }
 
     .hero-badge{
@@ -595,7 +606,7 @@
       box-shadow: 0 20px 60px rgba(2,6,23,.24);
       overflow: hidden;
       transform: translateZ(0);
-      animation: popIn .55s ease both;
+      min-height: 388px;
     }
     .weekly-card .head{ padding: 1rem 1.1rem .35rem; }
     .weekly-card .kicker{
@@ -615,6 +626,7 @@
     .weekly-item img{
       width: 112px;
       height: 112px;
+      aspect-ratio: 1 / 1;
       object-fit: cover;
       border-radius: 16px;
       box-shadow: 0 12px 26px rgba(2,6,23,.12);
@@ -632,7 +644,7 @@
     /* Weekly mobile layout: img nalt, text poshte */
     @media (max-width: 576px){
       .weekly-item .d-flex{ flex-direction: column; align-items: flex-start !important; }
-      .weekly-item img{ width: 100%; height: 160px; }
+      .weekly-item img{ width: 100%; height: 160px; aspect-ratio: 16 / 9; }
     }
 
     /* carousel controls */
@@ -690,6 +702,7 @@
     .cat-media img{
       width:100%;
       height: 220px;
+      aspect-ratio: 4 / 3;
       object-fit: cover;
       transition: transform .55s ease;
     }
@@ -735,6 +748,7 @@
     .rugs-img{
       height: 190px !important;
       width: 100% !important;
+      aspect-ratio: 1 / 1;
       object-fit: contain !important;
       background: rgba(2,6,23,.02);
       border: 1px solid rgba(2,6,23,.06);
@@ -762,6 +776,7 @@
     .product-card img{
       height: 260px;
       width:100%;
+      aspect-ratio: 4 / 3;
       object-fit: cover;
       transition: transform .55s ease;
     }
@@ -1008,6 +1023,7 @@
 .latest-products .lp-img{
   width:100%;
   height: 270px;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
   object-position: center;
   display:block;
@@ -1367,15 +1383,24 @@ a::after {
   animation-delay: 0.8s;
 }
 
-/* Smooth page load */
-body {
-  animation: fadeInUp 0.6s ease-out;
-}
-
-/* Parallax effect on scroll (subtle) */
-@media (min-width: 768px) {
-  .hero-bg {
-    animation: float 6s ease-in-out infinite;
+@media (max-width: 767px) {
+  .hero-badge,
+  .hero-title,
+  .hero-sub,
+  .hero-actions,
+  .hero-stats,
+  .topbar,
+  .hero,
+  .weekly-card,
+  .cat-card,
+  .latest-products,
+  .latest-product-card,
+  .latest-product-card .lp-img,
+  .latest-product-card .lp-body,
+  .lp-title,
+  .lp-desc,
+  .lp-price {
+    animation: none !important;
   }
 }
   </style>
@@ -1575,7 +1600,7 @@ body {
                   <div class="carousel-item active">
                     <div class="weekly-item">
                       <div class="d-flex gap-3 align-items-center">
-                        <img src="{{ asset('slider/side.bmp') }}" alt="Tepiha Modern 150x230" loading="lazy" />
+                        <img src="{{ asset('optimized/home/side.jpg') }}" alt="Tepiha Modern 150x230" loading="eager" decoding="async" fetchpriority="high" width="520" height="347" />
                         <div class="flex-grow-1">
                           <span class="badge bg-danger-subtle text-danger border border-danger mb-2">Tepiha</span>
                           <div class="fw-bold">Tepiha Modern 150x230 cm</div>
@@ -1595,7 +1620,7 @@ body {
                   <div class="carousel-item">
                     <div class="weekly-item">
                       <div class="d-flex gap-3 align-items-center">
-                        <img src="{{ asset('slider/hali4.jpg') }}" alt="Tepiha Hali 200x300" loading="lazy" />
+                        <img src="{{ asset('optimized/home/hali4.jpg') }}" alt="Tepiha Hali 200x300" loading="lazy" decoding="async" width="620" height="465" />
                         <div class="flex-grow-1">
                           <span class="badge bg-danger-subtle text-danger border border-danger mb-2">Tepiha</span>
                           <div class="fw-bold">Tepiha Hali 200x300 cm</div>
@@ -1615,7 +1640,7 @@ body {
                   <div class="carousel-item">
                     <div class="weekly-item">
                       <div class="d-flex gap-3 align-items-center">
-                        <img src="{{ asset('slider/bedshet.jpg') }}" alt="Set çarçafësh" loading="lazy" />
+                        <img src="{{ asset('optimized/home/bedshet.jpg') }}" alt="Set çarçafësh" loading="lazy" decoding="async" width="620" height="413" />
                         <div class="flex-grow-1">
                           <span class="badge bg-warning-subtle text-warning border border-warning mb-2">Set çarçafësh</span>
                           <div class="fw-bold">Set çarçafësh pambuk</div>
@@ -1670,7 +1695,7 @@ body {
             <a href="/tepiha" class="text-decoration-none text-dark">
               <div class="cat-card">
                 <div class="cat-media">
-                  <img src="{{ asset('slider/tepihali600cream.png') }}" alt="Tepiha" loading="lazy" />
+                  <img src="{{ asset('optimized/home/tepihali600cream.jpg') }}" alt="Tepiha" loading="lazy" decoding="async" width="620" height="349" />
                   <span class="cat-badge">Tepiha</span>
                 </div>
                 <div class="cat-body">
@@ -1687,7 +1712,7 @@ body {
             <a href="/anesore" class="text-decoration-none text-dark">
               <div class="cat-card">
                 <div class="cat-media">
-                  <img src="{{ asset('slider/raffaello.jpg') }}" alt="Perde" loading="lazy" />
+                  <img src="{{ asset('optimized/home/raffaello.jpg') }}" alt="Perde" loading="lazy" decoding="async" width="620" height="349" />
                   <span class="cat-badge">Perde</span>
                 </div>
                 <div class="cat-body">
@@ -1703,7 +1728,7 @@ body {
             <a href="/postava" class="text-decoration-none text-dark">
               <div class="cat-card">
                 <div class="cat-media">
-                  <img src="{{ asset('slider/bedshet.jpg') }}" alt="Set çarçafësh" loading="lazy" />
+                  <img src="{{ asset('optimized/home/bedshet.jpg') }}" alt="Set çarçafësh" loading="lazy" decoding="async" width="620" height="413" />
                   <span class="cat-badge">Shtrat</span>
                 </div>
                 <div class="cat-body">
@@ -1719,7 +1744,7 @@ body {
             <a href="/mbulesa" class="text-decoration-none text-dark">
               <div class="cat-card">
                 <div class="cat-media">
-                  <img src="{{ asset('slider/paris.jpg') }}" alt="Mbulesa & batanije" loading="lazy" />
+                  <img src="{{ asset('optimized/home/paris.jpg') }}" alt="Mbulesa & batanije" loading="lazy" decoding="async" width="620" height="827" />
                   <span class="cat-badge">Komfor</span>
                 </div>
                 <div class="cat-body">
@@ -1771,8 +1796,9 @@ body {
                         <div class="small text-success mb-1">
                           <i class="bi bi-check-circle-fill"></i> In stock
                         </div>
-                        <img src="{{ asset('slider/'.$item[0]) }}" alt="{{ $item[1] }}"
-                             class="img-fluid rugs-img shadow-sm mb-2" loading="lazy" />
+                        @php $optimizedRug = str_replace('.bmp', '.jpg', $item[0]); @endphp
+                        <img src="{{ asset('optimized/home/'.$optimizedRug) }}" alt="{{ $item[1] }}"
+                             class="img-fluid rugs-img shadow-sm mb-2" loading="lazy" decoding="async" width="420" height="420" />
                         <p class="small mb-1">{{ $item[1] }}</p>
                         <h6 class="fw-bold mb-0">{{ $item[2] }}</h6>
                       </div>
@@ -1795,14 +1821,6 @@ body {
       </section>
 
       <!-- Latest products -->
-     @php
-  $latestProducts = \App\Models\Product::query()
-      ->where('is_active', 1)
-      ->orderByDesc('id')
-      ->take(6)
-      ->get();
-@endphp
-
 <section class="mb-5 latest-products">
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-2 mb-3">
     <div>
@@ -1868,7 +1886,7 @@ body {
     }
 @endphp
 
-<img class="lp-img" src="{{ $path ? asset($path) : asset('images/llogo.png') }}" alt="{{ $item->name }}">
+<img class="lp-img" src="{{ $path ? asset($path) : asset('images/llogo.png') }}" alt="{{ $item->name }}" loading="lazy" decoding="async" width="640" height="480">
 
   <span class="lp-badge">I RI</span>
   <span class="lp-stock {{ $inStock ? '' : 'out' }}">
@@ -1994,7 +2012,7 @@ body {
               <h2 class="mt-3">Tekstil i zgjedhur, shërbim i kujdesshëm.</h2>
               <p class="mt-2 text-muted">Matje, konsulencë dhe qepje profesionale – me fokus në cilësi dhe kënaqësi.</p>
             </div>
-            <img src="{{ asset('slider/raffaello.jpg') }}" class="img-fluid rounded-4 shadow-sm mt-3" alt="Why Choose Us" loading="lazy" />
+            <img src="{{ asset('optimized/home/raffaello.jpg') }}" class="img-fluid rounded-4 shadow-sm mt-3" alt="Why Choose Us" loading="lazy" decoding="async" width="620" height="349" />
           </div>
 
           <div class="col-md-7 why-points">
@@ -2188,24 +2206,6 @@ body {
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
       topBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-      // hero background slideshow (auto change)
-      const heroBg = document.querySelector('.hero-bg');
-      if(heroBg){
-        const imgs = [
-          "{{ asset('slider/foto1.jpg') }}",
-          "{{ asset('slider/hali4.jpg') }}",
-          "{{ asset('slider/raffaello.jpg') }}"
-        ];
-        let i = 0;
-        setInterval(() => {
-          i = (i + 1) % imgs.length;
-          heroBg.style.backgroundImage = `url('${imgs[i]}')`;
-          heroBg.classList.remove('bg-swap');
-          void heroBg.offsetWidth;
-          heroBg.classList.add('bg-swap');
-        }, 6500);
-      }
 
       // scroll reveal animations
       const revealEls = document.querySelectorAll(
