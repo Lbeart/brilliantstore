@@ -66,9 +66,9 @@ class SitemapController extends Controller
                 'trace' => $exception->getTraceAsString(),
             ]);
 
-            $content = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+            $content = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
             foreach ($pages as $page) {
-                $content .= "<url><loc>" . url($page['path']) . "</loc><lastmod>" . now()->toAtomString() . "</lastmod><changefreq>" . $page['changefreq'] . "</changefreq><priority>" . $page['priority'] . "</priority></url>\n";
+                $content .= "<url><loc>" . url($page['path']) . "</loc><lastmod>" . now()->toAtomString() . "</lastmod><changefreq>" . $page['changefreq'] . "</changefreq><priority>" . $page['priority'] . "</priority></url>" . PHP_EOL;
             }
             $content .= '</urlset>';
 
@@ -93,9 +93,9 @@ class SitemapController extends Controller
                 'trace' => $exception->getTraceAsString(),
             ]);
 
-            $content = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+            $content = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
             foreach ($products as $product) {
-                $content .= "<url><loc>" . url('/products/'.$product->slug) . "</loc><lastmod>" . (optional($product->updated_at)->toAtomString() ?? now()->toAtomString()) . "</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>\n";
+                $content .= "<url><loc>" . url('/products/'.$product->slug) . "</loc><lastmod>" . (optional($product->updated_at)->toAtomString() ?? now()->toAtomString()) . "</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>" . PHP_EOL;
             }
             $content .= '</urlset>';
 
