@@ -23,6 +23,20 @@
 <priority>0.80</priority>
 </url>
 
+<url>
+<loc>{{ url('/terms') }}</loc>
+<lastmod>{{ now()->toAtomString() }}</lastmod>
+<changefreq>yearly</changefreq>
+<priority>0.50</priority>
+</url>
+
+<url>
+<loc>{{ url('/privacy') }}</loc>
+<lastmod>{{ now()->toAtomString() }}</lastmod>
+<changefreq>yearly</changefreq>
+<priority>0.50</priority>
+</url>
+
 <!-- CATEGORIES -->
 <url>
 <loc>{{ url('/products') }}</loc>
@@ -103,14 +117,12 @@
 
 <!-- 🔥 PRODUKTET AUTOMATIKE -->
 @foreach($products as $product)
-@if($product->slug)
 <url>
 <loc>{{ url('/products/'.$product->slug) }}</loc>
-<lastmod>{{ optional($product->updated_at)->toAtomString() }}</lastmod>
+<lastmod>{{ optional($product->updated_at)->toAtomString() ?? now()->toAtomString() }}</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.85</priority>
 </url>
-@endif
 @endforeach
 
 </urlset>

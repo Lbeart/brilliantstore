@@ -8,7 +8,12 @@ class SitemapController extends Controller
 {
     public function index()
     {
-        $products = Product::latest()->get();
+        $products = Product::query()
+            ->where('is_active', 1)
+            ->whereNotNull('slug')
+            ->where('slug', '!=', '')
+            ->latest('updated_at')
+            ->get(['slug', 'updated_at']);
 
         return response()
             ->view('sitemap', compact('products'))
@@ -18,7 +23,9 @@ class SitemapController extends Controller
 
     public function products()
     {
-        $products = Product::whereNotNull('slug')
+        $products = Product::query()
+            ->where('is_active', 1)
+            ->whereNotNull('slug')
             ->where('slug', '!=', '')
             ->latest('updated_at')
             ->get(['slug', 'updated_at']);
