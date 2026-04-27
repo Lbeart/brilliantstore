@@ -5,6 +5,11 @@
 
     RewriteEngine On
 
+    # Serve compressed image copies automatically when they exist.
+    RewriteCond %{DOCUMENT_ROOT}/optimized-cache/$1.jpg -f [OR]
+    RewriteCond %{DOCUMENT_ROOT}/public/optimized-cache/$1.jpg -f
+    RewriteRule ^(.+\.(?:jpe?g|png|bmp))$ optimized-cache/$1.jpg [L,NC]
+
     # Nëse nuk ekziston folder ose file, çoje tek index.php (Laravel routing)
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f

@@ -15,10 +15,24 @@
     // ✅ IMAGES: image_path mund të jetë JSON array ose string e vjetër
     $imgs = [];
     if (!empty($product->image_path)) {
-      $d = json_decode($product->image_path, true);
-      $imgs = is_array($d) ? $d : [$product->image_path];
+      if (is_array($product->image_path)) {
+        $imgs = $product->image_path;
+      } else {
+        $d = json_decode($product->image_path, true);
+        $imgs = is_array($d) ? $d : [$product->image_path];
+      }
     }
     $mainImg = $imgs[0] ?? null;
+    $mainImagePath = $mainImg;
+    if($mainImagePath && !preg_match('#^https?://#i', $mainImagePath)){
+      $mainImagePath = ltrim($mainImagePath, '/');
+      if(str_starts_with($mainImagePath, 'products/')){
+          $mainImagePath = 'images/'.$mainImagePath;
+      } elseif(!str_starts_with($mainImagePath, 'images/') && !str_starts_with($mainImagePath, 'storage/')){
+          $mainImagePath = 'images/products/'.$mainImagePath;
+      }
+    }
+    $mainImageUrl = $mainImagePath ? (preg_match('#^https?://#i', $mainImagePath) ? $mainImagePath : asset($mainImagePath)) : asset('images/placeholder-product.png');
 
     $pageCategory = trim($product->category ?? 'Produkt');
     $cleanDescription = trim(strip_tags($product->description ?? ''));
@@ -86,6 +100,7 @@
   <title>{{ $pageTitle }}</title>
   <meta name="description" content="{{ $metaDesc }}">
   <link rel="canonical" href="{{ $pageUrl }}">
+  <link rel="preload" as="image" href="{{ $mainImageUrl }}" fetchpriority="high">
   <meta property="og:type" content="product">
   <meta property="og:site_name" content="B-Brillant">
   <meta property="og:locale" content="sq_AL">
@@ -984,20 +999,15 @@
     <!-- FOTO -->
     <div class="col-lg-7">
       <div class="product-hero">
-        @php
-    $path = $mainImg;
-
-    if($path && str_starts_with($path, 'products/')){
-        $path = 'images/'.$path;
-    } elseif($path && !str_starts_with($path, 'images/')){
-        $path = 'images/products/'.$path;
-    }
-@endphp
-
 <img id="productImage"
-     src="{{ $path ? asset($path) : asset('images/placeholder-product.png') }}"
-     data-zoom="{{ $path ? asset($path) : asset('images/placeholder-product.png') }}"
-     alt="{{ $product->name }}">
+     src="{{ $mainImageUrl }}"
+     data-zoom="{{ $mainImageUrl }}"
+     alt="{{ $product->name }}"
+     loading="eager"
+     decoding="async"
+     fetchpriority="high"
+     width="900"
+     height="900">
 
         <div class="zoom-lens" id="zoomLens" aria-hidden="true"></div>
         <div class="zoom-pane" id="zoomPane" aria-hidden="true"></div>
@@ -1011,7 +1021,7 @@
     class="thumb-btn {{ $i === 0 ? 'active' : '' }}"
     onclick="setMainImg('{{ asset($imgPath) }}', this)">
 
-    <img src="{{ asset($imgPath) }}" alt="thumb {{ $i+1 }}">
+    <img src="{{ asset($imgPath) }}" alt="thumb {{ $i+1 }}" loading="lazy" decoding="async" width="96" height="96">
   </button>
 @endforeach
         </div>
@@ -1237,7 +1247,7 @@
             $maxPrice = (float)$p->price;
 
             if(!empty($p->sizes)){
-              $sz = json_decode($p->sizes, true);
+              $sz = is_array($p->sizes) ? $p->sizes : json_decode($p->sizes, true);
               if(is_array($sz) && count($sz)){
                 $prices = collect($sz)->pluck('price')->filter()->map(fn($v)=>(float)$v)->values();
                 if($prices->count()){
@@ -1250,8 +1260,12 @@
             // ✅ image_path JSON ose string
             $simImg = null;
             if(!empty($p->image_path)){
-              $d = json_decode($p->image_path, true);
-              $arr = is_array($d) ? $d : [$p->image_path];
+              if (is_array($p->image_path)) {
+                $arr = $p->image_path;
+              } else {
+                $d = json_decode($p->image_path, true);
+                $arr = is_array($d) ? $d : [$p->image_path];
+              }
               $simImg = $arr[0] ?? null;
             }
           @endphp
@@ -1273,6 +1287,9 @@
   src="{{ $path ? asset($path) : asset('images/placeholder-product.png') }}"
   alt="{{ $p->name }}"
   loading="lazy"
+  decoding="async"
+  width="360"
+  height="360"
 />
               </div>
 
@@ -1374,7 +1391,7 @@
   <img id="modalImg" alt="Zoom">
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 (() => {

@@ -2141,7 +2141,7 @@ a::after {
   </nav>
 
   <!-- Bootstrap JS (në fund për performancë) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
     // përditëso badge në të gjitha menutë (navbar + dock)

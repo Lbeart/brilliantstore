@@ -8,12 +8,28 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
+    private array $cardColumns = [
+        'id',
+        'name',
+        'slug',
+        'price',
+        'description',
+        'image_path',
+        'is_active',
+        'stock',
+        'category',
+        'subcategory',
+        'sku',
+        'sizes',
+    ];
+
     // =====================
     // LISTA GLOBALE
     // =====================
     public function index()
     {
         $products = Product::query()
+            ->select($this->cardColumns)
             ->where('is_active', 1)
             ->orderByDesc('id')
             ->paginate(12);
@@ -39,6 +55,7 @@ class ProductController extends Controller
         }
 
         $similarProducts = $similarQuery
+            ->select($this->cardColumns)
             ->orderByDesc('id')
             ->take(5)
             ->get();
@@ -85,6 +102,7 @@ class ProductController extends Controller
         }
 
         return $query
+            ->select($this->cardColumns)
             ->orderByDesc('id')
             ->paginate(12)
             ->withQueryString();
