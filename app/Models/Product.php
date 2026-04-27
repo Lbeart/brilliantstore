@@ -31,6 +31,14 @@ protected $casts = [
             if (empty($p->sku)) {
                 $p->sku = self::generateSku($p->name);
             }
+
+            if (empty($p->slug) && !empty($p->name)) {
+                $p->slug = Str::slug($p->name) . '-' . Str::random(6);
+            }
+
+            if (!isset($p->is_active)) {
+                $p->is_active = true;
+            }
         });
     }
 

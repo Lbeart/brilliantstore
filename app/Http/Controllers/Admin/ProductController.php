@@ -61,7 +61,7 @@ class ProductController extends Controller
             $data['subcategory'] = null;
         }
 
-        $data['is_active'] = $request->boolean('is_active');
+        $data['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : true;
         $data['slug'] = Str::slug($data['name']) . '-' . Str::random(6);
 
         if (empty($data['sku'])) {
@@ -142,7 +142,7 @@ class ProductController extends Controller
             $data['subcategory'] = null;
         }
 
-        $data['is_active'] = $request->boolean('is_active');
+        $data['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : $product->is_active;
 
         if ($product->name !== $data['name']) {
             $data['slug'] = Str::slug($data['name']) . '-' . Str::random(6);
