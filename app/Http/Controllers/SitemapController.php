@@ -37,12 +37,8 @@ class SitemapController extends Controller
             $products = Product::query()
                 ->whereNotNull('slug')
                 ->where('slug', '!=', '')
-                ->where(function ($query) {
-                    $query->where('is_active', 1)
-                          ->orWhereNull('is_active');
-                })
                 ->latest('updated_at')
-                ->get(['id', 'slug', 'updated_at']);
+                ->get(['slug', 'updated_at']);
             
             Log::info('SitemapController loaded products', ['count' => $products->count()]);
             

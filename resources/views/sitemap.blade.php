@@ -9,9 +9,10 @@
 </url>
 @endforeach
 <!-- Products count: {{ $products->count() }} -->
+<!-- Products count: {{ $products->count() }} -->
 @foreach($products as $product)
 <url>
-<loc>{{ route('products.show', $product) }}</loc>
+<loc>{{ url('/products/'.$product->slug) }}</loc>
 <lastmod>{{ optional($product->updated_at)->toAtomString() ?? now()->toAtomString() }}</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.85</priority>
