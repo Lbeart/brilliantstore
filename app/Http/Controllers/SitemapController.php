@@ -31,6 +31,28 @@ class SitemapController extends Controller
         ['path' => '/privacy', 'changefreq' => 'yearly', 'priority' => '0.50'],
     ];
 
+    private function fillMissingProductSlugs(): void
+    {
+        try {
+            Product::query()
+                ->where(function ($query) {
+                    $query->whereNull('slug')->orWhere('slug', '');
+                })
+                ->whereNotNull('name')
+                ->chunkById(50, function ($products) {
+                    foreach ($products as $product) {
+                        $product->slug = Product::generateSlug($product->name);
+                        $product->saveQuietly();
+                    }
+                });
+        } catch (\Throwable $exception) {
+            Log::error('SitemapController could not fill missing product slugs', [
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
+        }
+    }
+
     private function loadProducts(): Collection
     {
         try {
@@ -39,9 +61,9 @@ class SitemapController extends Controller
                 ->where('slug', '!=', '')
                 ->latest('updated_at')
                 ->get(['slug', 'updated_at']);
-            
+
             Log::info('SitemapController loaded products', ['count' => $products->count()]);
-            
+
             return $products;
         } catch (\Throwable $exception) {
             Log::error('SitemapController failed to load products', [
@@ -55,58 +77,46 @@ class SitemapController extends Controller
 
     public function index()
     {
+        $this->fillMissingProductSlugs();
+
         $pages = $this->pages;
         $products = $this->loadProducts();
 
         Log::info('SitemapController index', ['products_count' => $products->count()]);
 
-        try {
-            return response()
-                ->view('sitemap', compact('pages', 'products'))
-                ->header('Content-Type', 'application/xml')
-                ->header('X-Content-Type-Options', 'nosniff');
-        } catch (\Throwable $exception) {
-            Log::error('SitemapController failed to render sitemap view', [
-                'message' => $exception->getMessage(),
-                'trace' => $exception->getTraceAsString(),
-            ]);
+        $content = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+        $content .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
 
-            $content = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
-            foreach ($pages as $page) {
-                $content .= "<url><loc>" . url($page['path']) . "</loc><lastmod>" . now()->toAtomString() . "</lastmod><changefreq>" . $page['changefreq'] . "</changefreq><priority>" . $page['priority'] . "</priority></url>" . PHP_EOL;
-            }
-            $content .= '</urlset>';
-
-            return response($content, 200)
-                ->header('Content-Type', 'application/xml')
-                ->header('X-Content-Type-Options', 'nosniff');
+        foreach ($pages as $page) {
+            $content .= "<url><loc>" . url($page['path']) . "</loc><lastmod>" . now()->toAtomString() . "</lastmod><changefreq>" . $page['changefreq'] . "</changefreq><priority>" . $page['priority'] . "</priority></url>" . PHP_EOL;
         }
+
+        foreach ($products as $product) {
+            $content .= "<url><loc>" . url('/products/'.$product->slug) . "</loc><lastmod>" . (optional($product->updated_at)->toAtomString() ?? now()->toAtomString()) . "</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>" . PHP_EOL;
+        }
+
+        $content .= '</urlset>';
+
+        return response($content, 200)
+            ->header('Content-Type', 'application/xml')
+            ->header('X-Content-Type-Options', 'nosniff');
     }
 
     public function products()
     {
+        $this->fillMissingProductSlugs();
+
         $products = $this->loadProducts();
 
-        try {
-            return response()
-                ->view('sitemap-products', compact('products'))
-                ->header('Content-Type', 'application/xml')
-                ->header('X-Content-Type-Options', 'nosniff');
-        } catch (\Throwable $exception) {
-            Log::error('SitemapController failed to render sitemap-products view', [
-                'message' => $exception->getMessage(),
-                'trace' => $exception->getTraceAsString(),
-            ]);
-
-            $content = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
-            foreach ($products as $product) {
-                $content .= "<url><loc>" . url('/products/'.$product->slug) . "</loc><lastmod>" . (optional($product->updated_at)->toAtomString() ?? now()->toAtomString()) . "</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>" . PHP_EOL;
-            }
-            $content .= '</urlset>';
-
-            return response($content, 200)
-                ->header('Content-Type', 'application/xml')
-                ->header('X-Content-Type-Options', 'nosniff');
+        $content = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+        $content .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
+        foreach ($products as $product) {
+            $content .= "<url><loc>" . url('/products/'.$product->slug) . "</loc><lastmod>" . (optional($product->updated_at)->toAtomString() ?? now()->toAtomString()) . "</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>" . PHP_EOL;
         }
+        $content .= '</urlset>';
+
+        return response($content, 200)
+            ->header('Content-Type', 'application/xml')
+            ->header('X-Content-Type-Options', 'nosniff');
     }
 }
