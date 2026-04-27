@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Collections\Collection;
+use Illuminate\Support\Collection;
 
 class SitemapController extends Controller
 {
