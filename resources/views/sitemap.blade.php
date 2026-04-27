@@ -11,7 +11,7 @@
 <!-- Products count: {{ $products->count() }} -->
 @foreach($products as $product)
 <url>
-<loc>{{ url('/products/'.$product->slug) }}</loc>
+<loc>{{ route('products.show', $product) }}</loc>
 <lastmod>{{ optional($product->updated_at)->toAtomString() ?? now()->toAtomString() }}</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.85</priority>
