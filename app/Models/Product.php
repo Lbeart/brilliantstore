@@ -40,6 +40,12 @@ protected $casts = [
                 $p->is_active = true;
             }
         });
+
+        static::updating(function (Product $p) {
+            if (!isset($p->is_active)) {
+                $p->is_active = true;
+            }
+        });
     }
 
     public static function generateSlug(?string $name): string

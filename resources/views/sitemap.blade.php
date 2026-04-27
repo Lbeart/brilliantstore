@@ -8,6 +8,7 @@
 <priority>{{ $page['priority'] }}</priority>
 </url>
 @endforeach
+<!-- Products count: {{ $products->count() }} -->
 @foreach($products as $product)
 <url>
 <loc>{{ url('/products/'.$product->slug) }}</loc>

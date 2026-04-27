@@ -34,12 +34,15 @@ class SitemapController extends Controller
     private function loadProducts(): Collection
     {
         try {
-            return Product::query()
-                ->where('is_active', 1)
+            $products = Product::query()
                 ->whereNotNull('slug')
                 ->where('slug', '!=', '')
                 ->latest('updated_at')
                 ->get(['slug', 'updated_at']);
+            
+            Log::info('SitemapController loaded products', ['count' => $products->count()]);
+            
+            return $products;
         } catch (\Throwable $exception) {
             Log::error('SitemapController failed to load products', [
                 'message' => $exception->getMessage(),
@@ -54,6 +57,8 @@ class SitemapController extends Controller
     {
         $pages = $this->pages;
         $products = $this->loadProducts();
+
+        Log::info('SitemapController index', ['products_count' => $products->count()]);
 
         try {
             return response()
