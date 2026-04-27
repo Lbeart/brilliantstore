@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Collections\Collection;
 
 class SitemapController extends Controller
 {
@@ -29,34 +31,77 @@ class SitemapController extends Controller
         ['path' => '/privacy', 'changefreq' => 'yearly', 'priority' => '0.50'],
     ];
 
+    private function loadProducts(): Collection
+    {
+        try {
+            return Product::query()
+                ->where('is_active', 1)
+                ->whereNotNull('slug')
+                ->where('slug', '!=', '')
+                ->latest('updated_at')
+                ->get(['slug', 'updated_at']);
+        } catch (\Throwable $exception) {
+            Log::error('SitemapController failed to load products', [
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
+            return collect();
+        }
+    }
+
     public function index()
     {
         $pages = $this->pages;
-        $products = Product::query()
-            ->where('is_active', 1)
-            ->whereNotNull('slug')
-            ->where('slug', '!=', '')
-            ->latest('updated_at')
-            ->get(['slug', 'updated_at']);
+        $products = $this->loadProducts();
 
-        return response()
-            ->view('sitemap', compact('pages', 'products'))
-            ->header('Content-Type', 'application/xml')
-            ->header('X-Content-Type-Options', 'nosniff');
+        try {
+            return response()
+                ->view('sitemap', compact('pages', 'products'))
+                ->header('Content-Type', 'application/xml')
+                ->header('X-Content-Type-Options', 'nosniff');
+        } catch (\Throwable $exception) {
+            Log::error('SitemapController failed to render sitemap view', [
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
+            $content = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+            foreach ($pages as $page) {
+                $content .= "<url><loc>" . url($page['path']) . "</loc><lastmod>" . now()->toAtomString() . "</lastmod><changefreq>" . $page['changefreq'] . "</changefreq><priority>" . $page['priority'] . "</priority></url>\n";
+            }
+            $content .= '</urlset>';
+
+            return response($content, 200)
+                ->header('Content-Type', 'application/xml')
+                ->header('X-Content-Type-Options', 'nosniff');
+        }
     }
 
     public function products()
     {
-        $products = Product::query()
-            ->where('is_active', 1)
-            ->whereNotNull('slug')
-            ->where('slug', '!=', '')
-            ->latest('updated_at')
-            ->get(['slug', 'updated_at']);
+        $products = $this->loadProducts();
 
-        return response()
-            ->view('sitemap-products', compact('products'))
-            ->header('Content-Type', 'application/xml')
-            ->header('X-Content-Type-Options', 'nosniff');
+        try {
+            return response()
+                ->view('sitemap-products', compact('products'))
+                ->header('Content-Type', 'application/xml')
+                ->header('X-Content-Type-Options', 'nosniff');
+        } catch (\Throwable $exception) {
+            Log::error('SitemapController failed to render sitemap-products view', [
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
+            $content = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+            foreach ($products as $product) {
+                $content .= "<url><loc>" . url('/products/'.$product->slug) . "</loc><lastmod>" . (optional($product->updated_at)->toAtomString() ?? now()->toAtomString()) . "</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>\n";
+            }
+            $content .= '</urlset>';
+
+            return response($content, 200)
+                ->header('Content-Type', 'application/xml')
+                ->header('X-Content-Type-Options', 'nosniff');
+        }
     }
 }
