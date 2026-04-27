@@ -62,7 +62,7 @@ class ProductController extends Controller
         }
 
         $data['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : true;
-        $data['slug'] = Str::slug($data['name']) . '-' . Str::random(6);
+        // Slug generated automatically in model
 
         if (empty($data['sku'])) {
             $data['sku'] = Str::upper(Str::slug($data['name'])) . '-' . Str::random(4);
@@ -145,7 +145,7 @@ class ProductController extends Controller
         $data['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : $product->is_active;
 
         if ($product->name !== $data['name']) {
-            $data['slug'] = Str::slug($data['name']) . '-' . Str::random(6);
+            $data['slug'] = Product::generateSlug($data['name']);
         }
 
         // ❌ MOS E NDRYSHO category në perde-ditore/perde-anesore

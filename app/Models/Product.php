@@ -33,13 +33,27 @@ protected $casts = [
             }
 
             if (empty($p->slug) && !empty($p->name)) {
-                $p->slug = Str::slug($p->name) . '-' . Str::random(6);
+                $p->slug = self::generateSlug($p->name);
             }
 
             if (!isset($p->is_active)) {
                 $p->is_active = true;
             }
         });
+    }
+
+    public static function generateSlug(?string $name): string
+    {
+        $base = Str::slug($name ?? 'product', '-');
+        $slug = $base;
+        $counter = 1;
+
+        while (self::where('slug', $slug)->exists()) {
+            $slug = $base . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
     }
 
     public static function generateSku(?string $name): string
