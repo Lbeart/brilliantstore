@@ -1191,6 +1191,7 @@
 <body>
   @php
     $waNumber = '38344960661';
+    $currentLang = in_array(app()->getLocale(), ['sq', 'en', 'sr'], true) ? app()->getLocale() : 'sq';
 
     $categories = [
       ['title' => 'Tepiha', 'title_en' => 'Rugs', 'title_sr' => 'Tepisi', 'desc' => 'Modele per sallon, dhome gjumi dhe korridor.', 'desc_en' => 'Models for living rooms, bedrooms and hallways.', 'desc_sr' => 'Modeli za dnevni boravak, spavacu sobu i hodnik.', 'url' => route('products.tepiha'), 'img' => file_exists(public_path('carpet/carpetmara.jpg')) ? asset('carpet/carpetmara.jpg') : (file_exists(public_path('images/tepiha.jpg')) ? asset('images/tepiha.jpg') : asset('carpet/IMG_7507.jpg'))],
@@ -1748,7 +1749,7 @@
         });
       });
 
-      const serverLang = @json(in_array(app()->getLocale(), ['sq', 'en', 'sr'], true) ? app()->getLocale() : 'sq');
+      const serverLang = @json($currentLang);
       const savedLang = localStorage.getItem('brillant_lang');
       setLanguage(serverLang || savedLang || 'sq');
     })();
