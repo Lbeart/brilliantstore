@@ -1540,55 +1540,7 @@
       </div>
     </section>
 
-    <section id="offers" class="section pt-0">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Oferta speciale</div>
-            <h2>Oferta e dites.</h2>
-            <p>Si te Nota: oferta shfaqet ndaras dhe klienti shkon direkt ne chat per cmim, stock dhe dimensione.</p>
-          </div>
-        </div>
-
-        <div class="offers-grid">
-          <div class="day-offer">
-            <div>
-              <span>Oferta Speciale</span>
-              <h3>Pyet per cmimin me te mire te dites.</h3>
-              <p style="color: rgba(255,255,255,.78); line-height: 1.7; margin: 0;">Dergo produktin qe te pelqen dhe merr konfirmim per stock, dimensione dhe cmim.</p>
-            </div>
-            <a class="btn btn-whatsapp" href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Pershendetje! Dua te pyes per ofertat speciale.') }}" target="_blank" rel="noopener">
-              <i class="bi bi-whatsapp"></i> Chat
-            </a>
-          </div>
-
-          <div class="mini-offer-grid">
-            @foreach(array_slice($categories, 0, 4) as $category)
-              <a class="category-card" href="{{ $category['url'] }}">
-                <img src="{{ $category['img'] }}" alt="{{ $category['title'] }}" loading="lazy" decoding="async" width="560" height="420">
-                <div class="category-card-body">
-                  <h3 data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</h3>
-                  <p data-sq="Blej tani" data-en="Shop now" data-sr="Kupi sada">Blej tani</p>
-                </div>
-              </a>
-            @endforeach
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="all-products" class="section pt-0">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Te gjitha</div>
-            <h2>Shfaq me shume produkte.</h2>
-            <p>Hap faqen e produkteve per listen e plote.</p>
-          </div>
-          <a class="btn btn-outline" href="{{ route('products.index') }}">Shfaq me shume produkte</a>
-        </div>
-      </div>
-    </section>
+   
 
     <section class="section pt-0">
       <div class="container showroom">
