@@ -123,8 +123,8 @@
       position: sticky;
       top: 0;
       z-index: 80;
-      padding: 8px 0;
-      background: rgba(251,247,242,.86);
+      padding: 0;
+      background: #111827;
       backdrop-filter: blur(14px);
     }
     .nav {
@@ -133,11 +133,16 @@
       align-items: center;
       justify-content: space-between;
       gap: 22px;
-      padding: 0 28px;
-      border-radius: 22px;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 0 max(28px, calc((100vw - 1160px) / 2));
+      border-radius: 0;
       background: #111827;
       border: 1px solid rgba(255,255,255,.08);
-      box-shadow: 0 18px 46px rgba(17,24,39,.16);
+      border-left: 0;
+      border-right: 0;
+      box-shadow: 0 12px 34px rgba(17,24,39,.14);
     }
     .brand {
       display: inline-flex;
@@ -1050,11 +1055,9 @@
         text-align: center;
         font-size: .78rem;
       }
-      .site-header { padding: 8px 0; }
       .nav {
         min-height: 72px;
         padding: 0 14px;
-        border-radius: 18px;
       }
       .brand img { width: 190px; height: 54px; }
       .brand span { font-size: 1rem; }
@@ -1190,7 +1193,7 @@
     $waNumber = '38344960661';
 
     $categories = [
-      ['title' => 'Tepiha', 'title_en' => 'Rugs', 'title_sr' => 'Tepisi', 'desc' => 'Modele per sallon, dhome gjumi dhe korridor.', 'desc_en' => 'Models for living rooms, bedrooms and hallways.', 'desc_sr' => 'Modeli za dnevni boravak, spavacu sobu i hodnik.', 'url' => route('products.tepiha'), 'img' => file_exists(public_path('home-categories/tepiha.jpg')) ? asset('home-categories/tepiha.jpg') : asset('carpet/IMG_7507.jpg')],
+      ['title' => 'Tepiha', 'title_en' => 'Rugs', 'title_sr' => 'Tepisi', 'desc' => 'Modele per sallon, dhome gjumi dhe korridor.', 'desc_en' => 'Models for living rooms, bedrooms and hallways.', 'desc_sr' => 'Modeli za dnevni boravak, spavacu sobu i hodnik.', 'url' => route('products.tepiha'), 'img' => file_exists(public_path('carpet/carpetmara.jpg')) ? asset('carpet/carpetmara.jpg') : (file_exists(public_path('images/tepiha.jpg')) ? asset('images/tepiha.jpg') : asset('carpet/IMG_7507.jpg'))],
       ['title' => 'Perde anesore', 'title_en' => 'Side curtains', 'title_sr' => 'Bocne zavese', 'desc' => 'Pamje elegante dhe qepje profesionale.', 'desc_en' => 'Elegant look with professional tailoring.', 'desc_sr' => 'Elegantan izgled i profesionalno sivenje.', 'url' => route('products.anesore'), 'img' => asset('curtainn/SOFTPERDE.jpg')],
       ['title' => 'Perde ditore', 'title_en' => 'Day curtains', 'title_sr' => 'Dnevne zavese', 'desc' => 'Drite e bute dhe ambient me i paster.', 'desc_en' => 'Soft light and a cleaner room feeling.', 'desc_sr' => 'Meko svetlo i cistiji izgled prostora.', 'url' => route('products.perdeDitore'), 'img' => asset('perdeditoree/image00001.jpeg')],
       ['title' => 'Postava', 'title_en' => 'Bedsheets', 'title_sr' => 'Posteljina', 'desc' => 'Sete per gjume te rehatshem cdo nate.', 'desc_en' => 'Sets for comfortable sleep every night.', 'desc_sr' => 'Setovi za udoban san svake noci.', 'url' => route('products.postava'), 'img' => asset('postavav/beedsheet10.png')],
@@ -1199,7 +1202,7 @@
       ['title' => 'Mbulesa', 'title_en' => 'Covers', 'title_sr' => 'Prekrivaci', 'desc' => 'Per divan, krevat dhe dekor te perditeshem.', 'desc_en' => 'For sofas, beds and everyday decor.', 'desc_sr' => 'Za sofu, krevet i svakodnevni dekor.', 'url' => route('products.mbulesa'), 'img' => asset('mbulesaa/IMG_7526.jpg')],
       ['title' => 'Jasteke dekorues', 'title_en' => 'Decorative pillows', 'title_sr' => 'Dekorativni jastuci', 'desc' => 'Detaje qe e kompletojne ambientin.', 'desc_en' => 'Details that complete the room.', 'desc_sr' => 'Detalji koji upotpunjuju prostor.', 'url' => route('products.jastekdekorues'), 'img' => asset('jastak/IMG_7959.jpg')],
       ['title' => 'Tepiha banjo', 'title_en' => 'Bath rugs', 'title_sr' => 'Kupatilski tepisi', 'desc' => 'Praktike, te bute dhe te lehte per pastrim.', 'desc_en' => 'Practical, soft and easy to clean.', 'desc_sr' => 'Prakticni, mekani i laki za ciscenje.', 'url' => route('products.tepihebanjo'), 'img' => asset('tepihebanjoo/crop-template-print1-1120x1493.png')],
-      ['title' => 'Garnishte', 'title_en' => 'Curtain rails', 'title_sr' => 'Garnisne', 'desc' => 'Aksesor per perde dhe montim me pamje te rregullt.', 'desc_en' => 'Curtain accessories for a clean installation.', 'desc_sr' => 'Dodaci za zavese i urednu montazu.', 'url' => route('products.garnishte'), 'img' => file_exists(public_path('home-categories/garnishte.jpg')) ? asset('home-categories/garnishte.jpg') : asset('images/folds/shiriti.png')],
+      ['title' => 'Garnishte', 'title_en' => 'Curtain rails', 'title_sr' => 'Garnisne', 'desc' => 'Aksesor per perde dhe montim me pamje te rregullt.', 'desc_en' => 'Curtain accessories for a clean installation.', 'desc_sr' => 'Dodaci za zavese i urednu montazu.', 'url' => route('products.garnishte'), 'img' => file_exists(public_path('images/garnishte.jpg')) ? asset('images/garnishte.jpg') : asset('images/folds/shiriti.png')],
     ];
 
     $quickLinks = [
@@ -1243,9 +1246,9 @@
 
       <div class="nav-actions">
         <div class="lang-switch" aria-label="Language switcher">
-          <button type="button" data-lang="sq" class="active">SQ</button>
-          <button type="button" data-lang="en">EN</button>
-          <button type="button" data-lang="sr">SR</button>
+          <button type="button" data-lang="sq" data-url="{{ route('lang.switch', 'sq') }}" class="{{ app()->getLocale() === 'sq' ? 'active' : '' }}">SQ</button>
+          <button type="button" data-lang="en" data-url="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</button>
+          <button type="button" data-lang="sr" data-url="{{ route('lang.switch', 'sr') }}" class="{{ app()->getLocale() === 'sr' ? 'active' : '' }}">SR</button>
         </div>
         <a class="login-btn" href="{{ route('login') }}">Log in</a>
 
@@ -1288,9 +1291,9 @@
       <a href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> Chat</a>
       <a href="{{ route('track.form') }}"><i class="bi bi-truck"></i> <span data-sq="Gjurmo porosine" data-en="Track order" data-sr="Prati porudzbinu">Gjurmo porosine</span></a>
       <div class="lang-switch mobile-lang-switch" aria-label="Language switcher mobile">
-        <button type="button" data-lang="sq" class="active">SQ</button>
-        <button type="button" data-lang="en">EN</button>
-        <button type="button" data-lang="sr">SR</button>
+        <button type="button" data-lang="sq" data-url="{{ route('lang.switch', 'sq') }}" class="{{ app()->getLocale() === 'sq' ? 'active' : '' }}">SQ</button>
+        <button type="button" data-lang="en" data-url="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</button>
+        <button type="button" data-lang="sr" data-url="{{ route('lang.switch', 'sr') }}" class="{{ app()->getLocale() === 'sr' ? 'active' : '' }}">SR</button>
       </div>
     </div>
   </nav>
@@ -1737,12 +1740,17 @@
 
       langButtons.forEach(function (button) {
         button.addEventListener('click', function () {
-          setLanguage(button.dataset.lang);
+          const nextLang = button.dataset.lang;
+          setLanguage(nextLang);
+          if (button.dataset.url) {
+            window.location.href = button.dataset.url;
+          }
         });
       });
 
+      const serverLang = @json(in_array(app()->getLocale(), ['sq', 'en', 'sr'], true) ? app()->getLocale() : 'sq');
       const savedLang = localStorage.getItem('brillant_lang');
-      if (savedLang) setLanguage(savedLang);
+      setLanguage(serverLang || savedLang || 'sq');
     })();
   </script>
 </body>

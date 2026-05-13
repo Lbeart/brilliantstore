@@ -1,3 +1,5 @@
+<?php
+
 return [
     'home' => 'Ballina',
     'products' => 'Produktet',

@@ -64,7 +64,7 @@ Route::post('/contact/send', [ContactController::class, 'send'])
 // 🌐 Language
 Route::get('/lang/{lang}', function (string $lang) {
     // opsionale: lejo vetëm gjuhët që i ke
-    if (!in_array($lang, ['sq','en'])) { $lang = 'sq'; }
+    if (!in_array($lang, ['sq', 'en', 'sr'], true)) { $lang = 'sq'; }
     session(['locale' => $lang]);
     app()->setLocale($lang);
     return back();
