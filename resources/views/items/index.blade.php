@@ -104,7 +104,7 @@
     }
 
     .topbar {
-      display: none;
+      display: block;
       background: var(--dark);
       color: rgba(255,255,255,.9);
       font-size: .86rem;
@@ -291,6 +291,7 @@
       min-width: 210px;
       grid-template-columns: 1fr;
     }
+    .mobile-cart { display: none; }
 
     .btn {
       min-height: 46px;
@@ -806,7 +807,7 @@
       grid-template-columns: 1.25fr repeat(3, 1fr);
       gap: 28px;
     }
-    .footer-brand img { width: 90px; }
+    .footer-brand img { width: 210px; max-width: 100%; }
     .footer-brand p {
       color: var(--muted);
       line-height: 1.65;
@@ -924,7 +925,7 @@
         position: fixed;
         left: 12px;
         right: 12px;
-        top: 88px;
+        top: 108px;
         display: none;
         flex: none;
         flex-direction: column;
@@ -961,6 +962,7 @@
       .nav-dropdown:not([open]) .dropdown-menu { display: none; }
       .cart-dropdown { display: none; }
       .login-btn { display: none; }
+      .mobile-cart { display: inline-flex; }
       .hero { min-height: 590px; }
       .hero::before {
         background:
@@ -993,7 +995,7 @@
       .section { padding: 42px 0; }
       .section-head { display: block; margin-bottom: 18px; }
       .section-head .btn { width: 100%; margin-top: 14px; }
-      .brand img { width: 165px; }
+      .brand img { width: 158px; }
       .nav-actions { gap: 7px; }
       .icon-btn { width: 42px; height: 42px; }
       .cart-link {
@@ -1044,6 +1046,8 @@
       ['title' => 'Batanije', 'desc' => 'Te ngrohta, praktike dhe te bukura.', 'url' => route('products.batanije'), 'img' => asset('optimized/home/gold.jpg')],
       ['title' => 'Mbulesa', 'desc' => 'Per divan, krevat dhe dekor te perditeshem.', 'url' => route('products.mbulesa'), 'img' => asset('optimized/home/gold2.jpg')],
       ['title' => 'Jasteke dekorues', 'desc' => 'Detaje qe e kompletojne ambientin.', 'url' => route('products.jastekdekorues'), 'img' => asset('optimized/home/rose1.jpg')],
+      ['title' => 'Tepiha banjo', 'desc' => 'Praktike, te bute dhe te lehte per pastrim.', 'url' => route('products.tepihebanjo'), 'img' => asset('optimized/home/side.jpg')],
+      ['title' => 'Garnishte', 'desc' => 'Aksesor per perde dhe montim me pamje te rregullt.', 'url' => route('products.garnishte'), 'img' => asset('optimized/home/paris.jpg')],
     ];
 
     $quickLinks = [
@@ -1057,7 +1061,7 @@
 
   <div class="topbar">
     <div class="container topbar-inner">
-      <span>Brillant Lipjan - tekstil per shtepi, perde dhe tepiha te zgjedhur.</span>
+      <span>Mbështetu tek ne. Porosi të sigurta dhe kontakt direkt kudo në Kosovë.</span>
       <a class="desktop-only" href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener">Pyet ne WhatsApp</a>
     </div>
   </div>
@@ -1065,31 +1069,54 @@
   <header class="site-header">
     <div class="container nav">
       <a class="brand" href="{{ route('home') }}" aria-label="Brillant home">
-        <img src="{{ asset('images/llogo.png') }}" alt="Brillant">
+        <img src="{{ asset('images/brillant.png') }}" alt="Brillant">
         <span>Brillant</span>
       </a>
 
       <nav id="mainMenu" class="nav-links" aria-label="Navigimi kryesor">
-        <a href="{{ route('products.index') }}">Katalogu</a>
-        <a href="{{ route('products.tepiha') }}">Tepiha</a>
-        <a href="{{ route('products.anesore') }}">Perde</a>
-        <a href="{{ route('products.postava') }}">Postava</a>
-        <a href="{{ route('products.batanije') }}">Batanije</a>
-        <a href="{{ route('track.form') }}">Gjurmo porosine</a>
-        <a href="{{ route('contact') }}">Kontakt</a>
+        <a href="{{ route('home') }}">Home</a>
+
+        <details class="nav-dropdown">
+          <summary>Products <i class="bi bi-caret-down-fill"></i></summary>
+          <div class="dropdown-menu">
+            <a href="{{ route('products.tepiha') }}">Tepiha</a>
+            <a href="{{ route('products.anesore') }}">Perde anesore</a>
+            <a href="{{ route('products.perdeDitore') }}">Perde ditore</a>
+            <a href="{{ route('products.postava') }}">Postava</a>
+            <a href="{{ route('products.posteqia') }}">Posteqia</a>
+            <a href="{{ route('products.batanije') }}">Batanije</a>
+            <a href="{{ route('products.mbulesa') }}">Mbulesa</a>
+            <a href="{{ route('products.jastekdekorues') }}">Jasteke</a>
+            <a href="{{ route('products.tepihebanjo') }}">Tepiha banjo</a>
+            <a href="{{ route('products.garnishte') }}">Garnishte</a>
+          </div>
+        </details>
+
+        <a href="{{ route('about') }}">About</a>
+        <a href="{{ route('contact') }}">Contact</a>
       </nav>
 
       <div class="nav-actions">
-        <a class="btn btn-whatsapp desktop-only" href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener">
-          <i class="bi bi-whatsapp"></i> WhatsApp
-        </a>
-        <a class="icon-btn" href="#searchSection" aria-label="Kerko">
-          <i class="bi bi-search"></i>
-        </a>
-        <a class="icon-btn" href="{{ route('cart.index') }}" aria-label="Shporta">
+        <a class="login-btn" href="{{ route('login') }}">Log in</a>
+
+        <details class="nav-dropdown cart-dropdown">
+          <summary class="icon-btn cart-link">
+            <i class="bi bi-bag"></i>
+            <span>Shporta</span>
+            <span class="cart-badge">{{ session('cart_total_qty', 0) }}</span>
+            <i class="bi bi-caret-down-fill cart-more"></i>
+          </summary>
+          <div class="dropdown-menu">
+            <a href="{{ route('cart.index') }}">Hap shporten</a>
+            <a href="{{ route('track.form') }}">Gjurmo porosine</a>
+          </div>
+        </details>
+
+        <a class="icon-btn cart-link mobile-cart" href="{{ route('cart.index') }}" aria-label="Shporta">
           <i class="bi bi-bag"></i>
           <span class="cart-badge">{{ session('cart_total_qty', 0) }}</span>
         </a>
+
         <button class="icon-btn menu-toggle" type="button" aria-label="Hap menune" aria-controls="mainMenu" aria-expanded="false">
           <i class="bi bi-list"></i>
         </button>
@@ -1106,7 +1133,7 @@
           <p>Brillant sjell tepiha, perde, postava, batanije dhe detaje dekoruese me pamje te paster, cilesi te mire dhe porosi te lehte.</p>
 
           <div class="hero-actions">
-            <a class="btn btn-primary" href="{{ route('products.index') }}"><i class="bi bi-grid"></i> Shiko katalogun</a>
+            <a class="btn btn-primary" href="{{ route('products.index') }}"><i class="bi bi-grid"></i> Shiko produktet</a>
             <a class="btn btn-outline" href="{{ route('contact') }}"><i class="bi bi-rulers"></i> Kerko keshillim</a>
           </div>
 
@@ -1156,8 +1183,8 @@
         <div class="section-head">
           <div>
             <div class="eyebrow">Kategorite</div>
-            <h2>Gjeje shpejt produktin qe i shkon ambientit tend.</h2>
-            <p>Kategorite jane vendosur lart dhe qarte, sidomos per telefon, qe klienti mos te humbet ne menu.</p>
+            <h2>Kategoritë kryesore, si te Nota, direkt para klientit.</h2>
+            <p>Te gjitha kategorite reale jane ketu: tepiha, perde, tekstil per dhome dhe aksesor.</p>
           </div>
           <a class="btn btn-outline" href="{{ route('products.index') }}">Te gjitha produktet</a>
         </div>
@@ -1181,7 +1208,7 @@
         <div class="section-head">
           <div>
             <div class="eyebrow">Inspirim</div>
-            <h2>Koleksione qe duken mire ne shtepi reale.</h2>
+          <h2>Më të kërkuarat.</h2>
           </div>
         </div>
 
@@ -1219,23 +1246,23 @@
       <div class="container benefit-grid">
         <div class="benefit">
           <i class="bi bi-rulers"></i>
-          <h3>Keshillim per permasa</h3>
-          <p>Te ndihmojme me zgjedhjen sipas dhomes, ngjyrave dhe stilit.</p>
+          <h3>Transport i sigurt</h3>
+          <p>Porosia konfirmohet dhe ndiqet deri te dorezimi.</p>
         </div>
         <div class="benefit">
           <i class="bi bi-patch-check"></i>
-          <h3>Produkte te zgjedhura</h3>
-          <p>Fokus ne materiale qe duken mire dhe perdoren gjate.</p>
+          <h3>Blerje e lehte</h3>
+          <p>Kategori te qarta, shporte dhe kontakt direkt per pyetje.</p>
         </div>
         <div class="benefit">
           <i class="bi bi-whatsapp"></i>
-          <h3>Kontakt direkt</h3>
-          <p>Pyet per cmim, stock ose rekomandim pa humb kohe.</p>
+          <h3>Mbështetje deri në dorëzim</h3>
+          <p>Pyet per cmim, stock, matje ose rekomandim pa humb kohe.</p>
         </div>
         <div class="benefit">
           <i class="bi bi-bag-check"></i>
-          <h3>Porosi e thjeshte</h3>
-          <p>Zgjedh produktin, shiko detajet dhe vazhdo me shporte ose chat.</p>
+          <h3>Cmim i qarte</h3>
+          <p>Produktet shfaqin cmim, stock dhe detaje per blerje me te lehte.</p>
         </div>
       </div>
     </section>
@@ -1245,10 +1272,10 @@
         <div class="section-head">
           <div>
             <div class="eyebrow">Te rejat</div>
-            <h2>Produktet e fundit ne Brillant.</h2>
-            <p>Cards jane bere te qarta: foto, kategori, cmim, stock dhe veprime direkte.</p>
+          <h2>Të Rekomanduara.</h2>
+            <p>Produktet e fundit jane vendosur si rekomandime, me foto, cmim, stock dhe veprime direkte.</p>
           </div>
-          <a class="btn btn-outline" href="{{ route('products.index') }}">Shiko katalogun</a>
+          <a class="btn btn-outline" href="{{ route('products.index') }}">Shiko produktet</a>
         </div>
 
         @if($latestProducts->count())
@@ -1327,7 +1354,7 @@
         @else
           <div class="seo-box">
             <h2>Produktet do te shfaqen se shpejti.</h2>
-            <p>Per katalogun aktual, na shkruani ne WhatsApp dhe ju dergojme opsionet qe jane ne stock.</p>
+            <p>Per produktet aktuale, na shkruani ne WhatsApp dhe ju dergojme opsionet qe jane ne stock.</p>
           </div>
         @endif
       </div>
@@ -1399,7 +1426,7 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <img src="{{ asset('images/llogo.png') }}" alt="Brillant" loading="lazy" decoding="async">
+          <img src="{{ asset('images/brillant.png') }}" alt="Brillant" loading="lazy" decoding="async">
           <p>Brillant ne Lipjan - zgjedhje profesionale per tepiha, perde dhe tekstil per shtepi.</p>
         </div>
         <div>
@@ -1408,6 +1435,7 @@
           <a href="{{ route('products.anesore') }}">Perde anesore</a>
           <a href="{{ route('products.perdeDitore') }}">Perde ditore</a>
           <a href="{{ route('products.tepihebanjo') }}">Tepiha banjo</a>
+          <a href="{{ route('products.garnishte') }}">Garnishte</a>
         </div>
         <div>
           <h3>Tekstil</h3>
@@ -1415,10 +1443,11 @@
           <a href="{{ route('products.posteqia') }}">Posteqia</a>
           <a href="{{ route('products.batanije') }}">Batanije</a>
           <a href="{{ route('products.mbulesa') }}">Mbulesa</a>
+          <a href="{{ route('products.jastekdekorues') }}">Jasteke dekorues</a>
         </div>
         <div>
           <h3>Ndihme</h3>
-          <a href="{{ route('products.index') }}">Katalogu</a>
+          <a href="{{ route('products.index') }}">Products</a>
           <a href="{{ route('cart.index') }}">Shporta</a>
           <a href="{{ route('track.form') }}">Gjurmo porosine</a>
           <a href="{{ route('contact') }}">Kontakt</a>
@@ -1439,7 +1468,7 @@
   <nav class="mobile-dock" aria-label="Navigimi ne telefon">
     <div class="dock-inner">
       <a class="active" href="{{ route('home') }}"><i class="bi bi-house"></i><span>Home</span></a>
-      <a href="{{ route('products.index') }}"><i class="bi bi-grid"></i><span>Katalog</span></a>
+      <a href="{{ route('products.index') }}"><i class="bi bi-grid"></i><span>Products</span></a>
       <a href="#searchSection"><i class="bi bi-search"></i><span>Kerko</span></a>
       <a href="{{ route('cart.index') }}">
         <i class="bi bi-bag"></i><span>Shporta</span>
