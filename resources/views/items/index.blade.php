@@ -1363,7 +1363,7 @@
         <div class="section-head">
           <div>
             <div class="eyebrow" data-sq="Kategorite" data-en="Categories" data-sr="Kategorije">Kategorite</div>
-            <h2>Kategoritë kryesore, si te Nota, direkt para klientit.</h2>
+            <h2>Kategoritë kryesore.</h2>
             <p>Te gjitha kategorite reale jane ketu: tepiha, perde, tekstil per dhome dhe aksesor.</p>
           </div>
           <a class="btn btn-outline" href="{{ route('products.index') }}" data-sq="Te gjitha produktet" data-en="All products" data-sr="Svi proizvodi">Te gjitha produktet</a>
