@@ -1383,44 +1383,7 @@
       </div>
     </section>
 
-    <section class="section pt-0">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Inspirim</div>
-          <h2>Më të kërkuarat.</h2>
-          </div>
-        </div>
-
-        <div class="editorial-grid">
-          <a class="feature-tile" href="{{ route('products.tepiha') }}">
-            <img src="{{ asset('optimized/home/hali5.jpg') }}" alt="Tepiha moderne" loading="lazy" decoding="async" width="760" height="520">
-            <div class="feature-tile-content">
-              <h3>Tepiha per sallon modern</h3>
-              <p>Teksture, ngjyra dhe permasa qe e lidhin komplet ambientin.</p>
-              <span class="btn btn-outline">Shiko tepihat</span>
-            </div>
-          </a>
-
-          <div class="feature-side">
-            <a class="feature-tile small" href="{{ route('products.anesore') }}">
-              <img src="{{ asset('optimized/home/raffaello.jpg') }}" alt="Perde elegante" loading="lazy" decoding="async" width="520" height="320">
-              <div class="feature-tile-content">
-                <h3>Perde me stil</h3>
-                <p>Qepje dhe material i zgjedhur.</p>
-              </div>
-            </a>
-            <a class="feature-tile small" href="{{ route('products.batanije') }}">
-              <img src="{{ asset('optimized/home/gold.jpg') }}" alt="Batanije" loading="lazy" decoding="async" width="520" height="320">
-              <div class="feature-tile-content">
-                <h3>Ngrohtesi per cdo dite</h3>
-                <p>Batanije dhe tekstil i bute.</p>
-              </div>
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
+   
 
     <section class="benefits section-tight">
       <div class="container benefit-grid">
