@@ -292,6 +292,48 @@
       grid-template-columns: 1fr;
     }
     .mobile-cart { display: none; }
+    .nota-menu {
+      border-top: 1px solid rgba(255,255,255,.10);
+      background: #111827;
+    }
+    .nota-menu-inner {
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nota-menu-inner::-webkit-scrollbar { display: none; }
+    .nota-menu a,
+    .nota-menu summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 9px 13px;
+      border-radius: 999px;
+      color: rgba(255,255,255,.92);
+      font-weight: 800;
+      font-size: .9rem;
+      white-space: nowrap;
+      cursor: pointer;
+      list-style: none;
+    }
+    .nota-menu a:hover,
+    .nota-menu summary:hover,
+    .nota-menu details[open] summary {
+      background: rgba(255,255,255,.10);
+      color: #fff;
+    }
+    .nota-menu details { position: relative; }
+    .nota-menu summary::-webkit-details-marker { display: none; }
+    .nota-menu .dropdown-menu {
+      left: 0;
+      right: auto;
+      transform: none;
+      top: calc(100% + 8px);
+    }
 
     .btn {
       min-height: 46px;
@@ -317,7 +359,7 @@
 
     .hero {
       position: relative;
-      min-height: 650px;
+      min-height: 520px;
       color: #fff;
       display: grid;
       align-items: stretch;
@@ -343,12 +385,12 @@
       pointer-events: none;
     }
     .hero-grid {
-      min-height: 650px;
+      min-height: 520px;
       display: grid;
       grid-template-columns: minmax(0, 1.08fr) minmax(310px, .55fr);
       align-items: center;
       gap: 36px;
-      padding: 74px 0 110px;
+      padding: 56px 0 92px;
     }
     .hero-copy { max-width: 760px; }
     .hero .eyebrow { color: #f4d795; }
@@ -359,6 +401,41 @@
       line-height: .96;
       font-weight: 800;
       letter-spacing: 0;
+    }
+    .nota-hero-thumbs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 28px;
+      max-width: 760px;
+    }
+    .nota-hero-thumb {
+      min-height: 118px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: end;
+      padding: 12px;
+      isolation: isolate;
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 14px 34px rgba(0,0,0,.18);
+    }
+    .nota-hero-thumb img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+    .nota-hero-thumb::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.68));
+      z-index: -1;
     }
     .hero h1 span { color: #f4d795; }
     .hero p {
@@ -572,7 +649,7 @@
     .feature-side { display: grid; gap: 18px; }
 
     .benefits {
-      background: var(--dark);
+      background: #fff;
       color: #fff;
     }
     .benefit-grid {
@@ -581,13 +658,15 @@
       gap: 14px;
     }
     .benefit {
-      border: 1px solid rgba(255,255,255,.13);
+      border: 1px solid rgba(55,35,25,.09);
       border-radius: var(--radius-lg);
       padding: 18px;
-      background: rgba(255,255,255,.05);
+      background: #fff;
+      color: var(--ink);
+      box-shadow: var(--shadow-soft);
     }
     .benefit i {
-      color: #f4d795;
+      color: var(--brand);
       font-size: 1.4rem;
     }
     .benefit h3 {
@@ -597,7 +676,7 @@
     }
     .benefit p {
       margin: 0;
-      color: rgba(255,255,255,.72);
+      color: var(--muted);
       font-size: .88rem;
       line-height: 1.58;
     }
@@ -765,6 +844,40 @@
       justify-content: space-between;
       gap: 22px;
       box-shadow: var(--shadow);
+    }
+    .offers-grid {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .day-offer {
+      border-radius: var(--radius-lg);
+      background: var(--dark);
+      color: #fff;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 320px;
+      box-shadow: var(--shadow);
+    }
+    .day-offer span {
+      color: #f4d795;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: .76rem;
+    }
+    .day-offer h3 {
+      margin: 12px 0 10px;
+      font-size: clamp(1.5rem, 3vw, 2.4rem);
+      line-height: 1.08;
+    }
+    .mini-offer-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
     }
     .contact-strip h2 {
       margin: 0;
@@ -977,11 +1090,20 @@
       .hero h1 { font-size: clamp(2.25rem, 10vw, 3.7rem); }
       .hero p { font-size: .98rem; line-height: 1.65; }
       .hero-card { display: none; }
+      .nota-menu .dropdown-menu {
+        position: fixed;
+        left: 12px;
+        right: 12px;
+        top: 124px;
+        transform: none;
+      }
+      .nota-hero-thumbs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .search-panel { margin-top: -44px; }
       .search-card { grid-template-columns: 1fr; }
       .search-card .btn { width: 100%; }
       .category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
       .editorial-grid,
+      .offers-grid,
       .showroom,
       .footer-grid { grid-template-columns: 1fr; }
       .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1011,6 +1133,8 @@
       .hero-grid { min-height: 560px; padding: 120px 0 78px; }
       .hero-actions .btn { width: 100%; }
       .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+      .nota-hero-thumbs { gap: 8px; }
+      .nota-hero-thumb { min-height: 96px; font-size: .82rem; }
       .hero-stat { padding: 11px; }
       .hero-stat strong { font-size: 1.1rem; }
       .hero-stat span { font-size: .76rem; }
@@ -1022,6 +1146,7 @@
       .feature-tile { min-height: 330px; }
       .feature-tile.small { min-height: 210px; }
       .benefit-grid,
+      .mini-offer-grid,
       .product-grid { grid-template-columns: 1fr; }
       .product-media img { height: 240px; object-fit: contain; padding: 8px; }
       .product-actions { grid-template-columns: 1fr; }
@@ -1124,6 +1249,22 @@
     </div>
   </header>
 
+  <nav class="nota-menu" aria-label="Menu e dyqanit">
+    <div class="container nota-menu-inner">
+      <details class="nav-dropdown">
+        <summary><i class="bi bi-list"></i> Kategorite</summary>
+        <div class="dropdown-menu">
+          @foreach($categories as $category)
+            <a href="{{ $category['url'] }}">{{ $category['title'] }}</a>
+          @endforeach
+        </div>
+      </details>
+      <a href="#offers"><i class="bi bi-percent"></i> Oferta Speciale</a>
+      <a href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> Chat</a>
+      <a href="{{ route('track.form') }}"><i class="bi bi-truck"></i> Gjurmo porosine</a>
+    </div>
+  </nav>
+
   <main>
     <section class="hero">
       <div class="container hero-grid">
@@ -1138,9 +1279,18 @@
           </div>
 
           <div class="hero-stats" aria-label="Pikat kryesore">
-            <div class="hero-stat"><strong>8+</strong><span>Kategori per shtepi</span></div>
+            <div class="hero-stat"><strong>10</strong><span>Kategori per shtepi</span></div>
             <div class="hero-stat"><strong>24h</strong><span>Pergjigje e shpejte</span></div>
             <div class="hero-stat"><strong>1 vend</strong><span>Tepiha, perde, tekstil</span></div>
+          </div>
+
+          <div class="nota-hero-thumbs" aria-label="Kategorite kryesore">
+            @foreach(array_slice($categories, 0, 4) as $category)
+              <a class="nota-hero-thumb" href="{{ $category['url'] }}">
+                <img src="{{ $category['img'] }}" alt="{{ $category['title'] }}" loading="eager" decoding="async">
+                <span>{{ $category['title'] }}</span>
+              </a>
+            @endforeach
           </div>
         </div>
 
@@ -1357,6 +1507,56 @@
             <p>Per produktet aktuale, na shkruani ne WhatsApp dhe ju dergojme opsionet qe jane ne stock.</p>
           </div>
         @endif
+      </div>
+    </section>
+
+    <section id="offers" class="section pt-0">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Oferta speciale</div>
+            <h2>Oferta e dites.</h2>
+            <p>Si te Nota: oferta shfaqet ndaras dhe klienti shkon direkt ne chat per cmim, stock dhe dimensione.</p>
+          </div>
+        </div>
+
+        <div class="offers-grid">
+          <div class="day-offer">
+            <div>
+              <span>Oferta Speciale</span>
+              <h3>Pyet per cmimin me te mire te dites.</h3>
+              <p style="color: rgba(255,255,255,.78); line-height: 1.7; margin: 0;">Dergo produktin qe te pelqen dhe merr konfirmim per stock, dimensione dhe cmim.</p>
+            </div>
+            <a class="btn btn-whatsapp" href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Pershendetje! Dua te pyes per ofertat speciale.') }}" target="_blank" rel="noopener">
+              <i class="bi bi-whatsapp"></i> Chat
+            </a>
+          </div>
+
+          <div class="mini-offer-grid">
+            @foreach(array_slice($categories, 0, 4) as $category)
+              <a class="category-card" href="{{ $category['url'] }}">
+                <img src="{{ $category['img'] }}" alt="{{ $category['title'] }}" loading="lazy" decoding="async" width="560" height="420">
+                <div class="category-card-body">
+                  <h3>{{ $category['title'] }}</h3>
+                  <p>Blej tani</p>
+                </div>
+              </a>
+            @endforeach
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="all-products" class="section pt-0">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Te gjitha</div>
+            <h2>Shfaq me shume produkte.</h2>
+            <p>Hap faqen e produkteve per listen e plote.</p>
+          </div>
+          <a class="btn btn-outline" href="{{ route('products.index') }}">Shfaq me shume produkte</a>
+        </div>
       </div>
     </section>
 
