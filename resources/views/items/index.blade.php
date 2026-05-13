@@ -261,6 +261,31 @@
       background: rgba(255,255,255,.10);
       color: #fff;
     }
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+    }
+    .lang-switch button {
+      min-width: 34px;
+      height: 30px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: rgba(255,255,255,.78);
+      font-size: .75rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .lang-switch button.active {
+      background: #fff;
+      color: var(--brand);
+    }
+    .mobile-lang-switch { display: none; }
     .cart-link {
       width: auto;
       min-width: 0;
@@ -1075,7 +1100,9 @@
       .nav-dropdown:not([open]) .dropdown-menu { display: none; }
       .cart-dropdown { display: none; }
       .login-btn { display: none; }
+      .nav-actions > .lang-switch { display: none; }
       .mobile-cart { display: inline-flex; }
+      .mobile-lang-switch { display: inline-flex; }
       .hero { min-height: 590px; }
       .hero::before {
         background:
@@ -1163,16 +1190,16 @@
     $waNumber = '38344960661';
 
     $categories = [
-      ['title' => 'Tepiha', 'desc' => 'Modele per sallon, dhome gjumi dhe korridor.', 'url' => route('products.tepiha'), 'img' => asset('optimized/home/hali4.jpg')],
-      ['title' => 'Perde anesore', 'desc' => 'Pamje elegante dhe qepje profesionale.', 'url' => route('products.anesore'), 'img' => asset('optimized/home/raffaello.jpg')],
-      ['title' => 'Perde ditore', 'desc' => 'Drite e bute dhe ambient me i paster.', 'url' => route('products.perdeDitore'), 'img' => asset('images/curtainslider.webp')],
-      ['title' => 'Postava', 'desc' => 'Sete per gjume te rehatshem cdo nate.', 'url' => route('products.postava'), 'img' => asset('optimized/home/bedshet.jpg')],
-      ['title' => 'Posteqia', 'desc' => 'Zgjedhje te buta per dhome gjumi.', 'url' => route('products.posteqia'), 'img' => asset('optimized/home/gold1.jpg')],
-      ['title' => 'Batanije', 'desc' => 'Te ngrohta, praktike dhe te bukura.', 'url' => route('products.batanije'), 'img' => asset('optimized/home/gold.jpg')],
-      ['title' => 'Mbulesa', 'desc' => 'Per divan, krevat dhe dekor te perditeshem.', 'url' => route('products.mbulesa'), 'img' => asset('optimized/home/gold2.jpg')],
-      ['title' => 'Jasteke dekorues', 'desc' => 'Detaje qe e kompletojne ambientin.', 'url' => route('products.jastekdekorues'), 'img' => asset('optimized/home/rose1.jpg')],
-      ['title' => 'Tepiha banjo', 'desc' => 'Praktike, te bute dhe te lehte per pastrim.', 'url' => route('products.tepihebanjo'), 'img' => asset('optimized/home/side.jpg')],
-      ['title' => 'Garnishte', 'desc' => 'Aksesor per perde dhe montim me pamje te rregullt.', 'url' => route('products.garnishte'), 'img' => asset('optimized/home/paris.jpg')],
+      ['title' => 'Tepiha', 'title_en' => 'Rugs', 'title_sr' => 'Tepisi', 'desc' => 'Modele per sallon, dhome gjumi dhe korridor.', 'desc_en' => 'Models for living rooms, bedrooms and hallways.', 'desc_sr' => 'Modeli za dnevni boravak, spavacu sobu i hodnik.', 'url' => route('products.tepiha'), 'img' => asset('carpet/IMG_7507.jpg')],
+      ['title' => 'Perde anesore', 'title_en' => 'Side curtains', 'title_sr' => 'Bocne zavese', 'desc' => 'Pamje elegante dhe qepje profesionale.', 'desc_en' => 'Elegant look with professional tailoring.', 'desc_sr' => 'Elegantan izgled i profesionalno sivenje.', 'url' => route('products.anesore'), 'img' => asset('curtainn/raffaello.jpg')],
+      ['title' => 'Perde ditore', 'title_en' => 'Day curtains', 'title_sr' => 'Dnevne zavese', 'desc' => 'Drite e bute dhe ambient me i paster.', 'desc_en' => 'Soft light and a cleaner room feeling.', 'desc_sr' => 'Meko svetlo i cistiji izgled prostora.', 'url' => route('products.perdeDitore'), 'img' => asset('perdeditoree/perde.jpg')],
+      ['title' => 'Postava', 'title_en' => 'Bedsheets', 'title_sr' => 'Posteljina', 'desc' => 'Sete per gjume te rehatshem cdo nate.', 'desc_en' => 'Sets for comfortable sleep every night.', 'desc_sr' => 'Setovi za udoban san svake noci.', 'url' => route('products.postava'), 'img' => asset('postavav/beedshet.png')],
+      ['title' => 'Posteqia', 'title_en' => 'Faux fur throws', 'title_sr' => 'Prekrivaci od eko krzna', 'desc' => 'Zgjedhje te buta per dhome gjumi.', 'desc_en' => 'Soft choices for the bedroom.', 'desc_sr' => 'Mek izbor za spavacu sobu.', 'url' => route('products.posteqia'), 'img' => asset('posteqiaa/faux-1.jpg')],
+      ['title' => 'Batanije', 'title_en' => 'Blankets', 'title_sr' => 'Cebad', 'desc' => 'Te ngrohta, praktike dhe te bukura.', 'desc_en' => 'Warm, practical and beautiful.', 'desc_sr' => 'Topla, prakticna i lepa.', 'url' => route('products.batanije'), 'img' => asset('batanijee/batanije-safran-1-1120x1493.jpg')],
+      ['title' => 'Mbulesa', 'title_en' => 'Covers', 'title_sr' => 'Prekrivaci', 'desc' => 'Per divan, krevat dhe dekor te perditeshem.', 'desc_en' => 'For sofas, beds and everyday decor.', 'desc_sr' => 'Za sofu, krevet i svakodnevni dekor.', 'url' => route('products.mbulesa'), 'img' => asset('mbulesaa/IMG_7108.jpg')],
+      ['title' => 'Jasteke dekorues', 'title_en' => 'Decorative pillows', 'title_sr' => 'Dekorativni jastuci', 'desc' => 'Detaje qe e kompletojne ambientin.', 'desc_en' => 'Details that complete the room.', 'desc_sr' => 'Detalji koji upotpunjuju prostor.', 'url' => route('products.jastekdekorues'), 'img' => asset('jastak/JASTAKDEKORUES.jpg')],
+      ['title' => 'Tepiha banjo', 'title_en' => 'Bath rugs', 'title_sr' => 'Kupatilski tepisi', 'desc' => 'Praktike, te bute dhe te lehte per pastrim.', 'desc_en' => 'Practical, soft and easy to clean.', 'desc_sr' => 'Prakticni, mekani i laki za ciscenje.', 'url' => route('products.tepihebanjo'), 'img' => asset('tepihebanjoo/crop-template-alanya1-1120x1493.jpg')],
+      ['title' => 'Garnishte', 'title_en' => 'Curtain rails', 'title_sr' => 'Garnisne', 'desc' => 'Aksesor per perde dhe montim me pamje te rregullt.', 'desc_en' => 'Curtain accessories for a clean installation.', 'desc_sr' => 'Dodaci za zavese i urednu montazu.', 'url' => route('products.garnishte'), 'img' => asset('images/folds/amerikan.png')],
     ];
 
     $quickLinks = [
@@ -1186,8 +1213,8 @@
 
   <div class="topbar">
     <div class="container topbar-inner">
-      <span>Mbështetu tek ne. Porosi të sigurta dhe kontakt direkt kudo në Kosovë.</span>
-      <a class="desktop-only" href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener">Pyet ne WhatsApp</a>
+      <span data-sq="Mbeshtetu tek ne. Porosi te sigurta dhe kontakt direkt kudo ne Kosove." data-en="Count on us. Safe orders and direct contact across Kosovo." data-sr="Racunajte na nas. Sigurne porudzbine i direktan kontakt na Kosovu.">Mbeshtetu tek ne. Porosi te sigurta dhe kontakt direkt kudo ne Kosove.</span>
+      <a class="desktop-only" href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener" data-sq="Pyet ne WhatsApp" data-en="Ask on WhatsApp" data-sr="Pitaj na WhatsApp">Pyet ne WhatsApp</a>
     </div>
   </div>
 
@@ -1199,29 +1226,27 @@
       </a>
 
       <nav id="mainMenu" class="nav-links" aria-label="Navigimi kryesor">
-        <a href="{{ route('home') }}">Home</a>
+        <a href="{{ route('home') }}" data-sq="Home" data-en="Home" data-sr="Pocetna">Home</a>
 
         <details class="nav-dropdown">
-          <summary>Products <i class="bi bi-caret-down-fill"></i></summary>
+          <summary><span data-sq="Products" data-en="Products" data-sr="Proizvodi">Products</span> <i class="bi bi-caret-down-fill"></i></summary>
           <div class="dropdown-menu">
-            <a href="{{ route('products.tepiha') }}">Tepiha</a>
-            <a href="{{ route('products.anesore') }}">Perde anesore</a>
-            <a href="{{ route('products.perdeDitore') }}">Perde ditore</a>
-            <a href="{{ route('products.postava') }}">Postava</a>
-            <a href="{{ route('products.posteqia') }}">Posteqia</a>
-            <a href="{{ route('products.batanije') }}">Batanije</a>
-            <a href="{{ route('products.mbulesa') }}">Mbulesa</a>
-            <a href="{{ route('products.jastekdekorues') }}">Jasteke</a>
-            <a href="{{ route('products.tepihebanjo') }}">Tepiha banjo</a>
-            <a href="{{ route('products.garnishte') }}">Garnishte</a>
+            @foreach($categories as $category)
+              <a href="{{ $category['url'] }}" data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</a>
+            @endforeach
           </div>
         </details>
 
-        <a href="{{ route('about') }}">About</a>
-        <a href="{{ route('contact') }}">Contact</a>
+        <a href="{{ route('about') }}" data-sq="About" data-en="About" data-sr="O nama">About</a>
+        <a href="{{ route('contact') }}" data-sq="Contact" data-en="Contact" data-sr="Kontakt">Contact</a>
       </nav>
 
       <div class="nav-actions">
+        <div class="lang-switch" aria-label="Language switcher">
+          <button type="button" data-lang="sq" class="active">SQ</button>
+          <button type="button" data-lang="en">EN</button>
+          <button type="button" data-lang="sr">SR</button>
+        </div>
         <a class="login-btn" href="{{ route('login') }}">Log in</a>
 
         <details class="nav-dropdown cart-dropdown">
@@ -1252,16 +1277,21 @@
   <nav class="nota-menu" aria-label="Menu e dyqanit">
     <div class="container nota-menu-inner">
       <details class="nav-dropdown">
-        <summary><i class="bi bi-list"></i> Kategorite</summary>
+        <summary><i class="bi bi-list"></i> <span data-sq="Kategorite" data-en="Categories" data-sr="Kategorije">Kategorite</span></summary>
         <div class="dropdown-menu">
           @foreach($categories as $category)
-            <a href="{{ $category['url'] }}">{{ $category['title'] }}</a>
+            <a href="{{ $category['url'] }}" data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</a>
           @endforeach
         </div>
       </details>
-      <a href="#offers"><i class="bi bi-percent"></i> Oferta Speciale</a>
+      <a href="#offers"><i class="bi bi-percent"></i> <span data-sq="Oferta Speciale" data-en="Special Offers" data-sr="Specijalne ponude">Oferta Speciale</span></a>
       <a href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> Chat</a>
-      <a href="{{ route('track.form') }}"><i class="bi bi-truck"></i> Gjurmo porosine</a>
+      <a href="{{ route('track.form') }}"><i class="bi bi-truck"></i> <span data-sq="Gjurmo porosine" data-en="Track order" data-sr="Prati porudzbinu">Gjurmo porosine</span></a>
+      <div class="lang-switch mobile-lang-switch" aria-label="Language switcher mobile">
+        <button type="button" data-lang="sq" class="active">SQ</button>
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="sr">SR</button>
+      </div>
     </div>
   </nav>
 
@@ -1269,13 +1299,13 @@
     <section class="hero">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <div class="eyebrow">Koleksion i zgjedhur</div>
-          <h1>Shtepia duket me bukur kur tekstili eshte <span>i menduar mire.</span></h1>
-          <p>Brillant sjell tepiha, perde, postava, batanije dhe detaje dekoruese me pamje te paster, cilesi te mire dhe porosi te lehte.</p>
+          <div class="eyebrow" data-sq="Koleksion i zgjedhur" data-en="Curated collection" data-sr="Odabrana kolekcija">Koleksion i zgjedhur</div>
+          <h1 data-sq="Shtepia duket me bukur kur tekstili eshte i menduar mire." data-en="Your home looks better when textiles are chosen with care." data-sr="Dom izgleda lepse kada je tekstil pazljivo odabran.">Shtepia duket me bukur kur tekstili eshte <span>i menduar mire.</span></h1>
+          <p data-sq="Brillant sjell tepiha, perde, postava, batanije dhe detaje dekoruese me pamje te paster, cilesi te mire dhe porosi te lehte." data-en="Brillant brings rugs, curtains, bedding, blankets and decor details with a clean look, good quality and easy ordering." data-sr="Brillant nudi tepihe, zavese, posteljinu, cebad i dekor sa urednim izgledom, dobrim kvalitetom i lakom porudzbinom.">Brillant sjell tepiha, perde, postava, batanije dhe detaje dekoruese me pamje te paster, cilesi te mire dhe porosi te lehte.</p>
 
           <div class="hero-actions">
-            <a class="btn btn-primary" href="{{ route('products.index') }}"><i class="bi bi-grid"></i> Shiko produktet</a>
-            <a class="btn btn-outline" href="{{ route('contact') }}"><i class="bi bi-rulers"></i> Kerko keshillim</a>
+            <a class="btn btn-primary" href="{{ route('products.index') }}"><i class="bi bi-grid"></i> <span data-sq="Shiko produktet" data-en="View products" data-sr="Pogledaj proizvode">Shiko produktet</span></a>
+            <a class="btn btn-outline" href="{{ route('contact') }}"><i class="bi bi-rulers"></i> <span data-sq="Kerko keshillim" data-en="Ask for advice" data-sr="Zatrazi savet">Kerko keshillim</span></a>
           </div>
 
           <div class="hero-stats" aria-label="Pikat kryesore">
@@ -1288,7 +1318,7 @@
             @foreach(array_slice($categories, 0, 4) as $category)
               <a class="nota-hero-thumb" href="{{ $category['url'] }}">
                 <img src="{{ $category['img'] }}" alt="{{ $category['title'] }}" loading="eager" decoding="async">
-                <span>{{ $category['title'] }}</span>
+                <span data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</span>
               </a>
             @endforeach
           </div>
@@ -1297,8 +1327,8 @@
         <aside class="hero-card">
           <img src="{{ asset('optimized/home/side.jpg') }}" alt="Tepih Brillant" width="520" height="360">
           <div class="hero-card-body">
-            <h2>Koleksionet e reja</h2>
-            <p>Shiko produktet e fundit ose dergo foto te ambientit per rekomandim me te sakte.</p>
+            <h2 data-sq="Koleksionet e reja" data-en="New collections" data-sr="Nove kolekcije">Koleksionet e reja</h2>
+            <p data-sq="Shiko produktet e fundit ose dergo foto te ambientit per rekomandim me te sakte." data-en="View the latest products or send a room photo for a better recommendation." data-sr="Pogledaj najnovije proizvode ili posalji sliku prostora za bolju preporuku.">Shiko produktet e fundit ose dergo foto te ambientit per rekomandim me te sakte.</p>
             <a class="btn btn-primary" href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Pershendetje! Dua rekomandim per shtepine time.') }}" target="_blank" rel="noopener">
               <i class="bi bi-whatsapp"></i> Pyet tani
             </a>
@@ -1312,9 +1342,9 @@
         <form class="search-card" action="{{ route('search') }}" method="GET">
           <label class="search-field">
             <i class="bi bi-search"></i>
-            <input name="q" type="search" placeholder="Kerko tepih, perde, postava, batanije..." autocomplete="off">
+            <input name="q" type="search" placeholder="Kerko tepih, perde, postava, batanije..." autocomplete="off" data-placeholder-sq="Kerko tepih, perde, postava, batanije..." data-placeholder-en="Search rugs, curtains, bedding, blankets..." data-placeholder-sr="Pretrazi tepihe, zavese, posteljinu, cebad...">
           </label>
-          <button class="btn btn-primary" type="submit">Kerko</button>
+          <button class="btn btn-primary" type="submit" data-sq="Kerko" data-en="Search" data-sr="Pretrazi">Kerko</button>
           <a class="btn btn-whatsapp" href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Pershendetje! Po kerkoj nje produkt ne Brillant.') }}" target="_blank" rel="noopener">
             <i class="bi bi-whatsapp"></i> Chat
           </a>
@@ -1332,11 +1362,11 @@
       <div class="container">
         <div class="section-head">
           <div>
-            <div class="eyebrow">Kategorite</div>
+            <div class="eyebrow" data-sq="Kategorite" data-en="Categories" data-sr="Kategorije">Kategorite</div>
             <h2>Kategoritë kryesore, si te Nota, direkt para klientit.</h2>
             <p>Te gjitha kategorite reale jane ketu: tepiha, perde, tekstil per dhome dhe aksesor.</p>
           </div>
-          <a class="btn btn-outline" href="{{ route('products.index') }}">Te gjitha produktet</a>
+          <a class="btn btn-outline" href="{{ route('products.index') }}" data-sq="Te gjitha produktet" data-en="All products" data-sr="Svi proizvodi">Te gjitha produktet</a>
         </div>
 
         <div class="category-grid">
@@ -1344,8 +1374,8 @@
             <a class="category-card" href="{{ $category['url'] }}">
               <img src="{{ $category['img'] }}" alt="{{ $category['title'] }}" loading="lazy" decoding="async" width="560" height="420">
               <div class="category-card-body">
-                <h3>{{ $category['title'] }}</h3>
-                <p>{{ $category['desc'] }}</p>
+                <h3 data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</h3>
+                <p data-sq="{{ $category['desc'] }}" data-en="{{ $category['desc_en'] }}" data-sr="{{ $category['desc_sr'] }}">{{ $category['desc'] }}</p>
               </div>
             </a>
           @endforeach
@@ -1537,8 +1567,8 @@
               <a class="category-card" href="{{ $category['url'] }}">
                 <img src="{{ $category['img'] }}" alt="{{ $category['title'] }}" loading="lazy" decoding="async" width="560" height="420">
                 <div class="category-card-body">
-                  <h3>{{ $category['title'] }}</h3>
-                  <p>Blej tani</p>
+                  <h3 data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</h3>
+                  <p data-sq="Blej tani" data-en="Shop now" data-sr="Kupi sada">Blej tani</p>
                 </div>
               </a>
             @endforeach
@@ -1715,6 +1745,41 @@
           window.updateCartBadges(event.detail.totalQty);
         }
       });
+
+      const langButtons = document.querySelectorAll('.lang-switch [data-lang]');
+      const translatable = document.querySelectorAll('[data-sq][data-en][data-sr]');
+      const placeholderNodes = document.querySelectorAll('[data-placeholder-sq]');
+
+      function setLanguage(lang) {
+        const selected = ['sq', 'en', 'sr'].includes(lang) ? lang : 'sq';
+
+        translatable.forEach(function (node) {
+          if (node.dataset[selected]) {
+            node.textContent = node.dataset[selected];
+          }
+        });
+
+        placeholderNodes.forEach(function (node) {
+          const value = node.dataset['placeholder' + selected.charAt(0).toUpperCase() + selected.slice(1)];
+          if (value) node.setAttribute('placeholder', value);
+        });
+
+        langButtons.forEach(function (button) {
+          button.classList.toggle('active', button.dataset.lang === selected);
+        });
+
+        document.documentElement.lang = selected === 'sr' ? 'sr' : selected;
+        localStorage.setItem('brillant_lang', selected);
+      }
+
+      langButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          setLanguage(button.dataset.lang);
+        });
+      });
+
+      const savedLang = localStorage.getItem('brillant_lang');
+      if (savedLang) setLanguage(savedLang);
     })();
   </script>
 </body>
