@@ -68,8 +68,7 @@
     .section { padding: 58px 0; }
     .section-tight { padding: 36px 0; }
     .pt-0 { padding-top: 0 !important; }
-    .inspiration-section,
-    .removed-benefits { display: none !important; }
+    .inspiration-section { display: none !important; }
     .eyebrow {
       color: var(--brand);
       display: inline-flex;
@@ -1185,18 +1184,18 @@
         @endauth
         <div class="mobile-menu-lang" aria-label="Language switcher mobile">
           <div class="lang-switch">
-            <button type="button" data-lang="sq" class="active">SQ</button>
-            <button type="button" data-lang="en">EN</button>
-            <button type="button" data-lang="sr">SR</button>
+            <button type="button" data-lang="sq" data-url="{{ route('lang.switch', 'sq') }}" class="{{ app()->getLocale() === 'sq' ? 'active' : '' }}">SQ</button>
+            <button type="button" data-lang="en" data-url="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</button>
+            <button type="button" data-lang="sr" data-url="{{ route('lang.switch', 'sr') }}" class="{{ app()->getLocale() === 'sr' ? 'active' : '' }}">SR</button>
           </div>
         </div>
       </nav>
 
       <div class="nav-actions">
         <div class="lang-switch" aria-label="Language switcher">
-          <button type="button" data-lang="sq" class="active">SQ</button>
-          <button type="button" data-lang="en">EN</button>
-          <button type="button" data-lang="sr">SR</button>
+          <button type="button" data-lang="sq" data-url="{{ route('lang.switch', 'sq') }}" class="{{ app()->getLocale() === 'sq' ? 'active' : '' }}">SQ</button>
+          <button type="button" data-lang="en" data-url="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</button>
+          <button type="button" data-lang="sr" data-url="{{ route('lang.switch', 'sr') }}" class="{{ app()->getLocale() === 'sr' ? 'active' : '' }}">SR</button>
         </div>
         @auth
           <a class="login-btn" href="{{ route('account.dashboard') }}"><i class="bi bi-person-circle"></i> {{ \Illuminate\Support\Str::limit(auth()->user()->name, 16) }}</a>
@@ -1236,11 +1235,6 @@
           <div class="eyebrow" data-sq="Koleksion i zgjedhur" data-en="Curated collection" data-sr="Odabrana kolekcija">Koleksion i zgjedhur</div>
           <h1 data-sq="Shtepia duket me bukur kur tekstili eshte i menduar mire." data-en="Your home looks better when textiles are chosen with care." data-sr="Dom izgleda lepse kada je tekstil pazljivo odabran.">Shtepia duket me bukur kur tekstili eshte <span>i menduar mire.</span></h1>
           <p data-sq="Brillant sjell tepiha, perde, Set çarçafësh, batanije dhe detaje dekoruese me pamje te paster, cilesi te mire dhe porosi te lehte." data-en="Brillant brings rugs, curtains, bedsheet sets, blankets and decor details with a clean look, good quality and easy ordering." data-sr="Brillant nudi tepihe, zavese, set posteljine, cebad i dekor sa urednim izgledom, dobrim kvalitetom i lakom porudzbinom.">Brillant sjell tepiha, perde, Set çarçafësh, batanije dhe detaje dekoruese me pamje te paster, cilesi te mire dhe porosi te lehte.</p>
-
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="{{ route('products.index') }}"><i class="bi bi-grid"></i> <span data-sq="Shiko produktet" data-en="View products" data-sr="Pogledaj proizvode">Shiko produktet</span></a>
-            <a class="btn btn-outline" href="{{ route('contact') }}"><i class="bi bi-rulers"></i> <span data-sq="Kerko keshillim" data-en="Ask for advice" data-sr="Zatrazi savet">Kerko keshillim</span></a>
-          </div>
 
           <div class="hero-stats" aria-label="Pikat kryesore">
             <div class="hero-stat"><strong>10</strong><span>Kategori per shtepi</span></div>
@@ -1381,7 +1375,7 @@
       </div>
     </section>
 
-    <section class="section pt-0">
+    <section class="section pt-0 recommended-section">
       <div class="container">
         <div class="section-head">
           <div>
@@ -1585,6 +1579,12 @@
     (function () {
       const menu = document.getElementById('mainMenu');
       const toggle = document.querySelector('.menu-toggle');
+      const recommended = document.querySelector('.recommended-section');
+      const benefits = document.querySelector('.removed-benefits');
+
+      if (recommended && benefits && recommended.parentNode) {
+        recommended.parentNode.insertBefore(benefits, recommended.nextSibling);
+      }
 
       if (toggle && menu) {
         toggle.addEventListener('click', function (event) {
@@ -1654,11 +1654,15 @@
       Array.prototype.forEach.call(langButtons, function (button) {
         button.addEventListener('click', function () {
           setLanguage(button.dataset.lang);
+          if (button.dataset.url) {
+            window.location.href = button.dataset.url;
+          }
         });
       });
 
+      const serverLang = '{{ app()->getLocale() }}';
       const savedLang = localStorage.getItem('brillant_lang');
-      if (savedLang) setLanguage(savedLang);
+      setLanguage(serverLang || savedLang || 'sq');
     })();
   </script>
 </body>

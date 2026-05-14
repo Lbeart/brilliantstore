@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sq">
+<html lang="{{ app()->getLocale() }}">
 <head>
   <meta charset="UTF-8" />
 
@@ -937,6 +937,38 @@
 </head>
 
 <body>
+  @php
+    $isEn = app()->getLocale() === 'en';
+    $tepihaText = [
+      'home' => $isEn ? 'Home' : 'Home',
+      'products' => $isEn ? 'Products' : 'Products',
+      'rugs' => $isEn ? 'Rugs' : 'Tepiha',
+      'curtains' => $isEn ? 'Curtains' : 'Perde',
+      'side_curtains' => $isEn ? 'Side curtains' : 'Perde Anësore',
+      'day_curtains' => $isEn ? 'Day curtains' : 'Perde Ditore',
+      'pillows' => $isEn ? 'Decorative pillows' : 'Jastëk dekorues',
+      'bedsheets' => $isEn ? 'Bedsheet sets' : 'Set çarçafësh',
+      'covers' => $isEn ? 'Covers' : 'Mbulesa',
+      'blankets' => $isEn ? 'Blankets' : 'Batanije',
+      'bath_rugs' => $isEn ? 'Bath rugs' : 'Tepiha për Banjo',
+      'plush_fur' => $isEn ? 'Plush fur' : 'Lëkurë pelushi',
+      'rails' => $isEn ? 'Curtain rails' : 'Garnishte',
+      'account' => $isEn ? 'My account' : 'Llogaria ime',
+      'cart' => $isEn ? 'Cart' : 'Shporta',
+      'track_order' => $isEn ? 'Track order' : 'Gjurmo porosinë',
+      'track' => $isEn ? 'Track' : 'Gjurmo',
+      'view_cart' => $isEn ? 'View cart' : 'Shiko shportën',
+      'title' => $isEn ? 'Rugs - Our collection' : 'Tepiha - Koleksioni ynë',
+      'subtitle' => $isEn ? 'Modern and classic rugs with seasonal discounts. Models for living rooms, bedrooms and every space.' : 'Tepiha modern & klasik me zbritje sezonale. Modele për sallon, dhomë gjumi dhe çdo ambient.',
+      'quick_search' => $isEn ? 'Search fast and find the model' : 'Kërko shpejt & gjej modelin',
+      'search_placeholder' => $isEn ? 'Search rugs... e.g. 150x230, modern, classic' : 'Kërko brenda tepihave... p.sh. 150x230, modern, klasik',
+      'search' => $isEn ? 'Search' : 'Kërko',
+      'products_count' => $isEn ? 'products' : 'produkte',
+      'living_bedroom' => $isEn ? 'Living rooms & bedrooms' : 'Sallone & dhoma gjumi',
+      'sort' => $isEn ? 'Sort by: Collection' : 'Rendit sipas: Koleksionit',
+      'tips' => $isEn ? 'Tips' : 'Këshilla',
+    ];
+  @endphp
   <a class="skip-link" href="#mainContent">Shko tek përmbajtja</a>
   <div class="top-progress" id="topProgress" aria-hidden="true"></div>
 
@@ -962,7 +994,7 @@
         <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
 
           <li class="nav-item">
-            <a class="nav-link" href="/" data-nav="home">Home</a>
+            <a class="nav-link" href="/" data-nav="home">{{ $tepihaText['home'] }}</a>
           </li>
 
           <li class="nav-item dropdown">
@@ -973,39 +1005,45 @@
               role="button"
               aria-expanded="false"
               data-nav="products">
-              Products
+              {{ $tepihaText['products'] }}
             </a>
 
             <ul class="dropdown-menu">
               <li>
                 <a class="dropdown-item" href="/tepiha">
-                  <i class="bi bi-grid-3x3-gap me-2"></i> Tepiha
+                  <i class="bi bi-grid-3x3-gap me-2"></i> {{ $tepihaText['rugs'] }}
                 </a>
               </li>
 
               <li class="dropdown-submenu">
                 <a class="dropdown-item submenu-toggle" href="#" role="button" aria-expanded="false">
-                  <span><i class="bi bi-columns-gap me-2"></i> Perde</span>
+                  <span><i class="bi bi-columns-gap me-2"></i> {{ $tepihaText['curtains'] }}</span>
                   <i class="bi bi-chevron-down chev"></i>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="/anesore">Perde Anësore</a></li>
-                  <li><a class="dropdown-item" href="/perde-ditore">Perde Ditore</a></li>
+                  <li><a class="dropdown-item" href="/anesore">{{ $tepihaText['side_curtains'] }}</a></li>
+                  <li><a class="dropdown-item" href="/perde-ditore">{{ $tepihaText['day_curtains'] }}</a></li>
                 </ul>
               </li>
 
-              <li><a class="dropdown-item" href="/jastekdekorues"><i class="bi bi-square-fill me-2"></i> Jastëk dekorues</a></li>
-              <li><a class="dropdown-item" href="/postava"><i class="bi bi-journal-text me-2"></i> Set çarçafesh</a></li>
-              <li><a class="dropdown-item" href="/mbulesa"><i class="bi bi-collection me-2"></i> Mbulesa</a></li>
-              <li><a class="dropdown-item" href="/batanije"><i class="bi bi-layers me-2"></i> Batanije</a></li>
-              <li><a class="dropdown-item" href="/tepihebanjo"><i class="bi bi-droplet me-2"></i> Tepiha për Banjo</a></li>
-              <li><a class="dropdown-item" href="/posteqia"><i class="bi bi-cloud-fog2 me-2"></i> Lëkurë pelushi</a></li>
-              <li><a class="dropdown-item" href="/garnishte"><i class="bi bi-dash-square me-2"></i> Garnishte</a></li>
+              <li><a class="dropdown-item" href="/jastekdekorues"><i class="bi bi-square-fill me-2"></i> {{ $tepihaText['pillows'] }}</a></li>
+              <li><a class="dropdown-item" href="/postava"><i class="bi bi-journal-text me-2"></i> {{ $tepihaText['bedsheets'] }}</a></li>
+              <li><a class="dropdown-item" href="/mbulesa"><i class="bi bi-collection me-2"></i> {{ $tepihaText['covers'] }}</a></li>
+              <li><a class="dropdown-item" href="/batanije"><i class="bi bi-layers me-2"></i> {{ $tepihaText['blankets'] }}</a></li>
+              <li><a class="dropdown-item" href="/tepihebanjo"><i class="bi bi-droplet me-2"></i> {{ $tepihaText['bath_rugs'] }}</a></li>
+              <li><a class="dropdown-item" href="/posteqia"><i class="bi bi-cloud-fog2 me-2"></i> {{ $tepihaText['plush_fur'] }}</a></li>
+              <li><a class="dropdown-item" href="/garnishte"><i class="bi bi-dash-square me-2"></i> {{ $tepihaText['rails'] }}</a></li>
             </ul>
           </li>
 
           <li class="nav-item"><a class="nav-link" href="{{ route('about') }}" data-nav="about">About</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}" data-nav="contact">Contact</a></li>
+
+          <li class="nav-item d-flex align-items-center gap-1 ms-lg-2 my-2 my-lg-0">
+            <a class="btn btn-sm {{ app()->getLocale() === 'sq' ? 'btn-light' : 'btn-outline-light' }}" href="{{ route('lang.switch', 'sq') }}">SQ</a>
+            <a class="btn btn-sm {{ app()->getLocale() === 'en' ? 'btn-light' : 'btn-outline-light' }}" href="{{ route('lang.switch', 'en') }}">EN</a>
+            <a class="btn btn-sm {{ app()->getLocale() === 'sr' ? 'btn-light' : 'btn-outline-light' }}" href="{{ route('lang.switch', 'sr') }}">SR</a>
+          </li>
 
           @auth
             <li class="nav-item dropdown ms-lg-2">
@@ -1021,7 +1059,7 @@
               </a>
 
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                <li><a class="dropdown-item" href="{{ route('account.dashboard') }}"><i class="bi bi-speedometer2 me-1"></i> Llogaria ime</a></li>
+                <li><a class="dropdown-item" href="{{ route('account.dashboard') }}"><i class="bi bi-speedometer2 me-1"></i> {{ $tepihaText['account'] }}</a></li>
                 <li><hr class="dropdown-divider"></li>
                 @if(auth()->user()->role === 'admin')
                   <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Admin</a></li>
@@ -1050,7 +1088,7 @@
               role="button"
               data-bs-toggle="dropdown"
               aria-expanded="false">
-              <i class="bi bi-bag"></i> Shporta
+              <i class="bi bi-bag"></i> {{ $tepihaText['cart'] }}
               <span class="badge bg-danger rounded-pill ms-1 cart-badge">
                 {{ session('cart_total_qty', 0) }}
               </span>
@@ -1060,7 +1098,7 @@
               class="dropdown-menu dropdown-menu-end p-3 shadow"
               aria-labelledby="cartDropdown"
               style="min-width: 320px; border-radius: 16px;">
-              <div class="small text-muted mb-2">Gjurmo porosinë</div>
+              <div class="small text-muted mb-2">{{ $tepihaText['track_order'] }}</div>
 
               <form
                 class="d-flex align-items-stretch gap-2"
@@ -1077,13 +1115,13 @@
                     placeholder="p.sh. BRL-LKNJ-0YXN"
                     autocomplete="off"
                     required>
-                  <button class="btn btn-danger" type="submit">Gjurmo</button>
+                  <button class="btn btn-danger" type="submit">{{ $tepihaText['track'] }}</button>
                 </div>
               </form>
 
               <div class="mt-3 d-grid">
                 <a class="btn btn-outline-secondary btn-sm" href="{{ route('cart.index') }}">
-                  <i class="bi bi-bag"></i> Shiko shportën
+                  <i class="bi bi-bag"></i> {{ $tepihaText['view_cart'] }}
                 </a>
               </div>
             </div>
@@ -1096,8 +1134,8 @@
 
   <!-- Koka e faqes -->
   <header class="page-header">
-    <h1>Tepiha – Koleksioni ynë</h1>
-    <div class="page-sub">Tepiha modern & klasik me zbritje sezonale. Modele për sallon, dhomë gjumi dhe çdo ambient.</div>
+    <h1>{{ $tepihaText['title'] }}</h1>
+    <div class="page-sub">{{ $tepihaText['subtitle'] }}</div>
   </header>
   
 
@@ -1108,7 +1146,7 @@
       <div class="search-card">
         <div class="search-meta">
           <i class="bi bi-stars"></i>
-          <span>Kërko shpejt & gjej modelin</span>
+          <span>{{ $tepihaText['quick_search'] }}</span>
         </div>
 
         <form method="GET" action="{{ url('/tepiha') }}" class="search-form">
@@ -1117,7 +1155,7 @@
             name="q"
             value="{{ request('q') }}"
             class="form-control search-input"
-            placeholder="Kërko brenda tepihave... p.sh. 150x230, modern, klasik"
+            placeholder="{{ $tepihaText['search_placeholder'] }}"
           >
           @if(request('q'))
             <a href="{{ url('/tepiha') }}" class="search-clear" aria-label="Pastro kërkimin">
@@ -1125,7 +1163,7 @@
             </a>
           @endif
           <button class="btn btn-danger search-btn" type="submit">
-            <i class="bi bi-search"></i> <span>Kërko</span>
+            <i class="bi bi-search"></i> <span>{{ $tepihaText['search'] }}</span>
           </button>
         </form>
       </div>
@@ -1137,10 +1175,10 @@
         @php
           $totalProducts = ($products instanceof \Illuminate\Support\Collection) ? $products->count() : $products->total();
         @endphp
-        <span class="me-2 fw-bold">{{ $totalProducts }} produkte</span>
+        <span class="me-2 fw-bold">{{ $totalProducts }} {{ $tepihaText['products_count'] }}</span>
         <span class="filter-chip"><i class="bi bi-stars"></i> Modern</span>
         <span class="filter-chip"><i class="bi bi-shield-check"></i> Antibakterial</span>
-        <span class="filter-chip d-none d-md-inline"><i class="bi bi-house-door"></i> Sallone & dhoma gjumi</span>
+        <span class="filter-chip d-none d-md-inline"><i class="bi bi-house-door"></i> {{ $tepihaText['living_bedroom'] }}</span>
         @if(request('q'))
           <span class="filter-chip"><i class="bi bi-search"></i> "{{ request('q') }}"</span>
         @endif
@@ -1148,7 +1186,7 @@
 
       <div class="d-flex align-items-center gap-2">
         <select class="sort-select" disabled>
-          <option>Rendit sipas: Koleksionit</option>
+          <option>{{ $tepihaText['sort'] }}</option>
         </select>
 
         <button
@@ -1158,7 +1196,7 @@
           data-bs-toggle="modal"
           data-bs-target="#tipsModal">
           <i class="bi bi-lightbulb"></i>
-          Këshilla
+          {{ $tepihaText['tips'] }}
         </button>
       </div>
     </section>
