@@ -1240,7 +1240,7 @@
             : null;
 
           // ✅ FOTO (punon edhe kur image_path është JSON array)
-          $src = \App\Support\ProductImages::url($product->image_path ?? null, asset('images/placeholder.jpg'));
+          $src = \App\Support\ProductImages::url($product->image_path ?? null, asset('images/placeholder.jpg'), $product);
 
           preg_match('/\d{2,3}x\d{2,3}/', $product->name, $sizeMatch);
           $sizeLabel = $sizeMatch[0] ?? null;

@@ -59,7 +59,7 @@
 
 @php
   // ✅ FIX FOTO (admin): trajton JSON array, URL absolute, dhe rastin .../storage/[...]
-  $admin_img_url = fn($raw) => \App\Support\ProductImages::url($raw, asset('images/placeholder.png'));
+  $admin_img_url = fn($raw, $context = null) => \App\Support\ProductImages::url($raw, asset('images/placeholder.png'), $context);
 @endphp
 
 <!-- NAVBAR -->
@@ -191,7 +191,7 @@
             @forelse($products as $i => $p)
               @php
                 $rawImg = $p->image_path ?? $p->image ?? null;
-                $srcImg = $admin_img_url($rawImg);
+                $srcImg = $admin_img_url($rawImg, $p);
               @endphp
               <tr>
                 <td class="text-muted">

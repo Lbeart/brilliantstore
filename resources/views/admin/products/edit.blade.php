@@ -77,7 +77,7 @@
     return [$raw];
   };
 
-  $img_src = fn($path) => \App\Support\ProductImages::url($path, $placeholder);
+  $img_src = fn($path) => \App\Support\ProductImages::url($path, $placeholder, $product);
 
   // Existing images nga DB
   $existingImages = $decode_images($product->image_path ?? null);

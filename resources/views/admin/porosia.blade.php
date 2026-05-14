@@ -17,7 +17,7 @@
 
 @php
   // ✅ FIX FOTO vetëm për këtë faqe – s’prek sen tjetër
-  $order_item_img_url = fn($raw) => \App\Support\ProductImages::url($raw, asset('images/placeholder-product.png'));
+  $order_item_img_url = fn($raw, $context = null) => \App\Support\ProductImages::url($raw, asset('images/placeholder-product.png'), $context);
 @endphp
 
 <div class="container py-4">
@@ -50,7 +50,7 @@
             @foreach($order->items as $it)
               @php
                 $line = (float)$it->price * (int)$it->qty;
-                $imgSrc = $order_item_img_url($it->image ?? $it->image_path ?? null);
+                $imgSrc = $order_item_img_url($it->image ?? $it->image_path ?? null, ['name' => $it->name ?? '']);
 
                 // ✅ Perde: e lexojmë safe (array ose JSON string)
                 $curtain = null;

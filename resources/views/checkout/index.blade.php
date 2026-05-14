@@ -63,7 +63,7 @@
     @else
       @php
         // ✅ FIX FOTO (si te shporta): trajton JSON array, URL absolute, dhe rastin .../storage/[...]
-        $order_img_url = fn($raw) => \App\Support\ProductImages::url($raw, asset('images/placeholder-product.png'));
+        $order_img_url = fn($raw, $context = null) => \App\Support\ProductImages::url($raw, asset('images/placeholder-product.png'), $context);
 
         // Totale
         $items = $cart;
@@ -205,7 +205,7 @@
                   $name  = $it['name'] ?? 'Produkt';
                   $size  = $it['size'] ?? ($it['dimension'] ?? null);
 
-                  $src = $order_img_url($img);
+                  $src = $order_img_url($img, ['name' => $name]);
                 @endphp
                 <div class="d-flex align-items-center">
                   <img class="summary-thumb me-3"

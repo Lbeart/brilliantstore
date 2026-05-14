@@ -13,7 +13,7 @@
 
   @php
     // ✅ IMAGES: image_path mund të jetë JSON array ose string e vjetër
-    $imageUrls = \App\Support\ProductImages::urls($product->image_path ?? null, asset('images/placeholder-product.png'));
+    $imageUrls = \App\Support\ProductImages::urls($product->image_path ?? null, asset('images/placeholder-product.png'), $product);
     $mainImageUrl = $imageUrls[0] ?? asset('images/placeholder-product.png');
 
     $pageCategory = trim($product->category ?? 'Produkt');
@@ -1255,7 +1255,7 @@
             }
 
             // ✅ image_path JSON ose string
-            $simImgUrl = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder-product.png'));
+            $simImgUrl = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder-product.png'), $p);
           @endphp
 
           <a class="similar-card" href="{{ route('products.show', $p) }}">

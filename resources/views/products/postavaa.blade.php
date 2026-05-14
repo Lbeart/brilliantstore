@@ -362,7 +362,7 @@
           $minPrice = collect($sizes)->pluck('price')->filter(fn($x)=>$x!==null && $x!=='')->min();
           if (is_null($minPrice) && !is_null($p->price)) $minPrice = $p->price;
 
-            $src = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder.jpg'));
+            $src = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder.jpg'), $p);
         @endphp
 
         <div class="col-6 col-md-4 col-lg-3">

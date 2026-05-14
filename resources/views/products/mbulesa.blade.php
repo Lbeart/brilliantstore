@@ -358,7 +358,7 @@
         <div class="col-6 col-md-4 col-lg-3">
           <article class="product-card">
             @php
-  $src = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder.jpg'));
+  $src = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder.jpg'), $p);
 @endphp
 
 <img

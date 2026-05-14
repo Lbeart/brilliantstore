@@ -23,7 +23,7 @@ protected $casts = [
 
     public function getImageUrlAttribute(): string
     {
-        return ProductImages::url($this->image_path, asset('images/placeholder-product.png'));
+        return ProductImages::url($this->image_path, asset('images/placeholder-product.png'), $this);
     }
        protected static function booted()
     {

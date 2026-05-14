@@ -338,7 +338,7 @@
     <div class="row g-4">
       @foreach ($products as $p)
       @php
-  $src = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder.jpg'));
+  $src = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder.jpg'), $p);
         @endphp
 @endphp
 

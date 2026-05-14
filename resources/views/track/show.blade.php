@@ -55,7 +55,7 @@
 
 @php
   // ✅ FIX FOTO vetëm për TRACK ITEMS (lexon JSON, storage path, absolute url)
- $item_img_url = fn($raw) => \App\Support\ProductImages::url($raw, asset('images/placeholder-product.png'));
+ $item_img_url = fn($raw, $context = null) => \App\Support\ProductImages::url($raw, asset('images/placeholder-product.png'), $context);
 @endphp
 
 <div class="container page-wrap py-4">
@@ -182,7 +182,7 @@
 
             // ✅ VETËM KJO U NDRYSHU: foton e nxjerrim saktë prej storage/JSON
             $rawImg = $it->image ?? $it->image_path ?? null;
-            $img = $item_img_url($rawImg);
+            $img = $item_img_url($rawImg, ['name' => $name]);
           @endphp
           <tr>
             <td>
