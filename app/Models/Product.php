@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+use App\Support\ProductImages;
 use Illuminate\Support\Str;
 
 class Product extends Model
@@ -23,7 +23,7 @@ protected $casts = [
 
     public function getImageUrlAttribute(): string
     {
-        return $this->image_path ? Storage::url($this->image_path) : asset('images/placeholder.png');
+        return ProductImages::url($this->image_path, asset('images/placeholder-product.png'));
     }
        protected static function booted()
     {

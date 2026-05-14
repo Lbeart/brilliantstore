@@ -362,27 +362,7 @@
           $minPrice = collect($sizes)->pluck('price')->filter(fn($x)=>$x!==null && $x!=='')->min();
           if (is_null($minPrice) && !is_null($p->price)) $minPrice = $p->price;
 
-            $imgs = [];
-  $raw = $p->image_path ?? '';
-
-  if($raw !== ''){
-    $d = json_decode($raw, true);
-    $imgs = is_array($d) ? $d : [$raw];
-  }
-
-  $mainImg = $imgs[0] ?? null;
-
-  if($mainImg){
-    if(preg_match('#^https?://#i', $mainImg)){
-      $mainImg = parse_url($mainImg, PHP_URL_PATH) ?? $mainImg;
-    }
-    $mainImg = ltrim($mainImg, '/');
-    $mainImg = preg_replace('#^(storage|public)/#', '', $mainImg);
-  }
-
-  $src = $mainImg
-    ? asset($mainImg)
-    : asset('images/placeholder.jpg');
+            $src = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder.jpg'));
         @endphp
 
         <div class="col-6 col-md-4 col-lg-3">

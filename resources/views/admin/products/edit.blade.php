@@ -77,19 +77,7 @@
     return [$raw];
   };
 
-  $img_src = function($path) use ($placeholder){
-    if (empty($path)) return $placeholder;
-
-    // nëse është URL absolute
-    if (preg_match('#^https?://#i', $path)) return $path;
-
-    $clean = ltrim((string)$path, '/');
-    $clean = preg_replace('#^(storage|public)/#', '', $clean);
-
-    if (str_starts_with($clean, 'images/')) return asset($clean);
-
-    return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
-  };
+  $img_src = fn($path) => \App\Support\ProductImages::url($path, $placeholder);
 
   // Existing images nga DB
   $existingImages = $decode_images($product->image_path ?? null);

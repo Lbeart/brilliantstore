@@ -379,40 +379,7 @@
     'canceled' => ['label' => 'Anuluar', 'icon' => 'bi-x-circle'],
   ];
 
-  $imgUrl = function($raw){
-    $placeholder = asset('images/placeholder-product.png');
-    if (empty($raw)) return $placeholder;
-    if (is_array($raw)) $raw = $raw[0] ?? null;
-    if (empty($raw)) return $placeholder;
-
-    $raw = trim((string) $raw);
-    $raw = urldecode($raw);
-    if (preg_match('/\[[^\]]+\]/', $raw, $match)) {
-      $decoded = json_decode($match[0], true);
-      if (is_array($decoded) && !empty($decoded)) $raw = $decoded[0];
-    }
-    if (str_starts_with($raw, '[')) {
-      $decoded = json_decode($raw, true);
-      if (is_array($decoded) && !empty($decoded)) $raw = $decoded[0];
-    }
-
-    $raw = trim((string) $raw, " \t\n\r\0\x0B\"'");
-
-    if (preg_match('#^https?://#i', $raw)) {
-      if (str_contains($raw, '/storage/images/')) {
-        return str_replace('/storage/images/', '/images/', $raw);
-      }
-
-      return $raw;
-    }
-
-    $clean = ltrim($raw, '/');
-    $clean = preg_replace('#^(storage|public)/#', '', $clean);
-    if (str_starts_with($clean, 'images/')) return asset($clean);
-    if (str_starts_with($clean, 'products/')) return asset('images/'.$clean);
-
-    return asset('images/products/'.$clean);
-  };
+  $imgUrl = fn($raw) => \App\Support\ProductImages::url($raw, asset('images/placeholder-product.png'));
 
   $progressIndex = function($orderStatus){
     return match ($orderStatus) {

@@ -1240,21 +1240,7 @@
             : null;
 
           // ✅ FOTO (punon edhe kur image_path është JSON array)
-          $src = asset('images/placeholder.jpg');
-          if (!empty($product->image_path)) {
-            $decoded = json_decode($product->image_path, true);
-            $path = is_array($decoded) ? ($decoded[0] ?? null) : $product->image_path;
-
-            if (!empty($path)) {
-              $path = ltrim($path, '/');
-              $path = preg_replace('#^storage/#', '', $path);
-              $path = preg_replace('#^public/#', '', $path);
-
-              $src = preg_match('#^https?://#i', $path)
-                ? $path
-                : asset($path);
-            }
-          }
+          $src = \App\Support\ProductImages::url($product->image_path ?? null, asset('images/placeholder.jpg'));
 
           preg_match('/\d{2,3}x\d{2,3}/', $product->name, $sizeMatch);
           $sizeLabel = $sizeMatch[0] ?? null;
@@ -1316,7 +1302,7 @@
 
               <img
                 class="product-thumb"
-                src="{{ asset($src) }}"
+                src="{{ $src }}"
                 alt="{{ $product->name }}"
                 loading="lazy"
                 decoding="async"

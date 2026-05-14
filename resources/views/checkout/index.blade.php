@@ -63,46 +63,7 @@
     @else
       @php
         // ✅ FIX FOTO (si te shporta): trajton JSON array, URL absolute, dhe rastin .../storage/[...]
-        $order_img_url = function($raw){
-          $placeholder = asset('images/placeholder-product.png');
-          if (empty($raw)) return $placeholder;
-
-          // nese vjen array direkt
-          if (is_array($raw)) $raw = $raw[0] ?? null;
-          if (empty($raw)) return $placeholder;
-
-          $raw = trim((string)$raw);
-
-          // nese është JSON array string: ["a.png","b.png"]
-          if (str_starts_with($raw, '[')) {
-            $d = json_decode($raw, true);
-            if (is_array($d) && !empty($d)) $raw = $d[0];
-          }
-
-          // ✅ nese është URL që përmban JSON array: https://domain.com/storage/[...]
-          if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
-            $d = json_decode($m[0], true);
-            if (is_array($d) && !empty($d)) $raw = $d[0];
-          }
-
-          if (empty($raw)) return $placeholder;
-
-          // nese është URL absolute, merre veç path-in
-          if (preg_match('#^https?://#i', $raw)) {
-            $raw = parse_url($raw, PHP_URL_PATH) ?? $raw;
-          }
-
-          $clean = ltrim($raw, '/');
-
-          // pastro prefixet që dalin shpesh: storage/ ose public/
-          $clean = preg_replace('#^(storage|public)/#', '', $clean);
-
-          // nese është image në public/images
-          if (str_starts_with($clean, 'images/')) return asset($clean);
-
-          // URL e saktë prej storage public (domain.com/storage/...)
-          return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
-        };
+        $order_img_url = fn($raw) => \App\Support\ProductImages::url($raw, asset('images/placeholder-product.png'));
 
         // Totale
         $items = $cart;

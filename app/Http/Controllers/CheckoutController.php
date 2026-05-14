@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Support\ProductImages;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use App\Jobs\SendWhatsAppOrderNotification;
@@ -18,17 +18,10 @@ class CheckoutController extends Controller
 
         // ✅ Siguro URL të plota për imazhet
         foreach ($cart as &$item) {
-            if (empty($item['image'])) {
-                $item['image'] = asset('images/placeholder-product.png');
-                continue;
-            }
-            if (!Str::startsWith($item['image'], ['http://', 'https://'])) {
-                if (Str::startsWith($item['image'], ['storage/', 'images/'])) {
-                    $item['image'] = asset($item['image']);
-                } else {
-                    $item['image'] = asset('storage/'.$item['image']);
-                }
-            }
+            $item['image'] = ProductImages::url(
+                $item['image'] ?? ($item['image_path'] ?? null),
+                asset('images/placeholder-product.png')
+            );
         }
         unset($item);
 

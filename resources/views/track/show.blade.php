@@ -55,39 +55,7 @@
 
 @php
   // ✅ FIX FOTO vetëm për TRACK ITEMS (lexon JSON, storage path, absolute url)
- $item_img_url = function($raw){
-    $placeholder = asset('images/placeholder-product.png');
-
-    if(empty($raw)) return $placeholder;
-
-    // JSON
-    if(str_starts_with($raw, '[')){
-        $arr = json_decode($raw, true);
-        $raw = $arr[0] ?? null;
-    }
-
-    if(empty($raw)) return $placeholder;
-
-    $raw = trim($raw);
-
-    // 🔥 FIX KRYESOR
-    if(str_contains($raw, '/storage/images/')){
-        $raw = str_replace('/storage/images/', '/images/', $raw);
-        return $raw;
-    }
-
-    // absolute URL
-    if(str_starts_with($raw, 'http')){
-        return $raw;
-    }
-
-    // images path
-    if(str_starts_with($raw, 'images/')){
-        return asset($raw);
-    }
-
-    return asset('images/products/'.$raw);
-};
+ $item_img_url = fn($raw) => \App\Support\ProductImages::url($raw, asset('images/placeholder-product.png'));
 @endphp
 
 <div class="container page-wrap py-4">

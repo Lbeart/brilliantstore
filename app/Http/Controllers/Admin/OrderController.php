@@ -268,27 +268,39 @@ public function sendInvoice(Order $order)
         return back()->with('error', 'Kjo porosi nuk ka email.');
     }
 
-    $order->load('items');
+    try {
+        $order->load('items');
 
-   $qr = base64_encode(
-    QrCode::format('png')
-        ->size(120)
-        ->generate(route('admin.orders.show', $order->id))
-);
+        $qr = base64_encode(
+            QrCode::format('png')
+                ->size(120)
+                ->generate(route('orders.invoice.public', $order->id))
+        );
 
-$pdf = Pdf::loadView('admin.fatura', [
-    'order' => $order,
-    'isPdf' => true,
-    'qr' => $qr
-]);
+        $pdf = Pdf::loadView('admin.fatura', [
+            'order' => $order,
+            'isPdf' => true,
+            'qr' => $qr
+        ]);
 
-    Mail::send([], [], function ($message) use ($order, $pdf) {
-        $message->to($order->email)
-            ->subject('Fatura juaj - Brillant')
-            ->attachData($pdf->output(), 'fatura-'.$order->id.'.pdf');
-    });
+        Mail::raw("Pershendetje {$order->name},\n\nBashkangjitur e gjeni faturen per porosine tuaj #{$order->id}.\n\nFaleminderit,\nBrillant", function ($message) use ($order, $pdf) {
+            $message->to($order->email)
+                ->subject('Fatura juaj - Brillant')
+                ->attachData($pdf->output(), 'fatura-'.$order->id.'.pdf', [
+                    'mime' => 'application/pdf',
+                ]);
+        });
 
-    return back()->with('success', 'Fatura u dërgua me sukses!');
+        return back()->with('success', 'Fatura u dergua me sukses!');
+    } catch (\Throwable $e) {
+        Log::error('Failed to send invoice email', [
+            'order_id' => $order->id,
+            'email' => $order->email,
+            'exception' => $e->getMessage(),
+        ]);
+
+        return back()->with('error', 'Fatura nuk u dergua. Shkak: ' . $e->getMessage());
+    }
 }
 public function invoicePublic($id)
 {

@@ -13,40 +13,7 @@
 
   @php
     // ✅ IMAGES: image_path mund të jetë JSON array ose string e vjetër
-    $imgs = [];
-    if (!empty($product->image_path)) {
-      if (is_array($product->image_path)) {
-        $imgs = $product->image_path;
-      } else {
-        $d = json_decode($product->image_path, true);
-        $imgs = is_array($d) ? $d : [$product->image_path];
-      }
-    }
-    $normalizeProductImage = function (?string $raw): ?string {
-      if (!$raw) return null;
-
-      $path = trim($raw);
-      if ($path === '') return null;
-      if (preg_match('#^https?://#i', $path)) return $path;
-
-      $path = ltrim($path, '/');
-      $path = preg_replace('#^(public|storage)/#', '', $path);
-
-      if (str_starts_with($path, 'images/') || str_starts_with($path, 'carpet/') || str_starts_with($path, 'curtainn/')
-        || str_starts_with($path, 'perdeditoree/') || str_starts_with($path, 'postavav/') || str_starts_with($path, 'mbulesaa/')
-        || str_starts_with($path, 'batanijee/') || str_starts_with($path, 'jastak/') || str_starts_with($path, 'posteqiaa/')
-        || str_starts_with($path, 'tepihebanjoo/') || str_starts_with($path, 'slider/')) {
-        return asset($path);
-      }
-
-      if (str_starts_with($path, 'products/')) {
-        return asset('images/'.$path);
-      }
-
-      return asset('images/products/'.$path);
-    };
-    $imageUrls = array_values(array_filter(array_map(fn($img) => $normalizeProductImage((string)$img), $imgs)));
-    $mainImg = $imgs[0] ?? null;
+    $imageUrls = \App\Support\ProductImages::urls($product->image_path ?? null, asset('images/placeholder-product.png'));
     $mainImageUrl = $imageUrls[0] ?? asset('images/placeholder-product.png');
 
     $pageCategory = trim($product->category ?? 'Produkt');
@@ -1288,17 +1255,7 @@
             }
 
             // ✅ image_path JSON ose string
-            $simImg = null;
-            if(!empty($p->image_path)){
-              if (is_array($p->image_path)) {
-                $arr = $p->image_path;
-              } else {
-                $d = json_decode($p->image_path, true);
-                $arr = is_array($d) ? $d : [$p->image_path];
-              }
-              $simImg = $arr[0] ?? null;
-            }
-            $simImgUrl = $normalizeProductImage($simImg) ?? asset('images/placeholder-product.png');
+            $simImgUrl = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder-product.png'));
           @endphp
 
           <a class="similar-card" href="{{ route('products.show', $p) }}">

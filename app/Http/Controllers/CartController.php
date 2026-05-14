@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Support\ProductImages;
 
 class CartController extends Controller
 {
@@ -208,38 +209,6 @@ class CartController extends Controller
 
     private function productImage(Product $product): string
     {
-        $imgs = [];
-        if (!empty($product->image_path)) {
-            $d = json_decode($product->image_path, true);
-            $imgs = is_array($d) ? $d : [$product->image_path];
-        }
-        $main = $imgs[0] ?? null;
-
-        if (!$main) {
-            return asset('images/placeholder-product.png');
-        }
-
-        $main = trim((string) $main);
-
-        if (preg_match('#^https?://#i', $main)) {
-            if (str_contains($main, '/storage/images/')) {
-                return str_replace('/storage/images/', '/images/', $main);
-            }
-
-            return $main;
-        }
-
-        $main = ltrim($main, '/');
-        $main = preg_replace('#^(storage|public)/#', '', $main);
-
-        if (str_starts_with($main, 'images/')) {
-            return asset($main);
-        }
-
-        if (str_starts_with($main, 'products/')) {
-            return asset('images/'.$main);
-        }
-
-        return asset('images/products/'.$main);
+        return ProductImages::url($product->image_path, asset('images/placeholder-product.png'));
     }
 }

@@ -17,42 +17,7 @@
 
 @php
   // ✅ FIX FOTO vetëm për këtë faqe – s’prek sen tjetër
-  $order_item_img_url = function($raw){
-    $placeholder = asset('images/placeholder-product.png');
-    if (empty($raw)) return $placeholder;
-
-    if (is_array($raw)) {
-        $raw = collect($raw)->first(fn($x)=>!empty($x)) ?? null;
-        if (empty($raw)) return $placeholder;
-    }
-
-    $raw = trim((string)$raw);
-    $decodedRaw = urldecode($raw);
-
-    if (preg_match('/\[[^\]]+\]/', $decodedRaw, $m)) {
-        $arr = json_decode($m[0], true);
-        if ($arr && !empty($arr)) $decodedRaw = $arr[0];
-    } elseif (str_starts_with($decodedRaw, '[')) {
-        $arr = json_decode($decodedRaw, true);
-        if ($arr && !empty($arr)) $decodedRaw = $arr[0];
-    }
-
-    $decodedRaw = trim((string)$decodedRaw, " \t\n\r\0\x0B\"'");
-
-    if (empty($decodedRaw)) return $placeholder;
-
-    // 🔥 FIX KRYESOR
-    if (str_contains($decodedRaw, '/storage/images/')) {
-        $decodedRaw = str_replace('/storage/images/', '/images/', $decodedRaw);
-        return $decodedRaw;
-    }
-
-    if (preg_match('#^https?://#i', $decodedRaw)) return $decodedRaw;
-
-    if (str_starts_with($decodedRaw, 'images/')) return asset($decodedRaw);
-
-    return asset('images/products/'.$decodedRaw);
-};
+  $order_item_img_url = fn($raw) => \App\Support\ProductImages::url($raw, asset('images/placeholder-product.png'));
 @endphp
 
 <div class="container py-4">
