@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Brillant | Tepiha, perde dhe tekstil per shtepi</title>
-  <meta name="description" content="Brillant ne Lipjan: tepiha, perde, batanije, mbulesa, postava, jasteke dekorues dhe tekstil cilesor per shtepi.">
+  <meta name="description" content="Brillant ne Lipjan: tepiha, perde, batanije, mbulesa, postava,Set çarçafësh ,jasteke dekorues dhe tekstil cilesor per shtepi.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{ url('/') }}">
   <meta name="theme-color" content="#7f1d2d">
@@ -61,6 +61,10 @@
       width: min(1160px, calc(100% - 32px));
       margin: 0 auto;
     }
+    .nav-container {
+      width: min(100% - 24px, 1480px);
+      margin: 0 auto;
+    }
     .section { padding: 58px 0; }
     .section-tight { padding: 36px 0; }
     .pt-0 { padding-top: 0 !important; }
@@ -103,27 +107,11 @@
       margin: 10px 0 0;
     }
 
-    .topbar {
-      display: block;
-      background: var(--dark);
-      color: rgba(255,255,255,.9);
-      font-size: .86rem;
-      font-weight: 600;
-    }
-    .topbar-inner {
-      min-height: 38px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-    }
-    .topbar a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
-
     .site-header {
       position: sticky;
       top: 0;
       z-index: 80;
-      padding: 8px 0;
+      padding: 10px 0;
       background: rgba(251,247,242,.86);
       backdrop-filter: blur(14px);
     }
@@ -132,8 +120,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 22px;
-      padding: 0 28px;
+      gap: 18px;
+      padding: 0 34px;
       border-radius: 22px;
       background: #111827;
       border: 1px solid rgba(255,255,255,.08);
@@ -147,7 +135,7 @@
       font-weight: 800;
     }
     .brand img {
-      width: 270px;
+      width: 300px;
       height: 72px;
       object-fit: contain;
       object-position: left center;
@@ -157,12 +145,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
       flex: 1;
     }
     .nav-links a,
     .nav-dropdown summary {
-      padding: 10px 12px;
+      padding: 10px 13px;
       border-radius: var(--radius);
       color: rgba(255,255,255,.92);
       font-size: 1rem;
@@ -215,7 +203,7 @@
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
     .icon-btn {
       width: 44px;
@@ -251,16 +239,20 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 8px;
       border-radius: 8px;
       border: 1px solid rgba(255,255,255,.70);
       color: #fff;
-      padding: 10px 14px;
-      font-weight: 500;
+      padding: 10px 15px;
+      font-weight: 700;
+      white-space: nowrap;
     }
     .login-btn:hover {
       background: rgba(255,255,255,.10);
       color: #fff;
     }
+    .account-mobile-link,
+    .mobile-menu-lang { display: none; }
     .lang-switch {
       display: inline-flex;
       align-items: center;
@@ -285,7 +277,6 @@
       background: #fff;
       color: var(--brand);
     }
-    .mobile-lang-switch { display: none; }
     .cart-link {
       width: auto;
       min-width: 0;
@@ -317,49 +308,6 @@
       grid-template-columns: 1fr;
     }
     .mobile-cart { display: none; }
-    .nota-menu {
-      border-top: 1px solid rgba(255,255,255,.10);
-      background: #111827;
-    }
-    .nota-menu-inner {
-      min-height: 54px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .nota-menu-inner::-webkit-scrollbar { display: none; }
-    .nota-menu a,
-    .nota-menu summary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 38px;
-      padding: 9px 13px;
-      border-radius: 999px;
-      color: rgba(255,255,255,.92);
-      font-weight: 800;
-      font-size: .9rem;
-      white-space: nowrap;
-      cursor: pointer;
-      list-style: none;
-    }
-    .nota-menu a:hover,
-    .nota-menu summary:hover,
-    .nota-menu details[open] summary {
-      background: rgba(255,255,255,.10);
-      color: #fff;
-    }
-    .nota-menu details { position: relative; }
-    .nota-menu summary::-webkit-details-marker { display: none; }
-    .nota-menu .dropdown-menu {
-      left: 0;
-      right: auto;
-      transform: none;
-      top: calc(100% + 8px);
-    }
-
     .btn {
       min-height: 46px;
       display: inline-flex;
@@ -608,8 +556,9 @@
     .category-card img {
       width: 100%;
       aspect-ratio: 4 / 3;
-      object-fit: cover;
-      background: var(--paper-soft);
+      object-fit: contain;
+      padding: 10px;
+      background: #fff;
     }
     .category-card-body { padding: 16px; }
     .category-card h3 {
@@ -734,7 +683,9 @@
     .product-media img {
       width: 100%;
       height: 280px;
-      object-fit: cover;
+      object-fit: contain;
+      padding: 10px;
+      background: #fff;
     }
     .product-badge,
     .stock-badge {
@@ -1044,19 +995,13 @@
     @media (max-width: 900px) {
       body { padding-bottom: calc(var(--dock-h) + env(safe-area-inset-bottom, 0px)); }
       .desktop-only { display: none !important; }
-      .topbar-inner {
-        min-height: 34px;
-        justify-content: center;
-        text-align: center;
-        font-size: .78rem;
-      }
       .site-header { padding: 8px 0; }
       .nav {
         min-height: 72px;
         padding: 0 14px;
         border-radius: 18px;
       }
-      .brand img { width: 190px; height: 54px; }
+      .brand img { width: 210px; height: 54px; }
       .brand span { font-size: 1rem; }
       .menu-toggle { display: inline-flex; }
       .nav-links {
@@ -1081,6 +1026,30 @@
         color: #201a17;
         padding: 13px 12px;
       }
+      .account-mobile-link,
+      .mobile-menu-lang { display: flex; }
+      .account-mobile-link {
+        align-items: center;
+        gap: 9px;
+        border-top: 1px solid rgba(55,35,25,.09);
+        margin-top: 4px;
+      }
+      .mobile-menu-lang {
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+      }
+      .mobile-menu-lang .lang-switch {
+        border-color: rgba(17,24,39,.12);
+        background: #f8f3ee;
+      }
+      .mobile-menu-lang .lang-switch button {
+        color: #4b413a;
+      }
+      .mobile-menu-lang .lang-switch button.active {
+        background: var(--brand);
+        color: #fff;
+      }
       .nav-links a:hover,
       .nav-dropdown:hover summary,
       .nav-dropdown[open] summary {
@@ -1102,7 +1071,6 @@
       .login-btn { display: none; }
       .nav-actions > .lang-switch { display: none; }
       .mobile-cart { display: inline-flex; }
-      .mobile-lang-switch { display: inline-flex; }
       .hero { min-height: 590px; }
       .hero::before {
         background:
@@ -1117,13 +1085,6 @@
       .hero h1 { font-size: clamp(2.25rem, 10vw, 3.7rem); }
       .hero p { font-size: .98rem; line-height: 1.65; }
       .hero-card { display: none; }
-      .nota-menu .dropdown-menu {
-        position: fixed;
-        left: 12px;
-        right: 12px;
-        top: 124px;
-        transform: none;
-      }
       .nota-hero-thumbs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .search-panel { margin-top: -44px; }
       .search-card { grid-template-columns: 1fr; }
@@ -1144,7 +1105,7 @@
       .section { padding: 42px 0; }
       .section-head { display: block; margin-bottom: 18px; }
       .section-head .btn { width: 100%; margin-top: 14px; }
-      .brand img { width: 158px; }
+      .brand img { width: 170px; }
       .nav-actions { gap: 7px; }
       .icon-btn { width: 42px; height: 42px; }
       .cart-link {
@@ -1211,15 +1172,8 @@
     ];
   @endphp
 
-  <div class="topbar">
-    <div class="container topbar-inner">
-      <span data-sq="Mbeshtetu tek ne. Porosi te sigurta dhe kontakt direkt kudo ne Kosove." data-en="Count on us. Safe orders and direct contact across Kosovo." data-sr="Racunajte na nas. Sigurne porudzbine i direktan kontakt na Kosovu.">Mbeshtetu tek ne. Porosi te sigurta dhe kontakt direkt kudo ne Kosove.</span>
-      <a class="desktop-only" href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener" data-sq="Pyet ne WhatsApp" data-en="Ask on WhatsApp" data-sr="Pitaj na WhatsApp">Pyet ne WhatsApp</a>
-    </div>
-  </div>
-
   <header class="site-header">
-    <div class="container nav">
+    <div class="nav-container nav">
       <a class="brand" href="{{ route('home') }}" aria-label="Brillant home">
         <img src="{{ asset('images/brillant.png') }}" alt="Brillant">
         <span>Brillant</span>
@@ -1239,6 +1193,18 @@
 
         <a href="{{ route('about') }}" data-sq="About" data-en="About" data-sr="O nama">About</a>
         <a href="{{ route('contact') }}" data-sq="Contact" data-en="Contact" data-sr="Kontakt">Contact</a>
+        @auth
+          <a class="account-mobile-link" href="{{ route('account.dashboard') }}"><i class="bi bi-person-circle"></i> {{ \Illuminate\Support\Str::limit(auth()->user()->name, 18) }}</a>
+        @else
+          <a class="account-mobile-link" href="{{ route('login') }}"><i class="bi bi-person-circle"></i> Llogaria ime</a>
+        @endauth
+        <div class="mobile-menu-lang" aria-label="Language switcher mobile">
+          <div class="lang-switch">
+            <button type="button" data-lang="sq" class="active">SQ</button>
+            <button type="button" data-lang="en">EN</button>
+            <button type="button" data-lang="sr">SR</button>
+          </div>
+        </div>
       </nav>
 
       <div class="nav-actions">
@@ -1247,7 +1213,11 @@
           <button type="button" data-lang="en">EN</button>
           <button type="button" data-lang="sr">SR</button>
         </div>
-        <a class="login-btn" href="{{ route('login') }}">Log in</a>
+        @auth
+          <a class="login-btn" href="{{ route('account.dashboard') }}"><i class="bi bi-person-circle"></i> {{ \Illuminate\Support\Str::limit(auth()->user()->name, 16) }}</a>
+        @else
+          <a class="login-btn" href="{{ route('login') }}"><i class="bi bi-person-circle"></i> Llogaria ime</a>
+        @endauth
 
         <details class="nav-dropdown cart-dropdown">
           <summary class="icon-btn cart-link">
@@ -1273,27 +1243,6 @@
       </div>
     </div>
   </header>
-
-  <nav class="nota-menu" aria-label="Menu e dyqanit">
-    <div class="container nota-menu-inner">
-      <details class="nav-dropdown">
-        <summary><i class="bi bi-list"></i> <span data-sq="Kategorite" data-en="Categories" data-sr="Kategorije">Kategorite</span></summary>
-        <div class="dropdown-menu">
-          @foreach($categories as $category)
-            <a href="{{ $category['url'] }}" data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</a>
-          @endforeach
-        </div>
-      </details>
-      <a href="#offers"><i class="bi bi-percent"></i> <span data-sq="Oferta Speciale" data-en="Special Offers" data-sr="Specijalne ponude">Oferta Speciale</span></a>
-      <a href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> Chat</a>
-      <a href="{{ route('track.form') }}"><i class="bi bi-truck"></i> <span data-sq="Gjurmo porosine" data-en="Track order" data-sr="Prati porudzbinu">Gjurmo porosine</span></a>
-      <div class="lang-switch mobile-lang-switch" aria-label="Language switcher mobile">
-        <button type="button" data-lang="sq" class="active">SQ</button>
-        <button type="button" data-lang="en">EN</button>
-        <button type="button" data-lang="sr">SR</button>
-      </div>
-    </div>
-  </nav>
 
   <main>
     <section class="hero">
@@ -1572,7 +1521,7 @@
               <i class="bi bi-house-heart"></i>
               <div>
                 <h3>Tekstil per cdo dhome</h3>
-                <p>Tepiha, postava, batanije, mbulesa dhe jasteke ne nje vend.</p>
+                <p>Tepiha, Set çarçafësh, batanije, mbulesa dhe jasteke ne nje vend.</p>
               </div>
             </div>
           </div>
@@ -1598,7 +1547,7 @@
       <div class="container">
         <div class="seo-box">
           <h2>Brillant - tepiha, perde dhe tekstil per shtepi</h2>
-          <p>Brillant ofron tepiha moderne, perde cilesore, batanije, postava, mbulesa dhe dekor per shtepi. Qellimi eshte me e bo blerjen te lehte: kategori te qarta, foto te dukshme, produkte te fundit dhe kontakt direkt per cdo pyetje.</p>
+          <p>Brillant ofron tepiha moderne, perde cilesore, batanije, Set çarçafësh, mbulesa dhe dekor per shtepi. Qellimi eshte me e bo blerjen te lehte: kategori te qarta, foto te dukshme, produkte te fundit dhe kontakt direkt per cdo pyetje.</p>
         </div>
       </div>
     </section>
@@ -1621,8 +1570,8 @@
         </div>
         <div>
           <h3>Tekstil</h3>
-          <a href="{{ route('products.postava') }}">Postava</a>
-          <a href="{{ route('products.posteqia') }}">Posteqia</a>
+          <a href="{{ route('products.postava') }}">Set çarçafësh</a>
+          <a href="{{ route('products.posteqia') }}">Lekur Pelushi</a>
           <a href="{{ route('products.batanije') }}">Batanije</a>
           <a href="{{ route('products.mbulesa') }}">Mbulesa</a>
           <a href="{{ route('products.jastekdekorues') }}">Jasteke dekorues</a>
