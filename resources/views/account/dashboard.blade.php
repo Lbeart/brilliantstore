@@ -379,7 +379,7 @@
     'canceled' => ['label' => 'Anuluar', 'icon' => 'bi-x-circle'],
   ];
 
-  $imgUrl = fn($raw, $context = null) => \App\Support\ProductImages::url($raw, asset('images/placeholder-product.png'), $context);
+  $imgUrl = fn($raw) => \App\Support\ProductImages::url($raw, asset('images/placeholder-product.png'));
 
   $progressIndex = function($orderStatus){
     return match ($orderStatus) {
@@ -593,7 +593,7 @@
               <div class="item-row">
                 <img
                   class="item-thumb"
-                  src="{{ $imgUrl($item->image ?: optional($item->product)->image_path, $item->product ?: ['name' => $item->name]) }}"
+                  src="{{ $imgUrl($item->image ?: optional($item->product)->image_path) }}"
                   alt="{{ $item->name }}"
                   onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
                 <div class="flex-grow-1">

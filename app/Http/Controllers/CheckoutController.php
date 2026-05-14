@@ -20,8 +20,7 @@ class CheckoutController extends Controller
         foreach ($cart as &$item) {
             $item['image'] = ProductImages::url(
                 $item['image'] ?? ($item['image_path'] ?? null),
-                asset('images/placeholder-product.png'),
-                $item
+                asset('images/placeholder-product.png')
             );
         }
         unset($item);

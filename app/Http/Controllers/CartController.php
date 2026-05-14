@@ -209,6 +209,6 @@ class CartController extends Controller
 
     private function productImage(Product $product): string
     {
-        return ProductImages::url($product->image_path, asset('images/placeholder-product.png'), $product);
+        return ProductImages::url($product->image_path, asset('images/placeholder-product.png'));
     }
 }
