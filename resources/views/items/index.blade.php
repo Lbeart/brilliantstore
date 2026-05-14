@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Brillant | Tepiha, perde dhe tekstil per shtepi</title>
-  <meta name="description" content="Brillant ne Lipjan: tepiha, perde, batanije, mbulesa, postava,Set çarçafësh ,jasteke dekorues dhe tekstil cilesor per shtepi.">
+  <meta name="description" content="Brillant ne Lipjan: tepiha, perde, batanije, mbulesa, Set çarçafësh, lekure pelushi, jasteke dekorues dhe tekstil cilesor per shtepi.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{ url('/') }}">
   <meta name="theme-color" content="#7f1d2d">
@@ -16,7 +16,7 @@
   <meta property="og:image" content="{{ asset('optimized/home/hero.jpg') }}">
 
   <link rel="icon" type="image/png" href="{{ asset('images/llogo.png') }}">
-  <link rel="preload" as="image" href="{{ asset('optimized/home/hero-mobile.jpg') }}" media="(max-width: 767px)" fetchpriority="high">
+  <link rel="preload" as="image" href="{{ asset('optimized/home/hero.jpg') }}" media="(max-width: 767px)" fetchpriority="high">
   <link rel="preload" as="image" href="{{ asset('optimized/home/hero.jpg') }}" media="(min-width: 768px)" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -960,30 +960,34 @@
 
     @media (max-width: 900px) {
       .desktop-only { display: none !important; }
-      .site-header { padding: 8px 0; }
+      .site-header { padding: 6px 0; }
       .nav {
-        min-height: 72px;
-        padding: 0 14px;
-        border-radius: 18px;
+        min-height: 66px;
+        padding: 0 10px;
+        border-radius: 16px;
       }
-      .brand img { width: 210px; height: 54px; }
+      .brand img { width: 190px; height: 50px; }
       .brand span { font-size: 1rem; }
       .menu-toggle { display: inline-flex; }
       .nav-links {
         position: fixed;
-        left: 12px;
-        right: 12px;
-        top: 108px;
+        left: 8px;
+        right: 8px;
+        top: 78px;
         display: none;
         flex: none;
         flex-direction: column;
         align-items: stretch;
-        gap: 4px;
+        gap: 3px;
+        max-height: calc(100vh - 92px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
         background: #fff;
         border: 1px solid rgba(55,35,25,.10);
-        border-radius: var(--radius-lg);
-        padding: 10px;
-        box-shadow: var(--shadow);
+        border-radius: 16px;
+        padding: 8px;
+        box-shadow: 0 22px 60px rgba(17,24,39,.22);
+        z-index: 1200;
       }
       .nav-links.open { display: flex; }
       .nav-links a,
@@ -1040,7 +1044,7 @@
       .hero::before {
         background:
           linear-gradient(180deg, rgba(20,14,12,.18), rgba(20,14,12,.88)),
-          url("{{ asset('optimized/home/hero-mobile.jpg') }}") center / cover no-repeat;
+          url("{{ asset('optimized/home/hero.jpg') }}") center / cover no-repeat;
       }
       .hero-grid {
         min-height: 590px;
@@ -1069,9 +1073,10 @@
       .section { padding: 42px 0; }
       .section-head { display: block; margin-bottom: 18px; }
       .section-head .btn { width: 100%; margin-top: 14px; }
-      .brand img { width: 170px; }
-      .nav-actions { gap: 7px; }
-      .icon-btn { width: 42px; height: 42px; }
+      .nav-container { width: calc(100% - 12px); }
+      .brand img { width: 148px; height: 46px; }
+      .nav-actions { gap: 6px; }
+      .icon-btn { width: 40px; height: 40px; }
       .cart-link {
         width: 42px;
         padding: 0;
@@ -1118,8 +1123,8 @@
       ['title' => 'Tepiha', 'title_en' => 'Rugs', 'title_sr' => 'Tepisi', 'desc' => 'Modele per sallon, dhome gjumi dhe korridor.', 'desc_en' => 'Models for living rooms, bedrooms and hallways.', 'desc_sr' => 'Modeli za dnevni boravak, spavacu sobu i hodnik.', 'url' => route('products.tepiha'), 'img' => asset('carpet/carpetmara.jpg')],
       ['title' => 'Perde anesore', 'title_en' => 'Side curtains', 'title_sr' => 'Bocne zavese', 'desc' => 'Pamje elegante dhe qepje profesionale.', 'desc_en' => 'Elegant look with professional tailoring.', 'desc_sr' => 'Elegantan izgled i profesionalno sivenje.', 'url' => route('products.anesore'), 'img' => asset('curtainn/SOFTPERDE.jpg')],
       ['title' => 'Perde ditore', 'title_en' => 'Day curtains', 'title_sr' => 'Dnevne zavese', 'desc' => 'Drite e bute dhe ambient me i paster.', 'desc_en' => 'Soft light and a cleaner room feeling.', 'desc_sr' => 'Meko svetlo i cistiji izgled prostora.', 'url' => route('products.perdeDitore'), 'img' => asset('perdeditoree/image00001.jpeg')],
-      ['title' => 'Postava', 'title_en' => 'Bedsheets', 'title_sr' => 'Posteljina', 'desc' => 'Sete per gjume te rehatshem cdo nate.', 'desc_en' => 'Sets for comfortable sleep every night.', 'desc_sr' => 'Setovi za udoban san svake noci.', 'url' => route('products.postava'), 'img' => asset('postavav/beedsheet10.png')],
-      ['title' => 'Posteqia', 'title_en' => 'Faux fur throws', 'title_sr' => 'Prekrivaci od eko krzna', 'desc' => 'Zgjedhje te buta per dhome gjumi.', 'desc_en' => 'Soft choices for the bedroom.', 'desc_sr' => 'Mek izbor za spavacu sobu.', 'url' => route('products.posteqia'), 'img' => asset('posteqiaa/faux-1.jpg')],
+      ['title' => 'Set çarçafësh', 'title_en' => 'Bedsheet sets', 'title_sr' => 'Set posteljine', 'desc' => 'Sete per gjume te rehatshem cdo nate.', 'desc_en' => 'Sets for comfortable sleep every night.', 'desc_sr' => 'Setovi za udoban san svake noci.', 'url' => route('products.postava'), 'img' => asset('postavav/beedsheet10.png')],
+      ['title' => 'Lekure pelushi', 'title_en' => 'Plush fur', 'title_sr' => 'Plisano krzno', 'desc' => 'Zgjedhje te buta per dhome gjumi.', 'desc_en' => 'Soft choices for the bedroom.', 'desc_sr' => 'Mek izbor za spavacu sobu.', 'url' => route('products.posteqia'), 'img' => asset('posteqiaa/faux-1.jpg')],
       ['title' => 'Batanije', 'title_en' => 'Blankets', 'title_sr' => 'Cebad', 'desc' => 'Te ngrohta, praktike dhe te bukura.', 'desc_en' => 'Warm, practical and beautiful.', 'desc_sr' => 'Topla, prakticna i lepa.', 'url' => route('products.batanije'), 'img' => asset('batanijee/IMG_7631.jpg')],
       ['title' => 'Mbulesa', 'title_en' => 'Covers', 'title_sr' => 'Prekrivaci', 'desc' => 'Per divan, krevat dhe dekor te perditeshem.', 'desc_en' => 'For sofas, beds and everyday decor.', 'desc_sr' => 'Za sofu, krevet i svakodnevni dekor.', 'url' => route('products.mbulesa'), 'img' => asset('mbulesaa/IMG_7526.jpg')],
       ['title' => 'Jasteke dekorues', 'title_en' => 'Decorative pillows', 'title_sr' => 'Dekorativni jastuci', 'desc' => 'Detaje qe e kompletojne ambientin.', 'desc_en' => 'Details that complete the room.', 'desc_sr' => 'Detalji koji upotpunjuju prostor.', 'url' => route('products.jastekdekorues'), 'img' => asset('jastak/IMG_7959.jpg')],
@@ -1214,7 +1219,7 @@
         <div class="hero-copy">
           <div class="eyebrow" data-sq="Koleksion i zgjedhur" data-en="Curated collection" data-sr="Odabrana kolekcija">Koleksion i zgjedhur</div>
           <h1 data-sq="Shtepia duket me bukur kur tekstili eshte i menduar mire." data-en="Your home looks better when textiles are chosen with care." data-sr="Dom izgleda lepse kada je tekstil pazljivo odabran.">Shtepia duket me bukur kur tekstili eshte <span>i menduar mire.</span></h1>
-          <p data-sq="Brillant sjell tepiha, perde, postava, batanije dhe detaje dekoruese me pamje te paster, cilesi te mire dhe porosi te lehte." data-en="Brillant brings rugs, curtains, bedding, blankets and decor details with a clean look, good quality and easy ordering." data-sr="Brillant nudi tepihe, zavese, posteljinu, cebad i dekor sa urednim izgledom, dobrim kvalitetom i lakom porudzbinom.">Brillant sjell tepiha, perde, postava, batanije dhe detaje dekoruese me pamje te paster, cilesi te mire dhe porosi te lehte.</p>
+          <p data-sq="Brillant sjell tepiha, perde, Set çarçafësh, batanije dhe detaje dekoruese me pamje te paster, cilesi te mire dhe porosi te lehte." data-en="Brillant brings rugs, curtains, bedsheet sets, blankets and decor details with a clean look, good quality and easy ordering." data-sr="Brillant nudi tepihe, zavese, set posteljine, cebad i dekor sa urednim izgledom, dobrim kvalitetom i lakom porudzbinom.">Brillant sjell tepiha, perde, Set çarçafësh, batanije dhe detaje dekoruese me pamje te paster, cilesi te mire dhe porosi te lehte.</p>
 
           <div class="hero-actions">
             <a class="btn btn-primary" href="{{ route('products.index') }}"><i class="bi bi-grid"></i> <span data-sq="Shiko produktet" data-en="View products" data-sr="Pogledaj proizvode">Shiko produktet</span></a>
@@ -1255,7 +1260,7 @@
         <form class="search-card" action="{{ route('search') }}" method="GET">
           <label class="search-field">
             <i class="bi bi-search"></i>
-            <input name="q" type="search" placeholder="Kerko tepih, perde, postava, batanije..." autocomplete="off" data-placeholder-sq="Kerko tepih, perde, postava, batanije..." data-placeholder-en="Search rugs, curtains, bedding, blankets..." data-placeholder-sr="Pretrazi tepihe, zavese, posteljinu, cebad...">
+            <input name="q" type="search" placeholder="Kerko tepih, perde, Set çarçafësh, batanije..." autocomplete="off" data-placeholder-sq="Kerko tepih, perde, Set çarçafësh, batanije..." data-placeholder-en="Search rugs, curtains, bedsheet sets, blankets..." data-placeholder-sr="Pretrazi tepihe, zavese, set posteljine, cebad...">
           </label>
           <button class="btn btn-primary" type="submit" data-sq="Kerko" data-en="Search" data-sr="Pretrazi">Kerko</button>
           <a class="btn btn-whatsapp" href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Pershendetje! Po kerkoj nje produkt ne Brillant.') }}" target="_blank" rel="noopener">
@@ -1535,7 +1540,7 @@
         <div>
           <h3>Tekstil</h3>
           <a href="{{ route('products.postava') }}">Set çarçafësh</a>
-          <a href="{{ route('products.posteqia') }}">Lekur Pelushi</a>
+          <a href="{{ route('products.posteqia') }}">Lekure pelushi</a>
           <a href="{{ route('products.batanije') }}">Batanije</a>
           <a href="{{ route('products.mbulesa') }}">Mbulesa</a>
           <a href="{{ route('products.jastekdekorues') }}">Jasteke dekorues</a>
@@ -1565,16 +1570,20 @@
       const menu = document.getElementById('mainMenu');
       const toggle = document.querySelector('.menu-toggle');
 
-      toggle?.addEventListener('click', function () {
+      if (toggle && menu) {
+        toggle.addEventListener('click', function (event) {
+          event.preventDefault();
         const open = menu.classList.toggle('open');
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         toggle.innerHTML = open ? '<i class="bi bi-x-lg"></i>' : '<i class="bi bi-list"></i>';
-      });
+        });
+      }
 
-      document.querySelectorAll('#mainMenu a').forEach(function (link) {
+      Array.prototype.forEach.call(document.querySelectorAll('#mainMenu a'), function (link) {
         link.addEventListener('click', function () {
+          if (!menu) return;
           menu.classList.remove('open');
-          toggle?.setAttribute('aria-expanded', 'false');
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
           if (toggle) toggle.innerHTML = '<i class="bi bi-list"></i>';
         });
       });
@@ -1588,7 +1597,7 @@
       });
 
       window.updateCartBadges = function (totalQty) {
-        document.querySelectorAll('.cart-badge').forEach(function (badge) {
+        Array.prototype.forEach.call(document.querySelectorAll('.cart-badge'), function (badge) {
           badge.textContent = totalQty;
         });
       };
@@ -1606,18 +1615,18 @@
       function setLanguage(lang) {
         const selected = ['sq', 'en', 'sr'].includes(lang) ? lang : 'sq';
 
-        translatable.forEach(function (node) {
+        Array.prototype.forEach.call(translatable, function (node) {
           if (node.dataset[selected]) {
             node.textContent = node.dataset[selected];
           }
         });
 
-        placeholderNodes.forEach(function (node) {
+        Array.prototype.forEach.call(placeholderNodes, function (node) {
           const value = node.dataset['placeholder' + selected.charAt(0).toUpperCase() + selected.slice(1)];
           if (value) node.setAttribute('placeholder', value);
         });
 
-        langButtons.forEach(function (button) {
+        Array.prototype.forEach.call(langButtons, function (button) {
           button.classList.toggle('active', button.dataset.lang === selected);
         });
 
@@ -1625,7 +1634,7 @@
         localStorage.setItem('brillant_lang', selected);
       }
 
-      langButtons.forEach(function (button) {
+      Array.prototype.forEach.call(langButtons, function (button) {
         button.addEventListener('click', function () {
           setLanguage(button.dataset.lang);
         });
