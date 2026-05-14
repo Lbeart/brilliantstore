@@ -68,6 +68,8 @@
     .section { padding: 58px 0; }
     .section-tight { padding: 36px 0; }
     .pt-0 { padding-top: 0 !important; }
+    .inspiration-section,
+    .removed-benefits { display: none !important; }
     .eyebrow {
       color: var(--brand);
       display: inline-flex;
@@ -234,6 +236,11 @@
       text-align: center;
     }
     .menu-toggle { display: none; }
+    .menu-toggle {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      z-index: 1300;
+    }
     .login-btn {
       min-height: 44px;
       display: inline-flex;
@@ -1029,11 +1036,20 @@
         position: static;
         transform: none;
         min-width: 0;
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         box-shadow: none;
-        border: 0;
-        padding: 4px 0 4px 12px;
-        background: transparent;
+        border: 1px solid rgba(127,29,45,.10);
+        padding: 8px;
+        margin: 3px 0 5px;
+        background: #fbf7f2;
+        max-height: 218px;
+        overflow-y: auto;
+      }
+      .dropdown-menu a {
+        padding: 10px 9px;
+        font-size: .82rem;
+        white-space: normal;
+        line-height: 1.25;
       }
       .nav-dropdown:not([open]) .dropdown-menu { display: none; }
       .cart-dropdown { display: none; }
@@ -1301,7 +1317,7 @@
       </div>
     </section>
 
-    <section class="section pt-0">
+    <section class="section pt-0 inspiration-section">
       <div class="container">
         <div class="section-head">
           <div>
@@ -1340,7 +1356,7 @@
       </div>
     </section>
 
-    <section class="benefits section-tight">
+    <section class="benefits section-tight removed-benefits">
       <div class="container benefit-grid">
         <div class="benefit">
           <i class="bi bi-rulers"></i>
@@ -1365,7 +1381,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section pt-0">
       <div class="container">
         <div class="section-head">
           <div>
@@ -1573,9 +1589,10 @@
       if (toggle && menu) {
         toggle.addEventListener('click', function (event) {
           event.preventDefault();
-        const open = menu.classList.toggle('open');
-        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-        toggle.innerHTML = open ? '<i class="bi bi-x-lg"></i>' : '<i class="bi bi-list"></i>';
+          event.stopPropagation();
+          const open = menu.classList.toggle('open');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          toggle.innerHTML = open ? '<i class="bi bi-x-lg"></i>' : '<i class="bi bi-list"></i>';
         });
       }
 
