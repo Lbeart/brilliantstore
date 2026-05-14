@@ -1184,18 +1184,18 @@
         @endauth
         <div class="mobile-menu-lang" aria-label="Language switcher mobile">
           <div class="lang-switch">
-            <button type="button" data-lang="sq" data-url="{{ route('lang.switch', 'sq') }}" class="{{ app()->getLocale() === 'sq' ? 'active' : '' }}">SQ</button>
-            <button type="button" data-lang="en" data-url="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</button>
-            <button type="button" data-lang="sr" data-url="{{ route('lang.switch', 'sr') }}" class="{{ app()->getLocale() === 'sr' ? 'active' : '' }}">SR</button>
+            <button type="button" data-lang="sq" data-url="/lang/sq" class="{{ app()->getLocale() === 'sq' ? 'active' : '' }}">SQ</button>
+            <button type="button" data-lang="en" data-url="/lang/en" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</button>
+            <button type="button" data-lang="sr" data-url="/lang/sr" class="{{ app()->getLocale() === 'sr' ? 'active' : '' }}">SR</button>
           </div>
         </div>
       </nav>
 
       <div class="nav-actions">
         <div class="lang-switch" aria-label="Language switcher">
-          <button type="button" data-lang="sq" data-url="{{ route('lang.switch', 'sq') }}" class="{{ app()->getLocale() === 'sq' ? 'active' : '' }}">SQ</button>
-          <button type="button" data-lang="en" data-url="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</button>
-          <button type="button" data-lang="sr" data-url="{{ route('lang.switch', 'sr') }}" class="{{ app()->getLocale() === 'sr' ? 'active' : '' }}">SR</button>
+          <button type="button" data-lang="sq" data-url="/lang/sq" class="{{ app()->getLocale() === 'sq' ? 'active' : '' }}">SQ</button>
+          <button type="button" data-lang="en" data-url="/lang/en" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</button>
+          <button type="button" data-lang="sr" data-url="/lang/sr" class="{{ app()->getLocale() === 'sr' ? 'active' : '' }}">SR</button>
         </div>
         @auth
           <a class="login-btn" href="{{ route('account.dashboard') }}"><i class="bi bi-person-circle"></i> {{ \Illuminate\Support\Str::limit(auth()->user()->name, 16) }}</a>

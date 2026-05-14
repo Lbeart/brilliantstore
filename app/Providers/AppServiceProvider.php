@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\URL;
 use App\Models\Order;
 use App\Observers\OrderObserver;
@@ -23,9 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Vendos gjuhen nga session ose fallback te config('app.locale')
-        App::setLocale(session('locale', config('app.locale')));
-
         // Forco HTTPS në production (shmang "invalid signature" te verify links)
         if ($this->app->environment('production')) {
             URL::forceScheme('https');

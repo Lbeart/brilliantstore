@@ -66,6 +66,7 @@ Route::get('/lang/{lang}', function (string $lang) {
     // opsionale: lejo vetëm gjuhët që i ke
     if (!in_array($lang, ['sq', 'en', 'sr'], true)) { $lang = 'sq'; }
     session(['locale' => $lang]);
+    session()->save();
     app()->setLocale($lang);
     return back();
 })->name('lang.switch');

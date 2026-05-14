@@ -1039,12 +1039,6 @@
           <li class="nav-item"><a class="nav-link" href="{{ route('about') }}" data-nav="about">About</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}" data-nav="contact">Contact</a></li>
 
-          <li class="nav-item d-flex align-items-center gap-1 ms-lg-2 my-2 my-lg-0">
-            <a class="btn btn-sm {{ app()->getLocale() === 'sq' ? 'btn-light' : 'btn-outline-light' }}" href="{{ route('lang.switch', 'sq') }}">SQ</a>
-            <a class="btn btn-sm {{ app()->getLocale() === 'en' ? 'btn-light' : 'btn-outline-light' }}" href="{{ route('lang.switch', 'en') }}">EN</a>
-            <a class="btn btn-sm {{ app()->getLocale() === 'sr' ? 'btn-light' : 'btn-outline-light' }}" href="{{ route('lang.switch', 'sr') }}">SR</a>
-          </li>
-
           @auth
             <li class="nav-item dropdown ms-lg-2">
               <a
