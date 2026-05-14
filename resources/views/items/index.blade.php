@@ -607,6 +607,12 @@
       transition: transform .6s ease;
     }
     .feature-tile:hover img { transform: scale(1.04); }
+    .feature-tile.fit-contain img {
+      object-fit: contain;
+      padding: 14px;
+      background: #f7f1ea;
+    }
+    .feature-tile.fit-contain:hover img { transform: none; }
     .feature-tile-content { padding: 22px; }
     .feature-tile h3 {
       margin: 0 0 8px;
@@ -941,46 +947,6 @@
       box-shadow: 0 16px 32px rgba(25,135,84,.28);
     }
     .floating-wa i { font-size: 1.45rem; }
-    .mobile-dock {
-      display: none;
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 85;
-      background: rgba(255,255,255,.96);
-      border-top: 1px solid rgba(55,35,25,.10);
-      padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
-      box-shadow: 0 -12px 28px rgba(55,35,25,.10);
-      backdrop-filter: blur(14px);
-    }
-    .dock-inner {
-      max-width: 560px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-    }
-    .dock-inner a {
-      position: relative;
-      min-height: 50px;
-      border-radius: var(--radius);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      color: #675d56;
-      font-size: .72rem;
-      font-weight: 700;
-    }
-    .dock-inner a.active,
-    .dock-inner a:hover {
-      background: rgba(127,29,45,.08);
-      color: var(--brand);
-    }
-    .dock-inner i { font-size: 1.18rem; }
-
     @media (max-width: 1080px) {
       .nav-links a { padding-inline: 9px; }
       .brand img { width: 230px; }
@@ -993,7 +959,6 @@
     }
 
     @media (max-width: 900px) {
-      body { padding-bottom: calc(var(--dock-h) + env(safe-area-inset-bottom, 0px)); }
       .desktop-only { display: none !important; }
       .site-header { padding: 8px 0; }
       .nav {
@@ -1096,8 +1061,7 @@
       .footer-grid { grid-template-columns: 1fr; }
       .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .contact-strip { align-items: stretch; flex-direction: column; }
-      .mobile-dock { display: block; }
-      .floating-wa { bottom: calc(var(--dock-h) + 18px); }
+      .floating-wa { bottom: 18px; }
     }
 
     @media (max-width: 560px) {
@@ -1151,7 +1115,7 @@
     $waNumber = '38344960661';
 
     $categories = [
-      ['title' => 'Tepiha', 'title_en' => 'Rugs', 'title_sr' => 'Tepisi', 'desc' => 'Modele per sallon, dhome gjumi dhe korridor.', 'desc_en' => 'Models for living rooms, bedrooms and hallways.', 'desc_sr' => 'Modeli za dnevni boravak, spavacu sobu i hodnik.', 'url' => route('products.tepiha'), 'img' => file_exists(public_path('home-categories/tepiha.jpg')) ? asset('home-categories/tepiha.jpg') : asset('carpet/IMG_7507.jpg')],
+      ['title' => 'Tepiha', 'title_en' => 'Rugs', 'title_sr' => 'Tepisi', 'desc' => 'Modele per sallon, dhome gjumi dhe korridor.', 'desc_en' => 'Models for living rooms, bedrooms and hallways.', 'desc_sr' => 'Modeli za dnevni boravak, spavacu sobu i hodnik.', 'url' => route('products.tepiha'), 'img' => asset('carpet/carpetmara.jpg')],
       ['title' => 'Perde anesore', 'title_en' => 'Side curtains', 'title_sr' => 'Bocne zavese', 'desc' => 'Pamje elegante dhe qepje profesionale.', 'desc_en' => 'Elegant look with professional tailoring.', 'desc_sr' => 'Elegantan izgled i profesionalno sivenje.', 'url' => route('products.anesore'), 'img' => asset('curtainn/SOFTPERDE.jpg')],
       ['title' => 'Perde ditore', 'title_en' => 'Day curtains', 'title_sr' => 'Dnevne zavese', 'desc' => 'Drite e bute dhe ambient me i paster.', 'desc_en' => 'Soft light and a cleaner room feeling.', 'desc_sr' => 'Meko svetlo i cistiji izgled prostora.', 'url' => route('products.perdeDitore'), 'img' => asset('perdeditoree/image00001.jpeg')],
       ['title' => 'Postava', 'title_en' => 'Bedsheets', 'title_sr' => 'Posteljina', 'desc' => 'Sete per gjume te rehatshem cdo nate.', 'desc_en' => 'Sets for comfortable sleep every night.', 'desc_sr' => 'Setovi za udoban san svake noci.', 'url' => route('products.postava'), 'img' => asset('postavav/beedsheet10.png')],
@@ -1160,7 +1124,7 @@
       ['title' => 'Mbulesa', 'title_en' => 'Covers', 'title_sr' => 'Prekrivaci', 'desc' => 'Per divan, krevat dhe dekor te perditeshem.', 'desc_en' => 'For sofas, beds and everyday decor.', 'desc_sr' => 'Za sofu, krevet i svakodnevni dekor.', 'url' => route('products.mbulesa'), 'img' => asset('mbulesaa/IMG_7526.jpg')],
       ['title' => 'Jasteke dekorues', 'title_en' => 'Decorative pillows', 'title_sr' => 'Dekorativni jastuci', 'desc' => 'Detaje qe e kompletojne ambientin.', 'desc_en' => 'Details that complete the room.', 'desc_sr' => 'Detalji koji upotpunjuju prostor.', 'url' => route('products.jastekdekorues'), 'img' => asset('jastak/IMG_7959.jpg')],
       ['title' => 'Tepiha banjo', 'title_en' => 'Bath rugs', 'title_sr' => 'Kupatilski tepisi', 'desc' => 'Praktike, te bute dhe te lehte per pastrim.', 'desc_en' => 'Practical, soft and easy to clean.', 'desc_sr' => 'Prakticni, mekani i laki za ciscenje.', 'url' => route('products.tepihebanjo'), 'img' => asset('tepihebanjoo/crop-template-print1-1120x1493.png')],
-      ['title' => 'Garnishte', 'title_en' => 'Curtain rails', 'title_sr' => 'Garnisne', 'desc' => 'Aksesor per perde dhe montim me pamje te rregullt.', 'desc_en' => 'Curtain accessories for a clean installation.', 'desc_sr' => 'Dodaci za zavese i urednu montazu.', 'url' => route('products.garnishte'), 'img' => file_exists(public_path('home-categories/garnishte.jpg')) ? asset('home-categories/garnishte.jpg') : asset('images/folds/shiriti.png')],
+      ['title' => 'Garnishte', 'title_en' => 'Curtain rails', 'title_sr' => 'Garnisne', 'desc' => 'Aksesor per perde dhe montim me pamje te rregullt.', 'desc_en' => 'Curtain accessories for a clean installation.', 'desc_sr' => 'Dodaci za zavese i urednu montazu.', 'url' => route('products.garnishte'), 'img' => asset('images/garnishte.jpg')],
     ];
 
     $quickLinks = [
@@ -1342,8 +1306,8 @@
         </div>
 
         <div class="editorial-grid">
-          <a class="feature-tile" href="{{ route('products.tepiha') }}">
-            <img src="{{ asset('optimized/home/hali5.jpg') }}" alt="Tepiha moderne" loading="lazy" decoding="async" width="760" height="520">
+          <a class="feature-tile fit-contain" href="{{ route('products.tepiha') }}">
+            <img src="{{ asset('carpet/carpetmara.jpg') }}" alt="Tepiha moderne" loading="lazy" decoding="async" width="760" height="520">
             <div class="feature-tile-content">
               <h3>Tepiha per sallon modern</h3>
               <p>Teksture, ngjyra dhe permasa qe e lidhin komplet ambientin.</p>
@@ -1595,18 +1559,6 @@
   <a class="floating-wa" href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener" aria-label="WhatsApp">
     <i class="bi bi-whatsapp fs-4"></i>
   </a>
-
-  <nav class="mobile-dock" aria-label="Navigimi ne telefon">
-    <div class="dock-inner">
-      <a class="active" href="{{ route('home') }}"><i class="bi bi-house"></i><span>Home</span></a>
-      <a href="{{ route('products.index') }}"><i class="bi bi-grid"></i><span>Products</span></a>
-      <a href="#searchSection"><i class="bi bi-search"></i><span>Kerko</span></a>
-      <a href="{{ route('cart.index') }}">
-        <i class="bi bi-bag"></i><span>Shporta</span>
-        <span class="cart-badge">{{ session('cart_total_qty', 0) }}</span>
-      </a>
-    </div>
-  </nav>
 
   <script>
     (function () {
