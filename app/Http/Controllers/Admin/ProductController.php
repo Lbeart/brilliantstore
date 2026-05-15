@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
 {
@@ -52,10 +53,10 @@ class ProductController extends Controller
 
             // ✅ MULTI IMAGE
             'image'       => 'nullable|array',
-            'image.*'     => 'image|max:10240',
+            'image.*'     => 'file|max:51200',
 
             'sku'         => 'nullable|alpha_dash|unique:products,sku',
-        ]);
+        ], $this->productValidationMessages());
 
         // ✅ Nëse s’është perde, mos ruaj subcategory
         if (($data['category'] ?? null) !== 'perde') {
@@ -129,14 +130,14 @@ class ProductController extends Controller
 
             // ✅ MULTI IMAGE
             'image'       => 'nullable|array',
-            'image.*'     => 'image|max:10240',
+            'image.*'     => 'file|max:51200',
 
             // ✅ mbaj/fshi foto ekzistuese
             'existing_images'   => 'nullable|array',
             'existing_images.*' => 'string',
 
             'sku'         => 'nullable|alpha_dash|unique:products,sku,' . $product->id,
-        ]);
+        ], $this->productValidationMessages());
 
         // ✅ Nëse s’është perde, mos ruaj subcategory
         if (($data['category'] ?? null) !== 'perde') {
@@ -205,14 +206,17 @@ class ProductController extends Controller
 
     private function saveUploadedImage($img): string
     {
-        $extension = strtolower($img->extension() ?: $img->getClientOriginalExtension() ?: 'jpg');
+        $this->assertSupportedImage($img);
+
+        $extension = $this->normalizedImageExtension($img);
 
         $path = public_path('images/products');
         $this->ensureDirectory($path);
 
         if ($this->canOptimizeImages()) {
-            $filename = Str::uuid() . '.jpg';
-            $relativePath = 'images/products/' . $filename;
+            $filename = $this->newImageFilename('jpg');
+            $dbPath = 'products/' . $filename;
+            $relativePath = 'images/' . $dbPath;
             $targetPath = $path . DIRECTORY_SEPARATOR . $filename;
 
             try {
@@ -227,17 +231,75 @@ class ProductController extends Controller
 
                 $this->writeOptimizedCache($targetPath, $relativePath);
 
-                return $relativePath;
+                return $dbPath;
             } catch (\Throwable $e) {
                 report($e);
+
+                if (in_array($extension, ['heic', 'heif'], true)) {
+                    throw ValidationException::withMessages([
+                        'image' => 'Kjo foto eshte HEIC/HEIF dhe serveri nuk po mundet me e kthy ne JPG. Zgjedhe Save as JPEG/Most Compatible ne telefon, ose dergo foto JPG/PNG.',
+                    ]);
+                }
             }
         }
 
-        $filename = Str::uuid() . '.' . $extension;
-        $img->move($path, $filename);
-        $this->writeOptimizedCache($path . DIRECTORY_SEPARATOR . $filename, 'images/products/' . $filename);
+        if (in_array($extension, ['heic', 'heif'], true)) {
+            throw ValidationException::withMessages([
+                'image' => 'Kjo foto eshte HEIC/HEIF. Serveri pranon JPG, PNG, WEBP, GIF ose BMP per produktet.',
+            ]);
+        }
 
-        return 'images/products/' . $filename;
+        $filename = $this->newImageFilename($extension);
+        $dbPath = 'products/' . $filename;
+        $img->move($path, $filename);
+        $this->writeOptimizedCache($path . DIRECTORY_SEPARATOR . $filename, 'images/' . $dbPath);
+
+        return $dbPath;
+    }
+
+    private function assertSupportedImage($img): void
+    {
+        $extension = $this->normalizedImageExtension($img);
+        $mime = strtolower((string) $img->getMimeType());
+
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'bmp', 'gif', 'heic', 'heif'];
+        $allowedMimes = [
+            'image/jpeg',
+            'image/png',
+            'image/webp',
+            'image/bmp',
+            'image/x-ms-bmp',
+            'image/gif',
+            'image/heic',
+            'image/heif',
+            'image/heic-sequence',
+            'image/heif-sequence',
+        ];
+
+        if (!in_array($extension, $allowedExtensions, true) && !in_array($mime, $allowedMimes, true)) {
+            throw ValidationException::withMessages([
+                'image' => 'Fotoja duhet te jete JPG, PNG, WEBP, GIF ose BMP. HEIC pranohet vetem nese mund te kthehet ne JPG.',
+            ]);
+        }
+    }
+
+    private function normalizedImageExtension($img): string
+    {
+        $extension = strtolower((string) ($img->getClientOriginalExtension() ?: $img->extension() ?: 'jpg'));
+        $extension = preg_replace('/[^a-z0-9]/', '', $extension) ?: 'jpg';
+
+        return $extension === 'jpeg' ? 'jpg' : $extension;
+    }
+
+    private function newImageFilename(string $extension): string
+    {
+        $extension = $extension === 'jpeg' ? 'jpg' : strtolower($extension);
+
+        do {
+            $filename = strtolower(Str::random(18)) . '.' . $extension;
+        } while (is_file(public_path('images/products/' . $filename)));
+
+        return $filename;
     }
 
     private function writeOptimizedCache(string $sourcePath, string $publicRelativePath): void
@@ -338,6 +400,14 @@ class ProductController extends Controller
     private function decodeImagePaths($value): array
     {
         return ProductImages::decode($value);
+    }
+
+    private function productValidationMessages(): array
+    {
+        return [
+            'image.*.file' => 'Fotoja nuk u lexua mire. Provo nje foto JPG, PNG ose WEBP.',
+            'image.*.max' => 'Fotoja eshte shume e madhe. Provo nje foto me te vogel ose zgjidh me pak foto njeheresh.',
+        ];
     }
 
     private function normalizeSizes(array $sizes): array

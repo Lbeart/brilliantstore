@@ -1,7 +1,7 @@
 <script>
 (function () {
   const maxSide = 1600;
-  const quality = 0.82;
+  const quality = 0.78;
   const jobs = new WeakMap();
 
   function productImageInputs() {
@@ -9,7 +9,7 @@
   }
 
   function canCompress(file) {
-    return /^image\/(jpe?g|png|webp)$/i.test(file.type || '') && file.size > 450000;
+    return /^image\/(jpe?g|png|webp|heic|heif)$/i.test(file.type || '') && file.size > 350000;
   }
 
   function loadImage(file) {

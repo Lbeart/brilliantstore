@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\PostTooLargeException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -43,6 +44,18 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
+        $this->renderable(function (PostTooLargeException $e, $request) {
+            if ($request->is('admin/products*')) {
+                $message = 'Fotot jane shume te medha per serverin. Zgjidh me pak foto njeheresh ose foto JPG/PNG me te vogla.';
+
+                if ($request->hasSession()) {
+                    return back()->withErrors(['image' => $message])->withInput();
+                }
+
+                return response($message, 413);
+            }
+        });
+
         $this->reportable(function (Throwable $e) {
             //
         });
