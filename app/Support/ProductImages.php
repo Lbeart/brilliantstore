@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductImages
 {
@@ -15,6 +16,10 @@ class ProductImages
             if ($url) {
                 $urls[] = $url;
             }
+        }
+
+        if (empty($urls) && $context) {
+            $urls = self::contextFallbackUrls($context);
         }
 
         if (empty($urls) && $placeholder) {
@@ -41,6 +46,10 @@ class ProductImages
 
         $raw = trim((string) $value);
         if ($raw === '') {
+            return [];
+        }
+
+        if (self::isPlaceholderPath($raw)) {
             return [];
         }
 
@@ -76,7 +85,7 @@ class ProductImages
     private static function normalize(string $raw, mixed $context = null): ?string
     {
         $path = trim($raw, " \t\n\r\0\x0B\"'");
-        if ($path === '') {
+        if ($path === '' || self::isPlaceholderPath($path)) {
             return null;
         }
 
@@ -151,6 +160,15 @@ class ProductImages
     private static function existsInPublic(string $path): bool
     {
         return is_file(public_path(str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path)));
+    }
+
+    private static function isPlaceholderPath(string $path): bool
+    {
+        $path = strtolower(str_replace('\\', '/', $path));
+
+        return str_contains($path, 'placeholder')
+            || str_contains($path, 'llogo.png')
+            || str_contains($path, 'brillant.png');
     }
 
     private static function looksLocalPath(string $path): bool
@@ -230,6 +248,85 @@ class ProductImages
         }
 
         return null;
+    }
+
+    private static function contextFallbackUrls(mixed $context): array
+    {
+        $name = (string) data_get($context, 'name', '');
+        $tokens = self::nameTokens($name);
+
+        if (empty($tokens)) {
+            return [];
+        }
+
+        $matches = [];
+
+        foreach (self::legacyFolders($context) ?: self::allLegacyFolders() as $folder) {
+            $dir = public_path(str_replace('/', DIRECTORY_SEPARATOR, $folder));
+            if (!is_dir($dir)) {
+                continue;
+            }
+
+            foreach (glob($dir.DIRECTORY_SEPARATOR.'*') ?: [] as $file) {
+                if (!is_file($file) || !preg_match('/\.(jpe?g|png|webp|gif|avif|bmp)$/i', $file)) {
+                    continue;
+                }
+
+                $filename = basename($file);
+                $path = $folder.'/'.$filename;
+                $score = self::filenameScore($filename, $tokens, $name);
+
+                if ($score > 0) {
+                    $safePath = self::mobileSafePublicPath($path);
+                    $matches[$safePath] = max($matches[$safePath] ?? 0, $score);
+                }
+            }
+        }
+
+        arsort($matches);
+
+        return array_values(array_map(fn ($path) => asset($path), array_keys(array_slice($matches, 0, 4, true))));
+    }
+
+    private static function nameTokens(string $name): array
+    {
+        $name = strtolower(Str::ascii($name));
+        $name = preg_replace('/[^a-z0-9]+/', ' ', $name) ?? '';
+
+        $stopWords = [
+            'tepih', 'tepiha', 'tepihe', 'tapet', 'tapeta', 'perde', 'postava',
+            'mbulesa', 'batanije', 'jastek', 'dekorues', 'posteqia', 'garnishte',
+            'modern', 'antibakterial', 'cm', 'euro',
+        ];
+
+        $tokens = array_filter(
+            explode(' ', $name),
+            fn ($token) => strlen($token) >= 3 && !in_array($token, $stopWords, true)
+        );
+
+        return array_values(array_unique($tokens));
+    }
+
+    private static function filenameScore(string $filename, array $tokens, string $productName): int
+    {
+        $base = pathinfo($filename, PATHINFO_FILENAME);
+        $haystack = strtolower(Str::ascii($base));
+        $compactHaystack = preg_replace('/[^a-z0-9]+/', '', $haystack) ?? '';
+        $productSlug = preg_replace('/[^a-z0-9]+/', '', strtolower(Str::ascii($productName))) ?? '';
+
+        $score = 0;
+
+        foreach ($tokens as $token) {
+            if (str_contains($haystack, $token) || str_contains($compactHaystack, $token)) {
+                $score += strlen($token) >= 5 ? 12 : 8;
+            }
+        }
+
+        if ($compactHaystack !== '' && $productSlug !== '' && str_contains($productSlug, $compactHaystack)) {
+            $score += 20;
+        }
+
+        return $score;
     }
 
     private static function legacyFolders(mixed $context = null): array
