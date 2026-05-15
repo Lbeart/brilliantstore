@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Support\ProductImages;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -94,7 +95,22 @@ class ProductController extends Controller
             $data['stock'] = $sumStock ?? ($data['stock'] ?? 0);
         }
 
-        Product::create($data);
+        try {
+            Product::create($data);
+        } catch (QueryException $e) {
+            report($e);
+
+            return back()
+                ->withErrors(['image' => 'Produkti nuk u ruajt ne databaze. Nese ke vendos disa foto, provo vetem nje foto; pastaj duhet me u ekzekutu migrimi qe e zgjeron image_path.'])
+                ->withInput();
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()
+                ->withErrors(['image' => 'Serveri nuk e ruajti produktin. Provo nje foto JPG/PNG me te vogel ose nje foto te vetme.'])
+                ->withInput();
+        }
+
         return redirect()->route('admin.products.index')->with('ok', 'Produkti u shtua.');
     }
 
@@ -187,7 +203,22 @@ class ProductController extends Controller
             $data['stock'] = $sumStock ?? ($data['stock'] ?? $product->stock);
         }
 
-        $product->update($data);
+        try {
+            $product->update($data);
+        } catch (QueryException $e) {
+            report($e);
+
+            return back()
+                ->withErrors(['image' => 'Produkti nuk u perditesua ne databaze. Provo me nje foto me pak ose ekzekuto migrimet e fundit.'])
+                ->withInput();
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()
+                ->withErrors(['image' => 'Serveri nuk e perditesoi produktin. Provo nje foto JPG/PNG me te vogel ose nje foto te vetme.'])
+                ->withInput();
+        }
+
         return redirect()->route('admin.products.index')->with('ok', 'Produkti u përditësua.');
     }
 
@@ -251,7 +282,16 @@ class ProductController extends Controller
 
         $filename = $this->newImageFilename($extension);
         $dbPath = 'products/' . $filename;
-        $img->move($path, $filename);
+        try {
+            $img->move($path, $filename);
+        } catch (\Throwable $e) {
+            report($e);
+
+            throw ValidationException::withMessages([
+                'image' => 'Fotoja nuk u ruajt ne server. Kontrollo qe public/images/products ka permission per upload.',
+            ]);
+        }
+
         $this->writeOptimizedCache($path . DIRECTORY_SEPARATOR . $filename, 'images/' . $dbPath);
 
         return $dbPath;
@@ -335,8 +375,16 @@ class ProductController extends Controller
 
     private function ensureDirectory(string $path): void
     {
-        if (!is_dir($path)) {
-            mkdir($path, 0777, true);
+        if (!is_dir($path) && !mkdir($path, 0775, true) && !is_dir($path)) {
+            throw ValidationException::withMessages([
+                'image' => 'Serveri nuk mundi me kriju folderin per foto: public/images/products.',
+            ]);
+        }
+
+        if (!is_writable($path)) {
+            throw ValidationException::withMessages([
+                'image' => 'Folderi public/images/products nuk ka permission per upload.',
+            ]);
         }
     }
 
