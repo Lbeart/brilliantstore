@@ -260,40 +260,6 @@ class ProductController extends Controller
         $this->assertSupportedImage($img);
 
         $extension = $this->normalizedImageExtension($img);
-
-        $path = public_path('images/products');
-        $this->ensureDirectory($path);
-
-        if ($this->canOptimizeImages()) {
-            $filename = $this->newImageFilename('jpg');
-            $dbPath = 'products/' . $filename;
-            $relativePath = 'images/' . $dbPath;
-            $targetPath = $path . DIRECTORY_SEPARATOR . $filename;
-
-            try {
-                Image::make($img->getRealPath())
-                    ->orientate()
-                    ->resize(1600, 1600, function ($constraint) {
-                        $constraint->aspectRatio();
-                        $constraint->upsize();
-                    })
-                    ->encode('jpg', 82)
-                    ->save($targetPath);
-
-                $this->writeOptimizedCache($targetPath, $relativePath);
-
-                return $dbPath;
-            } catch (\Throwable $e) {
-                report($e);
-
-                if (in_array($extension, ['heic', 'heif'], true)) {
-                    throw ValidationException::withMessages([
-                        'image' => 'Kjo foto eshte HEIC/HEIF dhe serveri nuk po mundet me e kthy ne JPG. Zgjedhe Save as JPEG/Most Compatible ne telefon, ose dergo foto JPG/PNG.',
-                    ]);
-                }
-            }
-        }
-
         if (in_array($extension, ['heic', 'heif'], true)) {
             throw ValidationException::withMessages([
                 'image' => 'Kjo foto eshte HEIC/HEIF. Serveri pranon JPG, PNG, WEBP, GIF ose BMP per produktet.',
@@ -302,19 +268,37 @@ class ProductController extends Controller
 
         $filename = $this->newImageFilename($extension);
         $dbPath = 'products/' . $filename;
-        try {
-            $img->move($path, $filename);
-        } catch (\Throwable $e) {
-            report($e);
+        $path = public_path('images/products');
 
-            throw ValidationException::withMessages([
-                'image' => 'Fotoja nuk u ruajt ne server. Kontrollo qe public/images/products ka permission per upload.',
-            ]);
+        try {
+            $this->ensureDirectory($path);
+            $img->move($path, $filename);
+
+            return $dbPath;
+        } catch (\Throwable $e) {
+            $this->safeReport($e);
         }
 
-        $this->writeOptimizedCache($path . DIRECTORY_SEPARATOR . $filename, 'images/' . $dbPath);
+        try {
+            Storage::disk('public')->putFileAs('products', $img, $filename);
 
-        return $dbPath;
+            return $dbPath;
+        } catch (\Throwable $e) {
+            $this->safeReport($e);
+        }
+
+        throw ValidationException::withMessages([
+            'image' => 'Fotoja nuk u ruajt ne server. Kontrollo permission per public/images/products ose storage/app/public/products.',
+        ]);
+    }
+
+    private function safeReport(\Throwable $e): void
+    {
+        try {
+            report($e);
+        } catch (\Throwable) {
+            //
+        }
     }
 
     private function assertSupportedImage($img): void
@@ -379,7 +363,10 @@ class ProductController extends Controller
 
         do {
             $filename = strtolower(Str::random(18)) . '.' . $extension;
-        } while (is_file(public_path('images/products/' . $filename)));
+        } while (
+            is_file(public_path('images/products/' . $filename))
+            || Storage::disk('public')->exists('products/' . $filename)
+        );
 
         return $filename;
     }

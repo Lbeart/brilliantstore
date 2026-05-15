@@ -43,6 +43,15 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/legacy-image/{encoded}', [LegacyImageController::class, 'show'])
     ->where('encoded', '[A-Za-z0-9\-_]+')
     ->name('legacy.image');
+
+Route::get('/storage/products/{filename}', function (string $filename) {
+    $filename = basename($filename);
+    $path = storage_path('app/public/products/'.$filename);
+
+    abort_unless(is_file($path), 404);
+
+    return response()->file($path);
+})->where('filename', '[A-Za-z0-9._-]+')->name('storage.products.fallback');
 // 🏠 Home
 Route::get('/', [ItemController::class, 'index'])->name('home');
 
