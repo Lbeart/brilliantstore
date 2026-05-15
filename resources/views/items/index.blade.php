@@ -1417,7 +1417,7 @@
 
               <article class="product-card">
                 <a class="product-media" href="{{ $detailsUrl }}" aria-label="Shiko {{ $item->name }}">
-                  <img src="{{ $imgUrl }}" alt="{{ $item->name }}" loading="lazy" decoding="async" width="640" height="520" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+                  <img src="{{ $imgUrl }}" alt="{{ $item->name }}" loading="{{ $loop->iteration <= 3 ? 'eager' : 'lazy' }}" fetchpriority="{{ $loop->iteration <= 3 ? 'high' : 'auto' }}" decoding="async" sizes="(max-width: 576px) 100vw, (max-width: 992px) 50vw, 33vw" width="640" height="520" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
                   <span class="product-badge">I ri</span>
                   <span class="stock-badge {{ $inStock ? '' : 'out' }}">{{ $inStock ? 'Ne stock' : 'Pa stock' }}</span>
                 </a>

@@ -997,6 +997,7 @@
      loading="eager"
      decoding="async"
      fetchpriority="high"
+     sizes="(max-width: 991px) 100vw, 58vw"
      width="900"
      height="900"
      onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}';this.dataset.zoom=this.src;">
@@ -1265,8 +1266,10 @@
 <img
   src="{{ $simImgUrl }}"
   alt="{{ $p->name }}"
-  loading="lazy"
+  loading="{{ $loop->iteration <= 2 ? 'eager' : 'lazy' }}"
+  fetchpriority="{{ $loop->iteration <= 2 ? 'high' : 'auto' }}"
   decoding="async"
+  sizes="(max-width: 576px) 50vw, 25vw"
   width="360"
   height="360"
   onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'"

@@ -1,0 +1,153 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Models\Product;
+use App\Support\ProductImages;
+use Illuminate\Console\Command;
+use Intervention\Image\Facades\Image;
+
+class OptimizeProductImages extends Command
+{
+    protected $signature = 'products:optimize-images {--force : Recreate cache files even when they already exist}';
+
+    protected $description = 'Create lightweight cached copies for product images.';
+
+    public function handle(): int
+    {
+        if (!$this->canOptimizeImages()) {
+            $this->warn('Image optimization needs the PHP GD or Imagick extension.');
+
+            return self::FAILURE;
+        }
+
+        $paths = $this->collectProductImagePaths();
+        $created = 0;
+        $skipped = 0;
+        $failed = 0;
+
+        foreach ($paths as $relativePath) {
+            $sourcePath = public_path(str_replace('/', DIRECTORY_SEPARATOR, $relativePath));
+            $cachePath = $this->cachePath($relativePath);
+
+            if (
+                !$this->option('force')
+                && is_file($cachePath)
+                && filemtime($cachePath) >= filemtime($sourcePath)
+            ) {
+                $skipped++;
+                continue;
+            }
+
+            $this->ensureDirectory(dirname($cachePath));
+
+            try {
+                Image::make($sourcePath)
+                    ->orientate()
+                    ->resize(1100, 1100, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    })
+                    ->encode('jpg', 76)
+                    ->save($cachePath);
+
+                $created++;
+            } catch (\Throwable $e) {
+                $failed++;
+                $this->warn('Failed: '.$relativePath.' ('.$e->getMessage().')');
+            }
+        }
+
+        $this->info("Optimization finished. Created: {$created}, skipped: {$skipped}, failed: {$failed}.");
+
+        return $failed > 0 ? self::FAILURE : self::SUCCESS;
+    }
+
+    private function collectProductImagePaths(): array
+    {
+        $paths = [];
+
+        Product::query()
+            ->select(['id', 'image_path'])
+            ->whereNotNull('image_path')
+            ->cursor()
+            ->each(function (Product $product) use (&$paths) {
+                foreach (ProductImages::decode($product->image_path) as $imagePath) {
+                    $relativePath = $this->publicRelativePath($imagePath);
+                    if ($relativePath) {
+                        $paths[] = $relativePath;
+                    }
+                }
+            });
+
+        $productFolder = public_path('images/products');
+        if (is_dir($productFolder)) {
+            $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($productFolder));
+
+            foreach ($iterator as $file) {
+                if (!$file->isFile() || !$this->isSupportedImage($file->getPathname())) {
+                    continue;
+                }
+
+                $paths[] = 'images/products/'.str_replace('\\', '/', substr($file->getPathname(), strlen($productFolder) + 1));
+            }
+        }
+
+        return array_values(array_unique($paths));
+    }
+
+    private function publicRelativePath(string $raw): ?string
+    {
+        $path = trim($raw, " \t\n\r\0\x0B\"'");
+        if ($path === '') {
+            return null;
+        }
+
+        if (preg_match('#^https?://#i', $path)) {
+            $path = parse_url($path, PHP_URL_PATH) ?: $path;
+        }
+
+        $path = str_replace('\\', '/', ltrim($path, '/'));
+        $path = preg_replace('#^public/#', '', $path);
+
+        foreach (array_unique([
+            $path,
+            str_starts_with($path, 'products/') ? 'images/'.$path : null,
+            str_starts_with($path, 'storage/images/') ? substr($path, strlen('storage/')) : null,
+        ]) as $candidate) {
+            if (!is_string($candidate) || !$this->isSupportedImage($candidate)) {
+                continue;
+            }
+
+            if (is_file(public_path(str_replace('/', DIRECTORY_SEPARATOR, $candidate)))) {
+                return $candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private function cachePath(string $relativePath): string
+    {
+        return public_path(
+            'optimized-cache/' . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, ltrim($relativePath, '/')) . '.jpg'
+        );
+    }
+
+    private function isSupportedImage(string $path): bool
+    {
+        return (bool) preg_match('/\.(jpe?g|png|webp|bmp)$/i', $path);
+    }
+
+    private function canOptimizeImages(): bool
+    {
+        return extension_loaded('gd') || extension_loaded('imagick');
+    }
+
+    private function ensureDirectory(string $path): void
+    {
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
+    }
+}

@@ -1304,8 +1304,12 @@
                 class="product-thumb"
                 src="{{ $src }}"
                 alt="{{ $product->name }}"
-                loading="lazy"
+                loading="{{ $loop->iteration <= 4 ? 'eager' : 'lazy' }}"
+                fetchpriority="{{ $loop->iteration <= 4 ? 'high' : 'auto' }}"
                 decoding="async"
+                sizes="(max-width: 576px) 50vw, (max-width: 992px) 33vw, 25vw"
+                width="640"
+                height="800"
                 onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
             </div>
 

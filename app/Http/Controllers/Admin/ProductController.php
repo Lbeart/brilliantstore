@@ -206,17 +206,76 @@ class ProductController extends Controller
     private function saveUploadedImage($img): string
     {
         $extension = strtolower($img->extension() ?: $img->getClientOriginalExtension() ?: 'jpg');
-        $filename = Str::uuid() . '.' . $extension;
 
         $path = public_path('images/products');
+        $this->ensureDirectory($path);
 
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
+        if ($this->canOptimizeImages()) {
+            $filename = Str::uuid() . '.jpg';
+            $relativePath = 'images/products/' . $filename;
+            $targetPath = $path . DIRECTORY_SEPARATOR . $filename;
+
+            try {
+                Image::make($img->getRealPath())
+                    ->orientate()
+                    ->resize(1600, 1600, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    })
+                    ->encode('jpg', 82)
+                    ->save($targetPath);
+
+                $this->writeOptimizedCache($targetPath, $relativePath);
+
+                return $relativePath;
+            } catch (\Throwable $e) {
+                report($e);
+            }
         }
 
+        $filename = Str::uuid() . '.' . $extension;
         $img->move($path, $filename);
+        $this->writeOptimizedCache($path . DIRECTORY_SEPARATOR . $filename, 'images/products/' . $filename);
 
         return 'images/products/' . $filename;
+    }
+
+    private function writeOptimizedCache(string $sourcePath, string $publicRelativePath): void
+    {
+        if (!$this->canOptimizeImages() || !is_file($sourcePath)) {
+            return;
+        }
+
+        $cachePath = public_path(
+            'optimized-cache/' . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, ltrim($publicRelativePath, '/')) . '.jpg'
+        );
+
+        $this->ensureDirectory(dirname($cachePath));
+
+        try {
+            Image::make($sourcePath)
+                ->orientate()
+                ->resize(1100, 1100, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })
+                ->encode('jpg', 76)
+                ->save($cachePath);
+        } catch (\Throwable $e) {
+            report($e);
+        }
+    }
+
+    private function canOptimizeImages(): bool
+    {
+        return extension_loaded('gd') || extension_loaded('imagick');
+    }
+
+    private function ensureDirectory(string $path): void
+    {
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
     }
 
     private function deleteImagePath(?string $raw): void
@@ -244,6 +303,7 @@ class ProductController extends Controller
                 @unlink($publicPath);
             }
 
+            $this->deleteOptimizedImagePath($path);
             Storage::disk('public')->delete(substr($path, strlen('images/')));
             return;
         }
@@ -254,6 +314,23 @@ class ProductController extends Controller
             $publicPath = public_path(str_replace('/', DIRECTORY_SEPARATOR, 'images/'.$path));
             if (is_file($publicPath)) {
                 @unlink($publicPath);
+            }
+
+            $this->deleteOptimizedImagePath('images/'.$path);
+        }
+    }
+
+    private function deleteOptimizedImagePath(string $publicRelativePath): void
+    {
+        $path = ltrim(str_replace('\\', '/', $publicRelativePath), '/');
+
+        foreach ([
+            'optimized-cache/'.$path,
+            'optimized-cache/'.$path.'.jpg',
+        ] as $candidate) {
+            $fullPath = public_path(str_replace('/', DIRECTORY_SEPARATOR, $candidate));
+            if (is_file($fullPath)) {
+                @unlink($fullPath);
             }
         }
     }

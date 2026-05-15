@@ -244,7 +244,7 @@ class ProductImages
         if (preg_match('/\.bmp$/i', $path)) {
             $jpgPath = preg_replace('/\.bmp$/i', '.jpg', $path);
             if ($jpgPath && self::existsInPublic($jpgPath)) {
-                return asset($jpgPath);
+                return asset(self::optimizedPublicPath($jpgPath) ?? $jpgPath);
             }
 
             return self::existsInPublic($path) ? self::legacyImageUrl($path) : null;
@@ -253,7 +253,23 @@ class ProductImages
         $mobileSafe = self::mobileSafePublicPath($path);
 
         if (self::existsInPublic($mobileSafe)) {
-            return asset($mobileSafe);
+            return asset(self::optimizedPublicPath($mobileSafe) ?? $mobileSafe);
+        }
+
+        return null;
+    }
+
+    private static function optimizedPublicPath(string $path): ?string
+    {
+        $path = ltrim(str_replace('\\', '/', $path), '/');
+
+        foreach ([
+            'optimized-cache/'.$path,
+            'optimized-cache/'.$path.'.jpg',
+        ] as $candidate) {
+            if (self::existsInPublic($candidate)) {
+                return $candidate;
+            }
         }
 
         return null;
