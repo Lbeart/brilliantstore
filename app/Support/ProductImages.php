@@ -3,7 +3,6 @@
 namespace App\Support;
 
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class ProductImages
 {
@@ -16,10 +15,6 @@ class ProductImages
             if ($url) {
                 $urls[] = $url;
             }
-        }
-
-        if (empty($urls) && $context) {
-            $urls = self::contextFallbackUrls($context);
         }
 
         if (empty($urls) && $placeholder) {
@@ -82,6 +77,53 @@ class ProductImages
         return [$raw];
     }
 
+    public static function isResolvable(string $raw): bool
+    {
+        $path = trim($raw, " \t\n\r\0\x0B\"'");
+        if ($path === '' || self::isPlaceholderPath($path)) {
+            return false;
+        }
+
+        if (preg_match('#^https?://#i', $path)) {
+            $urlPath = parse_url($path, PHP_URL_PATH);
+            if (!is_string($urlPath) || !self::looksLocalPath($urlPath)) {
+                return true;
+            }
+
+            $path = $urlPath;
+        }
+
+        $path = str_replace('\\', '/', ltrim($path, '/'));
+        $path = preg_replace('#^public/#', '', $path);
+
+        if (str_starts_with($path, 'storage/')) {
+            $storagePath = preg_replace('#^storage/#', '', $path);
+
+            return self::existsInStorage($storagePath)
+                || self::existsInPublic($storagePath)
+                || (str_starts_with($storagePath, 'images/') && self::existsInPublic(substr($storagePath, strlen('images/'))));
+        }
+
+        if (str_starts_with($path, 'images/products/')) {
+            return self::existsInPublic($path)
+                || self::existsInStorage(substr($path, strlen('images/')));
+        }
+
+        if (str_starts_with($path, 'images/')) {
+            return self::existsInPublic($path);
+        }
+
+        if (str_starts_with($path, 'products/')) {
+            return self::existsInPublic('images/'.$path)
+                || self::existsInStorage($path);
+        }
+
+        return self::existsInPublic($path)
+            || self::existsInPublic('images/'.$path)
+            || self::existsInStorage($path)
+            || self::existsInStorage('products/'.$path);
+    }
+
     private static function normalize(string $raw, mixed $context = null): ?string
     {
         $path = trim($raw, " \t\n\r\0\x0B\"'");
@@ -128,19 +170,16 @@ class ProductImages
             $productPath = substr($path, strlen('images/'));
 
             return self::publicPathUrl($path)
-                ?? self::storageUrl($productPath)
-                ?? self::legacyPublicUrl(basename($path), $context);
+                ?? self::storageUrl($productPath);
         }
 
         if (str_starts_with($path, 'images/')) {
-            return self::publicPathUrl($path)
-                ?? self::legacyPublicUrl(basename($path), $context);
+            return self::publicPathUrl($path);
         }
 
         if (str_starts_with($path, 'products/')) {
             return self::publicPathUrl('images/'.$path)
-                ?? self::storageUrl($path)
-                ?? self::legacyPublicUrl(basename($path), $context);
+                ?? self::storageUrl($path);
         }
 
         if (self::existsInPublic($path)) {
@@ -260,129 +299,13 @@ class ProductImages
         return null;
     }
 
-    private static function contextFallbackUrls(mixed $context): array
-    {
-        $name = (string) data_get($context, 'name', '');
-        $tokens = self::nameTokens($name);
-
-        if (empty($tokens)) {
-            return [];
-        }
-
-        $matches = [];
-
-        foreach (self::legacyFolders($context) ?: self::allLegacyFolders() as $folder) {
-            $dir = public_path(str_replace('/', DIRECTORY_SEPARATOR, $folder));
-            if (!is_dir($dir)) {
-                continue;
-            }
-
-            foreach (glob($dir.DIRECTORY_SEPARATOR.'*') ?: [] as $file) {
-                if (!is_file($file) || !preg_match('/\.(jpe?g|png|webp|gif|avif|bmp)$/i', $file)) {
-                    continue;
-                }
-
-                $filename = basename($file);
-                $path = $folder.'/'.$filename;
-                $score = self::filenameScore($filename, $tokens, $name);
-
-                if ($score > 0) {
-                    $safePath = self::mobileSafePublicPath($path);
-                    $matches[$safePath] = max($matches[$safePath] ?? 0, $score);
-                }
-            }
-        }
-
-        arsort($matches);
-
-        if (!empty($matches)) {
-            return array_values(array_map(fn ($path) => asset($path), array_keys(array_slice($matches, 0, 4, true))));
-        }
-
-        return self::categoryFallbackUrls($context);
-    }
-
-    private static function categoryFallbackUrls(mixed $context): array
-    {
-        $urls = [];
-
-        foreach (self::legacyFolders($context) ?: self::allLegacyFolders() as $folder) {
-            $dir = public_path(str_replace('/', DIRECTORY_SEPARATOR, $folder));
-            if (!is_dir($dir)) {
-                continue;
-            }
-
-            foreach (glob($dir.DIRECTORY_SEPARATOR.'*') ?: [] as $file) {
-                if (!is_file($file) || !preg_match('/\.(jpe?g|png|webp|gif|avif|bmp)$/i', $file)) {
-                    continue;
-                }
-
-                $path = self::mobileSafePublicPath($folder.'/'.basename($file));
-                $urls[] = asset($path);
-                break;
-            }
-
-            if (!empty($urls)) {
-                break;
-            }
-        }
-
-        return $urls;
-    }
-
-    private static function nameTokens(string $name): array
-    {
-        $name = strtolower(Str::ascii($name));
-        $name = preg_replace('/[^a-z0-9]+/', ' ', $name) ?? '';
-
-        $stopWords = [
-            'tepih', 'tepiha', 'tepihe', 'tapet', 'tapeta', 'perde', 'postava',
-            'mbulesa', 'batanije', 'jastek', 'dekorues', 'posteqia', 'garnishte',
-            'modern', 'antibakterial', 'cm', 'euro', 'shkallore', 'rrumbullaket',
-        ];
-
-        $tokens = array_filter(
-            explode(' ', $name),
-            fn ($token) => strlen($token) >= 3 && !in_array($token, $stopWords, true)
-        );
-
-        return array_values(array_unique($tokens));
-    }
-
-    private static function filenameScore(string $filename, array $tokens, string $productName): int
-    {
-        $base = pathinfo($filename, PATHINFO_FILENAME);
-        $haystack = strtolower(Str::ascii($base));
-        $compactHaystack = preg_replace('/[^a-z0-9]+/', '', $haystack) ?? '';
-        $productSlug = preg_replace('/[^a-z0-9]+/', '', strtolower(Str::ascii($productName))) ?? '';
-
-        $score = 0;
-
-        foreach ($tokens as $token) {
-            $token = match ($token) {
-                'glow' => 'gold',
-                default => $token,
-            };
-
-            if (str_contains($haystack, $token) || str_contains($compactHaystack, $token)) {
-                $score += strlen($token) >= 5 ? 12 : 8;
-            }
-        }
-
-        if ($compactHaystack !== '' && $productSlug !== '' && str_contains($productSlug, $compactHaystack)) {
-            $score += 20;
-        }
-
-        return $score;
-    }
-
     private static function legacyFolders(mixed $context = null): array
     {
         $category = strtolower((string) data_get($context, 'category', ''));
         $subcategory = strtolower((string) data_get($context, 'subcategory', ''));
 
         return match ($category) {
-            'tepiha' => ['carpet', 'slider'],
+            'tepiha' => ['carpet'],
             'perde' => $subcategory === 'ditore' ? ['perdeditoree', 'curtainn'] : ['curtainn', 'perdeditoree'],
             'postava' => ['postavav'],
             'mbulesa' => ['mbulesaa'],
