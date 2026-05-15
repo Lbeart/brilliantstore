@@ -209,7 +209,7 @@
 
                 <div class="col-md-6">
                     <label class="form-label">Foto (jpg/png/webp, max 50MB)</label>
-                    <input type="file" name="image[]" class="form-control" multiple accept="image/*">
+                    <input type="file" name="image[]" class="form-control" multiple accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
                 </div>
 
                 <div class="col-12 d-flex gap-2">

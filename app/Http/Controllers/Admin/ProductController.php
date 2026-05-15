@@ -76,10 +76,20 @@ class ProductController extends Controller
 
         // ✅ SAVE MULTI IMAGES AS JSON IN image_path
         $paths = [];
-        if ($request->hasFile('image')) {
-            foreach ($request->file('image') as $img) {
-                $paths[] = $this->saveUploadedImage($img); // "products/uuid.jpg"
+        try {
+            if ($request->hasFile('image')) {
+                foreach ($request->file('image') as $img) {
+                    $paths[] = $this->saveUploadedImage($img);
+                }
             }
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()
+                ->withErrors(['image' => 'Fotoja nuk u pranua nga serveri. Provo JPG/PNG/WEBP me madhesi me te vogel, ose vetem nje foto.'])
+                ->withInput();
         }
         $data['image_path'] = !empty($paths) ? json_encode($paths, JSON_UNESCAPED_SLASHES) : null;
 
@@ -183,10 +193,20 @@ class ProductController extends Controller
         }
 
         // shto fotot e reja
-        if ($request->hasFile('image')) {
-            foreach ($request->file('image') as $img) {
-                $keep[] = $this->saveUploadedImage($img);
+        try {
+            if ($request->hasFile('image')) {
+                foreach ($request->file('image') as $img) {
+                    $keep[] = $this->saveUploadedImage($img);
+                }
             }
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()
+                ->withErrors(['image' => 'Fotoja nuk u pranua nga serveri. Provo JPG/PNG/WEBP me madhesi me te vogel, ose vetem nje foto.'])
+                ->withInput();
         }
 
         $data['image_path'] = !empty($keep) ? json_encode(array_values($keep), JSON_UNESCAPED_SLASHES) : null;
@@ -300,7 +320,19 @@ class ProductController extends Controller
     private function assertSupportedImage($img): void
     {
         $extension = $this->normalizedImageExtension($img);
-        $mime = strtolower((string) $img->getMimeType());
+
+        if (method_exists($img, 'isValid') && !$img->isValid()) {
+            throw ValidationException::withMessages([
+                'image' => $this->uploadErrorMessage((int) $img->getError()),
+            ]);
+        }
+
+        try {
+            $mime = strtolower((string) $img->getMimeType());
+        } catch (\Throwable $e) {
+            report($e);
+            $mime = '';
+        }
 
         $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'bmp', 'gif', 'heic', 'heif'];
         $allowedMimes = [
@@ -325,7 +357,17 @@ class ProductController extends Controller
 
     private function normalizedImageExtension($img): string
     {
-        $extension = strtolower((string) ($img->getClientOriginalExtension() ?: $img->extension() ?: 'jpg'));
+        $extension = strtolower((string) $img->getClientOriginalExtension());
+
+        if ($extension === '') {
+            try {
+                $extension = strtolower((string) $img->extension());
+            } catch (\Throwable $e) {
+                report($e);
+                $extension = 'jpg';
+            }
+        }
+
         $extension = preg_replace('/[^a-z0-9]/', '', $extension) ?: 'jpg';
 
         return $extension === 'jpeg' ? 'jpg' : $extension;
@@ -456,6 +498,18 @@ class ProductController extends Controller
             'image.*.file' => 'Fotoja nuk u lexua mire. Provo nje foto JPG, PNG ose WEBP.',
             'image.*.max' => 'Fotoja eshte shume e madhe. Provo nje foto me te vogel ose zgjidh me pak foto njeheresh.',
         ];
+    }
+
+    private function uploadErrorMessage(int $error): string
+    {
+        return match ($error) {
+            UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => 'Fotoja eshte shume e madhe per serverin. Provo nje foto JPG/PNG/WEBP me te vogel.',
+            UPLOAD_ERR_PARTIAL => 'Fotoja nuk u ngarkua komplet. Provo prape me internet me stabil ose foto me te vogel.',
+            UPLOAD_ERR_NO_TMP_DIR => 'Serverit i mungon folderi i perkohshem per upload. Duhet rregullu konfigurimi i PHP.',
+            UPLOAD_ERR_CANT_WRITE => 'Serveri nuk mundi me shkru foton ne disk. Kontrollo permission te hostingut.',
+            UPLOAD_ERR_EXTENSION => 'PHP e ndali upload-in e fotos. Provo JPG/PNG/WEBP me te vogel.',
+            default => 'Fotoja nuk u pranua nga serveri. Provo JPG/PNG/WEBP me te vogel.',
+        };
     }
 
     private function normalizeSizes(array $sizes): array

@@ -307,7 +307,7 @@
                         {{-- NEW UPLOAD --}}
                         <div class="mb-2">
                             <label class="form-label">Shto foto të reja (multiple, max 50MB)</label>
-                            <input type="file" name="image[]" class="form-control" accept="image/*" id="imageInput" multiple>
+                            <input type="file" name="image[]" class="form-control" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif" id="imageInput" multiple>
                             <div class="hint mt-1">Mundesh me zgjedh 1+ foto njëherësh.</div>
                         </div>
 
