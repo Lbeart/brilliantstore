@@ -46,12 +46,32 @@ class AutoTranslateHtml
         return <<<HTML
 <div id="google_translate_element" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;"></div>
 <style>
+  html,
+  body,
+  body.translated-ltr,
+  body.translated-rtl {
+    top: 0 !important;
+    margin-top: 0 !important;
+  }
+  body > .skiptranslate,
+  body > iframe.skiptranslate,
+  iframe.goog-te-banner-frame,
   .goog-te-banner-frame,
   .goog-te-balloon-frame,
+  .VIpgJd-ZVi9od-ORHb,
+  .VIpgJd-ZVi9od-ORHb-OEVmcd,
   .goog-te-gadget-icon,
-  .goog-logo-link { display: none !important; }
-  body { top: 0 !important; }
-  #goog-gt-tt { display: none !important; }
+  .goog-logo-link,
+  #goog-gt-tt {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
 </style>
 <script>
 (function () {
@@ -73,6 +93,50 @@ class AutoTranslateHtml
   function clearCookie(name) {
     setCookie(name, '', -1);
   }
+
+  function hideGoogleTranslateBar() {
+    document.documentElement.style.setProperty('margin-top', '0', 'important');
+    document.body.style.setProperty('top', '0', 'important');
+    document.body.style.setProperty('margin-top', '0', 'important');
+
+    document.querySelectorAll([
+      'body > .skiptranslate',
+      'body > iframe.skiptranslate',
+      'iframe.goog-te-banner-frame',
+      '.goog-te-banner-frame',
+      '.goog-te-balloon-frame',
+      '.VIpgJd-ZVi9od-ORHb',
+      '.VIpgJd-ZVi9od-ORHb-OEVmcd',
+      '#goog-gt-tt'
+    ].join(',')).forEach(function (node) {
+      node.style.setProperty('display', 'none', 'important');
+      node.style.setProperty('visibility', 'hidden', 'important');
+      node.style.setProperty('opacity', '0', 'important');
+      node.style.setProperty('height', '0', 'important');
+      node.style.setProperty('min-height', '0', 'important');
+      node.style.setProperty('overflow', 'hidden', 'important');
+      node.style.setProperty('pointer-events', 'none', 'important');
+    });
+  }
+
+  hideGoogleTranslateBar();
+
+  var hideAttempts = 0;
+  var hideInterval = setInterval(function () {
+    hideGoogleTranslateBar();
+    hideAttempts++;
+
+    if (hideAttempts > 30) {
+      clearInterval(hideInterval);
+    }
+  }, 250);
+
+  new MutationObserver(hideGoogleTranslateBar).observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['style', 'class']
+  });
 
   if (target === source) {
     clearCookie(cookieName);
