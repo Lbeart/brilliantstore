@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Support\ProductImages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -161,7 +162,7 @@ class ProductController extends Controller
         // fshi nga disk ato që u hoqën
         $toDelete = array_values(array_diff($old, $keep));
         foreach ($toDelete as $p) {
-            if ($p) Storage::disk('public')->delete($p);
+            $this->deleteImagePath($p);
         }
 
         // shto fotot e reja
@@ -193,7 +194,7 @@ class ProductController extends Controller
     {
         $paths = $this->decodeImagePaths($product->image_path);
         foreach ($paths as $p) {
-            if ($p) Storage::disk('public')->delete($p);
+            $this->deleteImagePath($p);
         }
 
         $product->delete();
@@ -202,40 +203,64 @@ class ProductController extends Controller
 
     // ===== Helpers =====
 
-   private function saveUploadedImage($img): string
-{
-    $filename = uniqid() . '.jpg';
+    private function saveUploadedImage($img): string
+    {
+        $extension = strtolower($img->extension() ?: $img->getClientOriginalExtension() ?: 'jpg');
+        $filename = Str::uuid() . '.' . $extension;
 
-    $path = public_path('images/products');
+        $path = public_path('images/products');
 
-    if (!file_exists($path)) {
-        mkdir($path, 0777, true);
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        $img->move($path, $filename);
+
+        return 'images/products/' . $filename;
     }
 
-    $img->move($path, $filename);
+    private function deleteImagePath(?string $raw): void
+    {
+        if (!$raw) {
+            return;
+        }
 
-    return 'images/products/' . $filename;
-}
+        $path = trim((string) $raw, " \t\n\r\0\x0B\"'");
+
+        if (preg_match('#^https?://#i', $path)) {
+            $path = parse_url($path, PHP_URL_PATH) ?: $path;
+        }
+
+        $path = str_replace('\\', '/', ltrim($path, '/'));
+        $path = preg_replace('#^(public|storage)/#', '', $path);
+
+        if ($path === '') {
+            return;
+        }
+
+        if (str_starts_with($path, 'images/')) {
+            $publicPath = public_path(str_replace('/', DIRECTORY_SEPARATOR, $path));
+            if (is_file($publicPath)) {
+                @unlink($publicPath);
+            }
+
+            Storage::disk('public')->delete(substr($path, strlen('images/')));
+            return;
+        }
+
+        Storage::disk('public')->delete($path);
+
+        if (str_starts_with($path, 'products/')) {
+            $publicPath = public_path(str_replace('/', DIRECTORY_SEPARATOR, 'images/'.$path));
+            if (is_file($publicPath)) {
+                @unlink($publicPath);
+            }
+        }
+    }
 
     private function decodeImagePaths($value): array
     {
-        if (empty($value)) return [];
-
-        if (is_array($value)) return array_values(array_filter($value));
-
-        $raw = trim((string) $value);
-
-        // nëse është URL që përmban JSON: .../storage/[...]
-        if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
-            $raw = $m[0];
-        }
-
-        $decoded = json_decode($raw, true);
-        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-            return array_values(array_filter($decoded));
-        }
-
-        return [$raw];
+        return ProductImages::decode($value);
     }
 
     private function normalizeSizes(array $sizes): array

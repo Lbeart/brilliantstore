@@ -1240,7 +1240,7 @@
             : null;
 
           // ✅ FOTO (punon edhe kur image_path është JSON array)
-          $src = \App\Support\ProductImages::url($product->image_path ?? null, asset('images/placeholder.jpg'), $product);
+          $src = \App\Support\ProductImages::url($product->image_path ?? null, asset('images/placeholder-product.png'), $product);
 
           preg_match('/\d{2,3}x\d{2,3}/', $product->name, $sizeMatch);
           $sizeLabel = $sizeMatch[0] ?? null;
@@ -1306,7 +1306,7 @@
                 alt="{{ $product->name }}"
                 loading="lazy"
                 decoding="async"
-                onerror="this.onerror=null;this.src='{{ asset('images/placeholder.jpg') }}'">
+                onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
             </div>
 
             <div class="product-body">

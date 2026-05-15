@@ -338,7 +338,7 @@
     <div class="row g-4">
       @foreach ($products as $p)
       @php
-  $src = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder.jpg'), $p);
+  $src = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder-product.png'), $p);
         @endphp
 @endphp
 
@@ -349,7 +349,7 @@
   src="{{ $src }}"
   alt="{{ $p->name }}"
   loading="lazy"
-  onerror="this.onerror=null;this.src='{{ asset('images/placeholder.jpg') }}'">
+  onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
 
 
             <div class="product-body">

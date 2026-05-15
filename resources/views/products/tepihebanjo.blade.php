@@ -341,14 +341,14 @@
     <div class="row g-4">
       @foreach ($products as $p)
       @php
-  $src = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder.jpg'), $p);
+  $src = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder-product.png'), $p);
 @endphp
 
         <div class="col-6 col-md-4 col-lg-3">
           <article class="product-card">
        <img class="product-thumb" src="{{ $src }}" alt="{{ $p->name }}"
      loading="lazy"
-     onerror="this.onerror=null;this.src='{{ asset('images/placeholder.jpg') }}'">
+     onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
 
 
             <div class="product-body">

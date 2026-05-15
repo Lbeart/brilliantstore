@@ -998,7 +998,8 @@
      decoding="async"
      fetchpriority="high"
      width="900"
-     height="900">
+     height="900"
+     onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}';this.dataset.zoom=this.src;">
 
         <div class="zoom-lens" id="zoomLens" aria-hidden="true"></div>
         <div class="zoom-pane" id="zoomPane" aria-hidden="true"></div>
@@ -1010,9 +1011,9 @@
           @foreach($imageUrls as $i => $imgUrl)
   <button type="button"
     class="thumb-btn {{ $i === 0 ? 'active' : '' }}"
-    onclick="setMainImg('{{ $imgUrl }}', this)">
+    data-product-image="{{ $imgUrl }}">
 
-    <img src="{{ $imgUrl }}" alt="thumb {{ $i+1 }}" loading="lazy" decoding="async" width="96" height="96">
+    <img src="{{ $imgUrl }}" alt="thumb {{ $i+1 }}" loading="lazy" decoding="async" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
   </button>
 @endforeach
         </div>
@@ -1268,6 +1269,7 @@
   decoding="async"
   width="360"
   height="360"
+  onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'"
 />
               </div>
 
@@ -1545,6 +1547,7 @@
 
   // ✅ thumbnails: ndërron foton kryesore + rifreskon zoom
   window.setMainImg = (src, el) => {
+    if(!src) return;
     img.src = src;
     img.dataset.zoom = src;
 
@@ -1554,6 +1557,12 @@
     hideZoom();
     initZoom();
   };
+
+  document.querySelectorAll('.thumb-btn[data-product-image]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      window.setMainImg(btn.dataset.productImage, btn);
+    });
+  });
 
   /* DESKTOP (hover) */
   img.addEventListener('mouseenter', () => {
@@ -1775,7 +1784,7 @@ updateCurtainWhatsapp();
     const btns = Array.from(imgs_all);
     idx = (idx + btns.length) % btns.length;
     const btn = btns[idx];
-    const src = btn.querySelector('img').src;
+    const src = btn.dataset.productImage || btn.querySelector('img')?.getAttribute('src');
     window.setMainImg(src, btn);
   }
 

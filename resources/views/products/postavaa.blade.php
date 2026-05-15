@@ -27,7 +27,7 @@
   <meta property="og:title" content="Set çarçafësh premium – Material i butë & rezistent | Brillant">
   <meta property="og:description" content="Sete çarçafësh të butë, rezistent dhe me ngjyra që nuk zbehen. Përshtaten për çdo dhomë gjumi.">
   <meta property="og:url" content="{{ url('/postava') }}">
-  <meta property="og:image" content="{{ asset('images/placeholder.jpg') }}">
+  <meta property="og:image" content="{{ asset('images/placeholder-product.png') }}">
 
   <!-- TWITTER CARD -->
   <meta name="twitter:card" content="summary_large_image">
@@ -362,7 +362,7 @@
           $minPrice = collect($sizes)->pluck('price')->filter(fn($x)=>$x!==null && $x!=='')->min();
           if (is_null($minPrice) && !is_null($p->price)) $minPrice = $p->price;
 
-            $src = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder.jpg'), $p);
+            $src = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder-product.png'), $p);
         @endphp
 
         <div class="col-6 col-md-4 col-lg-3">
@@ -372,7 +372,7 @@
   src="{{ $src }}"
   alt="{{ $p->name }}"
   loading="lazy"
-  onerror="this.onerror=null;this.src='{{ asset('images/placeholder.jpg') }}'">
+  onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
 
 
             <div class="product-body">

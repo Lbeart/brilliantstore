@@ -38,7 +38,7 @@
                 {{ \Illuminate\Support\Str::limit($p->description, 120) }}
               </p>
             @endif
-            <a href="{{ route('shop.show',$p->slug) }}" class="btn btn-danger mt-auto">Shiko</a>
+            <a href="{{ route('products.show',$p->slug) }}" class="btn btn-danger mt-auto">Shiko</a>
           </div>
         </div>
       </div>
