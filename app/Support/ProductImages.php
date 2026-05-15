@@ -205,9 +205,23 @@ class ProductImages
     private static function publicPathUrl(string $path): ?string
     {
         $path = ltrim(str_replace('\\', '/', $path), '/');
+
+        if (preg_match('/\.bmp$/i', $path)) {
+            $jpgPath = preg_replace('/\.bmp$/i', '.jpg', $path);
+            if ($jpgPath && self::existsInPublic($jpgPath)) {
+                return asset($jpgPath);
+            }
+
+            return self::existsInPublic($path) ? self::legacyImageUrl($path) : null;
+        }
+
         $mobileSafe = self::mobileSafePublicPath($path);
 
-        return self::existsInPublic($mobileSafe) ? asset($mobileSafe) : null;
+        if (self::existsInPublic($mobileSafe)) {
+            return asset($mobileSafe);
+        }
+
+        return null;
     }
 
     private static function publicImageUrl(string $path): ?string
@@ -285,7 +299,39 @@ class ProductImages
 
         arsort($matches);
 
-        return array_values(array_map(fn ($path) => asset($path), array_keys(array_slice($matches, 0, 4, true))));
+        if (!empty($matches)) {
+            return array_values(array_map(fn ($path) => asset($path), array_keys(array_slice($matches, 0, 4, true))));
+        }
+
+        return self::categoryFallbackUrls($context);
+    }
+
+    private static function categoryFallbackUrls(mixed $context): array
+    {
+        $urls = [];
+
+        foreach (self::legacyFolders($context) ?: self::allLegacyFolders() as $folder) {
+            $dir = public_path(str_replace('/', DIRECTORY_SEPARATOR, $folder));
+            if (!is_dir($dir)) {
+                continue;
+            }
+
+            foreach (glob($dir.DIRECTORY_SEPARATOR.'*') ?: [] as $file) {
+                if (!is_file($file) || !preg_match('/\.(jpe?g|png|webp|gif|avif|bmp)$/i', $file)) {
+                    continue;
+                }
+
+                $path = self::mobileSafePublicPath($folder.'/'.basename($file));
+                $urls[] = asset($path);
+                break;
+            }
+
+            if (!empty($urls)) {
+                break;
+            }
+        }
+
+        return $urls;
     }
 
     private static function nameTokens(string $name): array
@@ -372,5 +418,12 @@ class ProductImages
         $jpgPath = preg_replace('/\.bmp$/i', '.jpg', $path);
 
         return $jpgPath && self::existsInPublic($jpgPath) ? $jpgPath : $path;
+    }
+
+    private static function legacyImageUrl(string $path): string
+    {
+        $encoded = rtrim(strtr(base64_encode($path), '+/', '-_'), '=');
+
+        return url('/legacy-image/'.$encoded);
     }
 }

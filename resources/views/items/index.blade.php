@@ -1390,20 +1390,7 @@
           <div class="product-grid">
             @foreach($latestProducts as $item)
               @php
-                $imgs = $item->image_path;
-                if (is_string($imgs)) {
-                  $decoded = json_decode($imgs, true);
-                  $imgs = is_array($decoded) ? $decoded : [];
-                }
-                if (!is_array($imgs)) $imgs = [];
-                $img = $imgs[0] ?? null;
-
-                $path = $img;
-                if ($path && str_starts_with($path, 'products/')) {
-                  $path = 'images/'.$path;
-                } elseif ($path && !str_starts_with($path, 'images/')) {
-                  $path = 'images/products/'.$path;
-                }
+                $imgUrl = \App\Support\ProductImages::url($item->image_path ?? null, asset('images/placeholder-product.png'), $item);
 
                 $sizes = $item->sizes ?? null;
                 if (is_string($sizes)) {
@@ -1430,7 +1417,7 @@
 
               <article class="product-card">
                 <a class="product-media" href="{{ $detailsUrl }}" aria-label="Shiko {{ $item->name }}">
-                  <img src="{{ $path ? asset($path) : asset('images/llogo.png') }}" alt="{{ $item->name }}" loading="lazy" decoding="async" width="640" height="520">
+                  <img src="{{ $imgUrl }}" alt="{{ $item->name }}" loading="lazy" decoding="async" width="640" height="520" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
                   <span class="product-badge">I ri</span>
                   <span class="stock-badge {{ $inStock ? '' : 'out' }}">{{ $inStock ? 'Ne stock' : 'Pa stock' }}</span>
                 </a>
