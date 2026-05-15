@@ -6,12 +6,12 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductImages
 {
-    public static function urls(mixed $value, ?string $placeholder = null): array
+    public static function urls(mixed $value, ?string $placeholder = null, mixed $context = null): array
     {
         $urls = [];
 
         foreach (self::decode($value) as $path) {
-            $url = self::normalize($path);
+            $url = self::normalize($path, $context);
             if ($url) {
                 $urls[] = $url;
             }
@@ -24,9 +24,9 @@ class ProductImages
         return array_values(array_unique($urls));
     }
 
-    public static function url(mixed $value, ?string $placeholder = null): string
+    public static function url(mixed $value, ?string $placeholder = null, mixed $context = null): string
     {
-        return self::urls($value, $placeholder)[0] ?? ($placeholder ?: asset('images/placeholder-product.png'));
+        return self::urls($value, $placeholder, $context)[0] ?? ($placeholder ?: asset('images/placeholder-product.png'));
     }
 
     public static function decode(mixed $value): array
@@ -73,7 +73,7 @@ class ProductImages
         return [$raw];
     }
 
-    private static function normalize(string $raw): ?string
+    private static function normalize(string $raw, mixed $context = null): ?string
     {
         $path = trim($raw, " \t\n\r\0\x0B\"'");
         if ($path === '') {
@@ -83,8 +83,8 @@ class ProductImages
         if (preg_match('#^https?://#i', $path)) {
             $urlPath = parse_url($path, PHP_URL_PATH);
 
-            if (is_string($urlPath) && preg_match('#^/(storage|images|products)/#', $urlPath)) {
-                $localUrl = self::normalize($urlPath);
+            if (is_string($urlPath) && self::looksLocalPath($urlPath)) {
+                $localUrl = self::normalize($urlPath, $context);
                 if ($localUrl) {
                     return $localUrl;
                 }
@@ -106,11 +106,17 @@ class ProductImages
                 return Storage::disk('public')->url($storagePath);
             }
 
+            if (self::existsInPublic($storagePath)) {
+                return self::publicPathUrl($storagePath);
+            }
+
             if (str_starts_with($storagePath, 'images/')) {
                 return self::publicImageUrl(substr($storagePath, strlen('images/')));
             }
 
-            return self::publicImageUrl($storagePath) ?? asset('storage/'.$storagePath);
+            return self::legacyPublicUrl($storagePath, $context)
+                ?? self::publicImageUrl($storagePath)
+                ?? asset('storage/'.$storagePath);
         }
 
         if (str_starts_with($path, 'images/products/')) {
@@ -132,10 +138,11 @@ class ProductImages
         }
 
         if (self::existsInPublic($path)) {
-            return asset($path);
+            return self::publicPathUrl($path);
         }
 
-        return self::publicImageUrl($path)
+        return self::legacyPublicUrl($path, $context)
+            ?? self::publicImageUrl($path)
             ?? self::storageUrl($path)
             ?? self::storageUrl('products/'.$path)
             ?? asset('images/products/'.$path);
@@ -146,10 +153,18 @@ class ProductImages
         return is_file(public_path(str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path)));
     }
 
+    private static function looksLocalPath(string $path): bool
+    {
+        $path = ltrim(str_replace('\\', '/', $path), '/');
+        $first = strtok($path, '/');
+
+        return in_array($first, array_merge(['storage', 'images', 'products'], self::allLegacyFolders()), true);
+    }
+
     private static function extractImagePaths(string $raw): array
     {
         preg_match_all(
-            '#(?:https?://[^\s"\']+)?/?(?:storage/)?(?:images/)?products/[^\s"\',\]]+\.(?:jpe?g|png|webp|gif|avif)#i',
+            '#(?:https?://[^\s"\']+)?/?(?:storage/)?(?:images/)?[a-z0-9_-]*/?[^\s"\',\]]+\.(?:jpe?g|png|webp|gif|avif|bmp)#i',
             $raw,
             $matches
         );
@@ -171,7 +186,10 @@ class ProductImages
 
     private static function publicPathUrl(string $path): ?string
     {
-        return self::existsInPublic($path) ? asset($path) : null;
+        $path = ltrim(str_replace('\\', '/', $path), '/');
+        $mobileSafe = self::mobileSafePublicPath($path);
+
+        return self::existsInPublic($mobileSafe) ? asset($mobileSafe) : null;
     }
 
     private static function publicImageUrl(string $path): ?string
@@ -186,5 +204,76 @@ class ProductImages
         $path = ltrim(str_replace('\\', '/', $path), '/');
 
         return self::existsInStorage($path) ? Storage::disk('public')->url($path) : null;
+    }
+
+    private static function legacyPublicUrl(string $path, mixed $context = null): ?string
+    {
+        $path = ltrim(str_replace('\\', '/', $path), '/');
+        $filename = basename($path);
+        $candidatePaths = [];
+
+        foreach (self::legacyFolders($context) as $folder) {
+            $candidatePaths[] = $folder.'/'.$path;
+            $candidatePaths[] = $folder.'/'.$filename;
+        }
+
+        foreach (self::allLegacyFolders() as $folder) {
+            $candidatePaths[] = $folder.'/'.$path;
+            $candidatePaths[] = $folder.'/'.$filename;
+        }
+
+        foreach (array_unique($candidatePaths) as $candidate) {
+            $url = self::publicPathUrl($candidate);
+            if ($url) {
+                return $url;
+            }
+        }
+
+        return null;
+    }
+
+    private static function legacyFolders(mixed $context = null): array
+    {
+        $category = strtolower((string) data_get($context, 'category', ''));
+        $subcategory = strtolower((string) data_get($context, 'subcategory', ''));
+
+        return match ($category) {
+            'tepiha' => ['carpet'],
+            'perde' => $subcategory === 'ditore' ? ['perdeditoree', 'curtainn'] : ['curtainn', 'perdeditoree'],
+            'postava' => ['postavav'],
+            'mbulesa' => ['mbulesaa'],
+            'jastekdekorues' => ['jastak'],
+            'batanije' => ['batanijee'],
+            'tepihebanjo' => ['tepihebanjoo'],
+            'posteqia' => ['posteqiaa'],
+            default => [],
+        };
+    }
+
+    private static function allLegacyFolders(): array
+    {
+        return [
+            'carpet',
+            'curtainn',
+            'perdeditoree',
+            'postavav',
+            'mbulesaa',
+            'jastak',
+            'batanijee',
+            'tepihebanjoo',
+            'posteqiaa',
+            'slider',
+        ];
+    }
+
+    private static function mobileSafePublicPath(string $path): string
+    {
+        if (!preg_match('/\.bmp$/i', $path)) {
+            return $path;
+        }
+
+        $jpgPath = preg_replace('/\.bmp$/i', '.jpg', $path);
+
+        return $jpgPath && self::existsInPublic($jpgPath) ? $jpgPath : $path;
     }
 }
