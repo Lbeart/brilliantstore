@@ -93,10 +93,7 @@ class ProductImages
             $urlPath = parse_url($path, PHP_URL_PATH);
 
             if (is_string($urlPath) && self::looksLocalPath($urlPath)) {
-                $localUrl = self::normalize($urlPath, $context);
-                if ($localUrl) {
-                    return $localUrl;
-                }
+                return self::normalize($urlPath, $context);
             }
 
             return $path;
@@ -124,8 +121,7 @@ class ProductImages
             }
 
             return self::legacyPublicUrl($storagePath, $context)
-                ?? self::publicImageUrl($storagePath)
-                ?? asset('storage/'.$storagePath);
+                ?? self::publicImageUrl($storagePath);
         }
 
         if (str_starts_with($path, 'images/products/')) {
@@ -133,17 +129,18 @@ class ProductImages
 
             return self::publicPathUrl($path)
                 ?? self::storageUrl($productPath)
-                ?? asset($path);
+                ?? self::legacyPublicUrl(basename($path), $context);
         }
 
         if (str_starts_with($path, 'images/')) {
-            return self::publicPathUrl($path) ?? asset($path);
+            return self::publicPathUrl($path)
+                ?? self::legacyPublicUrl(basename($path), $context);
         }
 
         if (str_starts_with($path, 'products/')) {
             return self::publicPathUrl('images/'.$path)
                 ?? self::storageUrl($path)
-                ?? asset('images/'.$path);
+                ?? self::legacyPublicUrl(basename($path), $context);
         }
 
         if (self::existsInPublic($path)) {
@@ -153,8 +150,7 @@ class ProductImages
         return self::legacyPublicUrl($path, $context)
             ?? self::publicImageUrl($path)
             ?? self::storageUrl($path)
-            ?? self::storageUrl('products/'.$path)
-            ?? asset('images/products/'.$path);
+            ?? self::storageUrl('products/'.$path);
     }
 
     private static function existsInPublic(string $path): bool
@@ -342,7 +338,7 @@ class ProductImages
         $stopWords = [
             'tepih', 'tepiha', 'tepihe', 'tapet', 'tapeta', 'perde', 'postava',
             'mbulesa', 'batanije', 'jastek', 'dekorues', 'posteqia', 'garnishte',
-            'modern', 'antibakterial', 'cm', 'euro',
+            'modern', 'antibakterial', 'cm', 'euro', 'shkallore', 'rrumbullaket',
         ];
 
         $tokens = array_filter(
@@ -363,6 +359,11 @@ class ProductImages
         $score = 0;
 
         foreach ($tokens as $token) {
+            $token = match ($token) {
+                'glow' => 'gold',
+                default => $token,
+            };
+
             if (str_contains($haystack, $token) || str_contains($compactHaystack, $token)) {
                 $score += strlen($token) >= 5 ? 12 : 8;
             }
@@ -381,7 +382,7 @@ class ProductImages
         $subcategory = strtolower((string) data_get($context, 'subcategory', ''));
 
         return match ($category) {
-            'tepiha' => ['carpet'],
+            'tepiha' => ['carpet', 'slider'],
             'perde' => $subcategory === 'ditore' ? ['perdeditoree', 'curtainn'] : ['curtainn', 'perdeditoree'],
             'postava' => ['postavav'],
             'mbulesa' => ['mbulesaa'],
