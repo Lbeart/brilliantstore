@@ -185,15 +185,19 @@ Route::middleware(['auth','verified','admin'])
         // Customers
         Route::get('/customers', [AdminCustomerController::class, 'index'])->name('customers.index');
         Route::post('/customers', [AdminCustomerController::class, 'store'])->name('customers.store');
-        Route::get('/customers/{customer}/edit', [AdminCustomerController::class, 'edit'])->name('customers.edit');
-        Route::put('/customers/{customer}', [AdminCustomerController::class, 'update'])->name('customers.update');
-        Route::delete('/customers/{customer}', [AdminCustomerController::class, 'destroy'])->name('customers.destroy');
-        Route::post('/customers/{customer}/purchases', [AdminCustomerController::class, 'storePurchase'])->name('customers.purchases.store');
-        Route::delete('/customers/{customer}/purchases/{purchase}', [AdminCustomerController::class, 'destroyPurchase'])->name('customers.purchases.destroy');
-        Route::get('/customers/{customer}/receipts/{receiptCode}/invoice', [AdminCustomerController::class, 'invoice'])->name('customers.invoice');
-        Route::get('/customers/{customer}/receipts/{receiptCode}/invoice-pdf', [AdminCustomerController::class, 'invoicePdf'])->name('customers.invoice.pdf');
-        Route::get('/customers/reports/daily/{date}/invoice', [AdminCustomerController::class, 'dailyInvoice'])->name('customers.daily-invoice');
-        Route::get('/customers/reports/daily/{date}/invoice-pdf', [AdminCustomerController::class, 'dailyInvoicePdf'])->name('customers.daily-invoice.pdf');
+        Route::get('/customers/reports/daily/{date}/invoice', [AdminCustomerController::class, 'dailyInvoice'])
+            ->where('date', '\d{4}-\d{2}-\d{2}')
+            ->name('customers.daily-invoice');
+        Route::get('/customers/reports/daily/{date}/invoice-pdf', [AdminCustomerController::class, 'dailyInvoicePdf'])
+            ->where('date', '\d{4}-\d{2}-\d{2}')
+            ->name('customers.daily-invoice.pdf');
+        Route::get('/customers/{customer}/edit', [AdminCustomerController::class, 'edit'])->whereNumber('customer')->name('customers.edit');
+        Route::put('/customers/{customer}', [AdminCustomerController::class, 'update'])->whereNumber('customer')->name('customers.update');
+        Route::delete('/customers/{customer}', [AdminCustomerController::class, 'destroy'])->whereNumber('customer')->name('customers.destroy');
+        Route::post('/customers/{customer}/purchases', [AdminCustomerController::class, 'storePurchase'])->whereNumber('customer')->name('customers.purchases.store');
+        Route::delete('/customers/{customer}/purchases/{purchase}', [AdminCustomerController::class, 'destroyPurchase'])->whereNumber('customer')->whereNumber('purchase')->name('customers.purchases.destroy');
+        Route::get('/customers/{customer}/receipts/{receiptCode}/invoice', [AdminCustomerController::class, 'invoice'])->whereNumber('customer')->name('customers.invoice');
+        Route::get('/customers/{customer}/receipts/{receiptCode}/invoice-pdf', [AdminCustomerController::class, 'invoicePdf'])->whereNumber('customer')->name('customers.invoice.pdf');
 
         // Products
         Route::get('/products',                 [AdminProductController::class, 'index'])->name('products.index');

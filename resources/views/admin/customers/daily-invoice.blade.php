@@ -7,14 +7,15 @@
   <style>
     body{font-family:DejaVu Sans, Arial, sans-serif;background:#f4f6f9;margin:0;padding:20px;color:#17202a}
     .invoice{max-width:980px;margin:0 auto;background:#fff;border-radius:10px;padding:28px;box-shadow:0 10px 25px rgba(16,24,40,.10)}
-    .header{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;border-bottom:2px solid #e5e7eb;padding-bottom:18px;margin-bottom:18px}
+    .header{display:table;width:100%;border-bottom:2px solid #e5e7eb;padding-bottom:18px;margin-bottom:18px}
+    .header>div{display:table-cell;vertical-align:top}
     .logo{height:66px;max-width:170px;object-fit:contain}
     .company{font-size:13px;color:#667085;line-height:1.5;margin-top:8px}
     .title{text-align:right}
     .title h1{margin:0;color:#dc3545;font-size:30px;letter-spacing:1px}
     .title div{font-size:13px;color:#344054;line-height:1.6}
-    .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
-    .box{border:1px solid #e5e7eb;border-radius:8px;padding:12px;background:#fbfcfd}
+    .summary{display:table;width:100%;table-layout:fixed;border-spacing:8px 0;margin:18px -8px}
+    .box{display:table-cell;border:1px solid #e5e7eb;border-radius:8px;padding:12px;background:#fbfcfd}
     .box .label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#667085;font-weight:800}
     .box .value{font-size:18px;font-weight:900;margin-top:4px}
     table{width:100%;border-collapse:collapse;margin-top:18px}
@@ -23,14 +24,14 @@
     .text-end{text-align:right}
     .receipt-head{background:#fff7f8;font-weight:800}
     .total{margin-top:18px;text-align:right;font-size:24px;font-weight:900;color:#dc3545}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+    .actions{margin-top:22px}
     .btn{display:inline-block;border-radius:8px;padding:10px 14px;text-decoration:none;border:0;font-weight:700;cursor:pointer;font-size:14px}
     .btn-dark{background:#111827;color:#fff}
     .btn-red{background:#dc3545;color:#fff}
     .btn-muted{background:#6c757d;color:#fff}
     .footer{margin-top:34px;text-align:center;color:#667085;font-size:12px;border-top:1px solid #e5e7eb;padding-top:16px}
     @media print{body{background:#fff;padding:0}.invoice{box-shadow:none;border-radius:0}.actions{display:none}}
-    @media (max-width:760px){.header,.summary{display:block}.box{margin-bottom:8px}.title{text-align:left;margin-top:16px}.invoice{padding:18px}}
+    @media (max-width:760px){.header,.summary,.header>div,.box{display:block}.summary{margin:18px 0}.box{margin-bottom:8px}.title{text-align:left;margin-top:16px}.invoice{padding:18px}}
   </style>
 </head>
 <body>
@@ -86,10 +87,11 @@
         @php
           $statusLabels = ['paid' => 'Paguar', 'partial' => 'Pjese', 'unpaid' => 'Pa paguar'];
           $paymentLabels = ['cash' => 'Cash', 'card' => 'Kartel', 'bank' => 'Banke', 'mixed' => 'E perzier'];
+          $receiptCustomer = $receipt->customer;
         @endphp
         <tr class="receipt-head">
           <td colspan="6">
-            {{ $receipt->code }} - {{ $receipt->customer?->name ?? 'Klient' }}
+            {{ $receipt->code }} - {{ optional($receiptCustomer)->name ?? 'Klient' }}
             | {{ $paymentLabels[$receipt->payment_method] ?? $receipt->payment_method }}
             | {{ $statusLabels[$receipt->payment_status] ?? $receipt->payment_status }}
             | Total {{ number_format((float) $receipt->total, 2) }} EUR
@@ -99,7 +101,7 @@
         </tr>
         @foreach($receipt->purchases as $purchase)
           <tr>
-            <td>{{ $receipt->customer?->phone ?: '-' }}</td>
+            <td>{{ optional($receiptCustomer)->phone ?: '-' }}</td>
             <td>{{ $purchase->item_name }}</td>
             <td>{{ $purchase->size ?: '-' }}</td>
             <td class="text-end">{{ $purchase->quantity }}</td>
