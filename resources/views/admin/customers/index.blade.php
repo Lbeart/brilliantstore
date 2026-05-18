@@ -57,6 +57,13 @@
     .empty-state{padding:2rem;text-align:center;color:var(--muted)}
     .customer-card{border:1px solid var(--line);border-radius:var(--radius);background:#fff}
     .line-item{border:1px solid var(--line);border-radius:var(--radius);padding:.75rem;background:#fbfcfd;margin-bottom:.75rem}
+    .metric-band{background:#111827;color:#fff;border-radius:var(--radius);box-shadow:var(--shadow)}
+    .metric-band .metric{padding:1rem;border-right:1px solid rgba(255,255,255,.12)}
+    .metric-band .metric:last-child{border-right:0}
+    .metric .label{color:#cbd5e1;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+    .metric .value{font-size:1.45rem;font-weight:900;line-height:1.1}
+    .month-tile{border:1px solid var(--line);border-radius:var(--radius);padding:.75rem;background:#fff;min-height:104px}
+    .month-name{font-weight:850;color:#344054}
     @media (max-width:991px){.content{padding:1rem}.page-head{flex-direction:column}.sidebar{min-height:100vh}}
     @media (max-width:767px){.sidebar.desktop{display:none}.stat{min-height:auto}.actions{width:100%;display:flex}.actions .btn,.actions form{flex:1}.actions form button{width:100%}}
   </style>
@@ -152,6 +159,31 @@
           <div class="card-soft stat p-3">
             <div><div class="stat-label">Kliente 30 ditet e fundit</div><div class="stat-value">{{ number_format($stats['latestCount'] ?? 0) }}</div></div>
             <div class="stat-icon"><i class="fa fa-calendar-check"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="metric-band mb-3">
+        <div class="row g-0">
+          <div class="col-12 col-md-3 metric">
+            <div class="label">Shitje sot</div>
+            <div class="value">{{ number_format($stats['todaySales'] ?? 0, 2) }} EUR</div>
+            <div class="small text-white-50">{{ number_format($stats['todayReceipts'] ?? 0) }} fatura sot</div>
+          </div>
+          <div class="col-12 col-md-3 metric">
+            <div class="label">Shitje kete muaj</div>
+            <div class="value">{{ number_format($stats['monthSales'] ?? 0, 2) }} EUR</div>
+            <div class="small text-white-50">Nga POS dhe website</div>
+          </div>
+          <div class="col-12 col-md-3 metric">
+            <div class="label">Shitje {{ $reportYear }}</div>
+            <div class="value">{{ number_format($stats['yearSales'] ?? 0, 2) }} EUR</div>
+            <div class="small text-white-50">Paguar {{ number_format($stats['yearPaid'] ?? 0, 2) }} EUR</div>
+          </div>
+          <div class="col-12 col-md-3 metric">
+            <div class="label">Borxh hapur</div>
+            <div class="value">{{ number_format($stats['openBalance'] ?? 0, 2) }} EUR</div>
+            <div class="small text-white-50">Per t'u ndjekur nga klientet</div>
           </div>
         </div>
       </div>
@@ -253,12 +285,74 @@
 
         <div class="col-12 col-xl-8">
           <div class="card-soft p-3 mb-3">
+            <div class="section-title">
+              <h2>Raporti i shitjeve fizike</h2>
+              <form method="GET" action="{{ route('admin.customers.index') }}" class="d-flex gap-2">
+                <input type="hidden" name="q" value="{{ $search }}">
+                <input type="hidden" name="sort" value="{{ $sort }}">
+                <select name="year" class="form-select form-select-sm" onchange="this.form.submit()">
+                  @for($year = now()->year + 1; $year >= 2024; $year--)
+                    <option value="{{ $year }}" @selected($reportYear == $year)>{{ $year }}</option>
+                  @endfor
+                </select>
+              </form>
+            </div>
+
+            <div class="row g-2 mb-3">
+              @php
+                $months = [1=>'Jan',2=>'Shk',3=>'Mar',4=>'Pri',5=>'Maj',6=>'Qer',7=>'Kor',8=>'Gus',9=>'Sht',10=>'Tet',11=>'Nen',12=>'Dhj'];
+              @endphp
+              @foreach($months as $monthNumber => $monthLabel)
+                @php $month = $monthlySales->get($monthNumber); @endphp
+                <div class="col-6 col-md-3 col-xl-2">
+                  <div class="month-tile">
+                    <div class="month-name">{{ $monthLabel }}</div>
+                    <div class="fw-bold">{{ number_format((float) ($month->total_sales ?? 0), 2) }} EUR</div>
+                    <div class="small muted">{{ (int) ($month->receipts_count ?? 0) }} fatura</div>
+                    @if((float) ($month->open_balance ?? 0) > 0)
+                      <div class="small text-danger">Borxh {{ number_format((float) $month->open_balance, 2) }}</div>
+                    @endif
+                  </div>
+                </div>
+              @endforeach
+            </div>
+
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Fatura</th>
+                    <th>Shitje</th>
+                    <th>Paguar</th>
+                    <th>Borxh</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @forelse($dailySales as $day)
+                    <tr>
+                      <td class="fw-semibold">{{ \Carbon\Carbon::parse($day->sale_date)->format('d.m.Y') }}</td>
+                      <td>{{ (int) $day->receipts_count }}</td>
+                      <td class="fw-bold">{{ number_format((float) $day->total_sales, 2) }} EUR</td>
+                      <td>{{ number_format((float) $day->paid_sales, 2) }} EUR</td>
+                      <td class="{{ (float) $day->open_balance > 0 ? 'text-danger fw-bold' : 'muted' }}">{{ number_format((float) $day->open_balance, 2) }} EUR</td>
+                    </tr>
+                  @empty
+                    <tr><td colspan="5" class="empty-state">Ende nuk ka shitje te regjistruara per {{ $reportYear }}.</td></tr>
+                  @endforelse
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card-soft p-3 mb-3">
             <form method="GET" action="{{ route('admin.customers.index') }}" class="row g-2 align-items-end">
               <div class="col-12 col-md-7">
                 <label class="form-label">Kerko klientin</label>
                 <div class="input-group">
                   <span class="input-group-text"><i class="fa fa-search"></i></span>
                   <input type="text" name="q" value="{{ $search }}" class="form-control" placeholder="Emer, telefon, email, produkt ose kod porosie...">
+                  <input type="hidden" name="year" value="{{ $reportYear }}">
                 </div>
               </div>
               <div class="col-6 col-md-3">
@@ -272,7 +366,7 @@
               </div>
               <div class="col-6 col-md-2 d-flex gap-2">
                 <button class="btn btn-outline-dark w-100" type="submit">Kerko</button>
-                <a class="btn btn-outline-secondary" href="{{ route('admin.customers.index') }}" aria-label="Reseto"><i class="fa fa-rotate-left"></i></a>
+                <a class="btn btn-outline-secondary" href="{{ route('admin.customers.index', ['year' => $reportYear]) }}" aria-label="Reseto"><i class="fa fa-rotate-left"></i></a>
               </div>
             </form>
           </div>

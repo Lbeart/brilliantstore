@@ -44,6 +44,7 @@
     .pos-total .label{color:#cbd5e1;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;font-weight:800}
     .pos-total .value{font-size:1.6rem;font-weight:900}
     .mini-total{font-size:.85rem;color:#667085}
+    .payment-helper{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem}
     @media (max-width:991px){.content{padding:1rem}.page-head{flex-direction:column}.sidebar{min-height:100vh}}
     @media (max-width:767px){.sidebar.desktop{display:none}}
   </style>
@@ -224,7 +225,7 @@
               </div>
               <div class="col-6">
                 <label class="form-label">Paguar</label>
-                <input type="number" step="0.01" name="paid_amount" min="0" class="form-control" data-paid>
+                <input type="number" step="0.01" name="paid_amount" value="0" min="0" class="form-control" data-paid>
               </div>
               <div class="col-12">
                 <label class="form-label">Menyra e pageses</label>
@@ -235,6 +236,12 @@
                   <option value="mixed">E perzier</option>
                 </select>
               </div>
+            </div>
+
+            <div class="payment-helper mt-2">
+              <button type="button" class="btn btn-sm btn-outline-danger" data-pay-none>Se ka pagu</button>
+              <button type="button" class="btn btn-sm btn-outline-dark" data-pay-half>Gjysmen</button>
+              <button type="button" class="btn btn-sm btn-outline-success" data-pay-full>Krejt</button>
             </div>
 
             <div class="pos-total mt-3">
@@ -308,7 +315,7 @@
                         @if($receipt)
                           @php
                             $paymentLabels = ['cash' => 'Cash', 'card' => 'Kartel', 'bank' => 'Banke', 'mixed' => 'E perzier'];
-                            $statusLabels = ['paid' => 'Paguar', 'partial' => 'Pjese', 'unpaid' => 'Pa paguar'];
+                            $statusLabels = ['paid' => 'Pagesa e kryer', 'partial' => 'Pjeserisht', 'unpaid' => 'Pa paguar'];
                             $statusColors = ['paid' => 'success', 'partial' => 'warning', 'unpaid' => 'danger'];
                           @endphp
                           <div class="small">
@@ -429,10 +436,6 @@
     const discount = Math.min(parseFloat(discountInput?.value || 0), subtotal);
     const grand = Math.max(subtotal - discount, 0);
 
-    if (paidInput && paidInput.value === '') {
-      paidInput.value = money(grand);
-    }
-
     const paid = parseFloat(paidInput?.value || 0);
     const balance = Math.max(grand - paid, 0);
 
@@ -477,6 +480,26 @@
     if (event.target.closest('[data-line]') || event.target.matches('[data-discount], [data-paid]')) {
       calculate();
     }
+  });
+
+  document.querySelector('[data-pay-none]')?.addEventListener('click', () => {
+    const paidInput = document.querySelector('[data-paid]');
+    if (paidInput) paidInput.value = '0.00';
+    calculate();
+  });
+
+  document.querySelector('[data-pay-half]')?.addEventListener('click', () => {
+    const grand = parseFloat(document.querySelector('[data-grand-total]')?.textContent || 0);
+    const paidInput = document.querySelector('[data-paid]');
+    if (paidInput) paidInput.value = money(grand / 2);
+    calculate();
+  });
+
+  document.querySelector('[data-pay-full]')?.addEventListener('click', () => {
+    const grand = parseFloat(document.querySelector('[data-grand-total]')?.textContent || 0);
+    const paidInput = document.querySelector('[data-paid]');
+    if (paidInput) paidInput.value = money(grand);
+    calculate();
   });
 
   calculate();

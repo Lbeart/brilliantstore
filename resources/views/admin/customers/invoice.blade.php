@@ -26,6 +26,13 @@
     .summary-row{display:flex;justify-content:space-between;padding:9px 12px;border-bottom:1px solid #e5e7eb;font-size:13px}
     .summary-row:last-child{border-bottom:0}
     .summary-row.strong{font-weight:800;background:#f9fafb}
+    .status-box{border-radius:8px;padding:12px 14px;margin:16px 0;font-weight:800}
+    .status-paid{background:#ecfdf3;color:#067647;border:1px solid #abefc6}
+    .status-partial{background:#fffaeb;color:#b54708;border:1px solid #fedf89}
+    .status-unpaid{background:#fef3f2;color:#b42318;border:1px solid #fecdca}
+    .notes-box{border:1px solid #e5e7eb;border-radius:8px;padding:14px;background:#fff;margin-bottom:18px}
+    .notes-box h2{font-size:13px;text-transform:uppercase;color:#667085;letter-spacing:.06em;margin:0 0 8px}
+    .notes-box p{margin:0;white-space:pre-line;line-height:1.55}
     .footer{margin-top:34px;text-align:center;color:#667085;font-size:12px;border-top:1px solid #e5e7eb;padding-top:16px}
     .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
     .btn{display:inline-block;border-radius:8px;padding:10px 14px;text-decoration:none;border:0;font-weight:700;cursor:pointer;font-size:14px}
@@ -65,6 +72,22 @@
     </div>
   @endif
 
+  @php
+    $paymentStatus = $receipt?->payment_status ?? 'paid';
+    $paidAmount = (float) ($receipt?->paid_amount ?? $total);
+    $balanceAmount = (float) ($receipt?->balance ?? 0);
+    $statusClass = ['paid' => 'status-paid', 'partial' => 'status-partial', 'unpaid' => 'status-unpaid'][$paymentStatus] ?? 'status-paid';
+    $statusText = [
+      'paid' => 'PAGESA E KRYER - klienti e ka paguar krejt.',
+      'partial' => 'PAGESA E PJESSHME - klienti ka paguar '.number_format($paidAmount, 2).' EUR, i kane mbetur '.number_format($balanceAmount, 2).' EUR.',
+      'unpaid' => 'E PA PAGUAR - klienti nuk ka paguar ende. I kane mbetur '.number_format($balanceAmount, 2).' EUR.',
+    ][$paymentStatus] ?? 'PAGESA E KRYER';
+  @endphp
+
+  <div class="status-box {{ $statusClass }}">
+    {{ $statusText }}
+  </div>
+
   <div class="grid">
     <div class="box">
       <h2>Klienti</h2>
@@ -90,6 +113,18 @@
       </p>
     </div>
   </div>
+
+  @if($customer->notes || $receipt?->notes)
+    <div class="notes-box">
+      <h2>Shenime</h2>
+      @if($customer->notes)
+        <p><strong>Shenime te klientit:</strong><br>{{ $customer->notes }}</p>
+      @endif
+      @if($receipt?->notes)
+        <p style="margin-top:10px"><strong>Shenime te fatures:</strong><br>{{ $receipt->notes }}</p>
+      @endif
+    </div>
+  @endif
 
   <table>
     <thead>

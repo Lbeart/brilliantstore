@@ -25,6 +25,8 @@ class CustomerController extends Controller
         $search = trim((string) $request->query('q', ''));
         $sort = $request->query('sort', 'latest');
         $perPage = min(max((int) $request->query('per_page', 12), 6), 100);
+        $reportYear = (int) $request->query('year', now()->year);
+        $reportYear = $reportYear >= 2020 && $reportYear <= ((int) now()->year + 1) ? $reportYear : (int) now()->year;
 
         $query = Customer::query()
             ->with(['purchases' => fn ($q) => $q->latest('purchased_at')->latest()->limit(3)])
@@ -60,15 +62,46 @@ class CustomerController extends Controller
         };
 
         $customers = $query->paginate($perPage)->withQueryString();
+        $today = now()->toDateString();
+        $monthStart = now()->startOfMonth();
+        $yearStart = now()->setDate($reportYear, 1, 1)->startOfDay();
+        $yearEnd = now()->setDate($reportYear, 12, 31)->endOfDay();
+
+        $receiptBase = CustomerReceipt::query();
 
         $stats = [
             'customersCount' => Customer::count(),
+            'receiptsCount' => CustomerReceipt::count(),
             'purchasesCount' => CustomerPurchase::count(),
-            'revenue' => CustomerPurchase::sum('total'),
+            'revenue' => CustomerReceipt::sum('total'),
+            'paidRevenue' => CustomerReceipt::sum('paid_amount'),
+            'openBalance' => CustomerReceipt::sum('balance'),
+            'todaySales' => (clone $receiptBase)->whereDate('sold_at', $today)->sum('total'),
+            'todayReceipts' => (clone $receiptBase)->whereDate('sold_at', $today)->count(),
+            'monthSales' => (clone $receiptBase)->whereBetween('sold_at', [$monthStart, now()])->sum('total'),
+            'yearSales' => (clone $receiptBase)->whereBetween('sold_at', [$yearStart, $yearEnd])->sum('total'),
+            'yearPaid' => (clone $receiptBase)->whereBetween('sold_at', [$yearStart, $yearEnd])->sum('paid_amount'),
+            'yearBalance' => (clone $receiptBase)->whereBetween('sold_at', [$yearStart, $yearEnd])->sum('balance'),
             'latestCount' => Customer::where('created_at', '>=', now()->subDays(30))->count(),
         ];
 
-        return view('admin.customers.index', compact('customers', 'search', 'sort', 'perPage', 'stats'));
+        $dailySales = CustomerReceipt::query()
+            ->selectRaw('DATE(sold_at) as sale_date, COUNT(*) as receipts_count, SUM(total) as total_sales, SUM(paid_amount) as paid_sales, SUM(balance) as open_balance')
+            ->whereBetween('sold_at', [$yearStart, $yearEnd])
+            ->groupByRaw('DATE(sold_at)')
+            ->orderByDesc('sale_date')
+            ->limit(120)
+            ->get();
+
+        $monthlySales = CustomerReceipt::query()
+            ->selectRaw('MONTH(sold_at) as sale_month, COUNT(*) as receipts_count, SUM(total) as total_sales, SUM(paid_amount) as paid_sales, SUM(balance) as open_balance')
+            ->whereBetween('sold_at', [$yearStart, $yearEnd])
+            ->groupByRaw('MONTH(sold_at)')
+            ->orderBy('sale_month')
+            ->get()
+            ->keyBy('sale_month');
+
+        return view('admin.customers.index', compact('customers', 'search', 'sort', 'perPage', 'stats', 'dailySales', 'monthlySales', 'reportYear'));
     }
 
     public function store(Request $request)
@@ -169,7 +202,35 @@ class CustomerController extends Controller
     {
         abort_unless($purchase->customer_id === $customer->id, 404);
 
+        $receipt = $purchase->receipt;
         $purchase->delete();
+
+        if ($receipt) {
+            $remainingPurchases = $receipt->purchases()->get();
+
+            if ($remainingPurchases->isEmpty()) {
+                $receipt->delete();
+            } else {
+                $subtotal = (float) $remainingPurchases->sum('total');
+                $discount = min((float) $receipt->discount, $subtotal);
+                $total = max($subtotal - $discount, 0);
+                $paidAmount = min((float) $receipt->paid_amount, $total);
+                $balance = max($total - $paidAmount, 0);
+                $paymentStatus = $total <= 0 || $paidAmount >= $total
+                    ? 'paid'
+                    : ($paidAmount > 0 ? 'partial' : 'unpaid');
+
+                $receipt->update([
+                    'subtotal' => $subtotal,
+                    'discount' => $discount,
+                    'total' => $total,
+                    'paid_amount' => $paidAmount,
+                    'balance' => $balance,
+                    'payment_status' => $paymentStatus,
+                ]);
+            }
+        }
+
         $customer->update([
             'last_purchase_at' => $customer->purchases()->max('purchased_at'),
         ]);
