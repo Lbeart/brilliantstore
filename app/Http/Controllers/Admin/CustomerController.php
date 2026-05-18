@@ -5,13 +5,21 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\CustomerPurchase;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class CustomerController extends Controller
 {
     public function index(Request $request)
     {
+        if (!$this->tablesReady()) {
+            return view('admin.customers.setup');
+        }
+
         $search = trim((string) $request->query('q', ''));
         $sort = $request->query('sort', 'latest');
         $perPage = min(max((int) $request->query('per_page', 12), 6), 100);
@@ -63,16 +71,27 @@ class CustomerController extends Controller
 
     public function store(Request $request)
     {
+        if (!$this->tablesReady()) {
+            return redirect()->route('admin.customers.index')->with('error', 'Duhet te ekzekutohet migrimi i databazes para regjistrimit te klienteve.');
+        }
+
         $data = $this->validateCustomer($request);
-        $purchase = $this->validatePurchase($request, false);
+        $purchase = $this->validatePurchaseBatch($request, false);
 
-        DB::transaction(function () use ($data, $purchase) {
+        [$customer, $receiptCode] = DB::transaction(function () use ($data, $purchase) {
             $customer = Customer::create($data);
+            $receiptCode = null;
 
-            if (!empty($purchase['item_name'])) {
-                $this->createPurchase($customer, $purchase);
+            if (!empty($purchase['items'])) {
+                $receiptCode = $this->createPurchaseBatch($customer, $purchase);
             }
+
+            return [$customer, $receiptCode];
         });
+
+        if ($receiptCode) {
+            return redirect()->route('admin.customers.invoice', [$customer, $receiptCode])->with('success', 'Klienti u regjistrua dhe fatura u krijua.');
+        }
 
         return redirect()->route('admin.customers.index')->with('success', 'Klienti u regjistrua me sukses.');
     }
@@ -100,10 +119,38 @@ class CustomerController extends Controller
 
     public function storePurchase(Request $request, Customer $customer)
     {
-        $purchase = $this->validatePurchase($request, true);
-        $this->createPurchase($customer, $purchase);
+        $purchase = $this->validatePurchaseBatch($request, true);
+        $receiptCode = $this->createPurchaseBatch($customer, $purchase);
 
-        return redirect()->route('admin.customers.edit', $customer)->with('success', 'Blerja u shtua.');
+        return redirect()->route('admin.customers.invoice', [$customer, $receiptCode])->with('success', 'Blerja u shtua dhe fatura u krijua.');
+    }
+
+    public function invoice(Customer $customer, string $receiptCode)
+    {
+        [$purchases, $total] = $this->receiptData($customer, $receiptCode);
+
+        return view('admin.customers.invoice', [
+            'customer' => $customer,
+            'purchases' => $purchases,
+            'receiptCode' => $receiptCode,
+            'total' => $total,
+            'isPdf' => false,
+        ]);
+    }
+
+    public function invoicePdf(Customer $customer, string $receiptCode)
+    {
+        [$purchases, $total] = $this->receiptData($customer, $receiptCode);
+
+        $pdf = Pdf::loadView('admin.customers.invoice', [
+            'customer' => $customer,
+            'purchases' => $purchases,
+            'receiptCode' => $receiptCode,
+            'total' => $total,
+            'isPdf' => true,
+        ]);
+
+        return $pdf->download('fatura-'.$receiptCode.'.pdf');
     }
 
     public function destroyPurchase(Customer $customer, CustomerPurchase $purchase)
@@ -130,44 +177,97 @@ class CustomerController extends Controller
         ]);
     }
 
-    private function validatePurchase(Request $request, bool $required): array
+    private function validatePurchaseBatch(Request $request, bool $required): array
     {
-        $itemRule = $required ? 'required|string|max:255' : 'nullable|string|max:255';
-
-        return $request->validate([
-            'item_name' => $itemRule,
-            'size' => 'nullable|string|max:255',
-            'quantity' => 'nullable|integer|min:1|max:9999',
-            'unit_price' => 'nullable|numeric|min:0|max:999999',
-            'total' => 'nullable|numeric|min:0|max:999999',
+        $data = $request->validate([
             'purchased_at' => 'nullable|date',
             'purchase_notes' => 'nullable|string|max:2000',
-        ]);
-    }
-
-    private function createPurchase(Customer $customer, array $data): CustomerPurchase
-    {
-        $quantity = max((int) ($data['quantity'] ?? 1), 1);
-        $unitPrice = (float) ($data['unit_price'] ?? 0);
-        $total = array_key_exists('total', $data) && $data['total'] !== null && $data['total'] !== ''
-            ? (float) $data['total']
-            : $quantity * $unitPrice;
-        $purchasedAt = $data['purchased_at'] ?? now();
-
-        $purchase = $customer->purchases()->create([
-            'item_name' => $data['item_name'],
-            'size' => $data['size'] ?? null,
-            'quantity' => $quantity,
-            'unit_price' => $unitPrice,
-            'total' => $total,
-            'purchased_at' => $purchasedAt,
-            'notes' => $data['purchase_notes'] ?? null,
+            'items' => 'nullable|array|max:50',
+            'items.*.item_name' => 'nullable|string|max:255',
+            'items.*.size' => 'nullable|string|max:255',
+            'items.*.quantity' => 'nullable|integer|min:1|max:9999',
+            'items.*.unit_price' => 'nullable|numeric|min:0|max:999999',
+            'items.*.total' => 'nullable|numeric|min:0|max:999999',
         ]);
 
-        if (!$customer->last_purchase_at || $purchase->purchased_at->greaterThan($customer->last_purchase_at)) {
-            $customer->update(['last_purchase_at' => $purchase->purchased_at]);
+        $items = collect($data['items'] ?? [])
+            ->filter(fn ($item) => trim((string) ($item['item_name'] ?? '')) !== '')
+            ->values()
+            ->all();
+
+        if ($required && count($items) === 0) {
+            throw ValidationException::withMessages([
+                'items.0.item_name' => 'Shto te pakten nje produkt per fature.',
+            ]);
         }
 
-        return $purchase;
+        $data['items'] = $items;
+
+        return $data;
+    }
+
+    private function createPurchaseBatch(Customer $customer, array $data): string
+    {
+        $receiptCode = $this->generateReceiptCode();
+        $purchasedAt = $data['purchased_at'] ?? now();
+        $latestPurchase = null;
+
+        foreach ($data['items'] as $item) {
+            $quantity = max((int) ($item['quantity'] ?? 1), 1);
+            $unitPrice = (float) ($item['unit_price'] ?? 0);
+            $total = array_key_exists('total', $item) && $item['total'] !== null && $item['total'] !== ''
+                ? (float) $item['total']
+                : $quantity * $unitPrice;
+
+            $latestPurchase = $customer->purchases()->create([
+                'receipt_code' => $receiptCode,
+                'item_name' => $item['item_name'],
+                'size' => $item['size'] ?? null,
+                'quantity' => $quantity,
+                'unit_price' => $unitPrice,
+                'total' => $total,
+                'purchased_at' => $purchasedAt,
+                'notes' => $data['purchase_notes'] ?? null,
+            ]);
+        }
+
+        if ($latestPurchase && (!$customer->last_purchase_at || $latestPurchase->purchased_at->greaterThan($customer->last_purchase_at))) {
+            $customer->update(['last_purchase_at' => $latestPurchase->purchased_at]);
+        }
+
+        return $receiptCode;
+    }
+
+    private function receiptData(Customer $customer, string $receiptCode): array
+    {
+        $purchases = $customer->purchases()
+            ->where('receipt_code', $receiptCode)
+            ->with('order')
+            ->orderBy('id')
+            ->get();
+
+        abort_if($purchases->isEmpty(), 404);
+
+        return [$purchases, $purchases->sum('total')];
+    }
+
+    private function generateReceiptCode(): string
+    {
+        do {
+            $code = 'BRL-'.now()->format('ymd').'-'.strtoupper(Str::random(5));
+        } while (CustomerPurchase::where('receipt_code', $code)->exists());
+
+        return $code;
+    }
+
+    private function tablesReady(): bool
+    {
+        try {
+            return Schema::hasTable('customers')
+                && Schema::hasTable('customer_purchases')
+                && Schema::hasColumn('customer_purchases', 'receipt_code');
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 }

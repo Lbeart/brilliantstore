@@ -10,6 +10,7 @@ class CustomerPurchase extends Model
         'customer_id',
         'order_id',
         'product_id',
+        'receipt_code',
         'item_name',
         'size',
         'quantity',

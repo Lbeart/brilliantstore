@@ -108,11 +108,12 @@ class CheckoutController extends Controller
         'image'      => $it['image'] ?? ($it['image_path'] ?? null),
     ]);
 
-    if ($customer && Schema::hasTable('customer_purchases')) {
-        $customer->purchases()->create([
-            'order_id' => $order->id,
-            'product_id' => $orderItem->product_id,
-            'item_name' => $orderItem->name,
+            if ($customer && Schema::hasTable('customer_purchases')) {
+                $customer->purchases()->create([
+                    'order_id' => $order->id,
+                    'product_id' => $orderItem->product_id,
+                    'receipt_code' => 'ORD-'.$order->id,
+                    'item_name' => $orderItem->name,
             'size' => $orderItem->size,
             'quantity' => $orderItem->qty,
             'unit_price' => $orderItem->price,

@@ -56,6 +56,7 @@
     .muted{color:var(--muted)}
     .empty-state{padding:2rem;text-align:center;color:var(--muted)}
     .customer-card{border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+    .line-item{border:1px solid var(--line);border-radius:var(--radius);padding:.75rem;background:#fbfcfd;margin-bottom:.75rem}
     @media (max-width:991px){.content{padding:1rem}.page-head{flex-direction:column}.sidebar{min-height:100vh}}
     @media (max-width:767px){.sidebar.desktop{display:none}.stat{min-height:auto}.actions{width:100%;display:flex}.actions .btn,.actions form{flex:1}.actions form button{width:100%}}
   </style>
@@ -194,35 +195,50 @@
 
             <div class="border-top pt-3">
               <div class="section-title mb-2">
-                <h2>Blerja e pare</h2>
+                <h2>Fatura e pare</h2>
                 <span class="small muted">Opsionale</span>
               </div>
+
               <div class="mb-2">
-                <label class="form-label">Produkti / sendet qe bleu</label>
-                <input type="text" name="item_name" value="{{ old('item_name') }}" class="form-control" placeholder="p.sh. Tepih, perde, postava...">
+                <label class="form-label">Data e fatures</label>
+                <input type="date" name="purchased_at" value="{{ old('purchased_at', now()->toDateString()) }}" class="form-control">
               </div>
-              <div class="row g-2">
-                <div class="col-6">
-                  <label class="form-label">Madhesia</label>
-                  <input type="text" name="size" value="{{ old('size') }}" class="form-control" placeholder="p.sh. 200x300">
-                </div>
-                <div class="col-6">
-                  <label class="form-label">Data</label>
-                  <input type="date" name="purchased_at" value="{{ old('purchased_at', now()->toDateString()) }}" class="form-control">
-                </div>
-                <div class="col-4">
-                  <label class="form-label">Sasia</label>
-                  <input type="number" name="quantity" value="{{ old('quantity', 1) }}" min="1" class="form-control">
-                </div>
-                <div class="col-4">
-                  <label class="form-label">Cmimi</label>
-                  <input type="number" step="0.01" name="unit_price" value="{{ old('unit_price') }}" min="0" class="form-control">
-                </div>
-                <div class="col-4">
-                  <label class="form-label">Totali</label>
-                  <input type="number" step="0.01" name="total" value="{{ old('total') }}" min="0" class="form-control">
+
+              <div data-lines>
+                <div class="line-item" data-line>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Artikulli 1</strong>
+                    <button type="button" class="btn btn-sm btn-outline-danger d-none" data-remove-line><i class="fa fa-trash"></i></button>
+                  </div>
+                  <div class="mb-2">
+                    <label class="form-label">Produkti / sendi qe bleu</label>
+                    <input type="text" name="items[0][item_name]" class="form-control" placeholder="p.sh. Tepih, perde, postava...">
+                  </div>
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="form-label">Madhesia</label>
+                      <input type="text" name="items[0][size]" class="form-control" placeholder="p.sh. 200x300">
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label">Sasia</label>
+                      <input type="number" name="items[0][quantity]" value="1" min="1" class="form-control">
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label">Cmimi</label>
+                      <input type="number" step="0.01" name="items[0][unit_price]" min="0" class="form-control">
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label">Totali</label>
+                      <input type="number" step="0.01" name="items[0][total]" min="0" class="form-control">
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              <button type="button" class="btn btn-outline-dark w-100" data-add-line>
+                <i class="fa fa-plus me-1"></i> Shto artikull tjeter ne fature
+              </button>
+
               <div class="mt-2">
                 <label class="form-label">Shenime per blerjen</label>
                 <textarea name="purchase_notes" rows="2" class="form-control">{{ old('purchase_notes') }}</textarea>
@@ -401,5 +417,39 @@
 </div>
 
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function(){
+  const lines = document.querySelector('[data-lines]');
+  const add = document.querySelector('[data-add-line]');
+  if (!lines || !add) return;
+
+  function renumber(){
+    [...lines.querySelectorAll('[data-line]')].forEach((line, index) => {
+      line.querySelector('strong').textContent = 'Artikulli ' + (index + 1);
+      line.querySelectorAll('input').forEach(input => {
+        input.name = input.name.replace(/items\[\d+\]/, 'items[' + index + ']');
+      });
+      const remove = line.querySelector('[data-remove-line]');
+      remove.classList.toggle('d-none', lines.querySelectorAll('[data-line]').length === 1);
+    });
+  }
+
+  add.addEventListener('click', () => {
+    const clone = lines.querySelector('[data-line]').cloneNode(true);
+    clone.querySelectorAll('input').forEach(input => {
+      input.value = input.type === 'number' && input.name.includes('[quantity]') ? '1' : '';
+    });
+    lines.appendChild(clone);
+    renumber();
+  });
+
+  lines.addEventListener('click', event => {
+    const button = event.target.closest('[data-remove-line]');
+    if (!button || lines.querySelectorAll('[data-line]').length === 1) return;
+    button.closest('[data-line]').remove();
+    renumber();
+  });
+})();
+</script>
 </body>
 </html>

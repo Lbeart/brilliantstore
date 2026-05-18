@@ -15,6 +15,7 @@ return new class extends Migration
                 $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
                 $table->foreignId('order_id')->nullable()->constrained()->nullOnDelete();
                 $table->unsignedBigInteger('product_id')->nullable();
+                $table->string('receipt_code', 40)->nullable()->index();
                 $table->string('item_name');
                 $table->string('size')->nullable();
                 $table->unsignedInteger('quantity')->default(1);
@@ -83,6 +84,7 @@ return new class extends Migration
                         'customer_id' => $customerId,
                         'order_id' => $order->id,
                         'product_id' => $item->product_id,
+                        'receipt_code' => 'ORD-'.$order->id,
                         'item_name' => $item->name,
                         'size' => $item->size,
                         'quantity' => $item->qty,

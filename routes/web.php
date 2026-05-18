@@ -190,6 +190,8 @@ Route::middleware(['auth','verified','admin'])
         Route::delete('/customers/{customer}', [AdminCustomerController::class, 'destroy'])->name('customers.destroy');
         Route::post('/customers/{customer}/purchases', [AdminCustomerController::class, 'storePurchase'])->name('customers.purchases.store');
         Route::delete('/customers/{customer}/purchases/{purchase}', [AdminCustomerController::class, 'destroyPurchase'])->name('customers.purchases.destroy');
+        Route::get('/customers/{customer}/receipts/{receiptCode}/invoice', [AdminCustomerController::class, 'invoice'])->name('customers.invoice');
+        Route::get('/customers/{customer}/receipts/{receiptCode}/invoice-pdf', [AdminCustomerController::class, 'invoicePdf'])->name('customers.invoice.pdf');
 
         // Products
         Route::get('/products',                 [AdminProductController::class, 'index'])->name('products.index');

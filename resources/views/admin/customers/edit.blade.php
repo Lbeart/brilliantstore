@@ -39,6 +39,7 @@
     .table td{vertical-align:middle}
     .muted{color:var(--muted)}
     .empty-state{padding:2rem;text-align:center;color:var(--muted)}
+    .line-item{border:1px solid var(--line);border-radius:var(--radius);padding:.75rem;background:#fbfcfd;margin-bottom:.75rem}
     @media (max-width:991px){.content{padding:1rem}.page-head{flex-direction:column}.sidebar{min-height:100vh}}
     @media (max-width:767px){.sidebar.desktop{display:none}}
   </style>
@@ -154,95 +155,127 @@
           <form method="POST" action="{{ route('admin.customers.purchases.store', $customer) }}" class="card-soft p-3 mt-3">
             @csrf
             <div class="section-title">
-              <h2>Shto blerje</h2>
+              <h2>Shto fature</h2>
             </div>
+
             <div class="mb-2">
-              <label class="form-label">Produkti / sendet qe bleu</label>
-              <input type="text" name="item_name" value="{{ old('item_name') }}" class="form-control" required>
+              <label class="form-label">Data e fatures</label>
+              <input type="date" name="purchased_at" value="{{ old('purchased_at', now()->toDateString()) }}" class="form-control">
             </div>
-            <div class="row g-2">
-              <div class="col-6">
-                <label class="form-label">Madhesia</label>
-                <input type="text" name="size" value="{{ old('size') }}" class="form-control">
-              </div>
-              <div class="col-6">
-                <label class="form-label">Data</label>
-                <input type="date" name="purchased_at" value="{{ old('purchased_at', now()->toDateString()) }}" class="form-control">
-              </div>
-              <div class="col-4">
-                <label class="form-label">Sasia</label>
-                <input type="number" name="quantity" value="{{ old('quantity', 1) }}" min="1" class="form-control">
-              </div>
-              <div class="col-4">
-                <label class="form-label">Cmimi</label>
-                <input type="number" step="0.01" name="unit_price" value="{{ old('unit_price') }}" min="0" class="form-control">
-              </div>
-              <div class="col-4">
-                <label class="form-label">Totali</label>
-                <input type="number" step="0.01" name="total" value="{{ old('total') }}" min="0" class="form-control">
+
+            <div data-lines>
+              <div class="line-item" data-line>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <strong>Artikulli 1</strong>
+                  <button type="button" class="btn btn-sm btn-outline-danger d-none" data-remove-line><i class="fa fa-trash"></i></button>
+                </div>
+                <div class="mb-2">
+                  <label class="form-label">Produkti / sendi qe bleu</label>
+                  <input type="text" name="items[0][item_name]" class="form-control" required>
+                </div>
+                <div class="row g-2">
+                  <div class="col-6">
+                    <label class="form-label">Madhesia</label>
+                    <input type="text" name="items[0][size]" class="form-control">
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label">Sasia</label>
+                    <input type="number" name="items[0][quantity]" value="1" min="1" class="form-control">
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label">Cmimi</label>
+                    <input type="number" step="0.01" name="items[0][unit_price]" min="0" class="form-control">
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label">Totali</label>
+                    <input type="number" step="0.01" name="items[0][total]" min="0" class="form-control">
+                  </div>
+                </div>
               </div>
             </div>
+
+            <button type="button" class="btn btn-outline-dark w-100" data-add-line>
+              <i class="fa fa-plus me-1"></i> Shto artikull tjeter ne fature
+            </button>
+
             <div class="mt-2">
               <label class="form-label">Shenime per blerjen</label>
               <textarea name="purchase_notes" rows="2" class="form-control">{{ old('purchase_notes') }}</textarea>
             </div>
             <button class="btn btn-outline-dark w-100 mt-3">
-              <i class="fa fa-plus me-1"></i> Shto blerjen
+              <i class="fa fa-receipt me-1"></i> Ruaj faturen
             </button>
           </form>
         </div>
 
         <div class="col-12 col-xl-8">
           <div class="card-soft p-3">
+            @php
+              $receiptGroups = $customer->purchases->groupBy(fn($purchase) => $purchase->receipt_code ?: 'BRL-MAN-'.$purchase->id);
+            @endphp
             <div class="section-title">
-              <h2>Historiku i blerjeve</h2>
-              <span class="small muted">{{ $customer->purchases->count() }} blerje</span>
+              <h2>Faturat dhe historiku</h2>
+              <span class="small muted">{{ $receiptGroups->count() }} fatura / {{ $customer->purchases->count() }} artikuj</span>
             </div>
             <div class="table-responsive">
               <table class="table align-middle">
                 <thead>
                   <tr>
                     <th>Data</th>
-                    <th>Produkti</th>
-                    <th>Sasia</th>
-                    <th>Cmimi</th>
+                    <th>Fatura</th>
+                    <th>Artikujt</th>
                     <th>Totali</th>
                     <th>Burimi</th>
                     <th class="text-end">Veprim</th>
                   </tr>
                 </thead>
                 <tbody>
-                  @forelse($customer->purchases as $purchase)
+                  @forelse($receiptGroups as $receiptCode => $purchases)
+                    @php
+                      $firstPurchase = $purchases->first();
+                      $receiptTotal = $purchases->sum('total');
+                    @endphp
                     <tr>
-                      <td class="small muted">{{ $purchase->purchased_at?->format('d.m.Y') }}</td>
+                      <td class="small muted">{{ $firstPurchase->purchased_at?->format('d.m.Y') }}</td>
                       <td>
-                        <div class="fw-bold">{{ $purchase->item_name }}</div>
-                        @if($purchase->size)<div class="small muted">{{ $purchase->size }}</div>@endif
-                        @if($purchase->notes)<div class="small muted">{{ $purchase->notes }}</div>@endif
+                        <div class="fw-bold">{{ $receiptCode }}</div>
+                        @if($firstPurchase->notes)<div class="small muted">{{ $firstPurchase->notes }}</div>@endif
                       </td>
-                      <td>{{ $purchase->quantity }}</td>
-                      <td>{{ number_format((float) $purchase->unit_price, 2) }} EUR</td>
-                      <td class="fw-bold">{{ number_format((float) $purchase->total, 2) }} EUR</td>
                       <td>
-                        @if($purchase->order)
-                          <a href="{{ route('admin.orders.show', $purchase->order) }}" class="btn btn-sm btn-outline-dark">
-                            Porosia #{{ $purchase->order->id }}
+                        @foreach($purchases as $purchase)
+                          <div class="mb-1">
+                            <span class="fw-semibold">{{ $purchase->item_name }}</span>
+                            <span class="small muted">x{{ $purchase->quantity }} @if($purchase->size) / {{ $purchase->size }} @endif</span>
+                            <form method="POST" action="{{ route('admin.customers.purchases.destroy', [$customer, $purchase]) }}" class="d-inline" onsubmit="return confirm('Ta fshij kete artikull nga fatura?');">
+                              @csrf @method('DELETE')
+                              <button class="btn btn-sm btn-link text-danger p-0 ms-1">fshi</button>
+                            </form>
+                          </div>
+                        @endforeach
+                      </td>
+                      <td class="fw-bold">{{ number_format((float) $receiptTotal, 2) }} EUR</td>
+                      <td>
+                        @if($firstPurchase->order)
+                          <a href="{{ route('admin.orders.show', $firstPurchase->order) }}" class="btn btn-sm btn-outline-dark">
+                            Porosia #{{ $firstPurchase->order->id }}
                           </a>
                         @else
                           <span class="badge bg-light text-dark">Manuale</span>
                         @endif
                       </td>
                       <td class="text-end">
-                        <form method="POST" action="{{ route('admin.customers.purchases.destroy', [$customer, $purchase]) }}" onsubmit="return confirm('Ta fshij kete blerje?');">
-                          @csrf @method('DELETE')
-                          <button class="btn btn-sm btn-outline-danger">
-                            <i class="fa fa-trash"></i>
-                          </button>
-                        </form>
+                        <div class="btn-group">
+                          <a href="{{ route('admin.customers.invoice', [$customer, $receiptCode]) }}" class="btn btn-sm btn-outline-dark">
+                            <i class="fa fa-eye me-1"></i> Fatura
+                          </a>
+                          <a href="{{ route('admin.customers.invoice.pdf', [$customer, $receiptCode]) }}" class="btn btn-sm btn-danger">
+                            <i class="fa fa-file-pdf me-1"></i> PDF
+                          </a>
+                        </div>
                       </td>
                     </tr>
                   @empty
-                    <tr><td colspan="7" class="empty-state">Ky klient ende nuk ka blerje te regjistruara.</td></tr>
+                    <tr><td colspan="6" class="empty-state">Ky klient ende nuk ka fatura te regjistruara.</td></tr>
                   @endforelse
                 </tbody>
               </table>
@@ -287,5 +320,39 @@
 </div>
 
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function(){
+  const lines = document.querySelector('[data-lines]');
+  const add = document.querySelector('[data-add-line]');
+  if (!lines || !add) return;
+
+  function renumber(){
+    [...lines.querySelectorAll('[data-line]')].forEach((line, index) => {
+      line.querySelector('strong').textContent = 'Artikulli ' + (index + 1);
+      line.querySelectorAll('input').forEach(input => {
+        input.name = input.name.replace(/items\[\d+\]/, 'items[' + index + ']');
+      });
+      const remove = line.querySelector('[data-remove-line]');
+      remove.classList.toggle('d-none', lines.querySelectorAll('[data-line]').length === 1);
+    });
+  }
+
+  add.addEventListener('click', () => {
+    const clone = lines.querySelector('[data-line]').cloneNode(true);
+    clone.querySelectorAll('input').forEach(input => {
+      input.value = input.type === 'number' && input.name.includes('[quantity]') ? '1' : '';
+    });
+    lines.appendChild(clone);
+    renumber();
+  });
+
+  lines.addEventListener('click', event => {
+    const button = event.target.closest('[data-remove-line]');
+    if (!button || lines.querySelectorAll('[data-line]').length === 1) return;
+    button.closest('[data-line]').remove();
+    renumber();
+  });
+})();
+</script>
 </body>
 </html>
