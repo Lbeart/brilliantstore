@@ -127,6 +127,7 @@
             <div class="mb-2">
               <label class="form-label">Emri dhe mbiemri</label>
               <input type="text" name="name" value="{{ old('name', $customer->name) }}" class="form-control" required>
+              <div class="small muted mt-1">Obligative</div>
             </div>
             <div class="row g-2">
               <div class="col-md-6">
@@ -186,6 +187,7 @@
                   </select>
                   <label class="form-label">Produkti / sendi qe bleu</label>
                   <input type="text" name="items[0][item_name]" class="form-control" data-item-name required>
+                  <div class="small muted mt-1">Obligative</div>
                 </div>
                 <div class="row g-2">
                   <div class="col-6">
