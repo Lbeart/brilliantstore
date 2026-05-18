@@ -82,6 +82,23 @@ class CheckoutController extends Controller
             }
 
             $order = Order::create($orderData);
+            $customerReceipt = null;
+
+            if ($customer && Schema::hasTable('customer_receipts')) {
+                $customerReceipt = $customer->receipts()->create([
+                    'order_id' => $order->id,
+                    'code' => 'ORD-'.$order->id,
+                    'subtotal' => $total,
+                    'discount' => 0,
+                    'total' => $total,
+                    'paid_amount' => $total,
+                    'balance' => 0,
+                    'payment_method' => $data['payment'] === 'bank' ? 'bank' : 'cash',
+                    'payment_status' => 'paid',
+                    'sold_at' => now(),
+                    'notes' => $order->notes,
+                ]);
+            }
 
            foreach ($cart as $it) {
 
@@ -108,10 +125,11 @@ class CheckoutController extends Controller
         'image'      => $it['image'] ?? ($it['image_path'] ?? null),
     ]);
 
-            if ($customer && Schema::hasTable('customer_purchases')) {
-                $customer->purchases()->create([
-                    'order_id' => $order->id,
-                    'product_id' => $orderItem->product_id,
+    if ($customer && Schema::hasTable('customer_purchases')) {
+        $customer->purchases()->create([
+            'customer_receipt_id' => $customerReceipt?->id,
+            'order_id' => $order->id,
+            'product_id' => $orderItem->product_id,
                     'receipt_code' => 'ORD-'.$order->id,
                     'item_name' => $orderItem->name,
             'size' => $orderItem->size,

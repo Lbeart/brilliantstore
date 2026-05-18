@@ -60,7 +60,7 @@
           <div class="fs-3 text-danger"><i class="fa fa-database"></i></div>
           <div>
             <h1 class="h4 fw-bold mb-2">Moduli i klienteve eshte gati, por databaza nuk eshte migruar ende.</h1>
-            <p class="muted mb-3">Duhet te krijohen tabelat <strong>customers</strong> dhe <strong>customer_purchases</strong>. Pas migrimit, kjo faqe hapet me regjistrim, edit, delete dhe kerkim klientesh.</p>
+            <p class="muted mb-3">Duhet te krijohen tabelat <strong>customers</strong>, <strong>customer_purchases</strong> dhe <strong>customer_receipts</strong>. Pas migrimit, kjo faqe hapet si POS me fatura, PDF, pagesa dhe kerkim klientesh.</p>
             <div class="code-box">php artisan migrate --force</div>
             <div class="mt-3 d-flex flex-wrap gap-2">
               <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-dark">

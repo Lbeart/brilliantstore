@@ -40,6 +40,10 @@
     .muted{color:var(--muted)}
     .empty-state{padding:2rem;text-align:center;color:var(--muted)}
     .line-item{border:1px solid var(--line);border-radius:var(--radius);padding:.75rem;background:#fbfcfd;margin-bottom:.75rem}
+    .pos-total{border:1px solid var(--line);border-radius:var(--radius);background:#111827;color:#fff;padding:1rem}
+    .pos-total .label{color:#cbd5e1;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+    .pos-total .value{font-size:1.6rem;font-weight:900}
+    .mini-total{font-size:.85rem;color:#667085}
     @media (max-width:991px){.content{padding:1rem}.page-head{flex-direction:column}.sidebar{min-height:100vh}}
     @media (max-width:767px){.sidebar.desktop{display:none}}
   </style>
@@ -155,7 +159,7 @@
           <form method="POST" action="{{ route('admin.customers.purchases.store', $customer) }}" class="card-soft p-3 mt-3">
             @csrf
             <div class="section-title">
-              <h2>Shto fature</h2>
+              <h2>POS - shitje e re</h2>
             </div>
 
             <div class="mb-2">
@@ -170,8 +174,17 @@
                   <button type="button" class="btn btn-sm btn-outline-danger d-none" data-remove-line><i class="fa fa-trash"></i></button>
                 </div>
                 <div class="mb-2">
+                  <label class="form-label">Zgjidh produkt nga stoku</label>
+                  <select name="items[0][product_id]" class="form-select mb-2" data-product-select>
+                    <option value="">Produkt custom / jo nga stoku</option>
+                    @foreach($products ?? [] as $product)
+                      <option value="{{ $product->id }}" data-name="{{ $product->name }}" data-price="{{ $product->price ?? 0 }}">
+                        {{ $product->name }} @if($product->sku) / {{ $product->sku }} @endif - {{ number_format($product->price ?? 0, 2) }} EUR
+                      </option>
+                    @endforeach
+                  </select>
                   <label class="form-label">Produkti / sendi qe bleu</label>
-                  <input type="text" name="items[0][item_name]" class="form-control" required>
+                  <input type="text" name="items[0][item_name]" class="form-control" data-item-name required>
                 </div>
                 <div class="row g-2">
                   <div class="col-6">
@@ -180,17 +193,18 @@
                   </div>
                   <div class="col-6">
                     <label class="form-label">Sasia</label>
-                    <input type="number" name="items[0][quantity]" value="1" min="1" class="form-control">
+                    <input type="number" name="items[0][quantity]" value="1" min="1" class="form-control" data-qty>
                   </div>
                   <div class="col-6">
                     <label class="form-label">Cmimi</label>
-                    <input type="number" step="0.01" name="items[0][unit_price]" min="0" class="form-control">
+                    <input type="number" step="0.01" name="items[0][unit_price]" min="0" class="form-control" data-price>
                   </div>
                   <div class="col-6">
                     <label class="form-label">Totali</label>
-                    <input type="number" step="0.01" name="items[0][total]" min="0" class="form-control">
+                    <input type="number" step="0.01" name="items[0][total]" min="0" class="form-control" data-line-total>
                   </div>
                 </div>
+                <div class="mini-total mt-2">Llogaritja: <span data-line-preview>0.00 EUR</span></div>
               </div>
             </div>
 
@@ -202,6 +216,41 @@
               <label class="form-label">Shenime per blerjen</label>
               <textarea name="purchase_notes" rows="2" class="form-control">{{ old('purchase_notes') }}</textarea>
             </div>
+
+            <div class="row g-2 mt-1">
+              <div class="col-6">
+                <label class="form-label">Zbritje</label>
+                <input type="number" step="0.01" name="discount" value="0" min="0" class="form-control" data-discount>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Paguar</label>
+                <input type="number" step="0.01" name="paid_amount" min="0" class="form-control" data-paid>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Menyra e pageses</label>
+                <select name="payment_method" class="form-select">
+                  <option value="cash">Cash</option>
+                  <option value="card">Kartel</option>
+                  <option value="bank">Banke</option>
+                  <option value="mixed">E perzier</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="pos-total mt-3">
+              <div class="d-flex justify-content-between gap-2">
+                <div>
+                  <div class="label">Totali per pagese</div>
+                  <div class="value"><span data-grand-total>0.00</span> EUR</div>
+                </div>
+                <div class="text-end">
+                  <div class="label">Mbetur</div>
+                  <div class="value"><span data-balance>0.00</span> EUR</div>
+                </div>
+              </div>
+              <div class="small mt-2">Subtotal: <span data-subtotal>0.00</span> EUR / Zbritje: <span data-discount-preview>0.00</span> EUR</div>
+            </div>
+
             <button class="btn btn-outline-dark w-100 mt-3">
               <i class="fa fa-receipt me-1"></i> Ruaj faturen
             </button>
@@ -255,7 +304,21 @@
                       </td>
                       <td class="fw-bold">{{ number_format((float) $receiptTotal, 2) }} EUR</td>
                       <td>
-                        @if($firstPurchase->order)
+                        @php $receipt = $firstPurchase->customer_receipt_id ? $customer->receipts->firstWhere('id', $firstPurchase->customer_receipt_id) : null; @endphp
+                        @if($receipt)
+                          @php
+                            $paymentLabels = ['cash' => 'Cash', 'card' => 'Kartel', 'bank' => 'Banke', 'mixed' => 'E perzier'];
+                            $statusLabels = ['paid' => 'Paguar', 'partial' => 'Pjese', 'unpaid' => 'Pa paguar'];
+                            $statusColors = ['paid' => 'success', 'partial' => 'warning', 'unpaid' => 'danger'];
+                          @endphp
+                          <div class="small">
+                            <span class="badge bg-{{ $statusColors[$receipt->payment_status] ?? 'secondary' }}">{{ $statusLabels[$receipt->payment_status] ?? $receipt->payment_status }}</span>
+                            <div class="muted mt-1">{{ $paymentLabels[$receipt->payment_method] ?? $receipt->payment_method }} / Paguar {{ number_format((float) $receipt->paid_amount, 2) }} EUR</div>
+                            @if((float) $receipt->balance > 0)
+                              <div class="text-danger fw-bold">Borxh {{ number_format((float) $receipt->balance, 2) }} EUR</div>
+                            @endif
+                          </div>
+                        @elseif($firstPurchase->order)
                           <a href="{{ route('admin.orders.show', $firstPurchase->order) }}" class="btn btn-sm btn-outline-dark">
                             Porosia #{{ $firstPurchase->order->id }}
                           </a>
@@ -329,12 +392,54 @@
   function renumber(){
     [...lines.querySelectorAll('[data-line]')].forEach((line, index) => {
       line.querySelector('strong').textContent = 'Artikulli ' + (index + 1);
-      line.querySelectorAll('input').forEach(input => {
-        input.name = input.name.replace(/items\[\d+\]/, 'items[' + index + ']');
+      line.querySelectorAll('input, select').forEach(input => {
+        if (input.name) input.name = input.name.replace(/items\[\d+\]/, 'items[' + index + ']');
       });
       const remove = line.querySelector('[data-remove-line]');
       remove.classList.toggle('d-none', lines.querySelectorAll('[data-line]').length === 1);
     });
+    calculate();
+  }
+
+  function money(value){
+    return Number(value || 0).toFixed(2);
+  }
+
+  function calculateLine(line){
+    const qty = parseFloat(line.querySelector('[data-qty]')?.value || 0);
+    const price = parseFloat(line.querySelector('[data-price]')?.value || 0);
+    const totalInput = line.querySelector('[data-line-total]');
+    const computed = qty * price;
+
+    if (totalInput && (!totalInput.value || document.activeElement !== totalInput)) {
+      totalInput.value = money(computed);
+    }
+
+    const total = parseFloat(totalInput?.value || computed || 0);
+    const preview = line.querySelector('[data-line-preview]');
+    if (preview) preview.textContent = money(total) + ' EUR';
+
+    return total;
+  }
+
+  function calculate(){
+    const subtotal = [...lines.querySelectorAll('[data-line]')].reduce((sum, line) => sum + calculateLine(line), 0);
+    const discountInput = document.querySelector('[data-discount]');
+    const paidInput = document.querySelector('[data-paid]');
+    const discount = Math.min(parseFloat(discountInput?.value || 0), subtotal);
+    const grand = Math.max(subtotal - discount, 0);
+
+    if (paidInput && paidInput.value === '') {
+      paidInput.value = money(grand);
+    }
+
+    const paid = parseFloat(paidInput?.value || 0);
+    const balance = Math.max(grand - paid, 0);
+
+    document.querySelector('[data-subtotal]').textContent = money(subtotal);
+    document.querySelector('[data-discount-preview]').textContent = money(discount);
+    document.querySelector('[data-grand-total]').textContent = money(grand);
+    document.querySelector('[data-balance]').textContent = money(balance);
   }
 
   add.addEventListener('click', () => {
@@ -342,6 +447,7 @@
     clone.querySelectorAll('input').forEach(input => {
       input.value = input.type === 'number' && input.name.includes('[quantity]') ? '1' : '';
     });
+    clone.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
     lines.appendChild(clone);
     renumber();
   });
@@ -352,6 +458,28 @@
     button.closest('[data-line]').remove();
     renumber();
   });
+
+  lines.addEventListener('change', event => {
+    const select = event.target.closest('[data-product-select]');
+    if (!select) return;
+
+    const option = select.selectedOptions[0];
+    const line = select.closest('[data-line]');
+    if (!line || !option || !option.value) return;
+
+    line.querySelector('[data-item-name]').value = option.dataset.name || '';
+    line.querySelector('[data-price]').value = money(option.dataset.price || 0);
+    calculateLine(line);
+    calculate();
+  });
+
+  document.addEventListener('input', event => {
+    if (event.target.closest('[data-line]') || event.target.matches('[data-discount], [data-paid]')) {
+      calculate();
+    }
+  });
+
+  calculate();
 })();
 </script>
 </body>

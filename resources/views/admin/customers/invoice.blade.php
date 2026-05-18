@@ -22,6 +22,10 @@
     th{background:#f2f4f7;color:#344054;text-transform:uppercase;font-size:11px;letter-spacing:.05em}
     .text-end{text-align:right}
     .total{margin-top:18px;text-align:right;font-size:24px;font-weight:800;color:#dc3545}
+    .summary{margin-left:auto;margin-top:16px;width:320px;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden}
+    .summary-row{display:flex;justify-content:space-between;padding:9px 12px;border-bottom:1px solid #e5e7eb;font-size:13px}
+    .summary-row:last-child{border-bottom:0}
+    .summary-row.strong{font-weight:800;background:#f9fafb}
     .footer{margin-top:34px;text-align:center;color:#667085;font-size:12px;border-top:1px solid #e5e7eb;padding-top:16px}
     .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
     .btn{display:inline-block;border-radius:8px;padding:10px 14px;text-decoration:none;border:0;font-weight:700;cursor:pointer;font-size:14px}
@@ -74,9 +78,15 @@
     <div class="box">
       <h2>Detajet</h2>
       <p>
-        Lloji: {{ $purchases->first()?->order ? 'Porosi online' : 'Shitje ne dyqan' }}<br>
+        Lloji: {{ $receipt?->order || $purchases->first()?->order ? 'Porosi online' : 'POS / shitje ne dyqan' }}<br>
         Artikuj: {{ $purchases->count() }}<br>
-        Pagesa: Ne arkiv / sipas marreveshjes
+        Pagesa:
+        @php
+          $paymentLabels = ['cash' => 'Cash', 'card' => 'Kartel', 'bank' => 'Banke', 'mixed' => 'E perzier'];
+          $statusLabels = ['paid' => 'Paguar', 'partial' => 'Paguar pjeserisht', 'unpaid' => 'Pa paguar'];
+        @endphp
+        {{ $receipt ? ($paymentLabels[$receipt->payment_method] ?? $receipt->payment_method) : 'Ne arkiv' }}<br>
+        Statusi: {{ $receipt ? ($statusLabels[$receipt->payment_status] ?? $receipt->payment_status) : 'Paguar' }}
       </p>
     </div>
   </div>
@@ -105,6 +115,14 @@
       @endforeach
     </tbody>
   </table>
+
+  <div class="summary">
+    <div class="summary-row"><span>Subtotal</span><strong>{{ number_format((float) ($receipt?->subtotal ?? $purchases->sum('total')), 2) }} EUR</strong></div>
+    <div class="summary-row"><span>Zbritje</span><strong>{{ number_format((float) ($receipt?->discount ?? 0), 2) }} EUR</strong></div>
+    <div class="summary-row strong"><span>Total</span><strong>{{ number_format((float) $total, 2) }} EUR</strong></div>
+    <div class="summary-row"><span>Paguar</span><strong>{{ number_format((float) ($receipt?->paid_amount ?? $total), 2) }} EUR</strong></div>
+    <div class="summary-row"><span>Mbetur</span><strong>{{ number_format((float) ($receipt?->balance ?? 0), 2) }} EUR</strong></div>
+  </div>
 
   <div class="total">TOTAL: {{ number_format((float) $total, 2) }} EUR</div>
 

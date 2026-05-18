@@ -8,6 +8,7 @@ class CustomerPurchase extends Model
 {
     protected $fillable = [
         'customer_id',
+        'customer_receipt_id',
         'order_id',
         'product_id',
         'receipt_code',
@@ -30,6 +31,11 @@ class CustomerPurchase extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function receipt()
+    {
+        return $this->belongsTo(CustomerReceipt::class, 'customer_receipt_id');
     }
 
     public function order()

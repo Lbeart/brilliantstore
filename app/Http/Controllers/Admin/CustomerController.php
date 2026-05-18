@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\CustomerPurchase;
+use App\Models\CustomerReceipt;
+use App\Models\Product;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -98,9 +100,17 @@ class CustomerController extends Controller
 
     public function edit(Customer $customer)
     {
-        $customer->load(['purchases' => fn ($q) => $q->with('order')->latest('purchased_at')->latest()]);
+        $customer->load([
+            'receipts' => fn ($q) => $q->with(['purchases', 'order'])->latest('sold_at')->latest(),
+            'purchases' => fn ($q) => $q->with('order')->latest('purchased_at')->latest(),
+        ]);
+        $products = Product::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->limit(250)
+            ->get(['id', 'name', 'price', 'sku', 'stock']);
 
-        return view('admin.customers.edit', compact('customer'));
+        return view('admin.customers.edit', compact('customer', 'products'));
     }
 
     public function update(Request $request, Customer $customer)
@@ -127,26 +137,28 @@ class CustomerController extends Controller
 
     public function invoice(Customer $customer, string $receiptCode)
     {
-        [$purchases, $total] = $this->receiptData($customer, $receiptCode);
+        [$purchases, $total, $receipt] = $this->receiptData($customer, $receiptCode);
 
         return view('admin.customers.invoice', [
             'customer' => $customer,
             'purchases' => $purchases,
             'receiptCode' => $receiptCode,
             'total' => $total,
+            'receipt' => $receipt,
             'isPdf' => false,
         ]);
     }
 
     public function invoicePdf(Customer $customer, string $receiptCode)
     {
-        [$purchases, $total] = $this->receiptData($customer, $receiptCode);
+        [$purchases, $total, $receipt] = $this->receiptData($customer, $receiptCode);
 
         $pdf = Pdf::loadView('admin.customers.invoice', [
             'customer' => $customer,
             'purchases' => $purchases,
             'receiptCode' => $receiptCode,
             'total' => $total,
+            'receipt' => $receipt,
             'isPdf' => true,
         ]);
 
@@ -182,7 +194,11 @@ class CustomerController extends Controller
         $data = $request->validate([
             'purchased_at' => 'nullable|date',
             'purchase_notes' => 'nullable|string|max:2000',
+            'discount' => 'nullable|numeric|min:0|max:999999',
+            'paid_amount' => 'nullable|numeric|min:0|max:999999',
+            'payment_method' => 'nullable|in:cash,card,bank,mixed',
             'items' => 'nullable|array|max:50',
+            'items.*.product_id' => 'nullable|integer|exists:products,id',
             'items.*.item_name' => 'nullable|string|max:255',
             'items.*.size' => 'nullable|string|max:255',
             'items.*.quantity' => 'nullable|integer|min:1|max:9999',
@@ -210,7 +226,8 @@ class CustomerController extends Controller
     {
         $receiptCode = $this->generateReceiptCode();
         $purchasedAt = $data['purchased_at'] ?? now();
-        $latestPurchase = null;
+        $lines = [];
+        $subtotal = 0;
 
         foreach ($data['items'] as $item) {
             $quantity = max((int) ($item['quantity'] ?? 1), 1);
@@ -219,20 +236,57 @@ class CustomerController extends Controller
                 ? (float) $item['total']
                 : $quantity * $unitPrice;
 
-            $latestPurchase = $customer->purchases()->create([
-                'receipt_code' => $receiptCode,
+            $subtotal += $total;
+            $lines[] = [
+                'product_id' => $item['product_id'] ?? null,
                 'item_name' => $item['item_name'],
                 'size' => $item['size'] ?? null,
                 'quantity' => $quantity,
                 'unit_price' => $unitPrice,
                 'total' => $total,
+            ];
+        }
+
+        $discount = min((float) ($data['discount'] ?? 0), $subtotal);
+        $receiptTotal = max($subtotal - $discount, 0);
+        $paidAmount = array_key_exists('paid_amount', $data) && $data['paid_amount'] !== null && $data['paid_amount'] !== ''
+            ? (float) $data['paid_amount']
+            : $receiptTotal;
+        $balance = max($receiptTotal - $paidAmount, 0);
+        $paymentStatus = $receiptTotal <= 0 || $paidAmount >= $receiptTotal
+            ? 'paid'
+            : ($paidAmount > 0 ? 'partial' : 'unpaid');
+
+        $receipt = $customer->receipts()->create([
+            'code' => $receiptCode,
+            'subtotal' => $subtotal,
+            'discount' => $discount,
+            'total' => $receiptTotal,
+            'paid_amount' => $paidAmount,
+            'balance' => $balance,
+            'payment_method' => $data['payment_method'] ?? 'cash',
+            'payment_status' => $paymentStatus,
+            'sold_at' => $purchasedAt,
+            'notes' => $data['purchase_notes'] ?? null,
+        ]);
+
+        foreach ($lines as $line) {
+            $customer->purchases()->create([
+                'customer_receipt_id' => $receipt->id,
+                'receipt_code' => $receiptCode,
+                'product_id' => $line['product_id'],
+                'item_name' => $line['item_name'],
+                'size' => $line['size'],
+                'quantity' => $line['quantity'],
+                'unit_price' => $line['unit_price'],
+                'total' => $line['total'],
                 'purchased_at' => $purchasedAt,
                 'notes' => $data['purchase_notes'] ?? null,
             ]);
         }
 
-        if ($latestPurchase && (!$customer->last_purchase_at || $latestPurchase->purchased_at->greaterThan($customer->last_purchase_at))) {
-            $customer->update(['last_purchase_at' => $latestPurchase->purchased_at]);
+        if (!$customer->last_purchase_at || $receipt->sold_at->greaterThan($customer->last_purchase_at)) {
+            $customer->update(['last_purchase_at' => $receipt->sold_at]);
         }
 
         return $receiptCode;
@@ -240,6 +294,15 @@ class CustomerController extends Controller
 
     private function receiptData(Customer $customer, string $receiptCode): array
     {
+        $receipt = $customer->receipts()
+            ->where('code', $receiptCode)
+            ->with(['purchases.order', 'order'])
+            ->first();
+
+        if ($receipt) {
+            return [$receipt->purchases, (float) $receipt->total, $receipt];
+        }
+
         $purchases = $customer->purchases()
             ->where('receipt_code', $receiptCode)
             ->with('order')
@@ -248,7 +311,7 @@ class CustomerController extends Controller
 
         abort_if($purchases->isEmpty(), 404);
 
-        return [$purchases, $purchases->sum('total')];
+        return [$purchases, $purchases->sum('total'), null];
     }
 
     private function generateReceiptCode(): string
@@ -265,7 +328,9 @@ class CustomerController extends Controller
         try {
             return Schema::hasTable('customers')
                 && Schema::hasTable('customer_purchases')
-                && Schema::hasColumn('customer_purchases', 'receipt_code');
+                && Schema::hasTable('customer_receipts')
+                && Schema::hasColumn('customer_purchases', 'receipt_code')
+                && Schema::hasColumn('customer_purchases', 'customer_receipt_id');
         } catch (\Throwable $e) {
             return false;
         }
