@@ -380,6 +380,7 @@
                     <th>Shitje</th>
                     <th>Paguar</th>
                     <th>Borxh</th>
+                    <th class="text-end">Fatura ditore</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -390,9 +391,19 @@
                       <td class="fw-bold">{{ number_format((float) $day->total_sales, 2) }} EUR</td>
                       <td>{{ number_format((float) $day->paid_sales, 2) }} EUR</td>
                       <td class="{{ (float) $day->open_balance > 0 ? 'text-danger fw-bold' : 'muted' }}">{{ number_format((float) $day->open_balance, 2) }} EUR</td>
+                      <td class="text-end">
+                        <div class="btn-group">
+                          <a href="{{ route('admin.customers.daily-invoice', $day->sale_date) }}" class="btn btn-sm btn-outline-dark">
+                            <i class="fa fa-eye me-1"></i> Hap
+                          </a>
+                          <a href="{{ route('admin.customers.daily-invoice.pdf', $day->sale_date) }}" class="btn btn-sm btn-danger">
+                            <i class="fa fa-file-pdf me-1"></i> PDF
+                          </a>
+                        </div>
+                      </td>
                     </tr>
                   @empty
-                    <tr><td colspan="5" class="empty-state">Ende nuk ka shitje te regjistruara per {{ $reportYear }}.</td></tr>
+                    <tr><td colspan="6" class="empty-state">Ende nuk ka shitje te regjistruara per {{ $reportYear }}.</td></tr>
                   @endforelse
                 </tbody>
               </table>

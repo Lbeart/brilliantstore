@@ -192,6 +192,8 @@ Route::middleware(['auth','verified','admin'])
         Route::delete('/customers/{customer}/purchases/{purchase}', [AdminCustomerController::class, 'destroyPurchase'])->name('customers.purchases.destroy');
         Route::get('/customers/{customer}/receipts/{receiptCode}/invoice', [AdminCustomerController::class, 'invoice'])->name('customers.invoice');
         Route::get('/customers/{customer}/receipts/{receiptCode}/invoice-pdf', [AdminCustomerController::class, 'invoicePdf'])->name('customers.invoice.pdf');
+        Route::get('/customers/reports/daily/{date}/invoice', [AdminCustomerController::class, 'dailyInvoice'])->name('customers.daily-invoice');
+        Route::get('/customers/reports/daily/{date}/invoice-pdf', [AdminCustomerController::class, 'dailyInvoicePdf'])->name('customers.daily-invoice.pdf');
 
         // Products
         Route::get('/products',                 [AdminProductController::class, 'index'])->name('products.index');

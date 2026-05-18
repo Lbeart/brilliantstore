@@ -198,6 +198,32 @@ class CustomerController extends Controller
         return $pdf->download('fatura-'.$receiptCode.'.pdf');
     }
 
+    public function dailyInvoice(string $date)
+    {
+        [$receipts, $summary, $day] = $this->dailyInvoiceData($date);
+
+        return view('admin.customers.daily-invoice', [
+            'receipts' => $receipts,
+            'summary' => $summary,
+            'day' => $day,
+            'isPdf' => false,
+        ]);
+    }
+
+    public function dailyInvoicePdf(string $date)
+    {
+        [$receipts, $summary, $day] = $this->dailyInvoiceData($date);
+
+        $pdf = Pdf::loadView('admin.customers.daily-invoice', [
+            'receipts' => $receipts,
+            'summary' => $summary,
+            'day' => $day,
+            'isPdf' => true,
+        ]);
+
+        return $pdf->download('shitjet-ditore-'.$day->format('Y-m-d').'.pdf');
+    }
+
     public function destroyPurchase(Customer $customer, CustomerPurchase $purchase)
     {
         abort_unless($purchase->customer_id === $customer->id, 404);
@@ -373,6 +399,38 @@ class CustomerController extends Controller
         abort_if($purchases->isEmpty(), 404);
 
         return [$purchases, $purchases->sum('total'), null];
+    }
+
+    private function dailyInvoiceData(string $date): array
+    {
+        abort_unless(preg_match('/^\d{4}-\d{2}-\d{2}$/', $date), 404);
+
+        $day = \Carbon\Carbon::createFromFormat('Y-m-d', $date)->startOfDay();
+
+        $receipts = CustomerReceipt::query()
+            ->with(['customer', 'purchases'])
+            ->whereDate('sold_at', $day->toDateString())
+            ->orderBy('sold_at')
+            ->orderBy('id')
+            ->get();
+
+        abort_if($receipts->isEmpty(), 404);
+
+        $summary = [
+            'receipts_count' => $receipts->count(),
+            'items_count' => $receipts->sum(fn ($receipt) => $receipt->purchases->sum('quantity')),
+            'subtotal' => $receipts->sum('subtotal'),
+            'discount' => $receipts->sum('discount'),
+            'total' => $receipts->sum('total'),
+            'paid' => $receipts->sum('paid_amount'),
+            'balance' => $receipts->sum('balance'),
+            'cash' => $receipts->where('payment_method', 'cash')->sum('paid_amount'),
+            'card' => $receipts->where('payment_method', 'card')->sum('paid_amount'),
+            'bank' => $receipts->where('payment_method', 'bank')->sum('paid_amount'),
+            'mixed' => $receipts->where('payment_method', 'mixed')->sum('paid_amount'),
+        ];
+
+        return [$receipts, $summary, $day];
     }
 
     private function generateReceiptCode(): string
