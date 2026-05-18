@@ -57,6 +57,11 @@
     .empty-state{padding:2rem;text-align:center;color:var(--muted)}
     .customer-card{border:1px solid var(--line);border-radius:var(--radius);background:#fff}
     .line-item{border:1px solid var(--line);border-radius:var(--radius);padding:.75rem;background:#fbfcfd;margin-bottom:.75rem}
+    .mini-total{font-size:.85rem;color:#667085}
+    .payment-helper{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem}
+    .pos-total{border:1px solid var(--line);border-radius:var(--radius);background:#111827;color:#fff;padding:1rem}
+    .pos-total .label{color:#cbd5e1;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+    .pos-total .value{font-size:1.45rem;font-weight:900}
     .metric-band{background:#111827;color:#fff;border-radius:var(--radius);box-shadow:var(--shadow)}
     .metric-band .metric{padding:1rem;border-right:1px solid rgba(255,255,255,.12)}
     .metric-band .metric:last-child{border-right:0}
@@ -253,17 +258,18 @@
                     </div>
                     <div class="col-6">
                       <label class="form-label">Sasia</label>
-                      <input type="number" name="items[0][quantity]" value="1" min="1" class="form-control">
+                      <input type="number" name="items[0][quantity]" value="1" min="1" class="form-control" data-qty>
                     </div>
                     <div class="col-6">
                       <label class="form-label">Cmimi</label>
-                      <input type="number" step="0.01" name="items[0][unit_price]" min="0" class="form-control">
+                      <input type="number" step="0.01" name="items[0][unit_price]" min="0" class="form-control" data-price>
                     </div>
                     <div class="col-6">
                       <label class="form-label">Totali</label>
-                      <input type="number" step="0.01" name="items[0][total]" min="0" class="form-control">
+                      <input type="number" step="0.01" name="items[0][total]" min="0" class="form-control" data-line-total>
                     </div>
                   </div>
+                  <div class="mini-total mt-2">Llogaritja: <span data-line-preview>0.00 EUR</span></div>
                 </div>
               </div>
 
@@ -272,8 +278,54 @@
               </button>
 
               <div class="mt-2">
-                <label class="form-label">Shenime per blerjen</label>
-                <textarea name="purchase_notes" rows="2" class="form-control">{{ old('purchase_notes') }}</textarea>
+                <label class="form-label">Shenime per faturen / blerjen</label>
+                <textarea name="purchase_notes" rows="2" class="form-control" placeholder="p.sh. Pagesa e pjesshme, klienti e merr produktin te premten...">{{ old('purchase_notes') }}</textarea>
+              </div>
+
+              <div class="border-top mt-3 pt-3">
+                <div class="section-title mb-2">
+                  <h2>Pagesa</h2>
+                  <span class="small muted">Shkruaje sa dha klienti</span>
+                </div>
+                <div class="row g-2">
+                  <div class="col-6">
+                    <label class="form-label">Zbritje</label>
+                    <input type="number" step="0.01" name="discount" value="0" min="0" class="form-control" data-discount>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label">Paguar</label>
+                    <input type="number" step="0.01" name="paid_amount" value="0" min="0" class="form-control" data-paid>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Menyra e pageses</label>
+                    <select name="payment_method" class="form-select">
+                      <option value="cash">Cash</option>
+                      <option value="card">Kartel</option>
+                      <option value="bank">Banke</option>
+                      <option value="mixed">E perzier</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="payment-helper mt-2">
+                  <button type="button" class="btn btn-sm btn-outline-danger" data-pay-none>Se ka pagu</button>
+                  <button type="button" class="btn btn-sm btn-outline-dark" data-pay-half>Gjysmen</button>
+                  <button type="button" class="btn btn-sm btn-outline-success" data-pay-full>Krejt</button>
+                </div>
+
+                <div class="pos-total mt-3">
+                  <div class="d-flex justify-content-between gap-2">
+                    <div>
+                      <div class="label">Totali</div>
+                      <div class="value"><span data-grand-total>0.00</span> EUR</div>
+                    </div>
+                    <div class="text-end">
+                      <div class="label">Mbetur</div>
+                      <div class="value"><span data-balance>0.00</span> EUR</div>
+                    </div>
+                  </div>
+                  <div class="small mt-2">Subtotal: <span data-subtotal>0.00</span> EUR / Zbritje: <span data-discount-preview>0.00</span> EUR</div>
+                </div>
               </div>
             </div>
 
@@ -526,6 +578,43 @@
       const remove = line.querySelector('[data-remove-line]');
       remove.classList.toggle('d-none', lines.querySelectorAll('[data-line]').length === 1);
     });
+    calculate();
+  }
+
+  function money(value){
+    return Number(value || 0).toFixed(2);
+  }
+
+  function calculateLine(line){
+    const qty = parseFloat(line.querySelector('[data-qty]')?.value || 0);
+    const price = parseFloat(line.querySelector('[data-price]')?.value || 0);
+    const totalInput = line.querySelector('[data-line-total]');
+    const computed = qty * price;
+
+    if (totalInput && (!totalInput.value || document.activeElement !== totalInput)) {
+      totalInput.value = money(computed);
+    }
+
+    const total = parseFloat(totalInput?.value || computed || 0);
+    const preview = line.querySelector('[data-line-preview]');
+    if (preview) preview.textContent = money(total) + ' EUR';
+
+    return total;
+  }
+
+  function calculate(){
+    const subtotal = [...lines.querySelectorAll('[data-line]')].reduce((sum, line) => sum + calculateLine(line), 0);
+    const discountInput = document.querySelector('[data-discount]');
+    const paidInput = document.querySelector('[data-paid]');
+    const discount = Math.min(parseFloat(discountInput?.value || 0), subtotal);
+    const grand = Math.max(subtotal - discount, 0);
+    const paid = parseFloat(paidInput?.value || 0);
+    const balance = Math.max(grand - paid, 0);
+
+    document.querySelector('[data-subtotal]').textContent = money(subtotal);
+    document.querySelector('[data-discount-preview]').textContent = money(discount);
+    document.querySelector('[data-grand-total]').textContent = money(grand);
+    document.querySelector('[data-balance]').textContent = money(balance);
   }
 
   add.addEventListener('click', () => {
@@ -543,6 +632,34 @@
     button.closest('[data-line]').remove();
     renumber();
   });
+
+  document.addEventListener('input', event => {
+    if (event.target.closest('[data-line]') || event.target.matches('[data-discount], [data-paid]')) {
+      calculate();
+    }
+  });
+
+  document.querySelector('[data-pay-none]')?.addEventListener('click', () => {
+    const paidInput = document.querySelector('[data-paid]');
+    if (paidInput) paidInput.value = '0.00';
+    calculate();
+  });
+
+  document.querySelector('[data-pay-half]')?.addEventListener('click', () => {
+    const grand = parseFloat(document.querySelector('[data-grand-total]')?.textContent || 0);
+    const paidInput = document.querySelector('[data-paid]');
+    if (paidInput) paidInput.value = money(grand / 2);
+    calculate();
+  });
+
+  document.querySelector('[data-pay-full]')?.addEventListener('click', () => {
+    const grand = parseFloat(document.querySelector('[data-grand-total]')?.textContent || 0);
+    const paidInput = document.querySelector('[data-paid]');
+    if (paidInput) paidInput.value = money(grand);
+    calculate();
+  });
+
+  calculate();
 })();
 </script>
 </body>
