@@ -76,6 +76,9 @@
         <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">
           <i class="fas fa-users me-1"></i> Përdoruesit
         </a>
+        <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
+          <i class="fas fa-address-book me-1"></i> Klientet
+        </a>
         <a class="nav-link" href="{{ route('admin.products.index') }}">
           <i class="fas fa-box-open me-1"></i> Produktet
         </a>
@@ -209,6 +212,9 @@
       </a>
       <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">
         <i class="fas fa-users me-1"></i> Përdoruesit
+      </a>
+      <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
+        <i class="fas fa-address-book me-1"></i> Klientet
       </a>
       <a class="nav-link" href="{{ route('admin.products.index') }}">
         <i class="fas fa-box-open me-1"></i> Produktet

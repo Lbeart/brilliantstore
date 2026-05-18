@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 class Order extends Model
 {
     protected $fillable = [
-        'user_id','name','phone','email','address','city','zip','notes','payment','total','status','tracking_code'
+        'user_id','customer_id','name','phone','email','address','city','zip','notes','payment','total','status','tracking_code'
     ];
 
     public function items()
@@ -19,6 +19,11 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
      protected static function booted()
     {

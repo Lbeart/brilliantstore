@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\StatsController;
+use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\OrderTrackingController;
 
 /*
@@ -180,6 +181,15 @@ Route::middleware(['auth','verified','admin'])
         Route::get('/users/{user}/edit',     [UserController::class, 'edit'])->name('users.edit');
         Route::put('/users/{user}',          [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}',       [UserController::class, 'destroy'])->name('users.destroy');
+
+        // Customers
+        Route::get('/customers', [AdminCustomerController::class, 'index'])->name('customers.index');
+        Route::post('/customers', [AdminCustomerController::class, 'store'])->name('customers.store');
+        Route::get('/customers/{customer}/edit', [AdminCustomerController::class, 'edit'])->name('customers.edit');
+        Route::put('/customers/{customer}', [AdminCustomerController::class, 'update'])->name('customers.update');
+        Route::delete('/customers/{customer}', [AdminCustomerController::class, 'destroy'])->name('customers.destroy');
+        Route::post('/customers/{customer}/purchases', [AdminCustomerController::class, 'storePurchase'])->name('customers.purchases.store');
+        Route::delete('/customers/{customer}/purchases/{purchase}', [AdminCustomerController::class, 'destroyPurchase'])->name('customers.purchases.destroy');
 
         // Products
         Route::get('/products',                 [AdminProductController::class, 'index'])->name('products.index');

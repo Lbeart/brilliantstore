@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\Customer;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -35,6 +37,7 @@ class DashboardController extends Controller
             $monthStart = Carbon::now()->startOfMonth();
 
             $usersCount    = User::count();
+            $customersCount = Schema::hasTable('customers') ? Customer::count() : 0;
             $productsCount = Product::count();
             $ordersCount   = Order::count();
 
@@ -74,6 +77,7 @@ class DashboardController extends Controller
 
             return [
                 'usersCount'    => $usersCount,
+                'customersCount' => $customersCount,
                 'productsCount' => $productsCount,
                 'ordersCount'   => $ordersCount,
                 'revenue'       => $revenue,

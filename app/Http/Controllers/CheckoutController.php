@@ -9,6 +9,7 @@ use App\Support\ProductImages;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use App\Jobs\SendWhatsAppOrderNotification;
+use App\Models\Customer;
 
 class CheckoutController extends Controller
 {
@@ -57,6 +58,8 @@ class CheckoutController extends Controller
         $order = null;
 
         DB::transaction(function() use ($data, $cart, $total, &$order) {
+            $customer = $this->syncCustomerFromCheckout($data);
+
             $orderData = [
                 'name'    => $data['name'],
                 'phone'   => $data['phone'],
@@ -72,6 +75,10 @@ class CheckoutController extends Controller
 
             if (Schema::hasColumn('orders', 'user_id')) {
                 $orderData['user_id'] = auth()->id();
+            }
+
+            if ($customer && Schema::hasColumn('orders', 'customer_id')) {
+                $orderData['customer_id'] = $customer->id;
             }
 
             $order = Order::create($orderData);
@@ -91,7 +98,7 @@ class CheckoutController extends Controller
             "Material: " . ($c['meters'] ?? '-') . "m";
     }
 
-    OrderItem::create([
+    $orderItem = OrderItem::create([
         'order_id'   => $order->id,
         'product_id' => $it['product_id'] ?? null,
         'name'       => $it['name'] ?? 'Produkt',
@@ -100,7 +107,25 @@ class CheckoutController extends Controller
         'price'      => (float)($it['price'] ?? 0),
         'image'      => $it['image'] ?? ($it['image_path'] ?? null),
     ]);
+
+    if ($customer && Schema::hasTable('customer_purchases')) {
+        $customer->purchases()->create([
+            'order_id' => $order->id,
+            'product_id' => $orderItem->product_id,
+            'item_name' => $orderItem->name,
+            'size' => $orderItem->size,
+            'quantity' => $orderItem->qty,
+            'unit_price' => $orderItem->price,
+            'total' => $orderItem->qty * $orderItem->price,
+            'purchased_at' => now(),
+            'notes' => $order->notes,
+        ]);
+    }
 }
+
+            if ($customer) {
+                $customer->update(['last_purchase_at' => now()]);
+            }
         });
 
         // dërgo njoftim WhatsApp për pronarin (në background)
@@ -133,5 +158,33 @@ class CheckoutController extends Controller
         }
         $orderNo = $request->session()->get('order_number');
         return view('checkout.success', compact('orderNo'));
+    }
+
+    private function syncCustomerFromCheckout(array $data): ?Customer
+    {
+        if (!Schema::hasTable('customers')) {
+            return null;
+        }
+
+        $customer = Customer::query()
+            ->when(!empty($data['phone']), fn ($q) => $q->orWhere('phone', $data['phone']))
+            ->when(!empty($data['email']), fn ($q) => $q->orWhere('email', $data['email']))
+            ->first();
+
+        if (!$customer) {
+            $customer = new Customer();
+        }
+
+        $customer->fill([
+            'name' => $data['name'],
+            'phone' => $data['phone'] ?? $customer->phone,
+            'email' => $data['email'] ?? $customer->email,
+            'address' => $data['address'] ?? $customer->address,
+            'city' => $data['city'] ?? $customer->city,
+        ]);
+
+        $customer->save();
+
+        return $customer;
     }
 }
