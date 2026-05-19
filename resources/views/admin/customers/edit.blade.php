@@ -45,8 +45,12 @@
     .pos-total .value{font-size:1.6rem;font-weight:900}
     .mini-total{font-size:.85rem;color:#667085}
     .payment-helper{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem}
+    .payment-inline{display:grid;grid-template-columns:minmax(92px,1fr) minmax(96px,1fr) auto;gap:.35rem;margin-top:.5rem;align-items:center}
+    .payment-inline .form-control,.payment-inline .form-select{font-size:.82rem;padding:.32rem .45rem}
+    .payment-inline .btn{font-size:.82rem;padding:.32rem .55rem;white-space:nowrap}
+    .mark-paid-form{margin-top:.35rem}
     @media (max-width:991px){.content{padding:1rem}.page-head{flex-direction:column}.sidebar{min-height:100vh}}
-    @media (max-width:767px){.sidebar.desktop{display:none}}
+    @media (max-width:767px){.sidebar.desktop{display:none}.payment-inline{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -327,6 +331,26 @@
                               <div class="text-danger fw-bold">Borxh {{ number_format((float) $receipt->balance, 2) }} EUR</div>
                             @endif
                           </div>
+                          <form method="POST" action="{{ route('admin.customers.receipts.payment', [$customer, $receipt]) }}" class="payment-inline">
+                            @csrf @method('PUT')
+                            <input type="number" step="0.01" min="0" max="{{ (float) $receipt->total }}" name="paid_amount" value="{{ number_format((float) $receipt->paid_amount, 2, '.', '') }}" class="form-control" aria-label="Shuma e paguar">
+                            <select name="payment_method" class="form-select" aria-label="Menyra e pageses">
+                              @foreach($paymentLabels as $method => $label)
+                                <option value="{{ $method }}" @selected($receipt->payment_method === $method)>{{ $label }}</option>
+                              @endforeach
+                            </select>
+                            <button class="btn btn-sm btn-outline-dark">Ruaj</button>
+                          </form>
+                          @if((float) $receipt->balance > 0)
+                            <form method="POST" action="{{ route('admin.customers.receipts.payment', [$customer, $receipt]) }}" class="mark-paid-form">
+                              @csrf @method('PUT')
+                              <input type="hidden" name="mark_paid" value="1">
+                              <input type="hidden" name="payment_method" value="{{ $receipt->payment_method }}">
+                              <button class="btn btn-sm btn-success w-100">
+                                <i class="fa fa-check me-1"></i> U pagu krejt
+                              </button>
+                            </form>
+                          @endif
                         @elseif($firstPurchase->order)
                           <a href="{{ route('admin.orders.show', $firstPurchase->order) }}" class="btn btn-sm btn-outline-dark">
                             Porosia #{{ $firstPurchase->order->id }}

@@ -167,6 +167,37 @@ class CustomerController extends Controller
         return redirect()->route('admin.customers.invoice', [$customer, $receiptCode])->with('success', 'Blerja u shtua dhe fatura u krijua.');
     }
 
+    public function updateReceiptPayment(Request $request, Customer $customer, CustomerReceipt $receipt)
+    {
+        abort_unless($receipt->customer_id === $customer->id, 404);
+
+        $data = $request->validate([
+            'paid_amount' => 'required_without:mark_paid|nullable|numeric|min:0|max:999999',
+            'payment_method' => 'nullable|in:cash,card,bank,mixed',
+            'mark_paid' => 'nullable|boolean',
+        ]);
+
+        $total = (float) $receipt->total;
+        $paidAmount = $request->boolean('mark_paid')
+            ? $total
+            : min((float) ($data['paid_amount'] ?? 0), $total);
+        $balance = max($total - $paidAmount, 0);
+        $paymentStatus = $total <= 0 || $paidAmount >= $total
+            ? 'paid'
+            : ($paidAmount > 0 ? 'partial' : 'unpaid');
+
+        $receipt->update([
+            'paid_amount' => $paidAmount,
+            'balance' => $balance,
+            'payment_method' => $data['payment_method'] ?? $receipt->payment_method,
+            'payment_status' => $paymentStatus,
+        ]);
+
+        return redirect()
+            ->route('admin.customers.edit', $customer)
+            ->with('success', 'Pagesa e fatures u perditesua.');
+    }
+
     public function invoice(Customer $customer, string $receiptCode)
     {
         [$purchases, $total, $receipt] = $this->receiptData($customer, $receiptCode);

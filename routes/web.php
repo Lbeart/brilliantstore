@@ -196,6 +196,7 @@ Route::middleware(['auth','verified','admin'])
         Route::delete('/customers/{customer}', [AdminCustomerController::class, 'destroy'])->whereNumber('customer')->name('customers.destroy');
         Route::post('/customers/{customer}/purchases', [AdminCustomerController::class, 'storePurchase'])->whereNumber('customer')->name('customers.purchases.store');
         Route::delete('/customers/{customer}/purchases/{purchase}', [AdminCustomerController::class, 'destroyPurchase'])->whereNumber('customer')->whereNumber('purchase')->name('customers.purchases.destroy');
+        Route::put('/customers/{customer}/receipts/{receipt}/payment', [AdminCustomerController::class, 'updateReceiptPayment'])->whereNumber('customer')->whereNumber('receipt')->name('customers.receipts.payment');
         Route::get('/customers/{customer}/receipts/{receiptCode}/invoice', [AdminCustomerController::class, 'invoice'])->whereNumber('customer')->name('customers.invoice');
         Route::get('/customers/{customer}/receipts/{receiptCode}/invoice-pdf', [AdminCustomerController::class, 'invoicePdf'])->whereNumber('customer')->name('customers.invoice.pdf');
 
