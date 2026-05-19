@@ -69,6 +69,13 @@
     .metric .value{font-size:1.45rem;font-weight:900;line-height:1.1}
     .month-tile{border:1px solid var(--line);border-radius:var(--radius);padding:.75rem;background:#fff;min-height:104px}
     .month-name{font-weight:850;color:#344054}
+    .private-value{display:inline-flex;align-items:center;gap:.45rem;min-height:1.25em}
+    .private-mask{letter-spacing:.08em}
+    .private-text.d-none{display:none!important}
+    .private-toggle{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;width:28px;height:28px;display:inline-grid;place-items:center;padding:0;line-height:1}
+    .private-toggle:hover{border-color:var(--brand);color:var(--brand)}
+    .metric-band .private-toggle{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.28);color:#fff}
+    .metric-band .private-toggle:hover{background:#fff;color:var(--brand)}
     @media (max-width:991px){.content{padding:1rem}.page-head{flex-direction:column}.sidebar{min-height:100vh}}
     @media (max-width:767px){.sidebar.desktop{display:none}.stat{min-height:auto}.actions{width:100%;display:flex}.actions .btn,.actions form{flex:1}.actions form button{width:100%}}
   </style>
@@ -140,29 +147,40 @@
       @if($errors->any())
         <div class="alert alert-danger">Kontrollo fushat, ka disa te dhena qe mungojne ose nuk jane ne formatin e duhur.</div>
       @endif
+      @php
+        $privateValue = function ($value) {
+            return new \Illuminate\Support\HtmlString(
+                '<span class="private-value" data-private-value>'
+                .'<span class="private-mask">****</span>'
+                .'<span class="private-text d-none">'.e($value).'</span>'
+                .'<button type="button" class="private-toggle" data-private-toggle aria-label="Shfaq vleren"><i class="fa fa-eye"></i></button>'
+                .'</span>'
+            );
+        };
+      @endphp
 
       <div class="row g-3 mb-3">
         <div class="col-12 col-sm-6 col-xl-3">
           <div class="card-soft stat p-3">
-            <div><div class="stat-label">Kliente gjithsej</div><div class="stat-value">{{ number_format($stats['customersCount'] ?? 0) }}</div></div>
+            <div><div class="stat-label">Kliente gjithsej</div><div class="stat-value">{!! $privateValue(number_format($stats['customersCount'] ?? 0)) !!}</div></div>
             <div class="stat-icon"><i class="fa fa-address-book"></i></div>
           </div>
         </div>
         <div class="col-12 col-sm-6 col-xl-3">
           <div class="card-soft stat p-3">
-            <div><div class="stat-label">Blerje te regjistruara</div><div class="stat-value">{{ number_format($stats['purchasesCount'] ?? 0) }}</div></div>
+            <div><div class="stat-label">Blerje te regjistruara</div><div class="stat-value">{!! $privateValue(number_format($stats['purchasesCount'] ?? 0)) !!}</div></div>
             <div class="stat-icon"><i class="fa fa-receipt"></i></div>
           </div>
         </div>
         <div class="col-12 col-sm-6 col-xl-3">
           <div class="card-soft stat p-3">
-            <div><div class="stat-label">Te ardhura nga blerjet</div><div class="stat-value">{{ number_format($stats['revenue'] ?? 0, 2) }} EUR</div></div>
+            <div><div class="stat-label">Te ardhura nga blerjet</div><div class="stat-value">{!! $privateValue(number_format($stats['revenue'] ?? 0, 2).' EUR') !!}</div></div>
             <div class="stat-icon"><i class="fa fa-euro-sign"></i></div>
           </div>
         </div>
         <div class="col-12 col-sm-6 col-xl-3">
           <div class="card-soft stat p-3">
-            <div><div class="stat-label">Kliente 30 ditet e fundit</div><div class="stat-value">{{ number_format($stats['latestCount'] ?? 0) }}</div></div>
+            <div><div class="stat-label">Kliente 30 ditet e fundit</div><div class="stat-value">{!! $privateValue(number_format($stats['latestCount'] ?? 0)) !!}</div></div>
             <div class="stat-icon"><i class="fa fa-calendar-check"></i></div>
           </div>
         </div>
@@ -172,22 +190,22 @@
         <div class="row g-0">
           <div class="col-12 col-md-3 metric">
             <div class="label">Shitje sot</div>
-            <div class="value">{{ number_format($stats['todaySales'] ?? 0, 2) }} EUR</div>
-            <div class="small text-white-50">{{ number_format($stats['todayReceipts'] ?? 0) }} fatura sot</div>
+            <div class="value">{!! $privateValue(number_format($stats['todaySales'] ?? 0, 2).' EUR') !!}</div>
+            <div class="small text-white-50">{!! $privateValue(number_format($stats['todayReceipts'] ?? 0).' fatura sot') !!}</div>
           </div>
           <div class="col-12 col-md-3 metric">
             <div class="label">Shitje kete muaj</div>
-            <div class="value">{{ number_format($stats['monthSales'] ?? 0, 2) }} EUR</div>
+            <div class="value">{!! $privateValue(number_format($stats['monthSales'] ?? 0, 2).' EUR') !!}</div>
             <div class="small text-white-50">Nga POS dhe website</div>
           </div>
           <div class="col-12 col-md-3 metric">
             <div class="label">Shitje {{ $reportYear }}</div>
-            <div class="value">{{ number_format($stats['yearSales'] ?? 0, 2) }} EUR</div>
-            <div class="small text-white-50">Paguar {{ number_format($stats['yearPaid'] ?? 0, 2) }} EUR</div>
+            <div class="value">{!! $privateValue(number_format($stats['yearSales'] ?? 0, 2).' EUR') !!}</div>
+            <div class="small text-white-50">Paguar {!! $privateValue(number_format($stats['yearPaid'] ?? 0, 2).' EUR') !!}</div>
           </div>
           <div class="col-12 col-md-3 metric">
             <div class="label">Borxh hapur</div>
-            <div class="value">{{ number_format($stats['openBalance'] ?? 0, 2) }} EUR</div>
+            <div class="value">{!! $privateValue(number_format($stats['openBalance'] ?? 0, 2).' EUR') !!}</div>
             <div class="small text-white-50">Per t'u ndjekur nga klientet</div>
           </div>
         </div>
@@ -361,10 +379,10 @@
                 <div class="col-6 col-md-3 col-xl-2">
                   <div class="month-tile">
                     <div class="month-name">{{ $monthLabel }}</div>
-                    <div class="fw-bold">{{ number_format((float) ($month->total_sales ?? 0), 2) }} EUR</div>
-                    <div class="small muted">{{ (int) ($month->receipts_count ?? 0) }} fatura</div>
+                    <div class="fw-bold">{!! $privateValue(number_format((float) ($month->total_sales ?? 0), 2).' EUR') !!}</div>
+                    <div class="small muted">{!! $privateValue((int) ($month->receipts_count ?? 0).' fatura') !!}</div>
                     @if((float) ($month->open_balance ?? 0) > 0)
-                      <div class="small text-danger">Borxh {{ number_format((float) $month->open_balance, 2) }}</div>
+                      <div class="small text-danger">Borxh {!! $privateValue(number_format((float) $month->open_balance, 2)) !!}</div>
                     @endif
                   </div>
                 </div>
@@ -387,10 +405,10 @@
                   @forelse($dailySales as $day)
                     <tr>
                       <td class="fw-semibold">{{ \Carbon\Carbon::parse($day->sale_date)->format('d.m.Y') }}</td>
-                      <td>{{ (int) $day->receipts_count }}</td>
-                      <td class="fw-bold">{{ number_format((float) $day->total_sales, 2) }} EUR</td>
-                      <td>{{ number_format((float) $day->paid_sales, 2) }} EUR</td>
-                      <td class="{{ (float) $day->open_balance > 0 ? 'text-danger fw-bold' : 'muted' }}">{{ number_format((float) $day->open_balance, 2) }} EUR</td>
+                      <td>{!! $privateValue((int) $day->receipts_count) !!}</td>
+                      <td class="fw-bold">{!! $privateValue(number_format((float) $day->total_sales, 2).' EUR') !!}</td>
+                      <td>{!! $privateValue(number_format((float) $day->paid_sales, 2).' EUR') !!}</td>
+                      <td class="{{ (float) $day->open_balance > 0 ? 'text-danger fw-bold' : 'muted' }}">{!! $privateValue(number_format((float) $day->open_balance, 2).' EUR') !!}</td>
                       <td class="text-end">
                         <div class="btn-group">
                           <a href="{{ route('admin.customers.daily-invoice', $day->sale_date) }}" class="btn btn-sm btn-outline-dark">
@@ -472,8 +490,8 @@
                         @endforelse
                       </td>
                       <td>
-                        <div class="fw-bold">{{ number_format($customer->purchases_sum_total ?? 0, 2) }} EUR</div>
-                        <div class="small muted">{{ $customer->purchases_count }} blerje</div>
+                        <div class="fw-bold">{!! $privateValue(number_format($customer->purchases_sum_total ?? 0, 2).' EUR') !!}</div>
+                        <div class="small muted">{!! $privateValue($customer->purchases_count.' blerje') !!}</div>
                       </td>
                       <td class="text-end">
                         <div class="btn-group">
@@ -506,8 +524,8 @@
                     <div class="small muted">{{ $customer->phone ?: 'Pa telefon' }}</div>
                   </div>
                   <div class="text-end">
-                    <div class="fw-bold">{{ number_format($customer->purchases_sum_total ?? 0, 2) }} EUR</div>
-                    <div class="small muted">{{ $customer->purchases_count }} blerje</div>
+                    <div class="fw-bold">{!! $privateValue(number_format($customer->purchases_sum_total ?? 0, 2).' EUR') !!}</div>
+                    <div class="small muted">{!! $privateValue($customer->purchases_count.' blerje') !!}</div>
                   </div>
                 </div>
                 <div class="mt-2">
@@ -577,6 +595,27 @@
 
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+(function(){
+  document.addEventListener('click', event => {
+    const button = event.target.closest('[data-private-toggle]');
+    if (!button) return;
+
+    const wrapper = button.closest('[data-private-value]');
+    if (!wrapper) return;
+
+    const mask = wrapper.querySelector('.private-mask');
+    const text = wrapper.querySelector('.private-text');
+    const icon = button.querySelector('i');
+    const isHidden = text.classList.contains('d-none');
+
+    mask.classList.toggle('d-none', isHidden);
+    text.classList.toggle('d-none', !isHidden);
+    icon.classList.toggle('fa-eye', !isHidden);
+    icon.classList.toggle('fa-eye-slash', isHidden);
+    button.setAttribute('aria-label', isHidden ? 'Fsheh vleren' : 'Shfaq vleren');
+  });
+})();
+
 (function(){
   const lines = document.querySelector('[data-lines]');
   const add = document.querySelector('[data-add-line]');
