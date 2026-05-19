@@ -124,12 +124,21 @@
   @if(!$isPdf)
     <div class="actions">
       <button class="btn btn-dark" onclick="window.print()">Printo</button>
-      <a class="btn btn-red" href="{{ route('admin.customers.daily-invoice.pdf', $day->format('Y-m-d')) }}" target="_blank" rel="noopener">Hap PDF</a>
+      <a class="btn btn-red" href="{{ route('admin.customers.daily-invoice', ['date' => $day->format('Y-m-d'), 'print' => 1]) }}" target="_blank" rel="noopener">Ruaj PDF</a>
       <a class="btn btn-muted" href="{{ route('admin.customers.index') }}">Kthehu te klientet</a>
     </div>
   @endif
 
   <div class="footer">Raport ditor i shitjeve - Brillant</div>
 </div>
+@if(!$isPdf && request()->boolean('print'))
+  <script>
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        window.print();
+      }, 350);
+    });
+  </script>
+@endif
 </body>
 </html>
