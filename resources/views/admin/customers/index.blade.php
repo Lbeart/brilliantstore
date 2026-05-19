@@ -396,7 +396,7 @@
                           <a href="{{ route('admin.customers.daily-invoice', $day->sale_date) }}" class="btn btn-sm btn-outline-dark">
                             <i class="fa fa-eye me-1"></i> Hap
                           </a>
-                          <a href="{{ route('admin.customers.daily-invoice.pdf', $day->sale_date) }}" class="btn btn-sm btn-danger">
+                          <a href="{{ route('admin.customers.daily-invoice.pdf', $day->sale_date) }}" class="btn btn-sm btn-danger" target="_blank" rel="noopener">
                             <i class="fa fa-file-pdf me-1"></i> PDF
                           </a>
                         </div>

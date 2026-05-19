@@ -164,7 +164,7 @@
   @if(!$isPdf)
     <div class="actions">
       <button class="btn btn-dark" onclick="window.print()">Printo</button>
-      <a class="btn btn-red" href="{{ route('admin.customers.invoice.pdf', [$customer, $receiptCode]) }}">Shkarko PDF</a>
+      <a class="btn btn-red" href="{{ route('admin.customers.invoice.pdf', [$customer, $receiptCode]) }}" target="_blank" rel="noopener">Hap PDF</a>
       <a class="btn btn-muted" href="{{ route('admin.customers.edit', $customer) }}">Kthehu te klienti</a>
     </div>
   @endif

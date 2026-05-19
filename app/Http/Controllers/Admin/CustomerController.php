@@ -195,7 +195,7 @@ class CustomerController extends Controller
             'isPdf' => true,
         ]);
 
-        return $pdf->download('fatura-'.$receiptCode.'.pdf');
+        return $pdf->stream('fatura-'.$receiptCode.'.pdf');
     }
 
     public function dailyInvoice(string $date)
@@ -221,7 +221,7 @@ class CustomerController extends Controller
             'isPdf' => true,
         ]);
 
-        return $pdf->download('shitjet-ditore-'.$day->format('Y-m-d').'.pdf');
+        return $pdf->stream('shitjet-ditore-'.$day->format('Y-m-d').'.pdf');
     }
 
     public function destroyPurchase(Customer $customer, CustomerPurchase $purchase)

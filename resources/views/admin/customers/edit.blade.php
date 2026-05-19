@@ -340,7 +340,7 @@
                           <a href="{{ route('admin.customers.invoice', [$customer, $receiptCode]) }}" class="btn btn-sm btn-outline-dark">
                             <i class="fa fa-eye me-1"></i> Fatura
                           </a>
-                          <a href="{{ route('admin.customers.invoice.pdf', [$customer, $receiptCode]) }}" class="btn btn-sm btn-danger">
+                          <a href="{{ route('admin.customers.invoice.pdf', [$customer, $receiptCode]) }}" class="btn btn-sm btn-danger" target="_blank" rel="noopener">
                             <i class="fa fa-file-pdf me-1"></i> PDF
                           </a>
                         </div>
