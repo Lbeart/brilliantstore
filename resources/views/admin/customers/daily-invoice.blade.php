@@ -57,6 +57,12 @@
     </div>
   </div>
 
+  @if(session('error') && !$isPdf)
+    <div style="background:#fef3f2;border:1px solid #fecdca;color:#b42318;border-radius:8px;padding:10px 12px;margin-bottom:16px;font-weight:700">
+      {{ session('error') }}
+    </div>
+  @endif
+
   <div class="summary">
     <div class="box"><div class="label">Shitje total</div><div class="value">{{ number_format((float) $summary['total'], 2) }} EUR</div></div>
     <div class="box"><div class="label">Paguar</div><div class="value">{{ number_format((float) $summary['paid'], 2) }} EUR</div></div>

@@ -72,6 +72,12 @@
     </div>
   @endif
 
+  @if(session('error') && !$isPdf)
+    <div style="background:#fef3f2;border:1px solid #fecdca;color:#b42318;border-radius:8px;padding:10px 12px;margin-bottom:16px;font-weight:700">
+      {{ session('error') }}
+    </div>
+  @endif
+
   @php
     $paymentStatus = $receipt?->payment_status ?? 'paid';
     $paidAmount = (float) ($receipt?->paid_amount ?? $total);

@@ -10,6 +10,7 @@ use App\Models\Product;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -186,16 +187,28 @@ class CustomerController extends Controller
     {
         [$purchases, $total, $receipt] = $this->receiptData($customer, $receiptCode);
 
-        $pdf = Pdf::loadView('admin.customers.invoice', [
-            'customer' => $customer,
-            'purchases' => $purchases,
-            'receiptCode' => $receiptCode,
-            'total' => $total,
-            'receipt' => $receipt,
-            'isPdf' => true,
-        ]);
+        try {
+            $pdf = Pdf::loadView('admin.customers.invoice', [
+                'customer' => $customer,
+                'purchases' => $purchases,
+                'receiptCode' => $receiptCode,
+                'total' => $total,
+                'receipt' => $receipt,
+                'isPdf' => true,
+            ])->setPaper('a4');
 
-        return $pdf->stream('fatura-'.$receiptCode.'.pdf');
+            return $pdf->stream('fatura-'.$receiptCode.'.pdf');
+        } catch (\Throwable $e) {
+            Log::error('Customer invoice PDF failed', [
+                'customer_id' => $customer->id,
+                'receipt_code' => $receiptCode,
+                'exception' => $e->getMessage(),
+            ]);
+
+            return redirect()
+                ->route('admin.customers.invoice', [$customer, $receiptCode])
+                ->with('error', 'PDF nuk u hap ne server. Fatura u hap si faqe normale per printim.');
+        }
     }
 
     public function dailyInvoice(string $date)
@@ -214,14 +227,26 @@ class CustomerController extends Controller
     {
         [$receipts, $summary, $day] = $this->dailyInvoiceData($date);
 
-        $pdf = Pdf::loadView('admin.customers.daily-invoice', [
-            'receipts' => $receipts,
-            'summary' => $summary,
-            'day' => $day,
-            'isPdf' => true,
-        ]);
+        try {
+            $pdf = Pdf::loadView('admin.customers.daily-invoice', [
+                'receipts' => $receipts,
+                'summary' => $summary,
+                'day' => $day,
+                'isPdf' => true,
+            ])->setPaper('a4', 'landscape');
 
-        return $pdf->stream('shitjet-ditore-'.$day->format('Y-m-d').'.pdf');
+            return $pdf->stream('shitjet-ditore-'.$day->format('Y-m-d').'.pdf');
+        } catch (\Throwable $e) {
+            Log::error('Daily customer invoice PDF failed', [
+                'date' => $day->format('Y-m-d'),
+                'receipts_count' => $receipts->count(),
+                'exception' => $e->getMessage(),
+            ]);
+
+            return redirect()
+                ->route('admin.customers.daily-invoice', $day->format('Y-m-d'))
+                ->with('error', 'PDF ditor nuk u hap ne server. Raporti u hap si faqe normale per printim.');
+        }
     }
 
     public function destroyPurchase(Customer $customer, CustomerPurchase $purchase)
