@@ -490,8 +490,8 @@
                         @endforelse
                       </td>
                       <td>
-                        <div class="fw-bold">{!! $privateValue(number_format($customer->purchases_sum_total ?? 0, 2).' EUR') !!}</div>
-                        <div class="small muted">{!! $privateValue($customer->purchases_count.' blerje') !!}</div>
+                        <div class="fw-bold">{{ number_format($customer->purchases_sum_total ?? 0, 2) }} EUR</div>
+                        <div class="small muted">{{ $customer->purchases_count }} blerje</div>
                       </td>
                       <td class="text-end">
                         <div class="btn-group">
@@ -524,8 +524,8 @@
                     <div class="small muted">{{ $customer->phone ?: 'Pa telefon' }}</div>
                   </div>
                   <div class="text-end">
-                    <div class="fw-bold">{!! $privateValue(number_format($customer->purchases_sum_total ?? 0, 2).' EUR') !!}</div>
-                    <div class="small muted">{!! $privateValue($customer->purchases_count.' blerje') !!}</div>
+                    <div class="fw-bold">{{ number_format($customer->purchases_sum_total ?? 0, 2) }} EUR</div>
+                    <div class="small muted">{{ $customer->purchases_count }} blerje</div>
                   </div>
                 </div>
                 <div class="mt-2">
