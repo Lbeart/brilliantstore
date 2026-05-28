@@ -4,11 +4,11 @@
  <meta charset="UTF-8">
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
-  <title>Mbulesa moderne për dhoma gjumi, karrige & divane – Brillant Lipjan Mbulesa Online</title>
-  <meta name="description" content="Mbulesa online në Kosovë për krevat, divan dhe dekor shtëpie. Modele moderne, materiale cilësore dhe dërgesë nga Brillant Lipjan.">
+  <title>Mbulesa Online në Kosovë | Mbulesa Divani, Krevati & Salloni | Brillant</title>
+  <meta name="description" content="Mbulesa online në Kosovë për divan, krevat, sallon dhe dhomë gjumi. Mbulesa moderne, me metër dhe dekorative me dërgesë nga Brillant Lipjan.">
 
   <!-- FJALË KYÇE (jo vendimtare për Google, por ndihmojnë) -->
-  <meta name="keywords" content="mbulesa,mbulesa sallon,mbulesa me meter,mbulesa Kosove, mbulesa krevati, mbulesa dhome gjumi, mbulesa karrigesh, mbulesa divani, mbulesa moderne, Brillant Lipjan, mbulesa Kosove,mbulesa,Mbulesa Online">
+  <meta name="keywords" content="mbulesa online, mbulesa online Kosove, mbulesa divani, mbulesa per divan, mbulesa krevati, mbulesa salloni, mbulesa dhome gjumi, mbulesa karrigesh, mbulesa me meter, mbulesa moderne, mbulesa dekorative, Brillant Lipjan">
 
   <!-- LEJO INDEXIMIN -->
   <meta name="robots" content="index, follow">
@@ -22,15 +22,15 @@
   <!-- OPEN GRAPH (Facebook, Instagram, Viber, WhatsApp) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Brillant">
-  <meta property="og:title" content="Mbulesa moderne për dhoma gjumi & karrige & sallon – Brillant Lipjan Mbulesa Online">
-  <meta property="og:description" content="Zgjidhje të gjera mbulesash të bukura dhe rezistente për dhoma gjumi, divane dhe karrige. Kualitet i lartë dhe dizajne moderne nga Brillant Lipjan.Mbulesa Online">
+  <meta property="og:title" content="Mbulesa Online në Kosovë | Mbulesa Divani & Krevati – Brillant">
+  <meta property="og:description" content="Mbulesa moderne për divan, krevat, sallon dhe dhomë gjumi. Porosit online me dërgesë nga Brillant Lipjan.">
   <meta property="og:url" content="{{ url('/mbulesa') }}">
   <meta property="og:image" content="{{ asset('images/og-mbulesa.jpg') }}">
 
   <!-- TWITTER CARD -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Mbulesa moderne për dhoma gjumi & karrige – Brillant Lipjan">
-  <meta name="twitter:description" content="Mbulesa të qëndrueshme, cilësore dhe me dizajn modern për çdo ambient të shtëpisë.">
+  <meta name="twitter:title" content="Mbulesa Online në Kosovë | Mbulesa Divani & Krevati">
+  <meta name="twitter:description" content="Mbulesa të qëndrueshme, cilësore dhe moderne për divan, krevat, sallon dhe dhomë gjumi.">
   <meta name="twitter:image" content="{{ asset('images/og-mbulesa.jpg') }}">
 
   <!-- JSON-LD SEO (Google Structured Data) -->
@@ -38,8 +38,8 @@
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Mbulesa moderne – Brillant Lipjan",
-    "description": "Mbulesa cilësore dhe moderne për krevate, karrige dhe divane. Materiale rezistente dhe dizajne elegante nga Brillant Lipjan.Mbulesa",
+    "name": "Mbulesa Online në Kosovë - Mbulesa Divani dhe Krevati",
+    "description": "Mbulesa cilësore dhe moderne për divan, krevat, sallon, karrige dhe dhomë gjumi. Materiale rezistente dhe dizajne elegante nga Brillant Lipjan.",
     "url": "{{ url('/mbulesa') }}",
     "image": "{{ asset('images/og-mbulesa.jpg') }}",
     "inLanguage": "sq",
@@ -322,7 +322,7 @@
 
 <!-- Koka e faqes -->
 <header class="page-header">
-  <h1>Mbulesa</h1>
+  <h1>Mbulesa Online për Divan, Krevat dhe Sallon</h1>
   <div class="page-sub">Modele të reja, cilësi superiore – gati për porosi.</div>
 </header>
 <div class="mb-4">
@@ -423,7 +423,7 @@
  <!-- SEO TEXT SECTION -->
 <section class="seo-text mt-5" style="font-size:16px; line-height:1.6;">
   <div class="container">
-    <h2>Mbulesa Premium për Krevat & Divan – Cilësi dhe Dizajn nga Brillant Mbulesa Online</h2>
+    <h2>Mbulesa Online në Kosovë për Divan, Krevat dhe Dekor Shtëpie</h2>
 
     <p>Mbulesat Brillant janë krijuar për të sjellë stil, mbrojtje dhe rehati në çdo ambient të shtëpisë. Koleksioni ynë përfshin mbulesa për krevat, mbulesa për divan, mbulesa dekorative dhe mbulesa të sezonit të ftohtë – të gjitha të dizajnuara me materiale premium dhe ngjyra që nuk zbehen.</p>
 
@@ -437,6 +437,8 @@
     <h3>Mbulesa per divan, krevat dhe dekor shtepie</h3>
     <p>Mbulesat ndihmojne ne mbrojtjen e divanit dhe krevatit, por edhe e ndryshojne pamjen e dhomes pa pasur nevoje per shpenzime te medha. Ato jane te pershtatshme per sallon, dhome gjumi, dhoma femijesh dhe ambiente ku kerkohet pastrim i lehte dhe dekor i rregullt.</p>
     <p>Ne B-Brillant gjeni mbulesa per krevat, mbulesa per divan, mbulesa dekorative, mbulesa moderne, mbulesa online Kosove dhe modele me ngjyra qe kombinohen lehte me perde, tepiha dhe jasteke dekorues. Dergesa realizohet ne Lipjan, Prishtine, Ferizaj, Gjilan, Prizren, Peje, Mitrovice dhe qytete te tjera.</p>
+    <h3>Mbulesa divani dhe mbulesa salloni</h3>
+    <p>Nese kerkoni mbulesa divani, mbulesa per sallon apo mbulesa me meter, kjo kategori eshte e fokusuar per mbrojtje te mobiljeve dhe pamje me te rregullt te ambientit. B-Brillant ofron modele qe pershtaten me divane, krevate, karrige dhe dekor modern shtepie.</p>
   </div>
 </section>
 

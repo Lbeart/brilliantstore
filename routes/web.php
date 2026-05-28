@@ -91,6 +91,7 @@ Route::get('/products/{product:slug}', [ShopProductController::class, 'show'])->
 
 // 🗂 Kategori
 Route::get('/tepiha',         [ShopProductController::class, 'tepiha'])->name('products.tepiha');
+Route::get('/perde',          [ShopProductController::class, 'perde'])->name('products.perde');
 Route::get('/anesore',        [ShopProductController::class, 'anesore'])->name('products.anesore');
 Route::get('/postava',        [ShopProductController::class, 'postava'])->name('products.postava');
 Route::get('/mbulesa',        [ShopProductController::class, 'mbulesa'])->name('products.mbulesa');

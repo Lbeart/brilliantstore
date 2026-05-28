@@ -12,6 +12,7 @@ class SitemapController extends Controller
         ['path' => '/', 'changefreq' => 'daily', 'priority' => '1.00'],
         ['path' => '/products', 'changefreq' => 'weekly', 'priority' => '0.90'],
         ['path' => '/tepiha', 'changefreq' => 'weekly', 'priority' => '0.95'],
+        ['path' => '/perde', 'changefreq' => 'weekly', 'priority' => '0.95'],
         ['path' => '/anesore', 'changefreq' => 'weekly', 'priority' => '0.92'],
         ['path' => '/perde-ditore', 'changefreq' => 'weekly', 'priority' => '0.92'],
         ['path' => '/postava', 'changefreq' => 'weekly', 'priority' => '0.90'],

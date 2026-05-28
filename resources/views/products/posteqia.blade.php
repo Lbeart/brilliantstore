@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
-  <title>Lekur Pelushi premium për shtëpi & divan – Brillant Lipjan</title>
-  <meta name="description" content="Posteqia dhe lëkur pelushi online në Kosovë për dhomë gjumi, sallon dhe dekor modern. Modele të buta nga Brillant Lipjan.">
+  <title>Lëkurë Pelushi Online në Kosovë | Posteqia për Divan & Dhomë | Brillant</title>
+  <meta name="description" content="Lëkurë pelushi dhe posteqia online në Kosovë për divan, sallon, dhomë gjumi dhe dekor modern. Modele të buta me dërgesë nga Brillant Lipjan.">
 
   <!-- KEYWORDS -->
-  <meta name="keywords" content="lekur pelushi, lekur pelushi shtëpie, lekur pelushi divan, lekur pelushi modern, tapetë pelushi, Brillant Lipjan, lekur pelushi Kosove">
+  <meta name="keywords" content="lekur pelushi online, lëkurë pelushi, lekur pelushi Kosove, posteqia online, posteqia Kosove, posteqia per divan, tapet pelushi, tepih pelushi, dekor pelushi, Brillant Lipjan">
 
   <!-- INDEXIMI -->
   <meta name="robots" content="index, follow">
@@ -22,15 +22,15 @@
   <!-- OPEN GRAPH -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Brillant Lipjan">
-  <meta property="og:title" content="Lekur Pelushi premium për shtëpi & divan – Brillant Lipjan">
-  <meta property="og:description" content="Leku pelushi premium për divan dhe dhomë gjumi. Ngjyra të bukura, material të butë dhe cilësi të lartë nga Brillant Lipjan.">
+  <meta property="og:title" content="Lëkurë Pelushi Online në Kosovë | Posteqia – Brillant">
+  <meta property="og:description" content="Lëkurë pelushi dhe posteqia për divan, sallon, dhomë gjumi dhe dekor modern me dërgesë në Kosovë.">
   <meta property="og:url" content="{{ url('/posteqia') }}">
   <meta property="og:image" content="{{ asset('images/og-posteqia.jpg') }}">
 
   <!-- TWITTER CARD -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Lekur Pelushi premium – Brillant Lipjan">
-  <meta name="twitter:description" content="Tapetë pelushi të butë dhe cilësorë për divan, dhomë gjumi dhe ambient shtëpie.">
+  <meta name="twitter:title" content="Lëkurë Pelushi Online në Kosovë | Posteqia">
+  <meta name="twitter:description" content="Posteqia dhe lëkurë pelushi të buta për divan, dhomë gjumi, sallon dhe dekor shtëpie.">
   <meta name="twitter:image" content="{{ asset('images/og-posteqia.jpg') }}">
 
   <!-- JSON-LD -->
@@ -38,8 +38,8 @@
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Lekur Pelushi premium – Brillant Lipjan",
-    "description": "Leku pelushi premium për divan dhe dhomë gjumi, me material të butë dhe ngjyra të qëndrueshme.",
+    "name": "Lëkurë Pelushi Online në Kosovë - Posteqia për Divan dhe Dhomë",
+    "description": "Lëkurë pelushi dhe posteqia për divan, dhomë gjumi, sallon dhe dekor modern, me material të butë dhe ngjyra të qëndrueshme.",
     "url": "{{ url('/posteqia') }}",
     "image": "{{ asset('images/og-posteqia.jpg') }}",
     "inLanguage": "sq",
@@ -302,7 +302,7 @@
 
 <!-- Header -->
 <header class="page-header">
-  <h1>Lekur Pelushi</h1>
+  <h1>Lëkurë Pelushi Online dhe Posteqia</h1>
   <div class="page-sub">Koleksion i freskët – gati për porosi.</div>
   
 </header>
@@ -405,7 +405,7 @@
 <!-- SEO TEXT SECTION -->
 <section class="seo-text mt-5" style="font-size:16px; line-height:1.6;">
   <div class="container">
-    <h2>Posteqia &amp; Lëkur Pelushi – Butësi, Komoditet dhe Dizajn Luksoz</h2>
+    <h2>Lëkurë Pelushi Online në Kosovë dhe Posteqia për Divan</h2>
 
     <p>Posteqiat dhe lëkurat e pelushit nga Brillant janë zgjidhja perfekte për të shtuar butësi, komfort dhe estetikë luksoze në shtëpinë tuaj. Të ndërtuara nga materiale të buta, të ngrohta dhe shumë cilësore, ato ofrojnë një ndjesi relaksi në çdo hapësirë.</p>
 
@@ -419,6 +419,8 @@
     <h3>Lekur pelushi per dekor, dhome gjumi dhe sallon</h3>
     <p>Posteqiat dhe lekurat e pelushit perdoren si dekor pran krevatit, mbi karrige, ne divan, ne dhoma rinore dhe ne kendet e relaksit. Ato i japin shtepise pamje me te ngrohte dhe jane shume te kerkuara nga klientet qe duan nje ambient modern, te bute dhe te rehatshem.</p>
     <p>Klientet shpesh kerkojne posteqia online, lekur pelushi Kosove, tapet pelushi, tepih pelushi, posteqia per dhome gjumi dhe dekor pelushi per shtepi. Ne B-Brillant mund te gjeni modele qe pershtaten me ngjyra te ndryshme mobiljesh dhe me stile moderne apo klasike.</p>
+    <h3>Posteqia per divan, sallon dhe dekor modern</h3>
+    <p>Per kerkimet lekur pelushi, lekura pelushi, posteqia dhe tapet pelushi, B-Brillant ofron nje faqe te dedikuar me produkte te buta per dekor, ulje, karrige, krevat dhe ambient familjar. Modelet jane te pershtatshme per kombinim me tepiha, perde dhe mbulesa moderne.</p>
   </div>
 </section>
 

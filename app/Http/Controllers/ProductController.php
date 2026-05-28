@@ -123,6 +123,30 @@ class ProductController extends Controller
     }
 
     // =====================
+    // PERDE - TE GJITHA
+    // =====================
+    public function perde(Request $request)
+    {
+        $products = $this->categorySearch(
+            $request,
+            ['category' => 'perde'],
+            ['perde','perd','online','kosove','kosova','curtain','curtains']
+        );
+
+        return view('products.perde_ditore', [
+            'products' => $products,
+            'seoTitle' => 'Perde Online në Kosovë | Perde Ditore, Anësore, Bamboo & Kumash | Brillant',
+            'seoDescription' => 'Perde online në Kosovë për sallon, dhomë gjumi dhe zyrë: perde ditore, anësore, bamboo dhe kumash me matje, montim dhe dërgesë nga Brillant Lipjan.',
+            'seoCanonical' => url('/perde'),
+            'seoCollectionName' => 'Perde Online në Kosovë - Perde Ditore, Anësore, Bamboo dhe Kumash',
+            'seoBreadcrumbName' => 'Perde Online',
+            'seoImage' => asset('perdeditoree/perde.jpg'),
+            'seoHeading' => 'Perde Online në Kosovë',
+            'seoIntro' => 'Zgjidh perde online për sallon, dhomë gjumi, kuzhinë dhe zyrë: perde ditore, perde anësore, bamboo, kumash dhe modele moderne me matje e montim nga Brillant Lipjan.',
+        ]);
+    }
+
+    // =====================
     // PERDE – ANËSORE
     // =====================
     public function anesore(Request $request)
@@ -158,7 +182,7 @@ class ProductController extends Controller
         $products = $this->categorySearch(
             $request,
             ['category' => 'postava'],
-            ['postava','postav','çar','qar']
+            ['postava','postav','çar','car','qar','qara','çarcaf','carcaf','carcafesh','qarqaf','qarqafesh','qaraqaf','qaraqafesh','set']
         );
 
         // ✅ nëse view e ke "postavaa" lëre ashtu,
@@ -175,7 +199,7 @@ class ProductController extends Controller
         $products = $this->categorySearch(
             $request,
             ['category' => 'mbulesa'],
-            ['mbulesa','mbules','cover','sofa']
+            ['mbulesa','mbules','divan','divani','krevat','krevati','sallon','salloni','cover','sofa']
         );
 
         return view('products.mbulesa', compact('products'));
@@ -231,7 +255,7 @@ class ProductController extends Controller
         $products = $this->categorySearch(
             $request,
             ['category' => 'posteqia'],
-            ['posteqia','pelush','lekure']
+            ['posteqia','posteqe','pelush','pelushi','lekure','lekur','lëkurë','lekura','lëkura','tapet','tepih']
         );
 
         return view('products.posteqia', compact('products'));

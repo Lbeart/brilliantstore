@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Brillant | Tepiha, perde dhe tekstil per shtepi</title>
-  <meta name="description" content="Brillant ne Lipjan: tepiha, perde, batanije, mbulesa, Set çarçafësh, lekure pelushi, jasteke dekorues dhe tekstil cilesor per shtepi.">
+  <title>Brillant | Tepiha, Perde Online, Mbulesa & Set Çarçafësh</title>
+  <meta name="description" content="Brillant në Lipjan: tepiha, perde online, mbulesa divani, set çarçafësh, postava, lëkurë pelushi, batanije dhe tekstil cilësor për shtëpi në Kosovë.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{ url('/') }}">
   <meta name="theme-color" content="#7f1d2d">
@@ -1136,6 +1136,7 @@
 
     $categories = [
       ['title' => 'Tepiha', 'title_en' => 'Rugs', 'title_sr' => 'Tepisi', 'desc' => 'Modele per sallon, dhome gjumi dhe korridor.', 'desc_en' => 'Models for living rooms, bedrooms and hallways.', 'desc_sr' => 'Modeli za dnevni boravak, spavacu sobu i hodnik.', 'url' => route('products.tepiha'), 'img' => asset('carpet/carpetmara.jpg')],
+      ['title' => 'Perde online', 'title_en' => 'Curtains online', 'title_sr' => 'Zavese online', 'desc' => 'Perde ditore, anesore, bamboo dhe kumash.', 'desc_en' => 'Day, side, bamboo and fabric curtains.', 'desc_sr' => 'Dnevne, bocne, bamboo i platnene zavese.', 'url' => route('products.perde'), 'img' => asset('perdeditoree/perde.jpg')],
       ['title' => 'Perde anesore', 'title_en' => 'Side curtains', 'title_sr' => 'Bocne zavese', 'desc' => 'Pamje elegante dhe qepje profesionale.', 'desc_en' => 'Elegant look with professional tailoring.', 'desc_sr' => 'Elegantan izgled i profesionalno sivenje.', 'url' => route('products.anesore'), 'img' => asset('curtainn/SOFTPERDE.jpg')],
       ['title' => 'Perde ditore', 'title_en' => 'Day curtains', 'title_sr' => 'Dnevne zavese', 'desc' => 'Drite e bute dhe ambient me i paster.', 'desc_en' => 'Soft light and a cleaner room feeling.', 'desc_sr' => 'Meko svetlo i cistiji izgled prostora.', 'url' => route('products.perdeDitore'), 'img' => asset('perdeditoree/image00001.jpeg')],
       ['title' => 'Set çarçafësh', 'title_en' => 'Bedsheet sets', 'title_sr' => 'Set posteljine', 'desc' => 'Sete per gjume te rehatshem cdo nate.', 'desc_en' => 'Sets for comfortable sleep every night.', 'desc_sr' => 'Setovi za udoban san svake noci.', 'url' => route('products.postava'), 'img' => asset('postavav/beedsheet10.png')],
@@ -1149,7 +1150,7 @@
 
     $quickLinks = [
       ['label' => 'Tepiha modern', 'url' => route('products.tepiha'), 'icon' => 'bi-grid-3x3-gap'],
-      ['label' => 'Perde per sallon', 'url' => route('products.anesore'), 'icon' => 'bi-columns-gap'],
+      ['label' => 'Perde online', 'url' => route('products.perde'), 'icon' => 'bi-columns-gap'],
       ['label' => 'Batanije', 'url' => route('products.batanije'), 'icon' => 'bi-stars'],
       ['label' => 'Tepiha banjo', 'url' => route('products.tepihebanjo'), 'icon' => 'bi-droplet'],
       ['label' => 'Garnishte', 'url' => route('products.garnishte'), 'icon' => 'bi-sliders'],
@@ -1331,7 +1332,7 @@
           </a>
 
           <div class="feature-side">
-            <a class="feature-tile small" href="{{ route('products.anesore') }}">
+            <a class="feature-tile small" href="{{ route('products.perde') }}">
               <img src="{{ asset('optimized/home/raffaello.jpg') }}" alt="Perde elegante" loading="lazy" decoding="async" width="520" height="320">
               <div class="feature-tile-content">
                 <h3>Perde me stil</h3>
@@ -1529,6 +1530,7 @@
         <div>
           <h3>Produkte</h3>
           <a href="{{ route('products.tepiha') }}">Tepiha</a>
+          <a href="{{ route('products.perde') }}">Perde online</a>
           <a href="{{ route('products.anesore') }}">Perde anesore</a>
           <a href="{{ route('products.perdeDitore') }}">Perde ditore</a>
           <a href="{{ route('products.tepihebanjo') }}">Tepiha banjo</a>

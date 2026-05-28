@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
-  <title>Perde Online Kosovë | Perde Ditore me Matje & Montim | Brillant</title>
-  <meta name="description" content="Perde online në Kosovë: perde ditore, bamboo, kumash dhe anësore me matje, montim dhe dërgesë nga Brillant Lipjan.">
+  <title>{{ $seoTitle ?? 'Perde Online Kosovë | Perde Ditore me Matje & Montim | Brillant' }}</title>
+  <meta name="description" content="{{ $seoDescription ?? 'Perde online në Kosovë: perde ditore, bamboo, kumash dhe anësore me matje, montim dhe dërgesë nga Brillant Lipjan.' }}">
 
 
 
@@ -19,7 +19,7 @@
   <meta name="robots" content="index, follow">
 
   <!-- CANONICAL -->
-  <link rel="canonical" href="{{ url('/perde-ditore') }}">
+  <link rel="canonical" href="{{ $seoCanonical ?? url('/perde-ditore') }}">
 
   <!-- VIEWPORT -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,16 +27,16 @@
   <!-- OPEN GRAPH (Facebook, IG, WhatsApp, Viber) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Brillant Lipjan">
-  <meta property="og:title" content="Perde Online Kosovë | Perde Ditore, Bamboo & Kumash – Brillant">
-  <meta property="og:description" content="Porosit perde online në Kosovë: perde ditore, perde bamboo, perde kumash dhe perde anësore me matje, montim dhe dërgesë nga Brillant Lipjan.">
-  <meta property="og:url" content="{{ url('/perde-ditore') }}">
-  <meta property="og:image" content="{{ asset('perdeditoree/perde.jpg') }}">
+  <meta property="og:title" content="{{ $seoTitle ?? 'Perde Online Kosovë | Perde Ditore, Bamboo & Kumash – Brillant' }}">
+  <meta property="og:description" content="{{ $seoDescription ?? 'Porosit perde online në Kosovë: perde ditore, perde bamboo, perde kumash dhe perde anësore me matje, montim dhe dërgesë nga Brillant Lipjan.' }}">
+  <meta property="og:url" content="{{ $seoCanonical ?? url('/perde-ditore') }}">
+  <meta property="og:image" content="{{ $seoImage ?? asset('perdeditoree/perde.jpg') }}">
 
   <!-- TWITTER CARD -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Perde Online Kosovë | Perde Ditore me Matje & Montim">
-  <meta name="twitter:description" content="Perde ditore, bamboo dhe kumash online në Kosovë me matje, montim dhe dërgesë nga Brillant Lipjan.">
-  <meta name="twitter:image" content="{{ asset('perdeditoree/perde.jpg') }}">
+  <meta name="twitter:title" content="{{ $seoTitle ?? 'Perde Online Kosovë | Perde Ditore me Matje & Montim' }}">
+  <meta name="twitter:description" content="{{ $seoDescription ?? 'Perde ditore, bamboo dhe kumash online në Kosovë me matje, montim dhe dërgesë nga Brillant Lipjan.' }}">
+  <meta name="twitter:image" content="{{ $seoImage ?? asset('perdeditoree/perde.jpg') }}">
 
   <!-- JSON-LD (Structured Data për Google) -->
   <script type="application/ld+json">
@@ -45,11 +45,11 @@
     "@graph": [
       {
         "@type": "CollectionPage",
-        "@id": "{{ url('/perde-ditore') }}#collection",
-        "name": "Perde Online Kosovë - Perde Ditore, Bamboo dhe Kumash",
-        "description": "Perde online në Kosovë: perde ditore, bamboo, kumash dhe anësore me matje, montim dhe dërgesë nga Brillant Lipjan.",
-        "url": "{{ url('/perde-ditore') }}",
-        "image": "{{ asset('perdeditoree/perde.jpg') }}",
+        "@id": "{{ $seoCanonical ?? url('/perde-ditore') }}#collection",
+        "name": "{{ $seoCollectionName ?? 'Perde Online Kosovë - Perde Ditore, Bamboo dhe Kumash' }}",
+        "description": "{{ $seoDescription ?? 'Perde online në Kosovë: perde ditore, bamboo, kumash dhe anësore me matje, montim dhe dërgesë nga Brillant Lipjan.' }}",
+        "url": "{{ $seoCanonical ?? url('/perde-ditore') }}",
+        "image": "{{ $seoImage ?? asset('perdeditoree/perde.jpg') }}",
         "inLanguage": "sq",
         "isPartOf": {
           "@type": "WebSite",
@@ -64,7 +64,7 @@
       },
       {
         "@type": "BreadcrumbList",
-        "@id": "{{ url('/perde-ditore') }}#breadcrumb",
+        "@id": "{{ $seoCanonical ?? url('/perde-ditore') }}#breadcrumb",
         "itemListElement": [
           {
             "@type": "ListItem",
@@ -75,14 +75,14 @@
           {
             "@type": "ListItem",
             "position": 2,
-            "name": "Perde Online Kosovë",
-            "item": "{{ url('/perde-ditore') }}"
+            "name": "{{ $seoBreadcrumbName ?? 'Perde Online Kosovë' }}",
+            "item": "{{ $seoCanonical ?? url('/perde-ditore') }}"
           }
         ]
       },
       {
         "@type": "FAQPage",
-        "@id": "{{ url('/perde-ditore') }}#faq",
+        "@id": "{{ $seoCanonical ?? url('/perde-ditore') }}#faq",
         "mainEntity": [
           {
             "@type": "Question",
@@ -405,11 +405,11 @@
 
 <!-- Koka e faqes -->
 <header class="page-header">
-  <h1>Perde Online Kosovë - Perde Ditore, Bamboo dhe Kumash</h1>
-  <div class="page-sub">Zgjidh perde moderne për shtëpi, sallon, kuzhinë dhe zyrë me matje, montim dhe dërgesë nga Brillant Lipjan.</div>
+  <h1>{{ $seoHeading ?? 'Perde Online Kosovë - Perde Ditore, Bamboo dhe Kumash' }}</h1>
+  <div class="page-sub">{{ $seoIntro ?? 'Zgjidh perde moderne për shtëpi, sallon, kuzhinë dhe zyrë me matje, montim dhe dërgesë nga Brillant Lipjan.' }}</div>
 </header>
 <p class="seo-intro">
-  Te Brillant mund të porosisni perde online në Kosovë: perde ditore transparente, perde bamboo, perde kumash dhe perde anësore me materiale cilësore dhe dizajn elegant.
+  {{ $seoIntro ?? 'Te Brillant mund të porosisni perde online në Kosovë: perde ditore transparente, perde bamboo, perde kumash dhe perde anësore me materiale cilësore dhe dizajn elegant.' }}
 </p>
 <div class="mb-4 container">
     <form method="GET" action="{{ url()->current() }}" class="row g-2 align-items-center">

@@ -4,11 +4,11 @@
    <meta charset="UTF-8">
 
   <!-- SEO TITLE + DESCRIPTION -->
-  <title>Set çarçafësh premium pambuku  – Material i butë & rezistent | Brillant Lipjan</title>
-  <meta name="description" content="Set çarçafësh dhe postava online në Kosovë për krevat dopio dhe tek. Materiale të buta, moderne dhe cilësore nga Brillant Lipjan.">
+  <title>Set Çarçafësh Online në Kosovë | Postava për Krevat | Brillant</title>
+  <meta name="description" content="Set çarçafësh dhe postava online në Kosovë për krevat dopio, tek dhe dhomë gjumi. Çarçafë pambuku, materiale të buta dhe dërgesë nga Brillant Lipjan.">
 
   <!-- KEYWORDS (jo vendimtare, por ndihmojnë) -->
-  <meta name="keywords" content="set çarçafësh, çarçafë krevati,postava,damas,postava per nje person,postava pambuk, sets çarçafësh, çarçafë modern, çarçaf dopio, çarçaf tek, sete krevati, Brillant Lipjan, posteqa, set qaraqafesh">
+  <meta name="keywords" content="set çarçafësh online, set carcafesh online, postava online, postava Kosove, çarçafë krevati, carcafe krevati, postava per krevat, postava pambuk, çarçaf dopio, çarçaf tek, sete krevati, set qaraqafesh, Brillant Lipjan">
 
   <!-- INDEXIMI -->
   <meta name="robots" content="index, follow">
@@ -24,23 +24,23 @@
   <!-- FACEBOOK / INSTAGRAM / WHATSAPP (OpenGraph)-->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Brillant Lipjan">
-  <meta property="og:title" content="Set çarçafësh premium – Material i butë & rezistent | Brillant">
-  <meta property="og:description" content="Sete çarçafësh të butë, rezistent dhe me ngjyra që nuk zbehen. Përshtaten për çdo dhomë gjumi.">
+  <meta property="og:title" content="Set Çarçafësh Online në Kosovë | Postava – Brillant">
+  <meta property="og:description" content="Sete çarçafësh dhe postava për krevat dopio, tek dhe dhomë gjumi. Materiale të buta, moderne dhe dërgesë në Kosovë.">
   <meta property="og:url" content="{{ url('/postava') }}">
   <meta property="og:image" content="{{ asset('images/placeholder-product.png') }}">
 
   <!-- TWITTER CARD -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Set çarçafësh premium – Material i butë & rezistent">
-  <meta name="twitter:description" content="Sete çarçafësh cilësorë, të butë dhe me dizajn modern.">
+  <meta name="twitter:title" content="Set Çarçafësh Online në Kosovë | Postava">
+  <meta name="twitter:description" content="Postava dhe sete çarçafësh cilësorë për krevat dopio, tek dhe dhomë gjumi.">
   
   <!-- JSON-LD STRUCTURED DATA (SEO ekstra për Google) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Set çarçafësh premium – Brillant Lipjan",
-    "description": "Set çarçafësh cilësorë me material të butë dhe ngjyra rezistente, të përshtatshëm për çdo dhomë gjumi. Përmasa të ndryshme dhe dizajn modern.",
+    "name": "Set Çarçafësh Online në Kosovë - Postava për Krevat",
+    "description": "Set çarçafësh dhe postava cilësore me material të butë, ngjyra rezistente dhe përmasa për krevat dopio, tek dhe dhomë gjumi.",
     "url": "{{ url('/postava') }}",
     "image": "{{ asset('images/og-carçafe.jpg') }}",
     "inLanguage": "sq",
@@ -320,7 +320,7 @@
 
 <!-- Koka e faqes -->
 <header class="page-header">
-  <h1>Set çarçafesh</h1>
+  <h1>Set Çarçafësh Online dhe Postava për Krevat</h1>
   <div class="page-sub">Zgjedhje të shumta, dimensione të gatshme – gati për porosi.</div>
 </header>
 <div class="mb-4">
@@ -439,7 +439,7 @@
   
  <section class="seo-text mt-5" style="font-size:16px; line-height:1.6;">
   <div class="container">
-    <h2>Set Çarçafësh Premium pambuk – Cilësi, Rehati dhe Dizajn nga Brillant</h2>
+    <h2>Set Çarçafësh Online në Kosovë dhe Postava për Dhomë Gjumi</h2>
 
     <p>Setet e çarçafëve Brillant janë zgjedhja ideale për çdo dhomë gjumi. Me materiale të buta, ngjyra rezistente dhe përmasa të ndryshme, koleksioni ynë ofron rehati maksimale dhe qëndrueshmëri të lartë për përdorim të përditshëm. Çdo set është i dizajnuar me kujdes për të kombinuar elegancën me funksionalitetin.</p>
 
@@ -453,6 +453,8 @@
     <h3>Postava dhe carcafe per dhome gjumi</h3>
     <p>Setet e carcafeve jane nder produktet me te kerkuara per dhome gjumi sepse ndikojne direkt ne rehati, pasterti dhe pamjen e krevatit. Ne B-Brillant mund te zgjidhni postava, carcafe per krevat dopio, carcafe per krevat teke, sete moderne dhe materiale te pershtatshme per perdorim te perditshem.</p>
     <p>Per klientet qe kerkojne ne Google postava Kosove, set carcafesh online, carcafe pambuku, postava per krevat dhe carcafe ne Lipjan, kjo faqe ofron perzgjedhje praktike me foto, cmim dhe mundesi porosie. Modelet jane te menduara per shtepi familjare, dhoma moderne dhe dhurata praktike.</p>
+    <h3>Postava online per krevat dopio dhe tek</h3>
+    <p>Kjo faqe eshte optimizuar per klientet qe kerkojne postava online, set qarqafesh, set qarcafesh, carcafe krevati dhe sete krevati per dhome gjumi. Produktet mund te shikohen online dhe porosia vazhdon shpejt me kontakt direkt ne WhatsApp.</p>
   </div>
 </section>
 
