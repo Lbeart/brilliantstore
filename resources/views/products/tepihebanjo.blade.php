@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
-  <title>Tepiha për banjo antirrëshqitës & të qëndrueshëm – Brillant Lipjan</title>
-  <meta name="description" content="Tepiha banjo online në Kosovë me bazë antirrëshqitëse, thithje të mirë dhe pastrim të lehtë. Modele nga Brillant Lipjan.">
+  <title>Tepiha Banjo Online në Kosovë | Tapeta Banjo Antirrëshqitëse | Brillant</title>
+  <meta name="description" content="Tepiha banjo online në Kosovë dhe tapeta banjoje antirrëshqitëse për dush, lavaman dhe banjo familjare. Modele moderne nga Brillant Lipjan.">
 
   <!-- KEYWORDS -->
-  <meta name="keywords" content="tepiha banjoje, tepiha antirrëshqitës, tepiha dushi, tepiha banje, tepiha sigurie, Brillant Lipjan, tepiha Kosove">
+  <meta name="keywords" content="tepiha banjo online, tepiha banjoje, tepih banjo, tepih per banjo, tapeta banjoje, tapeta dushi, tepiha antirreshqites, tepiha banje, set banjo, Brillant Lipjan, tepiha Kosove">
 
   <!-- INDEXIMI -->
   <meta name="robots" content="index, follow">
@@ -22,15 +22,15 @@
   <!-- OPEN GRAPH -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Brillant Lipjan">
-  <meta property="og:title" content="Tepiha për banjo antirrëshqitës – Brillant Lipjan">
-  <meta property="og:description" content="Tepiha banjoje të sigurta dhe me thithje të mirë. Zgjidh modele të ndryshme me bazë antirrëshqitëse për banjon tënde.">
+  <meta property="og:title" content="Tepiha Banjo Online në Kosovë | Tapeta Banjo – Brillant">
+  <meta property="og:description" content="Tepiha për banjo, tapeta dushi dhe modele antirrëshqitëse me dërgesë në Kosovë.">
   <meta property="og:url" content="{{ url('/tepihebanjo') }}">
   <meta property="og:image" content="{{ asset('images/og-tepihebanjo.jpg') }}">
 
   <!-- TWITTER CARD -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Tepiha për banjo antirrëshqitës – Brillant Lipjan">
-  <meta name="twitter:description" content="Zgjidh tepiha sigurie dhe të qëndrueshëm për banjo dhe dhoma lagështie.">
+  <meta name="twitter:title" content="Tepiha Banjo Online në Kosovë">
+  <meta name="twitter:description" content="Tepiha banjoje, tapeta dushi dhe modele antirrëshqitëse për banjo familjare.">
   <meta name="twitter:image" content="{{ asset('images/og-tepihebanjo.jpg') }}">
 
   <!-- JSON-LD -->
@@ -38,8 +38,8 @@
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Tepiha për banjo antirrëshqitës – Brillant Lipjan",
-    "description": "Tepiha banjoje me bazë antirrëshqitëse dhe thithje të shpejtë për çdo ambient banjoje.",
+    "name": "Tepiha Banjo Online në Kosovë - Tapeta Banjo Antirrëshqitëse",
+    "description": "Tepiha banjoje, tapeta dushi dhe modele antirrëshqitëse me thithje të shpejtë për çdo ambient banjoje.",
     "url": "{{ url('/tepihebanjo') }}",
     "image": "{{ asset('images/og-tepihebanjo.jpg') }}",
     "inLanguage": "sq",
@@ -307,7 +307,7 @@
 
 <!-- Header -->
 <header class="page-header">
-  <h1>Tepiha për Banjo</h1>
+  <h1>Tepiha Banjo Online dhe Tapeta Antirrëshqitëse</h1>
   <div class="page-sub">Modele të reja, cilësi superiore – gati për porosi.</div>
 </header>
 <div class="mb-4">
@@ -404,7 +404,7 @@
 <!-- SEO TEXT SECTION -->
 <section class="seo-text mt-5" style="font-size:16px; line-height:1.6;">
   <div class="container">
-    <h2>Tepiha për Banjo – Antirrëshqitës, Modern dhe të Qëndrueshëm</h2>
+    <h2>Tepiha Banjo Online në Kosovë për Dush, Lavaman dhe Banjo</h2>
 
     <p>Tepiha për banjo nga Brillant kombinojnë sigurinë, komoditetin dhe stilin modern për ambientet e lagështa. Koleksioni ynë përfshin tepihë antirrëshqitës, tapeta për banjo me material të trashë dhe dizajne praktike që përmirësojnë pamjen dhe funksionalitetin e çdo banjoje.</p>
 
@@ -418,6 +418,8 @@
     <h3>Tapeta banjoje antirreshqitese per perdorim te perditshem</h3>
     <p>Tepihu i banjos duhet te jete i sigurt, i bute dhe praktik. Modelet antirreshqitese jane te pershtatshme per dush, lavaman, hyrje te banjos dhe ambiente ku ka lageshti. Ato ndihmojne qe dyshemeja te qendroje me e thate dhe e bejne banjon me komode per perdorim familjar.</p>
     <p>Ne kete kategori mund te gjeni tepiha banjoje, tapeta dushi, tepih banjo antirreshqites, sete per banjo dhe modele moderne me ngjyra te ndryshme. B-Brillant eshte zgjedhje e mire per klientet qe kerkojne tepiha banjo online ne Kosove me cmime te arsyeshme dhe dergese te shpejte.</p>
+    <h3>Tepih per banjo, tapeta dushi dhe sete banjo</h3>
+    <p>Per kerkimet tepih banjo, tepih per banjo, tapeta banjoje dhe set banjo, B-Brillant ofron modele praktike per perdorim te perditshem. Kjo faqe i ndihmon klientet te gjejne shpejt produkte per banjo qe jane te buta, te sigurta dhe te lehta per pastrim.</p>
   </div>
 </section>
 

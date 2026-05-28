@@ -4,11 +4,11 @@
  <meta charset="UTF-8">
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
-  <title>Jastakë dekorues modern & elegant – Për sallon & dhoma gjumi | Brillant Lipjan</title>
-  <meta name="description" content="Jastëkë dekorues online në Kosovë për divan, krevat dhe sallon. Modele moderne, materiale cilësore dhe dërgesë nga Brillant Lipjan.">
+  <title>Jastëk Dekorues Online në Kosovë | Jastëkë për Divan & Krevat | Brillant</title>
+  <meta name="description" content="Jastëk dekorues online në Kosovë për divan, krevat, sallon dhe dhomë gjumi. Jastëkë modern, dekorativë dhe me dërgesë nga Brillant Lipjan.">
 
   <!-- KEYWORDS (ndihmojnë pak SEO) -->
-  <meta name="keywords" content="jastak dekorues, jastekë dekorativë, jastakë modern, jastakë salloni, jastakë dhome gjumi, jastak dekor, Brillant Lipjan, decor pillow, jastekdekorues">
+  <meta name="keywords" content="jastek dekorues online, jasteke dekorues, jastak dekorues, jasteke dekorative, jastake dekorues, jasteke per divan, jasteke per krevat, jasteke salloni, jasteke moderne, jasteke online, dekor shtepie, Brillant Lipjan">
 
   <!-- INDEXIMI -->
   <meta name="robots" content="index, follow">
@@ -22,15 +22,15 @@
   <!-- OPEN GRAPH (Facebook, Instagram, Viber, WhatsApp) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Brillant Lipjan">
-  <meta property="og:title" content="Jastakë dekorues modern & elegant – Brillant">
-  <meta property="og:description" content="Jastakë dekorues me dizajn modern dhe rehati supreme. Perfect për sallon, dhoma gjumi dhe ambiente pune.">
+  <meta property="og:title" content="Jastëk Dekorues Online në Kosovë | Brillant">
+  <meta property="og:description" content="Jastëkë dekorues për divan, krevat, sallon dhe dhomë gjumi. Modele moderne me dërgesë në Kosovë.">
   <meta property="og:url" content="{{ url('/jastekdekorues') }}">
   <meta property="og:image" content="{{ asset('images/og-jasteke.jpg') }}">
 
   <!-- TWITTER CARD -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Jastakë dekorues modern & elegant – Brillant Lipjan">
-  <meta name="twitter:description" content="Jastakë dekorues me stil dhe materiale cilësore – zgjidhja ideale për çdo ambient.">
+  <meta name="twitter:title" content="Jastëk Dekorues Online në Kosovë">
+  <meta name="twitter:description" content="Jastëkë dekorues modernë për divan, krevat, sallon dhe dekor shtëpie.">
   <meta name="twitter:image" content="{{ asset('images/og-jasteke.jpg') }}">
 
   <!-- JSON-LD STRUCTURED DATA → Google SEO -->
@@ -38,8 +38,8 @@
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Jastakë dekorues modern – Brillant Lipjan",
-    "description": "Jastakë dekorues me materiale cilësore, ngjyra të qëndrueshme dhe dizajn modern për çdo ambient të shtëpisë.",
+    "name": "Jastëk Dekorues Online në Kosovë - Jastëkë për Divan dhe Krevat",
+    "description": "Jastëkë dekorues me materiale cilësore, ngjyra të qëndrueshme dhe dizajn modern për divan, krevat, sallon dhe dhomë gjumi.",
     "url": "{{ url('/jastekdekorues') }}",
     "image": "{{ asset('images/og-jasteke.jpg') }}",
     "inLanguage": "sq",
@@ -304,7 +304,7 @@
 
 <!-- Header -->
 <header class="page-header">
-  <h1>Jastek Dekorues</h1>
+  <h1>Jastëk Dekorues Online për Divan dhe Krevat</h1>
   <div class="page-sub">Koleksion i freskët, gati për porosi.</div>
 </header>
 <div class="mb-4">
@@ -403,7 +403,7 @@
   <!-- SEO TEXT SECTION -->
 <section class="seo-text mt-5" style="font-size:16px; line-height:1.6;">
   <div class="container">
-    <h2>Jastëkë Dekorues Modern & Elegant – Transformoni Shtëpinë me Brillant</h2>
+    <h2>Jastëk Dekorues Online në Kosovë për Sallon dhe Dhomë Gjumi</h2>
 
     <p>Jastëkët dekorues të Brillant janë mënyra më e shpejtë dhe më e bukur për të sjellë ngrohtësi, stil dhe personalitet në çdo hapësirë të shtëpisë. Koleksioni ynë përfshin jastëkë modern, jastëkë klasik, jastëkë për divan dhe jastëkë dekorues për krevat – të punuar me materiale cilësore, ngjyra të qëndrueshme dhe dizajne të përzgjedhura me kujdes.</p>
 
@@ -417,6 +417,8 @@
     <h3>Jasteke per divan, krevat dhe dekor modern</h3>
     <p>Jasteket dekorues jane menyra me e lehte per ta rifreskuar sallonin ose dhomen e gjumit. Mjafton te kombinohen me ngjyren e divanit, perdeve, tepihut ose mbuleses dhe ambienti merr pamje me te ngrohte, me moderne dhe me te kompletuar.</p>
     <p>Klientet qe kerkojne jasteke dekorues Kosove, jasteke per divan, jasteke per krevat, jasteke modern, jasteke online dhe dekor shtepie mund te gjejne ne B-Brillant modele te ndryshme per perdorim familjar, dekor sezonal dhe arredim te brendshem.</p>
+    <h3>Jasteke dekorative per sallon dhe dhome gjumi</h3>
+    <p>Per kerkimet jastak dekorues, jastek dekorues, jasteke dekorative dhe jasteke salloni, kjo kategori eshte e ndertuar per klientet qe duan me e fresku pamjen e divanit, krevatit ose karrigeve. Modelet kombinohen bukur me perde, tepiha, mbulesa dhe batanije.</p>
   </div>
 </section>
 

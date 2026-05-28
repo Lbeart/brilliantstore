@@ -213,7 +213,7 @@ class ProductController extends Controller
         $products = $this->categorySearch(
             $request,
             ['category' => 'jastekdekorues'],
-            ['jastek','jastak','dekor']
+            ['jastek','jasteke','jastak','jastake','dekor','dekorues','dekorative','divan','krevat','sallon']
         );
 
         return view('products.jastekdekorues', compact('products'));
@@ -227,7 +227,7 @@ class ProductController extends Controller
         $products = $this->categorySearch(
             $request,
             ['category' => 'batanije'],
-            ['batanije','batan','qebe']
+            ['batanije','batan','qebe','qebeja','dimer','dimri','divan','krevat','ngrohta','buta']
         );
 
         return view('products.batanije', compact('products'));
@@ -241,7 +241,7 @@ class ProductController extends Controller
         $products = $this->categorySearch(
             $request,
             ['category' => 'tepihebanjo'],
-            ['banjo','bath','wc']
+            ['banjo','banjoje','banje','tapet','tapeta','dush','tepih','tepiha','antirreshqites','set','bath','wc']
         );
 
         return view('products.tepihebanjo', compact('products'));
@@ -255,7 +255,7 @@ class ProductController extends Controller
         $products = $this->categorySearch(
             $request,
             ['category' => 'posteqia'],
-            ['posteqia','posteqe','pelush','pelushi','lekure','lekur','lëkurë','lekura','lëkura','tapet','tepih']
+            ['posteqia','posteqe','pelush','pelushi','pelusho','lekure','lekur','lëkurë','lekura','lëkura','tapet','tepih']
         );
 
         return view('products.posteqia', compact('products'));

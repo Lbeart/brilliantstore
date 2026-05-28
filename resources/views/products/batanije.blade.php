@@ -5,11 +5,11 @@
    <meta charset="UTF-8">
 
   <!-- TITULLI & PËRSHKRIMI SEO -->
-  <title>Batanije të buta & cilësore – Modele moderne për çdo sezon | Brillant Lipjan</title>
-  <meta name="description" content="Batanije të buta dhe të ngrohta online në Kosovë. Modele moderne për krevat, divan dhe dhomë gjumi nga Brillant Lipjan.">
+  <title>Batanije Online në Kosovë | Qebe, Batanije Dimri & Divani | Brillant</title>
+  <meta name="description" content="Batanije online në Kosovë për krevat, divan dhe dhomë gjumi. Qebe të buta, batanije dimri, modele moderne dhe dërgesë nga Brillant Lipjan.">
 
   <!-- KEYWORDS -->
-  <meta name="keywords" content="batanije, batanije moderne, batanije të buta, batanije dimri, batanije vere, batanije për shtrat, batanije premium, Brillant Lipjan, batanije Kosove">
+  <meta name="keywords" content="batanije online, batanije Kosove, batanije dimri, batanije te buta, batanije per krevat, batanije per divan, qebe online, qebe te buta, batanije moderne, batanije dhome gjumi, Brillant Lipjan">
 
   <!-- INDEXIMI -->
   <meta name="robots" content="index, follow">
@@ -23,15 +23,15 @@
   <!-- OPEN GRAPH (Facebook, IG, WhatsApp) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Brillant Lipjan">
-  <meta property="og:title" content="Batanije të buta & cilësore – Brillant Lipjan">
-  <meta property="og:description" content="Batanije të buta dhe të ngrohta me materiale premium. Perfecte për çdo sezon.">
+  <meta property="og:title" content="Batanije Online në Kosovë | Qebe & Batanije Dimri – Brillant">
+  <meta property="og:description" content="Batanije të buta për krevat, divan dhe dhomë gjumi. Qebe të ngrohta dhe modele moderne me dërgesë në Kosovë.">
   <meta property="og:url" content="{{ url('/batanije') }}">
   <meta property="og:image" content="{{ asset('images/og-batanije.jpg') }}">
 
   <!-- TWITTER CARD -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Batanije të buta & cilësore – Brillant Lipjan">
-  <meta name="twitter:description" content="Batanije cilësore me dizajn modern dhe materiale rezistente.">
+  <meta name="twitter:title" content="Batanije Online në Kosovë | Qebe & Batanije Dimri">
+  <meta name="twitter:description" content="Batanije cilësore, të buta dhe të ngrohta për krevat, divan dhe dhomë gjumi.">
   <meta name="twitter:image" content="{{ asset('images/og-batanije.jpg') }}">
 
   <!-- JSON-LD (Structured Data për Google) -->
@@ -39,8 +39,8 @@
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Batanije të buta & cilësore – Brillant Lipjan",
-    "description": "Batanije të buta, të ngrohta dhe moderne për çdo sezon, me materiale cilësore dhe dizajn elegant.",
+    "name": "Batanije Online në Kosovë - Qebe dhe Batanije Dimri",
+    "description": "Batanije të buta, qebe të ngrohta dhe modele moderne për krevat, divan dhe dhomë gjumi, me dërgesë nga Brillant Lipjan.",
     "url": "{{ url('/batanije') }}",
     "image": "{{ asset('images/og-batanije.jpg') }}",
     "inLanguage": "sq",
@@ -305,7 +305,7 @@
 
 <!-- Header -->
 <header class="page-header">
-  <h1>Batanije</h1>
+  <h1>Batanije Online, Qebe dhe Batanije Dimri</h1>
   <div class="page-sub">Të ngrohta, cilësi e lartë – gati për porosi.</div>
 </header>
 <div class="mb-4">
@@ -403,7 +403,7 @@
   <!-- SEO TEXT SECTION -->
 <section class="seo-text mt-5" style="font-size:16px; line-height:1.6;">
   <div class="container">
-    <h2>Batanije të Buta & Cilësore – Komfor për Çdo Stinë nga Brillant</h2>
+    <h2>Batanije Online në Kosovë për Krevat, Divan dhe Dhomë Gjumi</h2>
 
     <p>Batanijet e Brillant ofrojnë ngrohtësi, rehati dhe një prekje luksoze për çdo dhomë gjumi. Koleksioni ynë përfshin batanije të buta, batanije moderne, batanije për krevat dhe batanije premium të dizajnuara për të garantuar cilësi të lartë dhe qëndrueshmëri afatgjatë.</p>
 
@@ -417,6 +417,8 @@
     <h3>Batanije te buta, qebe dhe mbulesa te ngrohta</h3>
     <p>Batanijet jane te nevojshme per cdo shtepi, sidomos ne sezonin e ftohte. Ne kete kategori mund te gjeni batanije per krevat, batanije per divan, qebe te buta, batanije moderne dhe modele qe kombinohen bukur me mbulesa, postava dhe jasteke dekorues.</p>
     <p>Nese klientet kerkojne batanije Kosove, qebe online, batanije dimri, batanije te buta, batanije per dhome gjumi ose batanije ne Lipjan, B-Brillant ofron zgjedhje praktike me cmim te qarte, foto te produktit dhe mundesi porosie online.</p>
+    <h3>Qebe online dhe batanije dimri per shtepi</h3>
+    <p>Per kerkimet qebe, qebe online, batanije per divan dhe batanije per krevat, kjo faqe i jep klientit kategori te qarte per produkte te ngrohta dhe praktike. Modelet kombinohen lehte me postava, mbulesa dhe jasteke dekorues per nje dhome me pamje te kompletuar.</p>
   </div>
 </section>
 

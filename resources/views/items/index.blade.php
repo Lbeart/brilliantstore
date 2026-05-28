@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Brillant | Tepiha, Perde Online, Mbulesa & Set Çarçafësh</title>
-  <meta name="description" content="Brillant në Lipjan: tepiha, perde online, mbulesa divani, set çarçafësh, postava, lëkurë pelushi, batanije dhe tekstil cilësor për shtëpi në Kosovë.">
+  <title>Brillant | Tepiha, Perde Online, Mbulesa, Batanije & Dekor</title>
+  <meta name="description" content="Brillant në Lipjan: tepiha, perde online, mbulesa divani, set çarçafësh, postava, batanije, jastëk dekorues, tepiha banjo dhe lëkurë pelushi në Kosovë.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{ url('/') }}">
   <meta name="theme-color" content="#7f1d2d">
@@ -1140,18 +1140,18 @@
       ['title' => 'Perde anesore', 'title_en' => 'Side curtains', 'title_sr' => 'Bocne zavese', 'desc' => 'Pamje elegante dhe qepje profesionale.', 'desc_en' => 'Elegant look with professional tailoring.', 'desc_sr' => 'Elegantan izgled i profesionalno sivenje.', 'url' => route('products.anesore'), 'img' => asset('curtainn/SOFTPERDE.jpg')],
       ['title' => 'Perde ditore', 'title_en' => 'Day curtains', 'title_sr' => 'Dnevne zavese', 'desc' => 'Drite e bute dhe ambient me i paster.', 'desc_en' => 'Soft light and a cleaner room feeling.', 'desc_sr' => 'Meko svetlo i cistiji izgled prostora.', 'url' => route('products.perdeDitore'), 'img' => asset('perdeditoree/image00001.jpeg')],
       ['title' => 'Set çarçafësh', 'title_en' => 'Bedsheet sets', 'title_sr' => 'Set posteljine', 'desc' => 'Sete per gjume te rehatshem cdo nate.', 'desc_en' => 'Sets for comfortable sleep every night.', 'desc_sr' => 'Setovi za udoban san svake noci.', 'url' => route('products.postava'), 'img' => asset('postavav/beedsheet10.png')],
-      ['title' => 'Lekure pelushi', 'title_en' => 'Plush fur', 'title_sr' => 'Plisano krzno', 'desc' => 'Zgjedhje te buta per dhome gjumi.', 'desc_en' => 'Soft choices for the bedroom.', 'desc_sr' => 'Mek izbor za spavacu sobu.', 'url' => route('products.posteqia'), 'img' => asset('posteqiaa/faux-1.jpg')],
-      ['title' => 'Batanije', 'title_en' => 'Blankets', 'title_sr' => 'Cebad', 'desc' => 'Te ngrohta, praktike dhe te bukura.', 'desc_en' => 'Warm, practical and beautiful.', 'desc_sr' => 'Topla, prakticna i lepa.', 'url' => route('products.batanije'), 'img' => asset('batanijee/IMG_7631.jpg')],
+      ['title' => 'Lekure pelushi', 'title_en' => 'Plush fur', 'title_sr' => 'Plisano krzno', 'desc' => 'Posteqia dhe lekur pelusho per dekor.', 'desc_en' => 'Plush fur and soft decor pieces.', 'desc_sr' => 'Plisano krzno i meki dekor.', 'url' => route('products.posteqia'), 'img' => asset('posteqiaa/faux-1.jpg')],
+      ['title' => 'Batanije online', 'title_en' => 'Blankets online', 'title_sr' => 'Cebad online', 'desc' => 'Qebe dhe batanije te ngrohta per shtepi.', 'desc_en' => 'Warm blankets for the home.', 'desc_sr' => 'Topla cebad za dom.', 'url' => route('products.batanije'), 'img' => asset('batanijee/IMG_7631.jpg')],
       ['title' => 'Mbulesa', 'title_en' => 'Covers', 'title_sr' => 'Prekrivaci', 'desc' => 'Per divan, krevat dhe dekor te perditeshem.', 'desc_en' => 'For sofas, beds and everyday decor.', 'desc_sr' => 'Za sofu, krevet i svakodnevni dekor.', 'url' => route('products.mbulesa'), 'img' => asset('mbulesaa/IMG_7526.jpg')],
-      ['title' => 'Jasteke dekorues', 'title_en' => 'Decorative pillows', 'title_sr' => 'Dekorativni jastuci', 'desc' => 'Detaje qe e kompletojne ambientin.', 'desc_en' => 'Details that complete the room.', 'desc_sr' => 'Detalji koji upotpunjuju prostor.', 'url' => route('products.jastekdekorues'), 'img' => asset('jastak/IMG_7959.jpg')],
-      ['title' => 'Tepiha banjo', 'title_en' => 'Bath rugs', 'title_sr' => 'Kupatilski tepisi', 'desc' => 'Praktike, te bute dhe te lehte per pastrim.', 'desc_en' => 'Practical, soft and easy to clean.', 'desc_sr' => 'Prakticni, mekani i laki za ciscenje.', 'url' => route('products.tepihebanjo'), 'img' => asset('tepihebanjoo/crop-template-print1-1120x1493.png')],
+      ['title' => 'Jasteke dekorues', 'title_en' => 'Decorative pillows', 'title_sr' => 'Dekorativni jastuci', 'desc' => 'Per divan, krevat, sallon dhe dekor.', 'desc_en' => 'For sofas, beds, living rooms and decor.', 'desc_sr' => 'Za sofu, krevet, dnevni boravak i dekor.', 'url' => route('products.jastekdekorues'), 'img' => asset('jastak/IMG_7959.jpg')],
+      ['title' => 'Tepiha banjo', 'title_en' => 'Bath rugs', 'title_sr' => 'Kupatilski tepisi', 'desc' => 'Tapeta banjoje antirreshqitese.', 'desc_en' => 'Non-slip bathroom rugs.', 'desc_sr' => 'Neklizajuci tepisi za kupatilo.', 'url' => route('products.tepihebanjo'), 'img' => asset('tepihebanjoo/crop-template-print1-1120x1493.png')],
       ['title' => 'Garnishte', 'title_en' => 'Curtain rails', 'title_sr' => 'Garnisne', 'desc' => 'Aksesor per perde dhe montim me pamje te rregullt.', 'desc_en' => 'Curtain accessories for a clean installation.', 'desc_sr' => 'Dodaci za zavese i urednu montazu.', 'url' => route('products.garnishte'), 'img' => asset('images/garnishte.jpg')],
     ];
 
     $quickLinks = [
       ['label' => 'Tepiha modern', 'url' => route('products.tepiha'), 'icon' => 'bi-grid-3x3-gap'],
       ['label' => 'Perde online', 'url' => route('products.perde'), 'icon' => 'bi-columns-gap'],
-      ['label' => 'Batanije', 'url' => route('products.batanije'), 'icon' => 'bi-stars'],
+      ['label' => 'Batanije online', 'url' => route('products.batanije'), 'icon' => 'bi-stars'],
       ['label' => 'Tepiha banjo', 'url' => route('products.tepihebanjo'), 'icon' => 'bi-droplet'],
       ['label' => 'Garnishte', 'url' => route('products.garnishte'), 'icon' => 'bi-sliders'],
     ];
