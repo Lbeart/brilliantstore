@@ -1513,8 +1513,19 @@
     <section class="section-tight">
       <div class="container">
         <div class="seo-box">
-          <h2>Brillant - tepiha, perde dhe tekstil per shtepi</h2>
-          <p>Brillant ofron tepiha moderne, perde cilesore, batanije, Set çarçafësh, mbulesa dhe dekor per shtepi. Qellimi eshte me e bo blerjen te lehte: kategori te qarta, foto te dukshme, produkte te fundit dhe kontakt direkt per cdo pyetje.</p>
+          <h2>Brillant - tepiha, perde online, mbulesa dhe tekstil per shtepi</h2>
+          <p>Brillant ofron tepiha moderne, perde online, batanije, set çarçafësh, mbulesa divani, tepiha banjo, jasteke dekorues, posteqia dhe lekur pelushi per shtepi. Qellimi eshte me e bo blerjen te lehte: kategori te qarta, foto te dukshme, produkte te fundit dhe kontakt direkt per cdo pyetje.</p>
+          <p>
+            Kerkime te shpeshta:
+            <a href="{{ route('products.perde') }}">perde online</a>,
+            <a href="{{ route('products.mbulesa') }}">mbulesa online</a>,
+            <a href="{{ route('products.mbulesa') }}">mbulesa divani</a>,
+            <a href="{{ route('products.postava') }}">set çarçafësh</a>,
+            <a href="{{ route('products.batanije') }}">batanije online</a>,
+            <a href="{{ route('products.jastekdekorues') }}">jastek dekorues</a>,
+            <a href="{{ route('products.tepihebanjo') }}">tepiha banjo</a>,
+            <a href="{{ route('products.posteqia') }}">lekur pelusho</a>.
+          </p>
         </div>
       </div>
     </section>

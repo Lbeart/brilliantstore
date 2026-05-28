@@ -51,7 +51,34 @@
     }
   }
   </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "A mund të porosis batanije online në Kosovë?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Po. B-Brillant ofron batanije online, qebe të buta dhe batanije dimri për krevat, divan dhe dhomë gjumi me dërgesë në Kosovë."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Çfarë batanijesh mund të gjej te Brillant?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Mund të gjeni batanije të buta, qebe të ngrohta, batanije për divan, batanije për krevat dhe modele moderne për shtëpi."
+        }
+      }
+    ]
+  }
+  </script>
   
+  @include('products.partials.item-list-schema')
+
 
 
   <!-- Bootstrap & Icons -->

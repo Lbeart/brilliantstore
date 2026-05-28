@@ -106,6 +106,33 @@
   }
   </script>
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Çfarë perde mund të porosis online te Brillant?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Te Brillant mund të porosisni perde online për sallon, kuzhinë, dhomë gjumi dhe zyrë, duke përfshirë perde ditore, perde anësore, bamboo dhe kumash."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "A keni perde për sallon dhe perde moderne?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Po. Kategoria e perdeve përfshin modele moderne për sallon, dhomë gjumi, kuzhinë dhe ambiente të tjera shtëpie."
+        }
+      }
+    ]
+  }
+  </script>
+
+  @include('products.partials.item-list-schema')
+
   <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">

@@ -51,6 +51,33 @@
   }
   </script>
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "A keni tepiha banjo online në Kosovë?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Po. B-Brillant ofron tepiha banjo online, tapeta banjoje dhe tapeta dushi me dërgesë në Kosovë."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "A janë tepihet e banjos antirrëshqitëse?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Modelet e tepiheve për banjo janë praktike për ambiente me lagështi dhe përfshijnë opsione antirrëshqitëse për përdorim të përditshëm."
+        }
+      }
+    ]
+  }
+  </script>
+
+  @include('products.partials.item-list-schema')
+
   <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">

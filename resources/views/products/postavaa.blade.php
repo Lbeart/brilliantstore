@@ -52,6 +52,33 @@
   }
   </script>
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "A mund të porosis set çarçafësh online në Kosovë?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Po. Te B-Brillant mund të porosisni set çarçafësh, postava dhe çarçafë krevati online për krevat dopio, tek dhe dhomë gjumi."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "A keni postava për krevat dopio dhe tek?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Po. Kategoria e postavave përfshin sete çarçafësh dhe modele për krevat dopio, krevat tek dhe përdorim të përditshëm."
+        }
+      }
+    ]
+  }
+  </script>
+
+  @include('products.partials.item-list-schema')
+
   <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">

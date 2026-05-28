@@ -51,6 +51,33 @@
   }
   </script>
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "A mund të porosis mbulesa online në Kosovë?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Po. Te B-Brillant mund të porosisni mbulesa online për divan, krevat, sallon dhe dhomë gjumi me dërgesë në Kosovë."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "A keni mbulesa divani dhe mbulesa me metër?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Po. Kategoria e mbulesave përfshin modele për divan, krevat, karrige, sallon dhe dekor të përditshëm."
+        }
+      }
+    ]
+  }
+  </script>
+
+  @include('products.partials.item-list-schema')
+
   <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">

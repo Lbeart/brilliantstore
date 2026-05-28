@@ -51,6 +51,33 @@
   }
   </script>
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "A është lekur pelusho e njëjta kategori me lëkurë pelushi dhe posteqia?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Po. Shumë klientë e kërkojnë si lekur pelusho, lëkurë pelushi, lekura pelushi ose posteqia; te B-Brillant këto produkte janë për dekor, divan, sallon dhe dhomë gjumi."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Ku përdoren posteqiat dhe lëkurat e pelushit?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Posteqiat dhe lëkurat e pelushit përdoren në divan, karrige, pranë krevatit, në sallon dhe në dekor modern të shtëpisë."
+        }
+      }
+    ]
+  }
+  </script>
+
+  @include('products.partials.item-list-schema')
+
   <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
