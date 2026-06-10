@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Brillant | Tepiha, Perde Online, Mbulesa, Batanije & Dekor</title>
-  <meta name="description" content="Brillant në Lipjan: tepiha, perde online, mbulesa divani, set çarçafësh, postava, batanije, jastëk dekorues, tepiha banjo dhe lëkurë pelushi në Kosovë.">
+  <title>Brillant | Tepiha, Perde, Mbulesa, Batanije & Dekor</title>
+  <meta name="description" content="Brillant në Lipjan: tepiha, perde ditore, perde anësore, mbulesa divani, set çarçafësh, postava, batanije, jastëk dekorues, tepiha banjo dhe lëkurë pelushi në Kosovë.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{ url('/') }}">
   <meta name="theme-color" content="#7f1d2d">
@@ -341,18 +341,16 @@
       color: var(--ink);
       isolation: isolate;
       overflow: hidden;
-      background:
-        radial-gradient(circle at 14% 20%, rgba(201,154,70,.18), transparent 30%),
-        linear-gradient(135deg, #fff7ee 0%, #f4e7dc 46%, #fff 100%);
+      background: linear-gradient(180deg, #fff 0%, #fbf7f2 100%);
     }
     .hero::before {
       content: "";
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(90deg, rgba(255,255,255,.75), rgba(255,255,255,.18)),
+        linear-gradient(90deg, rgba(255,255,255,.96), rgba(255,255,255,.76)),
         url("{{ asset('optimized/home/hero.jpg') }}") center / cover no-repeat;
-      opacity: .22;
+      opacity: .26;
       z-index: -2;
     }
     .hero::after {
@@ -365,101 +363,77 @@
       pointer-events: none;
     }
     .hero-grid {
-      min-height: 640px;
+      min-height: 650px;
       display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(320px, .62fr);
+      grid-template-columns: 340px minmax(0, 1fr);
       align-items: center;
-      gap: 22px;
-      padding: 42px 0 112px;
+      gap: 26px;
+      padding: 44px 0 104px;
     }
-    .hero-showcase {
+    .hero-intro {
       min-width: 0;
-      display: grid;
-      gap: 16px;
-    }
-    .hero-main-photo {
-      position: relative;
-      min-height: 430px;
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 28px 80px rgba(55,35,25,.18);
-      isolation: isolate;
-      background: #211916;
-    }
-    .hero-main-photo img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -2;
-    }
-    .hero-main-photo::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.42));
-      z-index: -1;
-    }
-    .hero-brandmark {
-      position: absolute;
-      left: 20px;
-      bottom: 20px;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 15px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.94);
-      color: var(--ink);
-      font-weight: 800;
-      box-shadow: 0 16px 34px rgba(0,0,0,.18);
-    }
-    .hero-brandmark i { color: var(--brand); }
-    .nota-hero-thumbs {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      max-width: none;
-    }
-    .nota-hero-thumb {
-      min-height: 134px;
-      border-radius: 16px;
-      overflow: hidden;
-      position: relative;
+      align-self: stretch;
       display: flex;
-      align-items: end;
-      padding: 12px;
-      isolation: isolate;
-      color: #fff;
+      flex-direction: column;
+      justify-content: center;
+      padding: 28px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(55,35,25,.08);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(12px);
+    }
+    .hero-intro img {
+      width: min(260px, 100%);
+      height: auto;
+      object-fit: contain;
+      object-position: left center;
+      margin-bottom: 26px;
+    }
+    .hero-intro h1 {
+      margin: 0;
+      font-size: clamp(2.25rem, 4vw, 3.9rem);
+      line-height: .98;
+      letter-spacing: 0;
       font-weight: 800;
-      box-shadow: 0 14px 34px rgba(55,35,25,.12);
-      transition: transform .18s ease, box-shadow .18s ease;
     }
-    .nota-hero-thumb:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 20px 42px rgba(55,35,25,.18);
+    .hero-intro p {
+      margin: 16px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 1rem;
     }
-    .nota-hero-thumb img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -2;
+    .hero-mini-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 22px;
     }
-    .nota-hero-thumb::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.68));
-      z-index: -1;
+    .hero-mini-stat {
+      min-height: 74px;
+      border-radius: 12px;
+      background: var(--paper-soft);
+      display: grid;
+      align-content: center;
+      gap: 4px;
+      padding: 10px;
+      text-align: center;
+    }
+    .hero-mini-stat strong {
+      color: var(--brand);
+      font-size: 1.05rem;
+      line-height: 1;
+    }
+    .hero-mini-stat span {
+      color: #4a413b;
+      font-size: .72rem;
+      font-weight: 800;
     }
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 18px;
+      margin-top: 24px;
     }
     .hero .btn-outline {
       background: #fff;
@@ -467,95 +441,109 @@
       color: var(--brand);
     }
     .hero .btn-outline:hover { background: rgba(127,29,45,.08); color: var(--brand); }
-    .hero-shop-panel {
-      background: rgba(255,255,255,.92);
-      border: 1px solid rgba(55,35,25,.09);
-      border-radius: 24px;
-      padding: 18px;
-      box-shadow: 0 28px 80px rgba(55,35,25,.16);
-      backdrop-filter: blur(14px);
-    }
-    .hero-logo-card {
-      position: relative;
-      min-height: 156px;
-      border-radius: 18px;
-      background:
-        linear-gradient(135deg, rgba(127,29,45,.95), rgba(33,25,22,.95)),
-        url("{{ asset('optimized/home/side.jpg') }}") center / cover no-repeat;
-      display: flex;
-      align-items: end;
-      padding: 18px;
-      overflow: hidden;
-    }
-    .hero-logo-card img {
-      position: absolute;
-      top: -18px;
-      right: -72px;
-      width: 270px;
-      height: auto;
-      object-fit: contain;
-      opacity: .20;
-      filter: grayscale(1) brightness(0) invert(1);
-    }
-    .hero-logo-card span {
-      position: relative;
-      color: #fff;
-      font-size: clamp(2rem, 5vw, 3.1rem);
-      line-height: .92;
-      font-weight: 800;
-      letter-spacing: 0;
-    }
-    .hero-choice-list {
+    .hero-category-board {
+      min-width: 0;
       display: grid;
-      gap: 10px;
-      margin-top: 14px;
-    }
-    .hero-choice {
-      display: grid;
-      grid-template-columns: 58px 1fr auto;
-      align-items: center;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 12px;
-      padding: 10px;
-      border: 1px solid rgba(55,35,25,.09);
-      border-radius: 14px;
-      background: #fff;
-      color: var(--ink);
-      font-weight: 800;
-      box-shadow: 0 10px 26px rgba(55,35,25,.06);
-      transition: transform .18s ease, border-color .18s ease;
     }
-    .hero-choice:hover {
-      transform: translateX(3px);
+    .hero-category-card {
+      min-width: 0;
+      min-height: 214px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid rgba(55,35,25,.09);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .hero-category-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
       border-color: rgba(127,29,45,.22);
     }
-    .hero-choice img {
-      width: 58px;
-      height: 58px;
-      border-radius: 12px;
-      object-fit: cover;
+    .hero-category-media {
+      display: block;
+      width: 100%;
+      height: 128px;
+      background-color: #fff;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
     }
-    .hero-choice i { color: var(--brand); }
-    .hero-promise-row {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      margin-top: 14px;
+    .hero-category-card.featured {
+      grid-column: span 2;
+      grid-row: span 2;
+      min-height: 440px;
+      position: relative;
+      color: #fff;
+      background: #211916;
+      isolation: isolate;
     }
-    .hero-promise {
-      min-height: 72px;
-      border-radius: 14px;
-      background: var(--paper-soft);
-      color: #3c332d;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 10px;
+    .hero-category-card.featured .hero-category-media {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      z-index: -2;
+    }
+    .hero-category-card.featured::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.03), rgba(0,0,0,.68));
+      z-index: -1;
+    }
+    .hero-category-body {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 14px;
+      flex: 1;
+    }
+    .hero-category-card.featured .hero-category-body {
+      margin-top: auto;
+      padding: 22px;
+    }
+    .hero-category-body h2,
+    .hero-category-body h3 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.15;
+      font-weight: 800;
+    }
+    .hero-category-card.featured h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+    }
+    .hero-category-body p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .78rem;
+      line-height: 1.45;
+    }
+    .hero-category-card.featured p {
+      max-width: 360px;
+      color: rgba(255,255,255,.86);
+      font-size: .95rem;
+    }
+    .hero-category-link {
+      margin-top: auto;
+      color: var(--brand);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       font-size: .8rem;
       font-weight: 800;
     }
-    .hero-promise i {
-      color: var(--brand);
-      font-size: 1.15rem;
+    .hero-category-card.featured .hero-category-link {
+      color: #f4d795;
+    }
+    .hero-category-link i { font-size: 1rem; }
+    .hero-mobile-logo {
+      display: none;
     }
 
     .search-panel {
@@ -1029,8 +1017,22 @@
     @media (max-width: 1080px) {
       .nav-links a { padding-inline: 9px; }
       .brand img { width: 230px; }
-      .hero-grid { grid-template-columns: 1fr; padding-top: 30px; }
-      .hero-shop-panel { width: min(620px, 100%); }
+      .hero-grid {
+        grid-template-columns: 1fr;
+        min-height: 0;
+        padding-top: 30px;
+      }
+      .hero-intro {
+        align-self: auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: end;
+      }
+      .hero-intro img { margin-bottom: 16px; }
+      .hero-intro p { max-width: 620px; }
+      .hero-actions { justify-content: flex-end; margin-top: 0; }
+      .hero-category-board { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .benefit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
@@ -1133,11 +1135,25 @@
       }
       .hero-grid {
         min-height: 0;
-        padding: 96px 0 80px;
-        gap: 24px;
+        padding: 92px 0 78px;
+        gap: 16px;
       }
-      .hero-main-photo { min-height: 360px; border-radius: 20px; }
-      .nota-hero-thumbs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero-intro {
+        display: block;
+        padding: 20px;
+        border-radius: 18px;
+      }
+      .hero-intro img { width: 210px; margin-bottom: 18px; }
+      .hero-intro h1 { font-size: clamp(2rem, 8vw, 3.2rem); }
+      .hero-actions { justify-content: flex-start; margin-top: 20px; }
+      .hero-category-board { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+      .hero-category-card.featured {
+        grid-column: span 3;
+        grid-row: span 1;
+        min-height: 280px;
+      }
+      .hero-category-card { min-height: 190px; border-radius: 14px; }
+      .hero-category-media { height: 112px; }
       .search-panel { margin-top: -44px; }
       .search-card { grid-template-columns: 1fr; }
       .search-card .btn { width: 100%; }
@@ -1156,7 +1172,12 @@
       .section { padding: 42px 0; }
       .section-head { display: block; margin-bottom: 18px; }
       .section-head .btn { width: 100%; margin-top: 14px; }
-      .nav-container { width: calc(100% - 12px); }
+      .nav-container {
+        width: min(calc(100% - 12px), 378px);
+        margin-left: 6px;
+        margin-right: auto;
+      }
+      .nav { overflow: hidden; }
       .brand img { width: 148px; height: 46px; }
       .nav-actions { gap: 6px; }
       .icon-btn { width: 40px; height: 40px; }
@@ -1170,17 +1191,59 @@
       .cart-link .cart-more { display: none; }
       .cart-link .cart-badge { position: absolute; top: -7px; right: -7px; }
       .hero-grid { padding: 82px 0 68px; }
-      .hero-main-photo { min-height: 280px; border-radius: 18px; }
-      .hero-brandmark { left: 12px; bottom: 12px; padding: 10px 12px; font-size: .86rem; }
-      .hero-shop-panel { padding: 12px; border-radius: 18px; }
-      .hero-logo-card { min-height: 112px; border-radius: 14px; }
-      .hero-choice { grid-template-columns: 48px 1fr auto; gap: 10px; font-size: .9rem; }
-      .hero-choice img { width: 48px; height: 48px; }
+      .hero-intro {
+        width: min(100%, 360px);
+        margin: 0;
+        padding: 16px;
+      }
+      .hero-intro img { width: 176px; margin-bottom: 14px; }
+      .hero-intro h1 {
+        max-width: 9ch;
+        font-size: 1.9rem;
+        line-height: 1.02;
+        overflow-wrap: anywhere;
+      }
+      .hero-intro p { font-size: .92rem; line-height: 1.55; }
+      .hero-mini-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 16px; }
+      .hero-mini-stat { min-height: 58px; padding: 7px; }
+      .hero-mini-stat:last-child { grid-column: span 2; }
+      .hero-mini-stat strong { font-size: .9rem; }
+      .hero-mini-stat span { font-size: .62rem; }
       .hero-actions .btn { width: 100%; }
-      .hero-promise-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
-      .hero-promise { min-height: 62px; font-size: .72rem; }
-      .nota-hero-thumbs { gap: 8px; }
-      .nota-hero-thumb { min-height: 96px; font-size: .82rem; }
+      .hero-category-board {
+        width: min(100%, 360px);
+        margin: 0;
+        grid-template-columns: 1fr;
+        gap: 9px;
+      }
+      .hero-category-card.featured {
+        grid-column: span 1;
+        min-height: 230px;
+      }
+      .hero-category-card {
+        min-height: 112px;
+        display: grid;
+        grid-template-columns: 118px minmax(0, 1fr);
+      }
+      .hero-category-card.featured {
+        display: flex;
+      }
+      .hero-category-media {
+        width: 100%;
+        height: 100%;
+        min-height: 112px;
+        background-color: #f8f1eb;
+        background-size: cover;
+      }
+      .hero-category-card.featured .hero-category-media {
+        min-height: 0;
+        background-color: transparent;
+      }
+      .hero-category-body { padding: 10px; gap: 4px; }
+      .hero-category-card.featured .hero-category-body { padding: 16px; }
+      .hero-category-card.featured h2 { font-size: 1.65rem; }
+      .hero-category-body h3 { font-size: .88rem; }
+      .hero-category-body p { display: none; }
       .quick-links { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
       .quick-links a { white-space: nowrap; }
       .category-card-body { padding: 12px; }
@@ -1207,12 +1270,11 @@
 
     $categories = [
       ['title' => 'Tepiha', 'title_en' => 'Rugs', 'title_sr' => 'Tepisi', 'desc' => 'Modele per sallon, dhome gjumi dhe korridor.', 'desc_en' => 'Models for living rooms, bedrooms and hallways.', 'desc_sr' => 'Modeli za dnevni boravak, spavacu sobu i hodnik.', 'url' => route('products.tepiha'), 'img' => asset('carpet/carpetmara.jpg')],
-      ['title' => 'Perde online', 'title_en' => 'Curtains online', 'title_sr' => 'Zavese online', 'desc' => 'Perde ditore, anesore, bamboo dhe kumash.', 'desc_en' => 'Day, side, bamboo and fabric curtains.', 'desc_sr' => 'Dnevne, bocne, bamboo i platnene zavese.', 'url' => route('products.perde'), 'img' => asset('perdeditoree/perde.jpg')],
       ['title' => 'Perde anesore', 'title_en' => 'Side curtains', 'title_sr' => 'Bocne zavese', 'desc' => 'Pamje elegante dhe qepje profesionale.', 'desc_en' => 'Elegant look with professional tailoring.', 'desc_sr' => 'Elegantan izgled i profesionalno sivenje.', 'url' => route('products.anesore'), 'img' => asset('curtainn/SOFTPERDE.jpg')],
       ['title' => 'Perde ditore', 'title_en' => 'Day curtains', 'title_sr' => 'Dnevne zavese', 'desc' => 'Drite e bute dhe ambient me i paster.', 'desc_en' => 'Soft light and a cleaner room feeling.', 'desc_sr' => 'Meko svetlo i cistiji izgled prostora.', 'url' => route('products.perdeDitore'), 'img' => asset('perdeditoree/image00001.jpeg')],
       ['title' => 'Set çarçafësh', 'title_en' => 'Bedsheet sets', 'title_sr' => 'Set posteljine', 'desc' => 'Sete per gjume te rehatshem cdo nate.', 'desc_en' => 'Sets for comfortable sleep every night.', 'desc_sr' => 'Setovi za udoban san svake noci.', 'url' => route('products.postava'), 'img' => asset('postavav/beedsheet10.png')],
       ['title' => 'Lekure pelushi', 'title_en' => 'Plush fur', 'title_sr' => 'Plisano krzno', 'desc' => 'Posteqia dhe lekur pelusho per dekor.', 'desc_en' => 'Plush fur and soft decor pieces.', 'desc_sr' => 'Plisano krzno i meki dekor.', 'url' => route('products.posteqia'), 'img' => asset('posteqiaa/faux-1.jpg')],
-      ['title' => 'Batanije online', 'title_en' => 'Blankets online', 'title_sr' => 'Cebad online', 'desc' => 'Qebe dhe batanije te ngrohta per shtepi.', 'desc_en' => 'Warm blankets for the home.', 'desc_sr' => 'Topla cebad za dom.', 'url' => route('products.batanije'), 'img' => asset('batanijee/IMG_7631.jpg')],
+      ['title' => 'Batanije', 'title_en' => 'Blankets', 'title_sr' => 'Cebad', 'desc' => 'Qebe dhe batanije te ngrohta per shtepi.', 'desc_en' => 'Warm blankets for the home.', 'desc_sr' => 'Topla cebad za dom.', 'url' => route('products.batanije'), 'img' => asset('batanijee/IMG_7631.jpg')],
       ['title' => 'Mbulesa', 'title_en' => 'Covers', 'title_sr' => 'Prekrivaci', 'desc' => 'Per divan, krevat dhe dekor te perditeshem.', 'desc_en' => 'For sofas, beds and everyday decor.', 'desc_sr' => 'Za sofu, krevet i svakodnevni dekor.', 'url' => route('products.mbulesa'), 'img' => asset('mbulesaa/IMG_7526.jpg')],
       ['title' => 'Jasteke dekorues', 'title_en' => 'Decorative pillows', 'title_sr' => 'Dekorativni jastuci', 'desc' => 'Per divan, krevat, sallon dhe dekor.', 'desc_en' => 'For sofas, beds, living rooms and decor.', 'desc_sr' => 'Za sofu, krevet, dnevni boravak i dekor.', 'url' => route('products.jastekdekorues'), 'img' => asset('jastak/IMG_7959.jpg')],
       ['title' => 'Tepiha banjo', 'title_en' => 'Bath rugs', 'title_sr' => 'Kupatilski tepisi', 'desc' => 'Tapeta banjoje antirreshqitese.', 'desc_en' => 'Non-slip bathroom rugs.', 'desc_sr' => 'Neklizajuci tepisi za kupatilo.', 'url' => route('products.tepihebanjo'), 'img' => asset('tepihebanjoo/crop-template-print1-1120x1493.png')],
@@ -1221,8 +1283,9 @@
 
     $quickLinks = [
       ['label' => 'Tepiha modern', 'url' => route('products.tepiha'), 'icon' => 'bi-grid-3x3-gap'],
-      ['label' => 'Perde online', 'url' => route('products.perde'), 'icon' => 'bi-columns-gap'],
-      ['label' => 'Batanije online', 'url' => route('products.batanije'), 'icon' => 'bi-stars'],
+      ['label' => 'Perde ditore', 'url' => route('products.perdeDitore'), 'icon' => 'bi-brightness-high'],
+      ['label' => 'Perde anesore', 'url' => route('products.anesore'), 'icon' => 'bi-columns-gap'],
+      ['label' => 'Batanije', 'url' => route('products.batanije'), 'icon' => 'bi-stars'],
       ['label' => 'Tepiha banjo', 'url' => route('products.tepihebanjo'), 'icon' => 'bi-droplet'],
       ['label' => 'Garnishte', 'url' => route('products.garnishte'), 'icon' => 'bi-sliders'],
     ];
@@ -1303,51 +1366,44 @@
   <main>
     <section class="hero">
       <div class="container hero-grid">
-        <div class="hero-showcase">
-          <a class="hero-main-photo" href="{{ route('products.index') }}" aria-label="Shiko koleksionin Brillant">
-            <img src="{{ asset('optimized/home/hero.jpg') }}" alt="Brillant home collection" width="920" height="620" fetchpriority="high" decoding="async">
-            <span class="hero-brandmark"><i class="bi bi-stars"></i> Brillant Home</span>
-          </a>
+        <section class="hero-intro" aria-label="Brillant home">
+          <div>
+            <img src="{{ asset('images/brillant.png') }}" alt="Brillant" width="320" height="120" fetchpriority="high" decoding="async">
+            <h1 data-sq="Koleksione per shtepi." data-en="Home collections." data-sr="Kolekcije za dom.">Koleksione per shtepi.</h1>
+            <p data-sq="Zgjidh kategorine, shiko produktet dhe porosit lehte ne Brillant." data-en="Choose a category, view products and order easily at Brillant." data-sr="Izaberi kategoriju, pogledaj proizvode i poruci lako u Brillant.">Zgjidh kategorine, shiko produktet dhe porosit lehte ne Brillant.</p>
 
-          <div class="nota-hero-thumbs" aria-label="Kategorite kryesore">
-            @foreach(array_slice($categories, 0, 4) as $category)
-              <a class="nota-hero-thumb" href="{{ $category['url'] }}">
-                <img src="{{ $category['img'] }}" alt="{{ $category['title'] }}" loading="eager" decoding="async">
-                <span data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</span>
-              </a>
-            @endforeach
-          </div>
-        </div>
-
-        <aside class="hero-shop-panel" aria-label="Brillant shortcuts">
-          <div class="hero-logo-card">
-            <img src="{{ asset('images/brillant.png') }}" alt="Brillant" width="320" height="120">
-            <span>BRILLANT</span>
-          </div>
-
-          <div class="hero-choice-list">
-            @foreach(array_slice($categories, 0, 5) as $category)
-              <a class="hero-choice" href="{{ $category['url'] }}">
-                <img src="{{ $category['img'] }}" alt="{{ $category['title'] }}" loading="eager" decoding="async">
-                <span data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</span>
-                <i class="bi bi-arrow-right-short"></i>
-              </a>
-            @endforeach
+            <div class="hero-mini-stats" aria-label="Pikat kryesore">
+              <div class="hero-mini-stat"><strong>10</strong><span>Kategori</span></div>
+              <div class="hero-mini-stat"><strong>24h</strong><span>WhatsApp</span></div>
+              <div class="hero-mini-stat"><strong>1</strong><span>Dyqan</span></div>
+            </div>
           </div>
 
           <div class="hero-actions">
-            <a class="btn btn-primary" href="{{ route('products.index') }}" data-sq="Shiko produktet" data-en="View products" data-sr="Pogledaj proizvode">Shiko produktet</a>
-            <a class="btn btn-whatsapp" href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Pershendetje! Dua rekomandim per shtepine time.') }}" target="_blank" rel="noopener">
-              <i class="bi bi-whatsapp"></i> Pyet tani
-            </a>
+            <a class="btn btn-primary" href="{{ route('products.index') }}" data-sq="Te gjitha produktet" data-en="All products" data-sr="Svi proizvodi">Te gjitha produktet</a>
+            <a class="btn btn-outline" href="#searchSection" data-sq="Kerko produkt" data-en="Search product" data-sr="Pretrazi proizvod"><i class="bi bi-search"></i> Kerko produkt</a>
           </div>
+        </section>
 
-          <div class="hero-promise-row">
-            <div class="hero-promise"><i class="bi bi-truck"></i><span>Transport</span></div>
-            <div class="hero-promise"><i class="bi bi-patch-check"></i><span>Cilesi</span></div>
-            <div class="hero-promise"><i class="bi bi-chat-dots"></i><span>WhatsApp</span></div>
-          </div>
-        </aside>
+        <div class="hero-category-board" aria-label="Kategorite Brillant">
+          @foreach($categories as $category)
+            <a class="hero-category-card {{ $loop->first ? 'featured' : '' }}" href="{{ $category['url'] }}">
+              <span class="hero-category-media" role="img" aria-label="{{ $category['title'] }}" style="background-image: url('{{ $category['img'] }}')"></span>
+              <div class="hero-category-body">
+                @if($loop->first)
+                  <h2 data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</h2>
+                @else
+                  <h3 data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</h3>
+                @endif
+                <p data-sq="{{ $category['desc'] }}" data-en="{{ $category['desc_en'] }}" data-sr="{{ $category['desc_sr'] }}">{{ $category['desc'] }}</p>
+                <span class="hero-category-link">
+                  <span data-sq="Shiko" data-en="View" data-sr="Pogledaj">Shiko</span>
+                  <i class="bi bi-arrow-right-short"></i>
+                </span>
+              </div>
+            </a>
+          @endforeach
+        </div>
       </div>
     </section>
 
@@ -1598,15 +1654,16 @@
     <section class="section-tight">
       <div class="container">
         <div class="seo-box">
-          <h2>Brillant - tepiha, perde online, mbulesa dhe tekstil per shtepi</h2>
-          <p>Brillant ofron tepiha moderne, perde online, batanije, set çarçafësh, mbulesa divani, tepiha banjo, jasteke dekorues, posteqia dhe lekur pelushi per shtepi. Qellimi eshte me e bo blerjen te lehte: kategori te qarta, foto te dukshme, produkte te fundit dhe kontakt direkt per cdo pyetje.</p>
+          <h2>Brillant - tepiha, perde, mbulesa dhe tekstil per shtepi</h2>
+          <p>Brillant ofron tepiha moderne, perde ditore, perde anesore, batanije, set çarçafësh, mbulesa divani, tepiha banjo, jasteke dekorues, posteqia dhe lekur pelushi per shtepi. Qellimi eshte me e bo blerjen te lehte: kategori te qarta, foto te dukshme, produkte te fundit dhe kontakt direkt per cdo pyetje.</p>
           <p>
             Kerkime te shpeshta:
-            <a href="{{ route('products.perde') }}">perde online</a>,
+            <a href="{{ route('products.perdeDitore') }}">perde ditore</a>,
+            <a href="{{ route('products.anesore') }}">perde anesore</a>,
             <a href="{{ route('products.mbulesa') }}">mbulesa online</a>,
             <a href="{{ route('products.mbulesa') }}">mbulesa divani</a>,
             <a href="{{ route('products.postava') }}">set çarçafësh</a>,
-            <a href="{{ route('products.batanije') }}">batanije online</a>,
+            <a href="{{ route('products.batanije') }}">batanije</a>,
             <a href="{{ route('products.jastekdekorues') }}">jastek dekorues</a>,
             <a href="{{ route('products.tepihebanjo') }}">tepiha banjo</a>,
             <a href="{{ route('products.posteqia') }}">lekur pelusho</a>.
@@ -1626,7 +1683,8 @@
         <div>
           <h3>Produkte</h3>
           <a href="{{ route('products.tepiha') }}">Tepiha</a>
-          <a href="{{ route('products.perde') }}">Perde online</a>
+          <a href="{{ route('products.perdeDitore') }}">Perde ditore</a>
+          <a href="{{ route('products.anesore') }}">Perde anesore</a>
           <a href="{{ route('products.anesore') }}">Perde anesore</a>
           <a href="{{ route('products.perdeDitore') }}">Perde ditore</a>
           <a href="{{ route('products.tepihebanjo') }}">Tepiha banjo</a>
