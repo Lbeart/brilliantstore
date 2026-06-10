@@ -338,59 +338,93 @@
 
     .hero {
       position: relative;
-      min-height: 520px;
-      color: #fff;
-      display: grid;
-      align-items: stretch;
+      color: var(--ink);
       isolation: isolate;
       overflow: hidden;
+      background:
+        radial-gradient(circle at 14% 20%, rgba(201,154,70,.18), transparent 30%),
+        linear-gradient(135deg, #fff7ee 0%, #f4e7dc 46%, #fff 100%);
     }
     .hero::before {
       content: "";
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(90deg, rgba(20,14,12,.86), rgba(20,14,12,.50) 52%, rgba(20,14,12,.16)),
+        linear-gradient(90deg, rgba(255,255,255,.75), rgba(255,255,255,.18)),
         url("{{ asset('optimized/home/hero.jpg') }}") center / cover no-repeat;
+      opacity: .22;
       z-index: -2;
     }
     .hero::after {
       content: "";
       position: absolute;
       inset: auto 0 0;
-      height: 180px;
+      height: 140px;
       background: linear-gradient(180deg, rgba(251,247,242,0), var(--bg));
       z-index: -1;
       pointer-events: none;
     }
     .hero-grid {
-      min-height: 520px;
+      min-height: 640px;
       display: grid;
-      grid-template-columns: minmax(0, 1.08fr) minmax(310px, .55fr);
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, .62fr);
       align-items: center;
-      gap: 36px;
-      padding: 56px 0 92px;
+      gap: 22px;
+      padding: 42px 0 112px;
     }
-    .hero-copy { max-width: 760px; }
-    .hero .eyebrow { color: #f4d795; }
-    .hero .eyebrow::before { background: #f4d795; }
-    .hero h1 {
-      margin: 0;
-      font-size: clamp(2.55rem, 6vw, 5.25rem);
-      line-height: .96;
+    .hero-showcase {
+      min-width: 0;
+      display: grid;
+      gap: 16px;
+    }
+    .hero-main-photo {
+      position: relative;
+      min-height: 430px;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 28px 80px rgba(55,35,25,.18);
+      isolation: isolate;
+      background: #211916;
+    }
+    .hero-main-photo img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+    .hero-main-photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.42));
+      z-index: -1;
+    }
+    .hero-brandmark {
+      position: absolute;
+      left: 20px;
+      bottom: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 15px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.94);
+      color: var(--ink);
       font-weight: 800;
-      letter-spacing: 0;
+      box-shadow: 0 16px 34px rgba(0,0,0,.18);
     }
+    .hero-brandmark i { color: var(--brand); }
     .nota-hero-thumbs {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
-      margin-top: 28px;
-      max-width: 760px;
+      max-width: none;
     }
     .nota-hero-thumb {
-      min-height: 118px;
-      border-radius: var(--radius-lg);
+      min-height: 134px;
+      border-radius: 16px;
       overflow: hidden;
       position: relative;
       display: flex;
@@ -399,7 +433,12 @@
       isolation: isolate;
       color: #fff;
       font-weight: 800;
-      box-shadow: 0 14px 34px rgba(0,0,0,.18);
+      box-shadow: 0 14px 34px rgba(55,35,25,.12);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .nota-hero-thumb:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 42px rgba(55,35,25,.18);
     }
     .nota-hero-thumb img {
       position: absolute;
@@ -416,73 +455,107 @@
       background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.68));
       z-index: -1;
     }
-    .hero h1 span { color: #f4d795; }
-    .hero p {
-      color: rgba(255,255,255,.9);
-      max-width: 640px;
-      margin: 20px 0 0;
-      font-size: 1.08rem;
-      line-height: 1.75;
-    }
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 28px;
+      margin-top: 18px;
     }
     .hero .btn-outline {
-      background: rgba(255,255,255,.10);
-      border-color: rgba(255,255,255,.36);
-      color: #fff;
+      background: #fff;
+      border-color: rgba(127,29,45,.16);
+      color: var(--brand);
     }
-    .hero .btn-outline:hover { background: rgba(255,255,255,.18); color: #fff; }
-    .hero-stats {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 34px;
-      max-width: 700px;
+    .hero .btn-outline:hover { background: rgba(127,29,45,.08); color: var(--brand); }
+    .hero-shop-panel {
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(55,35,25,.09);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 28px 80px rgba(55,35,25,.16);
+      backdrop-filter: blur(14px);
     }
-    .hero-stat {
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,.18);
-      border-radius: var(--radius);
-      background: rgba(255,255,255,.10);
-    }
-    .hero-stat strong {
-      display: block;
-      color: #f4d795;
-      font-size: 1.35rem;
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-    .hero-stat span { color: rgba(255,255,255,.82); font-size: .86rem; }
-
-    .hero-card {
-      align-self: end;
-      background: rgba(255,255,255,.94);
-      color: var(--ink);
-      border-radius: var(--radius-lg);
+    .hero-logo-card {
+      position: relative;
+      min-height: 156px;
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(127,29,45,.95), rgba(33,25,22,.95)),
+        url("{{ asset('optimized/home/side.jpg') }}") center / cover no-repeat;
+      display: flex;
+      align-items: end;
+      padding: 18px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,.28);
-      box-shadow: 0 26px 70px rgba(0,0,0,.28);
     }
-    .hero-card img {
-      width: 100%;
-      height: 230px;
+    .hero-logo-card img {
+      position: absolute;
+      top: -18px;
+      right: -72px;
+      width: 270px;
+      height: auto;
+      object-fit: contain;
+      opacity: .20;
+      filter: grayscale(1) brightness(0) invert(1);
+    }
+    .hero-logo-card span {
+      position: relative;
+      color: #fff;
+      font-size: clamp(2rem, 5vw, 3.1rem);
+      line-height: .92;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    .hero-choice-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .hero-choice {
+      display: grid;
+      grid-template-columns: 58px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      border: 1px solid rgba(55,35,25,.09);
+      border-radius: 14px;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 800;
+      box-shadow: 0 10px 26px rgba(55,35,25,.06);
+      transition: transform .18s ease, border-color .18s ease;
+    }
+    .hero-choice:hover {
+      transform: translateX(3px);
+      border-color: rgba(127,29,45,.22);
+    }
+    .hero-choice img {
+      width: 58px;
+      height: 58px;
+      border-radius: 12px;
       object-fit: cover;
     }
-    .hero-card-body { padding: 20px; }
-    .hero-card h2 {
-      margin: 0;
-      font-size: 1.15rem;
+    .hero-choice i { color: var(--brand); }
+    .hero-promise-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .hero-promise {
+      min-height: 72px;
+      border-radius: 14px;
+      background: var(--paper-soft);
+      color: #3c332d;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 10px;
+      font-size: .8rem;
       font-weight: 800;
     }
-    .hero-card p {
-      color: var(--muted);
-      font-size: .92rem;
-      line-height: 1.6;
-      margin: 9px 0 16px;
+    .hero-promise i {
+      color: var(--brand);
+      font-size: 1.15rem;
     }
 
     .search-panel {
@@ -956,11 +1029,8 @@
     @media (max-width: 1080px) {
       .nav-links a { padding-inline: 9px; }
       .brand img { width: 230px; }
-      .hero-grid { grid-template-columns: 1fr; }
-      .hero-card {
-        width: min(420px, 100%);
-        align-self: auto;
-      }
+      .hero-grid { grid-template-columns: 1fr; padding-top: 30px; }
+      .hero-shop-panel { width: min(620px, 100%); }
       .benefit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
@@ -1055,20 +1125,18 @@
       .login-btn { display: none; }
       .nav-actions > .lang-switch { display: none; }
       .mobile-cart { display: inline-flex; }
-      .hero { min-height: 590px; }
+      .hero { min-height: 0; }
       .hero::before {
         background:
-          linear-gradient(180deg, rgba(20,14,12,.18), rgba(20,14,12,.88)),
+          linear-gradient(180deg, rgba(255,255,255,.80), rgba(255,255,255,.22)),
           url("{{ asset('optimized/home/hero.jpg') }}") center / cover no-repeat;
       }
       .hero-grid {
-        min-height: 590px;
-        padding: 150px 0 88px;
+        min-height: 0;
+        padding: 96px 0 80px;
         gap: 24px;
       }
-      .hero h1 { font-size: clamp(2.25rem, 10vw, 3.7rem); }
-      .hero p { font-size: .98rem; line-height: 1.65; }
-      .hero-card { display: none; }
+      .hero-main-photo { min-height: 360px; border-radius: 20px; }
       .nota-hero-thumbs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .search-panel { margin-top: -44px; }
       .search-card { grid-template-columns: 1fr; }
@@ -1101,15 +1169,18 @@
       .cart-link span:not(.cart-badge),
       .cart-link .cart-more { display: none; }
       .cart-link .cart-badge { position: absolute; top: -7px; right: -7px; }
-      .hero { min-height: 560px; }
-      .hero-grid { min-height: 560px; padding: 120px 0 78px; }
+      .hero-grid { padding: 82px 0 68px; }
+      .hero-main-photo { min-height: 280px; border-radius: 18px; }
+      .hero-brandmark { left: 12px; bottom: 12px; padding: 10px 12px; font-size: .86rem; }
+      .hero-shop-panel { padding: 12px; border-radius: 18px; }
+      .hero-logo-card { min-height: 112px; border-radius: 14px; }
+      .hero-choice { grid-template-columns: 48px 1fr auto; gap: 10px; font-size: .9rem; }
+      .hero-choice img { width: 48px; height: 48px; }
       .hero-actions .btn { width: 100%; }
-      .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+      .hero-promise-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+      .hero-promise { min-height: 62px; font-size: .72rem; }
       .nota-hero-thumbs { gap: 8px; }
       .nota-hero-thumb { min-height: 96px; font-size: .82rem; }
-      .hero-stat { padding: 11px; }
-      .hero-stat strong { font-size: 1.1rem; }
-      .hero-stat span { font-size: .76rem; }
       .quick-links { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
       .quick-links a { white-space: nowrap; }
       .category-card-body { padding: 12px; }
@@ -1232,16 +1303,11 @@
   <main>
     <section class="hero">
       <div class="container hero-grid">
-        <div class="hero-copy">
-          <div class="eyebrow" data-sq="Koleksion i zgjedhur" data-en="Curated collection" data-sr="Odabrana kolekcija">Koleksion i zgjedhur</div>
-          <h1 data-sq="Shtepia duket me bukur kur tekstili eshte i menduar mire." data-en="Your home looks better when textiles are chosen with care." data-sr="Dom izgleda lepse kada je tekstil pazljivo odabran.">Shtepia duket me bukur kur tekstili eshte <span>i menduar mire.</span></h1>
-          <p data-sq="Brillant sjell tepiha, perde, Set çarçafësh, batanije dhe detaje dekoruese me pamje te paster, cilesi te mire dhe porosi te lehte." data-en="Brillant brings rugs, curtains, bedsheet sets, blankets and decor details with a clean look, good quality and easy ordering." data-sr="Brillant nudi tepihe, zavese, set posteljine, cebad i dekor sa urednim izgledom, dobrim kvalitetom i lakom porudzbinom.">Brillant sjell tepiha, perde, Set çarçafësh, batanije dhe detaje dekoruese me pamje te paster, cilesi te mire dhe porosi te lehte.</p>
-
-          <div class="hero-stats" aria-label="Pikat kryesore">
-            <div class="hero-stat"><strong>10</strong><span>Kategori per shtepi</span></div>
-            <div class="hero-stat"><strong>24h</strong><span>Pergjigje e shpejte</span></div>
-            <div class="hero-stat"><strong>1 vend</strong><span>Tepiha, perde, tekstil</span></div>
-          </div>
+        <div class="hero-showcase">
+          <a class="hero-main-photo" href="{{ route('products.index') }}" aria-label="Shiko koleksionin Brillant">
+            <img src="{{ asset('optimized/home/hero.jpg') }}" alt="Brillant home collection" width="920" height="620" fetchpriority="high" decoding="async">
+            <span class="hero-brandmark"><i class="bi bi-stars"></i> Brillant Home</span>
+          </a>
 
           <div class="nota-hero-thumbs" aria-label="Kategorite kryesore">
             @foreach(array_slice($categories, 0, 4) as $category)
@@ -1253,14 +1319,33 @@
           </div>
         </div>
 
-        <aside class="hero-card">
-          <img src="{{ asset('optimized/home/side.jpg') }}" alt="Tepih Brillant" width="520" height="360">
-          <div class="hero-card-body">
-            <h2 data-sq="Koleksionet e reja" data-en="New collections" data-sr="Nove kolekcije">Koleksionet e reja</h2>
-            <p data-sq="Shiko produktet e fundit ose dergo foto te ambientit per rekomandim me te sakte." data-en="View the latest products or send a room photo for a better recommendation." data-sr="Pogledaj najnovije proizvode ili posalji sliku prostora za bolju preporuku.">Shiko produktet e fundit ose dergo foto te ambientit per rekomandim me te sakte.</p>
-            <a class="btn btn-primary" href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Pershendetje! Dua rekomandim per shtepine time.') }}" target="_blank" rel="noopener">
+        <aside class="hero-shop-panel" aria-label="Brillant shortcuts">
+          <div class="hero-logo-card">
+            <img src="{{ asset('images/brillant.png') }}" alt="Brillant" width="320" height="120">
+            <span>BRILLANT</span>
+          </div>
+
+          <div class="hero-choice-list">
+            @foreach(array_slice($categories, 0, 5) as $category)
+              <a class="hero-choice" href="{{ $category['url'] }}">
+                <img src="{{ $category['img'] }}" alt="{{ $category['title'] }}" loading="eager" decoding="async">
+                <span data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</span>
+                <i class="bi bi-arrow-right-short"></i>
+              </a>
+            @endforeach
+          </div>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="{{ route('products.index') }}" data-sq="Shiko produktet" data-en="View products" data-sr="Pogledaj proizvode">Shiko produktet</a>
+            <a class="btn btn-whatsapp" href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Pershendetje! Dua rekomandim per shtepine time.') }}" target="_blank" rel="noopener">
               <i class="bi bi-whatsapp"></i> Pyet tani
             </a>
+          </div>
+
+          <div class="hero-promise-row">
+            <div class="hero-promise"><i class="bi bi-truck"></i><span>Transport</span></div>
+            <div class="hero-promise"><i class="bi bi-patch-check"></i><span>Cilesi</span></div>
+            <div class="hero-promise"><i class="bi bi-chat-dots"></i><span>WhatsApp</span></div>
           </div>
         </aside>
       </div>
