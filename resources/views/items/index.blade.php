@@ -1779,13 +1779,64 @@
         if (!latestCarousel) return;
         const firstCard = latestCarousel.querySelector('.product-card');
         const distance = firstCard ? firstCard.getBoundingClientRect().width + 18 : latestCarousel.clientWidth * 0.8;
+        const maxScroll = latestCarousel.scrollWidth - latestCarousel.clientWidth - 4;
+
+        if (direction > 0 && latestCarousel.scrollLeft >= maxScroll) {
+          latestCarousel.scrollTo({ left: 0, behavior: 'smooth' });
+          return;
+        }
+
+        if (direction < 0 && latestCarousel.scrollLeft <= 4) {
+          latestCarousel.scrollTo({ left: latestCarousel.scrollWidth, behavior: 'smooth' });
+          return;
+        }
+
         latestCarousel.scrollBy({ left: direction * distance, behavior: 'smooth' });
       }
 
       const prevProductButton = document.querySelector('[data-carousel-prev]');
       const nextProductButton = document.querySelector('[data-carousel-next]');
-      if (prevProductButton) prevProductButton.addEventListener('click', function () { scrollLatestProducts(-1); });
-      if (nextProductButton) nextProductButton.addEventListener('click', function () { scrollLatestProducts(1); });
+      let latestCarouselTimer = null;
+
+      function stopLatestCarousel() {
+        if (latestCarouselTimer) {
+          clearInterval(latestCarouselTimer);
+          latestCarouselTimer = null;
+        }
+      }
+
+      function startLatestCarousel() {
+        if (!latestCarousel || latestCarouselTimer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (latestCarousel.scrollWidth <= latestCarousel.clientWidth + 8) return;
+        latestCarouselTimer = setInterval(function () {
+          scrollLatestProducts(1);
+        }, 3600);
+      }
+
+      function restartLatestCarousel() {
+        stopLatestCarousel();
+        window.setTimeout(startLatestCarousel, 5200);
+      }
+
+      if (prevProductButton) prevProductButton.addEventListener('click', function () {
+        scrollLatestProducts(-1);
+        restartLatestCarousel();
+      });
+      if (nextProductButton) nextProductButton.addEventListener('click', function () {
+        scrollLatestProducts(1);
+        restartLatestCarousel();
+      });
+
+      if (latestCarousel) {
+        latestCarousel.addEventListener('mouseenter', stopLatestCarousel);
+        latestCarousel.addEventListener('mouseleave', startLatestCarousel);
+        latestCarousel.addEventListener('focusin', stopLatestCarousel);
+        latestCarousel.addEventListener('focusout', startLatestCarousel);
+        latestCarousel.addEventListener('pointerdown', stopLatestCarousel);
+        latestCarousel.addEventListener('pointerup', restartLatestCarousel);
+        latestCarousel.addEventListener('touchend', restartLatestCarousel);
+        startLatestCarousel();
+      }
 
       if (toggle && menu) {
         toggle.addEventListener('click', function (event) {
