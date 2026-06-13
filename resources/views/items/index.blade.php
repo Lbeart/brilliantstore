@@ -733,6 +733,52 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 18px;
     }
+    .product-carousel-wrap {
+      position: relative;
+    }
+    .product-carousel {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 2px 2px 18px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(127,29,45,.35) transparent;
+    }
+    .product-carousel::-webkit-scrollbar { height: 8px; }
+    .product-carousel::-webkit-scrollbar-track { background: transparent; }
+    .product-carousel::-webkit-scrollbar-thumb {
+      background: rgba(127,29,45,.28);
+      border-radius: 999px;
+    }
+    .carousel-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .carousel-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1px solid rgba(127,29,45,.18);
+      background: #fff;
+      color: var(--brand);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-soft);
+      transition: transform .18s ease, background .18s ease, color .18s ease;
+    }
+    .carousel-btn:hover {
+      transform: translateY(-1px);
+      background: var(--brand);
+      color: #fff;
+    }
     .product-card {
       min-width: 0;
       background: #fff;
@@ -743,6 +789,10 @@
       display: flex;
       flex-direction: column;
       transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .product-carousel .product-card {
+      flex: 0 0 calc((100% - 36px) / 3);
+      scroll-snap-align: start;
     }
     .product-card:hover {
       transform: translateY(-4px);
@@ -1163,6 +1213,7 @@
       .showroom,
       .footer-grid { grid-template-columns: 1fr; }
       .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .product-carousel .product-card { flex-basis: min(520px, 78vw); }
       .contact-strip { align-items: stretch; flex-direction: column; }
       .floating-wa { bottom: 18px; }
     }
@@ -1254,6 +1305,16 @@
       .benefit-grid,
       .mini-offer-grid,
       .product-grid { grid-template-columns: 1fr; }
+      .recommended-section .section-head { display: grid; gap: 14px; }
+      .carousel-actions { justify-content: flex-start; }
+      .carousel-actions .btn { width: auto; margin-top: 0; }
+      .product-carousel {
+        gap: 12px;
+        padding-bottom: 14px;
+        margin-right: -12px;
+        padding-right: 12px;
+      }
+      .product-carousel .product-card { flex-basis: min(318px, 86vw); }
       .product-media img { height: 240px; object-fit: contain; padding: 8px; }
       .product-actions { grid-template-columns: 1fr; }
       .info-row { grid-template-columns: 40px 1fr; padding: 14px; }
@@ -1498,13 +1559,23 @@
           <div>
             <div class="eyebrow">Te rejat</div>
           <h2>Të Rekomanduara.</h2>
-            <p>Produktet e fundit jane vendosur si rekomandime, me foto, cmim, stock dhe veprime direkte.</p>
           </div>
-          <a class="btn btn-outline" href="{{ route('products.index') }}">Shiko produktet</a>
+          <div class="carousel-actions">
+            @if($latestProducts->count())
+              <button class="carousel-btn" type="button" data-carousel-prev aria-label="Produktet majtas">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button class="carousel-btn" type="button" data-carousel-next aria-label="Produktet djathtas">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            @endif
+            <a class="btn btn-outline" href="{{ route('products.index') }}">Shiko produktet</a>
+          </div>
         </div>
 
         @if($latestProducts->count())
-          <div class="product-grid">
+          <div class="product-carousel-wrap">
+          <div class="product-grid product-carousel" id="latestProductsCarousel" tabindex="0" aria-label="Produktet e rekomanduara">
             @foreach($latestProducts as $item)
               @php
                 $imgUrl = \App\Support\ProductImages::url($item->image_path ?? null, asset('images/placeholder-product.png'), $item);
@@ -1563,6 +1634,7 @@
               </article>
             @endforeach
           </div>
+          </div>
         @else
           <div class="seo-box">
             <h2>Produktet do te shfaqen se shpejti.</h2>
@@ -1571,33 +1643,6 @@
         @endif
       </div>
     </section>
-
-    <section class="section pt-0 category-section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow" data-sq="Kategorite" data-en="Categories" data-sr="Kategorije">Kategorite</div>
-            <h2>Kategoritë kryesore.</h2>
-            <p>Te gjitha kategorite reale jane ketu: tepiha, perde, tekstil per dhome dhe aksesor.</p>
-          </div>
-          <a class="btn btn-outline" href="{{ route('products.index') }}" data-sq="Te gjitha produktet" data-en="All products" data-sr="Svi proizvodi">Te gjitha produktet</a>
-        </div>
-
-        <div class="category-grid">
-          @foreach($categories as $category)
-            <a class="category-card" href="{{ $category['url'] }}">
-              <img src="{{ $category['img'] }}" alt="{{ $category['title'] }}" loading="lazy" decoding="async" fetchpriority="low" width="560" height="420">
-              <div class="category-card-body">
-                <h3 data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</h3>
-                <p data-sq="{{ $category['desc'] }}" data-en="{{ $category['desc_en'] }}" data-sr="{{ $category['desc_sr'] }}">{{ $category['desc'] }}</p>
-              </div>
-            </a>
-          @endforeach
-        </div>
-      </div>
-    </section>
-
-   
 
     <section class="section pt-0">
       <div class="container showroom">
@@ -1723,14 +1768,24 @@
       const menu = document.getElementById('mainMenu');
       const toggle = document.querySelector('.menu-toggle');
       const recommended = document.querySelector('.recommended-section');
-      const categories = document.querySelector('.category-section');
       const benefits = document.querySelector('.removed-benefits');
+      const latestCarousel = document.getElementById('latestProductsCarousel');
 
-      if (categories && benefits && categories.parentNode) {
-        categories.parentNode.insertBefore(benefits, categories.nextSibling);
-      } else if (recommended && benefits && recommended.parentNode) {
+      if (recommended && benefits && recommended.parentNode) {
         recommended.parentNode.insertBefore(benefits, recommended.nextSibling);
       }
+
+      function scrollLatestProducts(direction) {
+        if (!latestCarousel) return;
+        const firstCard = latestCarousel.querySelector('.product-card');
+        const distance = firstCard ? firstCard.getBoundingClientRect().width + 18 : latestCarousel.clientWidth * 0.8;
+        latestCarousel.scrollBy({ left: direction * distance, behavior: 'smooth' });
+      }
+
+      const prevProductButton = document.querySelector('[data-carousel-prev]');
+      const nextProductButton = document.querySelector('[data-carousel-next]');
+      if (prevProductButton) prevProductButton.addEventListener('click', function () { scrollLatestProducts(-1); });
+      if (nextProductButton) nextProductButton.addEventListener('click', function () { scrollLatestProducts(1); });
 
       if (toggle && menu) {
         toggle.addEventListener('click', function (event) {
