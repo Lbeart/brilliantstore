@@ -1,19 +1,61 @@
 <!doctype html>
-<html lang="sq">
+@php
+  $requestedLocale = request()->query('lang');
+  $activeLocale = in_array($requestedLocale, ['sq', 'en', 'sr'], true)
+    ? $requestedLocale
+    : session('locale', app()->getLocale());
+  $pageLocale = in_array($activeLocale, ['sq', 'en', 'sr'], true) ? $activeLocale : 'sq';
+  $seoCopy = [
+    'sq' => [
+      'title' => 'Brillant | Tepiha, Perde, Mbulesa, Batanije & Dekor',
+      'description' => 'Brillant në Lipjan: tepiha, perde ditore, perde anësore, mbulesa divani, set çarçafësh, postava, batanije, jastëk dekorues, tepiha banjo dhe lëkurë pelushi në Kosovë.',
+      'ogTitle' => 'Brillant - Tepiha dhe Perde',
+      'ogDescription' => 'Koleksione per shtepi me dizajn te paster, materiale te zgjedhura dhe kontakt direkt ne WhatsApp.',
+      'keywords' => 'tepiha, perde ditore, perde anesore, mbulesa, batanije, set carcafesh, jasteke dekorues, tepiha banjo, garnishte, Brillant Lipjan',
+    ],
+    'en' => [
+      'title' => 'Brillant | Rugs, Curtains, Covers, Blankets & Home Decor',
+      'description' => 'Brillant in Lipjan offers rugs, day curtains, side curtains, sofa covers, bedsheet sets, blankets, decorative pillows, bath rugs, curtain rails and plush fur home decor in Kosovo.',
+      'ogTitle' => 'Brillant - Rugs, Curtains and Home Textiles',
+      'ogDescription' => 'Home collections with clean design, selected materials, clear categories and direct WhatsApp support.',
+      'keywords' => 'rugs Kosovo, curtains Kosovo, day curtains, side curtains, sofa covers, blankets, bedsheet sets, decorative pillows, bath rugs, curtain rails, Brillant Lipjan',
+    ],
+    'sr' => [
+      'title' => 'Brillant | Tepisi, Zavese, Prekrivaci, Cebad i Dekor',
+      'description' => 'Brillant u Lipljanu nudi tepihe, dnevne zavese, bocne zavese, prekrivace, setove posteljine, cebad, dekorativne jastuke, kupatilske tepihe, garnisne i plisani dekor na Kosovu.',
+      'ogTitle' => 'Brillant - Tepisi, Zavese i Tekstil za Dom',
+      'ogDescription' => 'Kolekcije za dom sa urednim dizajnom, izabranim materijalima, jasnim kategorijama i direktnom WhatsApp podrskom.',
+      'keywords' => 'tepisi Kosovo, zavese Kosovo, dnevne zavese, bocne zavese, prekrivaci, cebad, posteljina, dekorativni jastuci, kupatilski tepisi, garnisne, Brillant Lipljan',
+    ],
+  ];
+  $seo = $seoCopy[$pageLocale];
+  $localizedUrl = fn (string $locale) => $locale === 'sq' ? url('/') : url('/').'?lang='.$locale;
+  $canonicalUrl = $localizedUrl($pageLocale);
+@endphp
+<html lang="{{ $pageLocale }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Brillant | Tepiha, Perde, Mbulesa, Batanije & Dekor</title>
-  <meta name="description" content="Brillant në Lipjan: tepiha, perde ditore, perde anësore, mbulesa divani, set çarçafësh, postava, batanije, jastëk dekorues, tepiha banjo dhe lëkurë pelushi në Kosovë.">
+  <title>{{ $seo['title'] }}</title>
+  <meta name="description" content="{{ $seo['description'] }}">
+  <meta name="keywords" content="{{ $seo['keywords'] }}">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="{{ url('/') }}">
+  <link rel="canonical" href="{{ $canonicalUrl }}">
+  <link rel="alternate" hreflang="sq" href="{{ $localizedUrl('sq') }}">
+  <link rel="alternate" hreflang="en" href="{{ $localizedUrl('en') }}">
+  <link rel="alternate" hreflang="sr" href="{{ $localizedUrl('sr') }}">
+  <link rel="alternate" hreflang="x-default" href="{{ $localizedUrl('sq') }}">
   <meta name="theme-color" content="#7f1d2d">
 
-  <meta property="og:title" content="Brillant - Tepiha dhe Perde">
-  <meta property="og:description" content="Koleksione per shtepi me dizajn te paster, materiale te zgjedhura dhe kontakt direkt ne WhatsApp.">
+  <meta property="og:title" content="{{ $seo['ogTitle'] }}">
+  <meta property="og:description" content="{{ $seo['ogDescription'] }}">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="{{ url('/') }}">
+  <meta property="og:url" content="{{ $canonicalUrl }}">
   <meta property="og:image" content="{{ asset('optimized/home/hero.jpg') }}">
+  <meta property="og:locale" content="{{ $pageLocale === 'en' ? 'en_US' : ($pageLocale === 'sr' ? 'sr_RS' : 'sq_AL') }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ $seo['ogTitle'] }}">
+  <meta name="twitter:description" content="{{ $seo['ogDescription'] }}">
 
   <link rel="icon" type="image/png" href="{{ asset('images/llogo.png') }}">
   <link rel="preload" as="image" href="{{ asset('optimized/home/hero.jpg') }}" media="(max-width: 767px)" fetchpriority="high">
@@ -1380,18 +1422,18 @@
         @endauth
         <div class="mobile-menu-lang" aria-label="Language switcher mobile">
           <div class="lang-switch">
-            <button type="button" data-lang="sq" data-url="/lang/sq" class="{{ app()->getLocale() === 'sq' ? 'active' : '' }}">SQ</button>
-            <button type="button" data-lang="en" data-url="/lang/en" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</button>
-            <button type="button" data-lang="sr" data-url="/lang/sr" class="{{ app()->getLocale() === 'sr' ? 'active' : '' }}">SR</button>
+            <button type="button" data-lang="sq" data-url="/lang/sq" class="{{ $pageLocale === 'sq' ? 'active' : '' }}">SQ</button>
+            <button type="button" data-lang="en" data-url="/lang/en" class="{{ $pageLocale === 'en' ? 'active' : '' }}">EN</button>
+            <button type="button" data-lang="sr" data-url="/lang/sr" class="{{ $pageLocale === 'sr' ? 'active' : '' }}">SR</button>
           </div>
         </div>
       </nav>
 
       <div class="nav-actions">
         <div class="lang-switch" aria-label="Language switcher">
-          <button type="button" data-lang="sq" data-url="/lang/sq" class="{{ app()->getLocale() === 'sq' ? 'active' : '' }}">SQ</button>
-          <button type="button" data-lang="en" data-url="/lang/en" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</button>
-          <button type="button" data-lang="sr" data-url="/lang/sr" class="{{ app()->getLocale() === 'sr' ? 'active' : '' }}">SR</button>
+          <button type="button" data-lang="sq" data-url="/lang/sq" class="{{ $pageLocale === 'sq' ? 'active' : '' }}">SQ</button>
+          <button type="button" data-lang="en" data-url="/lang/en" class="{{ $pageLocale === 'en' ? 'active' : '' }}">EN</button>
+          <button type="button" data-lang="sr" data-url="/lang/sr" class="{{ $pageLocale === 'sr' ? 'active' : '' }}">SR</button>
         </div>
         @auth
           <a class="login-btn" href="{{ route('account.dashboard') }}"><i class="bi bi-person-circle"></i> {{ \Illuminate\Support\Str::limit(auth()->user()->name, 16) }}</a>
@@ -1637,8 +1679,8 @@
           </div>
         @else
           <div class="seo-box">
-            <h2>Produktet do te shfaqen se shpejti.</h2>
-            <p>Per produktet aktuale, na shkruani ne WhatsApp dhe ju dergojme opsionet qe jane ne stock.</p>
+            <h2 data-sq="Produktet do te shfaqen se shpejti." data-en="Products will appear soon." data-sr="Proizvodi ce uskoro biti prikazani.">Produktet do te shfaqen se shpejti.</h2>
+            <p data-sq="Per produktet aktuale, na shkruani ne WhatsApp dhe ju dergojme opsionet qe jane ne stock." data-en="For current products, message us on WhatsApp and we will send the options available in stock." data-sr="Za aktuelne proizvode pisite nam na WhatsApp i poslaćemo opcije koje su na stanju.">Per produktet aktuale, na shkruani ne WhatsApp dhe ju dergojme opsionet qe jane ne stock.</p>
           </div>
         @endif
       </div>
@@ -1699,19 +1741,19 @@
     <section class="section-tight">
       <div class="container">
         <div class="seo-box">
-          <h2>Brillant - tepiha, perde, mbulesa dhe tekstil per shtepi</h2>
-          <p>Brillant ofron tepiha moderne, perde ditore, perde anesore, batanije, set çarçafësh, mbulesa divani, tepiha banjo, jasteke dekorues, posteqia dhe lekur pelushi per shtepi. Qellimi eshte me e bo blerjen te lehte: kategori te qarta, foto te dukshme, produkte te fundit dhe kontakt direkt per cdo pyetje.</p>
+          <h2 data-sq="Brillant - tepiha, perde, mbulesa dhe tekstil per shtepi" data-en="Brillant - rugs, curtains, covers and home textiles" data-sr="Brillant - tepisi, zavese, prekrivaci i tekstil za dom">Brillant - tepiha, perde, mbulesa dhe tekstil per shtepi</h2>
+          <p data-sq="Brillant ofron tepiha moderne, perde ditore, perde anesore, batanije, set çarçafësh, mbulesa divani, tepiha banjo, jasteke dekorues, posteqia dhe lekur pelushi per shtepi. Qellimi eshte me e bo blerjen te lehte: kategori te qarta, foto te dukshme, produkte te fundit dhe kontakt direkt per cdo pyetje." data-en="Brillant offers modern rugs, day curtains, side curtains, blankets, bedsheet sets, sofa covers, bath rugs, decorative pillows, plush fur and home textiles in Kosovo. The goal is to make shopping easy: clear categories, visible photos, latest products and direct contact for every question." data-sr="Brillant nudi moderne tepihe, dnevne zavese, bocne zavese, cebad, setove posteljine, prekrivace za sofu, kupatilske tepihe, dekorativne jastuke, plisano krzno i tekstil za dom na Kosovu. Cilj je laka kupovina: jasne kategorije, vidljive fotografije, najnoviji proizvodi i direktan kontakt za svako pitanje.">Brillant ofron tepiha moderne, perde ditore, perde anesore, batanije, set çarçafësh, mbulesa divani, tepiha banjo, jasteke dekorues, posteqia dhe lekur pelushi per shtepi. Qellimi eshte me e bo blerjen te lehte: kategori te qarta, foto te dukshme, produkte te fundit dhe kontakt direkt per cdo pyetje.</p>
           <p>
-            Kerkime te shpeshta:
-            <a href="{{ route('products.perdeDitore') }}">perde ditore</a>,
-            <a href="{{ route('products.anesore') }}">perde anesore</a>,
-            <a href="{{ route('products.mbulesa') }}">mbulesa online</a>,
-            <a href="{{ route('products.mbulesa') }}">mbulesa divani</a>,
-            <a href="{{ route('products.postava') }}">set çarçafësh</a>,
-            <a href="{{ route('products.batanije') }}">batanije</a>,
-            <a href="{{ route('products.jastekdekorues') }}">jastek dekorues</a>,
-            <a href="{{ route('products.tepihebanjo') }}">tepiha banjo</a>,
-            <a href="{{ route('products.posteqia') }}">lekur pelusho</a>.
+            <span data-sq="Kerkime te shpeshta:" data-en="Frequent searches:" data-sr="Ceste pretrage:">Kerkime te shpeshta:</span>
+            <a href="{{ route('products.perdeDitore') }}" data-sq="perde ditore" data-en="day curtains" data-sr="dnevne zavese">perde ditore</a>,
+            <a href="{{ route('products.anesore') }}" data-sq="perde anesore" data-en="side curtains" data-sr="bocne zavese">perde anesore</a>,
+            <a href="{{ route('products.mbulesa') }}" data-sq="mbulesa online" data-en="covers online" data-sr="prekrivaci online">mbulesa online</a>,
+            <a href="{{ route('products.mbulesa') }}" data-sq="mbulesa divani" data-en="sofa covers" data-sr="prekrivaci za sofu">mbulesa divani</a>,
+            <a href="{{ route('products.postava') }}" data-sq="set çarçafësh" data-en="bedsheet sets" data-sr="setovi posteljine">set çarçafësh</a>,
+            <a href="{{ route('products.batanije') }}" data-sq="batanije" data-en="blankets" data-sr="cebad">batanije</a>,
+            <a href="{{ route('products.jastekdekorues') }}" data-sq="jastek dekorues" data-en="decorative pillows" data-sr="dekorativni jastuci">jastek dekorues</a>,
+            <a href="{{ route('products.tepihebanjo') }}" data-sq="tepiha banjo" data-en="bath rugs" data-sr="kupatilski tepisi">tepiha banjo</a>,
+            <a href="{{ route('products.posteqia') }}" data-sq="lekur pelusho" data-en="plush fur" data-sr="plisano krzno">lekur pelusho</a>.
           </p>
         </div>
       </div>
@@ -1912,7 +1954,7 @@
         });
       });
 
-      const serverLang = '{{ app()->getLocale() }}';
+      const serverLang = '{{ $pageLocale }}';
       const savedLang = localStorage.getItem('brillant_lang');
       setLanguage(serverLang || savedLang || 'sq');
     })();
