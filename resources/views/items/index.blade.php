@@ -1269,16 +1269,16 @@
     $waNumber = '38344960661';
 
     $categories = [
-      ['title' => 'Tepiha', 'title_en' => 'Rugs', 'title_sr' => 'Tepisi', 'desc' => 'Modele per sallon, dhome gjumi dhe korridor.', 'desc_en' => 'Models for living rooms, bedrooms and hallways.', 'desc_sr' => 'Modeli za dnevni boravak, spavacu sobu i hodnik.', 'url' => route('products.tepiha'), 'img' => asset('carpet/carpetmara.jpg')],
-      ['title' => 'Perde anesore', 'title_en' => 'Side curtains', 'title_sr' => 'Bocne zavese', 'desc' => 'Pamje elegante dhe qepje profesionale.', 'desc_en' => 'Elegant look with professional tailoring.', 'desc_sr' => 'Elegantan izgled i profesionalno sivenje.', 'url' => route('products.anesore'), 'img' => asset('curtainn/SOFTPERDE.jpg')],
-      ['title' => 'Perde ditore', 'title_en' => 'Day curtains', 'title_sr' => 'Dnevne zavese', 'desc' => 'Drite e bute dhe ambient me i paster.', 'desc_en' => 'Soft light and a cleaner room feeling.', 'desc_sr' => 'Meko svetlo i cistiji izgled prostora.', 'url' => route('products.perdeDitore'), 'img' => asset('perdeditoree/image00001.jpeg')],
-      ['title' => 'Set çarçafësh', 'title_en' => 'Bedsheet sets', 'title_sr' => 'Set posteljine', 'desc' => 'Sete per gjume te rehatshem cdo nate.', 'desc_en' => 'Sets for comfortable sleep every night.', 'desc_sr' => 'Setovi za udoban san svake noci.', 'url' => route('products.postava'), 'img' => asset('postavav/beedsheet10.png')],
-      ['title' => 'Lekure pelushi', 'title_en' => 'Plush fur', 'title_sr' => 'Plisano krzno', 'desc' => 'Posteqia dhe lekur pelusho per dekor.', 'desc_en' => 'Plush fur and soft decor pieces.', 'desc_sr' => 'Plisano krzno i meki dekor.', 'url' => route('products.posteqia'), 'img' => asset('posteqiaa/faux-1.jpg')],
-      ['title' => 'Batanije', 'title_en' => 'Blankets', 'title_sr' => 'Cebad', 'desc' => 'Qebe dhe batanije te ngrohta per shtepi.', 'desc_en' => 'Warm blankets for the home.', 'desc_sr' => 'Topla cebad za dom.', 'url' => route('products.batanije'), 'img' => asset('batanijee/IMG_7631.jpg')],
-      ['title' => 'Mbulesa', 'title_en' => 'Covers', 'title_sr' => 'Prekrivaci', 'desc' => 'Per divan, krevat dhe dekor te perditeshem.', 'desc_en' => 'For sofas, beds and everyday decor.', 'desc_sr' => 'Za sofu, krevet i svakodnevni dekor.', 'url' => route('products.mbulesa'), 'img' => asset('mbulesaa/IMG_7526.jpg')],
-      ['title' => 'Jasteke dekorues', 'title_en' => 'Decorative pillows', 'title_sr' => 'Dekorativni jastuci', 'desc' => 'Per divan, krevat, sallon dhe dekor.', 'desc_en' => 'For sofas, beds, living rooms and decor.', 'desc_sr' => 'Za sofu, krevet, dnevni boravak i dekor.', 'url' => route('products.jastekdekorues'), 'img' => asset('jastak/IMG_7959.jpg')],
-      ['title' => 'Tepiha banjo', 'title_en' => 'Bath rugs', 'title_sr' => 'Kupatilski tepisi', 'desc' => 'Tapeta banjoje antirreshqitese.', 'desc_en' => 'Non-slip bathroom rugs.', 'desc_sr' => 'Neklizajuci tepisi za kupatilo.', 'url' => route('products.tepihebanjo'), 'img' => asset('tepihebanjoo/crop-template-print1-1120x1493.png')],
-      ['title' => 'Garnishte', 'title_en' => 'Curtain rails', 'title_sr' => 'Garnisne', 'desc' => 'Aksesor per perde dhe montim me pamje te rregullt.', 'desc_en' => 'Curtain accessories for a clean installation.', 'desc_sr' => 'Dodaci za zavese i urednu montazu.', 'url' => route('products.garnishte'), 'img' => asset('images/garnishte.jpg')],
+      ['title' => 'Tepiha', 'title_en' => 'Rugs', 'title_sr' => 'Tepisi', 'desc' => 'Modele per sallon, dhome gjumi dhe korridor.', 'desc_en' => 'Models for living rooms, bedrooms and hallways.', 'desc_sr' => 'Modeli za dnevni boravak, spavacu sobu i hodnik.', 'url' => route('products.tepiha'), 'img' => asset('optimized/categories/tepiha.jpg')],
+      ['title' => 'Perde anesore', 'title_en' => 'Side curtains', 'title_sr' => 'Bocne zavese', 'desc' => 'Pamje elegante dhe qepje profesionale.', 'desc_en' => 'Elegant look with professional tailoring.', 'desc_sr' => 'Elegantan izgled i profesionalno sivenje.', 'url' => route('products.anesore'), 'img' => asset('optimized/categories/perde-anesore.jpg')],
+      ['title' => 'Perde ditore', 'title_en' => 'Day curtains', 'title_sr' => 'Dnevne zavese', 'desc' => 'Drite e bute dhe ambient me i paster.', 'desc_en' => 'Soft light and a cleaner room feeling.', 'desc_sr' => 'Meko svetlo i cistiji izgled prostora.', 'url' => route('products.perdeDitore'), 'img' => asset('optimized/categories/perde-ditore.jpg')],
+      ['title' => 'Set çarçafësh', 'title_en' => 'Bedsheet sets', 'title_sr' => 'Set posteljine', 'desc' => 'Sete per gjume te rehatshem cdo nate.', 'desc_en' => 'Sets for comfortable sleep every night.', 'desc_sr' => 'Setovi za udoban san svake noci.', 'url' => route('products.postava'), 'img' => asset('optimized/categories/postava.jpg')],
+      ['title' => 'Lekure pelushi', 'title_en' => 'Plush fur', 'title_sr' => 'Plisano krzno', 'desc' => 'Posteqia dhe lekur pelusho per dekor.', 'desc_en' => 'Plush fur and soft decor pieces.', 'desc_sr' => 'Plisano krzno i meki dekor.', 'url' => route('products.posteqia'), 'img' => asset('optimized/categories/posteqia.jpg')],
+      ['title' => 'Batanije', 'title_en' => 'Blankets', 'title_sr' => 'Cebad', 'desc' => 'Qebe dhe batanije te ngrohta per shtepi.', 'desc_en' => 'Warm blankets for the home.', 'desc_sr' => 'Topla cebad za dom.', 'url' => route('products.batanije'), 'img' => asset('optimized/categories/batanije.jpg')],
+      ['title' => 'Mbulesa', 'title_en' => 'Covers', 'title_sr' => 'Prekrivaci', 'desc' => 'Per divan, krevat dhe dekor te perditeshem.', 'desc_en' => 'For sofas, beds and everyday decor.', 'desc_sr' => 'Za sofu, krevet i svakodnevni dekor.', 'url' => route('products.mbulesa'), 'img' => asset('optimized/categories/mbulesa.jpg')],
+      ['title' => 'Jasteke dekorues', 'title_en' => 'Decorative pillows', 'title_sr' => 'Dekorativni jastuci', 'desc' => 'Per divan, krevat, sallon dhe dekor.', 'desc_en' => 'For sofas, beds, living rooms and decor.', 'desc_sr' => 'Za sofu, krevet, dnevni boravak i dekor.', 'url' => route('products.jastekdekorues'), 'img' => asset('optimized/categories/jastekdekorues.jpg')],
+      ['title' => 'Tepiha banjo', 'title_en' => 'Bath rugs', 'title_sr' => 'Kupatilski tepisi', 'desc' => 'Tapeta banjoje antirreshqitese.', 'desc_en' => 'Non-slip bathroom rugs.', 'desc_sr' => 'Neklizajuci tepisi za kupatilo.', 'url' => route('products.tepihebanjo'), 'img' => asset('optimized/categories/tepihebanjo.jpg')],
+      ['title' => 'Garnishte', 'title_en' => 'Curtain rails', 'title_sr' => 'Garnisne', 'desc' => 'Aksesor per perde dhe montim me pamje te rregullt.', 'desc_en' => 'Curtain accessories for a clean installation.', 'desc_sr' => 'Dodaci za zavese i urednu montazu.', 'url' => route('products.garnishte'), 'img' => asset('optimized/categories/garnishte.jpg')],
     ];
 
     $quickLinks = [
@@ -1428,31 +1428,6 @@
       </div>
     </section>
 
-    <section class="section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow" data-sq="Kategorite" data-en="Categories" data-sr="Kategorije">Kategorite</div>
-            <h2>Kategoritë kryesore.</h2>
-            <p>Te gjitha kategorite reale jane ketu: tepiha, perde, tekstil per dhome dhe aksesor.</p>
-          </div>
-          <a class="btn btn-outline" href="{{ route('products.index') }}" data-sq="Te gjitha produktet" data-en="All products" data-sr="Svi proizvodi">Te gjitha produktet</a>
-        </div>
-
-        <div class="category-grid">
-          @foreach($categories as $category)
-            <a class="category-card" href="{{ $category['url'] }}">
-              <img src="{{ $category['img'] }}" alt="{{ $category['title'] }}" loading="lazy" decoding="async" width="560" height="420">
-              <div class="category-card-body">
-                <h3 data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</h3>
-                <p data-sq="{{ $category['desc'] }}" data-en="{{ $category['desc_en'] }}" data-sr="{{ $category['desc_sr'] }}">{{ $category['desc'] }}</p>
-              </div>
-            </a>
-          @endforeach
-        </div>
-      </div>
-    </section>
-
     <section class="section pt-0 inspiration-section">
       <div class="container">
         <div class="section-head">
@@ -1559,7 +1534,7 @@
 
               <article class="product-card">
                 <a class="product-media" href="{{ $detailsUrl }}" aria-label="Shiko {{ $item->name }}">
-                  <img src="{{ $imgUrl }}" alt="{{ $item->name }}" loading="{{ $loop->iteration <= 3 ? 'eager' : 'lazy' }}" fetchpriority="{{ $loop->iteration <= 3 ? 'high' : 'auto' }}" decoding="async" sizes="(max-width: 576px) 100vw, (max-width: 992px) 50vw, 33vw" width="640" height="520" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+                  <img src="{{ $imgUrl }}" alt="{{ $item->name }}" loading="lazy" fetchpriority="low" decoding="async" sizes="(max-width: 576px) 100vw, (max-width: 992px) 50vw, 33vw" width="640" height="520" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
                   <span class="product-badge">I ri</span>
                   <span class="stock-badge {{ $inStock ? '' : 'out' }}">{{ $inStock ? 'Ne stock' : 'Pa stock' }}</span>
                 </a>
@@ -1594,6 +1569,31 @@
             <p>Per produktet aktuale, na shkruani ne WhatsApp dhe ju dergojme opsionet qe jane ne stock.</p>
           </div>
         @endif
+      </div>
+    </section>
+
+    <section class="section pt-0 category-section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow" data-sq="Kategorite" data-en="Categories" data-sr="Kategorije">Kategorite</div>
+            <h2>Kategoritë kryesore.</h2>
+            <p>Te gjitha kategorite reale jane ketu: tepiha, perde, tekstil per dhome dhe aksesor.</p>
+          </div>
+          <a class="btn btn-outline" href="{{ route('products.index') }}" data-sq="Te gjitha produktet" data-en="All products" data-sr="Svi proizvodi">Te gjitha produktet</a>
+        </div>
+
+        <div class="category-grid">
+          @foreach($categories as $category)
+            <a class="category-card" href="{{ $category['url'] }}">
+              <img src="{{ $category['img'] }}" alt="{{ $category['title'] }}" loading="lazy" decoding="async" fetchpriority="low" width="560" height="420">
+              <div class="category-card-body">
+                <h3 data-sq="{{ $category['title'] }}" data-en="{{ $category['title_en'] }}" data-sr="{{ $category['title_sr'] }}">{{ $category['title'] }}</h3>
+                <p data-sq="{{ $category['desc'] }}" data-en="{{ $category['desc_en'] }}" data-sr="{{ $category['desc_sr'] }}">{{ $category['desc'] }}</p>
+              </div>
+            </a>
+          @endforeach
+        </div>
       </div>
     </section>
 
@@ -1723,9 +1723,12 @@
       const menu = document.getElementById('mainMenu');
       const toggle = document.querySelector('.menu-toggle');
       const recommended = document.querySelector('.recommended-section');
+      const categories = document.querySelector('.category-section');
       const benefits = document.querySelector('.removed-benefits');
 
-      if (recommended && benefits && recommended.parentNode) {
+      if (categories && benefits && categories.parentNode) {
+        categories.parentNode.insertBefore(benefits, categories.nextSibling);
+      } else if (recommended && benefits && recommended.parentNode) {
         recommended.parentNode.insertBefore(benefits, recommended.nextSibling);
       }
 
