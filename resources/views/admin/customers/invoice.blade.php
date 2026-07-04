@@ -39,11 +39,14 @@
     .btn-dark{background:#111827;color:#fff}
     .btn-red{background:#dc3545;color:#fff}
     .btn-muted{background:#6c757d;color:#fff}
+    .send-form{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .send-form input{border:1px solid #d0d5dd;border-radius:8px;padding:9px 10px;min-width:240px;font-size:14px}
     @media print{body{background:#fff;padding:0}.invoice{box-shadow:none;border-radius:0}.actions{display:none}}
     @media (max-width:700px){.header,.grid{display:block}.title{text-align:left;margin-top:16px}.invoice{padding:18px}}
   </style>
 </head>
 <body>
+@php $isPublic = $isPublic ?? false; @endphp
 <div class="invoice">
   <div class="header">
     <div>
@@ -115,7 +118,10 @@
           $statusLabels = ['paid' => 'Paguar', 'partial' => 'Paguar pjeserisht', 'unpaid' => 'Pa paguar'];
         @endphp
         {{ $receipt ? ($paymentLabels[$receipt->payment_method] ?? $receipt->payment_method) : 'Ne arkiv' }}<br>
-        Statusi: {{ $receipt ? ($statusLabels[$receipt->payment_status] ?? $receipt->payment_status) : 'Paguar' }}
+        Statusi: {{ $receipt ? ($statusLabels[$receipt->payment_status] ?? $receipt->payment_status) : 'Paguar' }}<br>
+        Kuponi:
+        @php $receiptTypeLabels = ['regular' => 'I rregullt', 'non_regular' => 'Jo i rregullt']; @endphp
+        {{ $receipt ? ($receiptTypeLabels[$receipt->receipt_type] ?? $receipt->receipt_type ?? 'I rregullt') : 'I rregullt' }}
       </p>
     </div>
   </div>
@@ -167,11 +173,22 @@
 
   <div class="total">TOTAL: {{ number_format((float) $total, 2) }} EUR</div>
 
-  @if(!$isPdf)
+  @if(!$isPdf && !$isPublic)
     <div class="actions">
       <button class="btn btn-dark" onclick="window.print()">Printo</button>
       <a class="btn btn-red" href="{{ route('admin.customers.invoice', ['customer' => $customer, 'receiptCode' => $receiptCode, 'print' => 1]) }}" target="_blank" rel="noopener">Ruaj PDF</a>
       <a class="btn btn-muted" href="{{ route('admin.customers.edit', $customer) }}">Kthehu te klienti</a>
+      @if($receipt)
+        <form class="send-form" method="POST" action="{{ route('admin.customers.receipts.send', [$customer, $receipt]) }}">
+          @csrf
+          <input type="email" name="email" value="{{ old('email', $customer->email) }}" placeholder="Email i klientit" required>
+          <button class="btn btn-dark" type="submit">Dergo email</button>
+        </form>
+      @endif
+    </div>
+  @elseif(!$isPdf)
+    <div class="actions">
+      <button class="btn btn-dark" onclick="window.print()">Printo</button>
     </div>
   @endif
 

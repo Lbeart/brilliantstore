@@ -101,6 +101,9 @@
         <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
           <i class="fas fa-address-book me-1"></i> Klientet
         </a>
+        <a class="nav-link {{ request()->routeIs('admin.pos*') ? 'active' : '' }}" href="{{ route('admin.pos.index') }}">
+          <i class="fas fa-cash-register me-1"></i> POS
+        </a>
         <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
           <i class="fas fa-box-open me-1"></i> Produktet
         </a>
@@ -125,9 +128,14 @@
                    value="{{ request('search') }}" autocomplete="off">
           </div>
         </form>
-        <a href="{{ route('admin.products.create') }}" class="btn btn-success">
-          <i class="fa fa-plus me-1"></i> Shto Produkt
-        </a>
+        <div class="d-flex gap-2 flex-wrap">
+          <a href="{{ route('admin.pos.index') }}" class="btn btn-outline-dark">
+            <i class="fa fa-cash-register me-1"></i> POS
+          </a>
+          <a href="{{ route('admin.products.create') }}" class="btn btn-success">
+            <i class="fa fa-plus me-1"></i> Shto Produkt
+          </a>
+        </div>
       </div>
 
       <!-- FILTER BAR -->
@@ -185,6 +193,7 @@
                 <th class="text-muted">#</th>
                 <th>Foto</th>
                 <th>Emri</th>
+                <th>Barkodi / SKU</th>
                 <th>Çmimi</th>
                 <th>Statusi</th>
                 <th class="text-end">Veprime</th>
@@ -213,6 +222,12 @@
                     <div class="small text-muted">/{{ $p->slug }}</div>
                   @endif
                 </td>
+                <td>
+                  <div class="fw-semibold"><i class="fa fa-barcode me-1"></i>{{ $p->barcode ?: '-' }}</div>
+                  @if(!empty($p->sku))
+                    <div class="small text-muted">SKU: {{ $p->sku }}</div>
+                  @endif
+                </td>
                 <td>€ {{ number_format($p->price ?? 0, 2) }}</td>
                 <td>
                   @if($p->is_active)
@@ -239,6 +254,12 @@
                         <li><hr class="dropdown-divider"></li>
                       @endif
                       <li>
+                        <a class="dropdown-item" href="{{ route('admin.products.barcode', $p) }}" target="_blank" rel="noopener">
+                          <i class="fa fa-barcode me-2"></i> Printo barkod
+                        </a>
+                      </li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li>
                         <form action="{{ route('admin.products.destroy', $p) }}" method="POST" onsubmit="return confirm('Ta fshij produktin?');">
                           @csrf @method('DELETE')
                           <button class="dropdown-item text-danger">
@@ -251,7 +272,7 @@
                 </td>
               </tr>
             @empty
-              <tr><td colspan="6" class="text-center text-muted py-4">S’ka produkte.</td></tr>
+              <tr><td colspan="7" class="text-center text-muted py-4">S’ka produkte.</td></tr>
             @endforelse
             </tbody>
           </table>
@@ -286,6 +307,9 @@
       </a>
       <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
         <i class="fas fa-address-book me-1"></i> Klientet
+      </a>
+      <a class="nav-link {{ request()->routeIs('admin.pos*') ? 'active' : '' }}" href="{{ route('admin.pos.index') }}">
+        <i class="fas fa-cash-register me-1"></i> POS
       </a>
       <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
         <i class="fas fa-box-open me-1"></i> Produktet

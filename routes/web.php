@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\StatsController;
 use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
+use App\Http\Controllers\Admin\PointOfSaleController as AdminPointOfSaleController;
 use App\Http\Controllers\OrderTrackingController;
 
 /*
@@ -36,6 +37,10 @@ use App\Http\Controllers\OrderTrackingController;
 // routes/web.php
 Route::get('/invoice/{id}', [AdminOrderController::class, 'invoicePublic'])
     ->name('orders.invoice.public');
+
+Route::get('/receipt/{receipt}/invoice', [AdminCustomerController::class, 'publicReceiptInvoice'])
+    ->middleware('signed')
+    ->name('customers.invoice.public');
 
 
 Route::get('/track', [OrderTrackingController::class, 'form'])->name('track.form');//
@@ -198,13 +203,20 @@ Route::middleware(['auth','verified','admin'])
         Route::post('/customers/{customer}/purchases', [AdminCustomerController::class, 'storePurchase'])->whereNumber('customer')->name('customers.purchases.store');
         Route::delete('/customers/{customer}/purchases/{purchase}', [AdminCustomerController::class, 'destroyPurchase'])->whereNumber('customer')->whereNumber('purchase')->name('customers.purchases.destroy');
         Route::put('/customers/{customer}/receipts/{receipt}/payment', [AdminCustomerController::class, 'updateReceiptPayment'])->whereNumber('customer')->whereNumber('receipt')->name('customers.receipts.payment');
+        Route::post('/customers/{customer}/receipts/{receipt}/send-invoice', [AdminCustomerController::class, 'sendReceiptInvoice'])->whereNumber('customer')->whereNumber('receipt')->name('customers.receipts.send');
         Route::get('/customers/{customer}/receipts/{receiptCode}/invoice', [AdminCustomerController::class, 'invoice'])->whereNumber('customer')->name('customers.invoice');
         Route::get('/customers/{customer}/receipts/{receiptCode}/invoice-pdf', [AdminCustomerController::class, 'invoicePdf'])->whereNumber('customer')->name('customers.invoice.pdf');
+
+        // POS
+        Route::get('/pos', [AdminPointOfSaleController::class, 'index'])->name('pos.index');
+        Route::get('/pos/lookup', [AdminPointOfSaleController::class, 'lookup'])->name('pos.lookup');
+        Route::post('/pos/checkout', [AdminPointOfSaleController::class, 'checkout'])->name('pos.checkout');
 
         // Products
         Route::get('/products',                 [AdminProductController::class, 'index'])->name('products.index');
         Route::get('/products/create',          [AdminProductController::class, 'create'])->name('products.create');
         Route::post('/products',                [AdminProductController::class, 'store'])->name('products.store');
+        Route::get('/products/{product}/barcode', [AdminProductController::class, 'barcode'])->name('products.barcode');
         Route::get('/products/{product}/edit',  [AdminProductController::class, 'edit'])->name('products.edit');
         Route::put('/products/{product}',       [AdminProductController::class, 'update'])->name('products.update');
         Route::delete('/products/{product}',    [AdminProductController::class, 'destroy'])->name('products.destroy');

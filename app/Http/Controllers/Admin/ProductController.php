@@ -17,13 +17,34 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $q = Product::query()->orderByDesc('id');
+        $q = Product::query();
 
-        if ($s = $request->get('search')) {
-            $q->where('name', 'like', "%{$s}%");
+        $search = trim((string) $request->get('search', ''));
+        if ($search !== '') {
+            $q->where(function ($query) use ($search) {
+                $like = "%{$search}%";
+                $query->where('name', 'like', $like)
+                    ->orWhere('slug', 'like', $like)
+                    ->orWhere('sku', 'like', $like)
+                    ->orWhere('barcode', 'like', $like);
+            });
         }
 
-        $products = $q->paginate(12);
+        if (in_array($request->get('active'), ['0', '1'], true)) {
+            $q->where('is_active', (bool) $request->integer('active'));
+        }
+
+        match ($request->get('sort', 'newest')) {
+            'oldest' => $q->oldest('id'),
+            'price_hi' => $q->orderByDesc('price'),
+            'price_lo' => $q->orderBy('price'),
+            'name_az' => $q->orderBy('name'),
+            'name_za' => $q->orderByDesc('name'),
+            default => $q->orderByDesc('id'),
+        };
+
+        $perPage = min(max((int) $request->get('per_page', 12), 6), 100);
+        $products = $q->paginate($perPage)->withQueryString();
         return view('admin.products.index', compact('products'));
     }
 
@@ -57,6 +78,7 @@ class ProductController extends Controller
             'image.*'     => 'file|max:51200',
 
             'sku'         => 'nullable|alpha_dash|unique:products,sku',
+            'barcode'     => ['nullable', 'string', 'max:80', 'regex:/^[A-Za-z0-9._-]+$/', 'unique:products,barcode'],
         ], $this->productValidationMessages());
 
         // ✅ Nëse s’është perde, mos ruaj subcategory
@@ -95,7 +117,7 @@ class ProductController extends Controller
 
         // Normalizo sizes
         $norm = $this->normalizeSizes($request->input('sizes', []));
-        $data['sizes'] = !empty($norm) ? json_encode($norm, JSON_UNESCAPED_SLASHES) : null;
+        $data['sizes'] = !empty($norm) ? $norm : null;
 
         // Derivo price/stock nga sizes
         if (!empty($norm)) {
@@ -126,7 +148,12 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $product->sizes = $product->sizes ? json_decode($product->sizes, true) : [];
+        $sizes = $product->sizes;
+        if (is_string($sizes)) {
+            $decoded = json_decode($sizes, true);
+            $sizes = is_array($decoded) ? $decoded : [];
+        }
+        $product->sizes = is_array($sizes) ? $sizes : [];
 
         // ✅ images array për view
         $product->images = $this->decodeImagePaths($product->image_path);
@@ -163,6 +190,7 @@ class ProductController extends Controller
             'existing_images.*' => 'string',
 
             'sku'         => 'nullable|alpha_dash|unique:products,sku,' . $product->id,
+            'barcode'     => ['nullable', 'string', 'max:80', 'regex:/^[A-Za-z0-9._-]+$/', 'unique:products,barcode,' . $product->id],
         ], $this->productValidationMessages());
 
         // ✅ Nëse s’është perde, mos ruaj subcategory
@@ -174,6 +202,10 @@ class ProductController extends Controller
 
         if ($product->name !== $data['name']) {
             $data['slug'] = Product::generateSlug($data['name']);
+        }
+
+        if (empty($data['barcode'])) {
+            $data['barcode'] = Product::generateBarcode();
         }
 
         // ❌ MOS E NDRYSHO category në perde-ditore/perde-anesore
@@ -214,7 +246,7 @@ class ProductController extends Controller
 
         // Normalizo sizes
         $norm = $this->normalizeSizes($request->input('sizes', []));
-        $data['sizes'] = !empty($norm) ? json_encode($norm, JSON_UNESCAPED_SLASHES) : null;
+        $data['sizes'] = !empty($norm) ? $norm : null;
 
         if (!empty($norm)) {
             $minPrice = collect($norm)->pluck('price')->filter(fn($p) => $p !== null)->min();
@@ -240,6 +272,11 @@ class ProductController extends Controller
         }
 
         return redirect()->route('admin.products.index')->with('ok', 'Produkti u përditësua.');
+    }
+
+    public function barcode(Product $product)
+    {
+        return view('admin.products.barcode', compact('product'));
     }
 
     public function destroy(Product $product)

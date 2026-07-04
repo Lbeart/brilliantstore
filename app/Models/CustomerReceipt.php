@@ -10,6 +10,8 @@ class CustomerReceipt extends Model
         'customer_id',
         'order_id',
         'code',
+        'receipt_type',
+        'source',
         'subtotal',
         'discount',
         'total',

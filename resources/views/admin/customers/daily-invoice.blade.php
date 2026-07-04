@@ -77,6 +77,13 @@
     <div class="box"><div class="label">E perzier</div><div class="value">{{ number_format((float) $summary['mixed'], 2) }} EUR</div></div>
   </div>
 
+  <div class="summary">
+    <div class="box"><div class="label">Kupona te rregullt</div><div class="value">{{ (int) ($summary['regular_count'] ?? 0) }}</div></div>
+    <div class="box"><div class="label">Vlera rregullt</div><div class="value">{{ number_format((float) ($summary['regular_total'] ?? 0), 2) }} EUR</div></div>
+    <div class="box"><div class="label">Kupona jo te rregullt</div><div class="value">{{ (int) ($summary['non_regular_count'] ?? 0) }}</div></div>
+    <div class="box"><div class="label">Vlera jo rregullt</div><div class="value">{{ number_format((float) ($summary['non_regular_total'] ?? 0), 2) }} EUR</div></div>
+  </div>
+
   <table>
     <thead>
       <tr>
@@ -93,11 +100,13 @@
         @php
           $statusLabels = ['paid' => 'Paguar', 'partial' => 'Pjese', 'unpaid' => 'Pa paguar'];
           $paymentLabels = ['cash' => 'Cash', 'card' => 'Kartel', 'bank' => 'Banke', 'mixed' => 'E perzier'];
+          $receiptTypeLabels = ['regular' => 'I rregullt', 'non_regular' => 'Jo i rregullt'];
           $receiptCustomer = $receipt->customer;
         @endphp
         <tr class="receipt-head">
           <td colspan="6">
             {{ $receipt->code }} - {{ optional($receiptCustomer)->name ?? 'Klient' }}
+            | {{ $receiptTypeLabels[$receipt->receipt_type] ?? $receipt->receipt_type ?? 'I rregullt' }}
             | {{ $paymentLabels[$receipt->payment_method] ?? $receipt->payment_method }}
             | {{ $statusLabels[$receipt->payment_status] ?? $receipt->payment_status }}
             | Total {{ number_format((float) $receipt->total, 2) }} EUR

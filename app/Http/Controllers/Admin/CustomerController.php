@@ -9,7 +9,9 @@ use App\Models\CustomerReceipt;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -220,6 +222,58 @@ class CustomerController extends Controller
             'customer' => $customer,
             'receiptCode' => $receiptCode,
             'print' => 1,
+        ]);
+    }
+
+    public function sendReceiptInvoice(Request $request, Customer $customer, CustomerReceipt $receipt)
+    {
+        abort_unless($receipt->customer_id === $customer->id, 404);
+
+        $data = $request->validate([
+            'email' => 'required|email|max:255',
+        ]);
+
+        if ($customer->email !== $data['email']) {
+            $customer->update(['email' => $data['email']]);
+        }
+
+        $url = URL::temporarySignedRoute(
+            'customers.invoice.public',
+            now()->addDays(30),
+            ['receipt' => $receipt]
+        );
+
+        try {
+            Mail::send('emails.customer-receipt', [
+                'customer' => $customer,
+                'receipt' => $receipt,
+                'url' => $url,
+            ], function ($message) use ($data, $receipt) {
+                $message->to($data['email'])
+                    ->subject('Fatura '.$receipt->code.' - Brillant');
+            });
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()->with('error', 'Fatura nuk u dergua me email. Kontrollo konfigurimin e mail-it.');
+        }
+
+        return back()->with('success', 'Fatura u dergua te klienti.');
+    }
+
+    public function publicReceiptInvoice(CustomerReceipt $receipt)
+    {
+        $receipt->load(['customer', 'purchases.order', 'order']);
+        abort_unless($receipt->customer, 404);
+
+        return view('admin.customers.invoice', [
+            'customer' => $receipt->customer,
+            'purchases' => $receipt->purchases,
+            'receiptCode' => $receipt->code,
+            'total' => (float) $receipt->total,
+            'receipt' => $receipt,
+            'isPdf' => false,
+            'isPublic' => true,
         ]);
     }
 
@@ -449,6 +503,10 @@ class CustomerController extends Controller
             'card' => $receipts->where('payment_method', 'card')->sum('paid_amount'),
             'bank' => $receipts->where('payment_method', 'bank')->sum('paid_amount'),
             'mixed' => $receipts->where('payment_method', 'mixed')->sum('paid_amount'),
+            'regular_count' => $receipts->where('receipt_type', 'regular')->count(),
+            'regular_total' => $receipts->where('receipt_type', 'regular')->sum('total'),
+            'non_regular_count' => $receipts->where('receipt_type', 'non_regular')->count(),
+            'non_regular_total' => $receipts->where('receipt_type', 'non_regular')->sum('total'),
         ];
 
         return [$receipts, $summary, $day];

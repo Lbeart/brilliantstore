@@ -119,6 +119,9 @@
         <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
           <i class="fas fa-address-book me-1"></i> Klientet
         </a>
+        <a class="nav-link {{ request()->routeIs('admin.pos*') ? 'active' : '' }}" href="{{ route('admin.pos.index') }}">
+          <i class="fas fa-cash-register me-1"></i> POS
+        </a>
         <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
           <i class="fas fa-box-open me-1"></i> Produktet
         </a>
@@ -138,9 +141,14 @@
           <h1>Regjistro, kerko dhe menaxho klientet qe blejne te Brillant</h1>
           <p>Ruaj kontaktin, produktet qe kane blere, shumen dhe daten e blerjes ne nje vend.</p>
         </div>
-        <a class="btn btn-outline-dark" href="{{ route('admin.orders.all') }}">
-          <i class="fa fa-list me-1"></i> Shiko porosite
-        </a>
+        <div class="d-flex gap-2 flex-wrap">
+          <a class="btn btn-danger" href="{{ route('admin.pos.index') }}">
+            <i class="fa fa-cash-register me-1"></i> POS
+          </a>
+          <a class="btn btn-outline-dark" href="{{ route('admin.orders.all') }}">
+            <i class="fa fa-list me-1"></i> Shiko porosite
+          </a>
+        </div>
       </div>
 
       @if(session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
@@ -579,6 +587,9 @@
       </a>
       <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
         <i class="fas fa-address-book me-1"></i> Klientet
+      </a>
+      <a class="nav-link {{ request()->routeIs('admin.pos*') ? 'active' : '' }}" href="{{ route('admin.pos.index') }}">
+        <i class="fas fa-cash-register me-1"></i> POS
       </a>
       <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
         <i class="fas fa-box-open me-1"></i> Produktet

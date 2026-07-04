@@ -137,6 +137,15 @@
                     <input type="number" name="stock" class="form-control" value="{{ old('stock') }}" min="0">
                 </div>
 
+                <div class="col-md-4">
+                    <label class="form-label">Barkodi</label>
+                    <div class="input-group">
+                        <input type="text" name="barcode" class="form-control" value="{{ old('barcode') }}" data-barcode-input placeholder="BRL...">
+                        <button type="button" class="btn btn-outline-dark" data-generate-barcode>Gjenero</button>
+                    </div>
+                    <small class="text-muted">Per barkod te brendshem POS. Nese e le bosh, krijohet automatikisht.</small>
+                </div>
+
                 {{-- Dimensione (Tepiha & Postava) --}}
                 <div id="sizesCard" class="card border-0 shadow-sm mt-3" style="display:none;">
                   <div class="card-body">
@@ -299,6 +308,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
   categorySel?.addEventListener('change', toggleByCategory);
   toggleByCategory(); // init në load (respekton old() kur ka errora)
+});
+
+document.addEventListener('click', function (e) {
+  if (!e.target.matches('[data-generate-barcode]')) return;
+  const input = document.querySelector('[data-barcode-input]');
+  if (!input) return;
+  const random = Math.random().toString(36).slice(2, 7).toUpperCase();
+  const date = new Date();
+  const stamp = String(date.getFullYear()).slice(2)
+    + String(date.getMonth() + 1).padStart(2, '0')
+    + String(date.getDate()).padStart(2, '0');
+  input.value = 'BRL' + stamp + random;
+  input.focus();
 });
 </script>
 </body>

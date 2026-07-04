@@ -11,7 +11,7 @@ class Product extends Model
 // app/Models/Product.php
 protected $fillable = [
   'name','slug','price','old_price','description','image_path',
-  'is_active','stock','category','sizes','subcategory','sku'
+  'is_active','stock','category','sizes','subcategory','sku','barcode'
 ];
 
 protected $casts = [
@@ -30,6 +30,10 @@ protected $casts = [
         static::creating(function (Product $p) {
             if (empty($p->sku)) {
                 $p->sku = self::generateSku($p->name);
+            }
+
+            if (empty($p->barcode)) {
+                $p->barcode = self::generateBarcode();
             }
 
             if (empty($p->slug) && !empty($p->name)) {
@@ -74,5 +78,14 @@ protected $casts = [
         } while (self::where('sku', $sku)->exists());
 
         return $sku;
+    }
+
+    public static function generateBarcode(): string
+    {
+        do {
+            $barcode = 'BRL'.now()->format('ymd').strtoupper(Str::random(5));
+        } while (self::where('barcode', $barcode)->exists());
+
+        return $barcode;
     }
 }
