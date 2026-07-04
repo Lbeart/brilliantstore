@@ -75,7 +75,7 @@ class ProductController extends Controller
 
             // ✅ MULTI IMAGE
             'image'       => 'nullable|array',
-            'image.*'     => 'file|max:51200',
+            'image.*'     => 'file|max:40960',
 
             'sku'         => 'nullable|alpha_dash|unique:products,sku',
             'barcode'     => ['nullable', 'string', 'max:80', 'regex:/^[A-Za-z0-9._-]+$/', 'unique:products,barcode'],
@@ -99,10 +99,8 @@ class ProductController extends Controller
         // ✅ SAVE MULTI IMAGES AS JSON IN image_path
         $paths = [];
         try {
-            if ($request->hasFile('image')) {
-                foreach ($request->file('image') as $img) {
-                    $paths[] = $this->saveUploadedImage($img);
-                }
+            foreach ($this->uploadedImageFiles($request) as $img) {
+                $paths[] = $this->saveUploadedImage($img);
             }
         } catch (ValidationException $e) {
             throw $e;
@@ -183,7 +181,7 @@ class ProductController extends Controller
 
             // ✅ MULTI IMAGE
             'image'       => 'nullable|array',
-            'image.*'     => 'file|max:51200',
+            'image.*'     => 'file|max:40960',
 
             // ✅ mbaj/fshi foto ekzistuese
             'existing_images'   => 'nullable|array',
@@ -226,10 +224,8 @@ class ProductController extends Controller
 
         // shto fotot e reja
         try {
-            if ($request->hasFile('image')) {
-                foreach ($request->file('image') as $img) {
-                    $keep[] = $this->saveUploadedImage($img);
-                }
+            foreach ($this->uploadedImageFiles($request) as $img) {
+                $keep[] = $this->saveUploadedImage($img);
             }
         } catch (ValidationException $e) {
             throw $e;
@@ -291,6 +287,35 @@ class ProductController extends Controller
     }
 
     // ===== Helpers =====
+
+    private function uploadedImageFiles(Request $request): array
+    {
+        $files = $request->file('image', []);
+
+        if ($files instanceof \Illuminate\Http\UploadedFile) {
+            $files = [$files];
+        }
+
+        if (!is_array($files)) {
+            return [];
+        }
+
+        $files = array_values(array_filter($files));
+
+        foreach ($files as $file) {
+            if (!is_object($file) || !method_exists($file, 'isValid')) {
+                continue;
+            }
+
+            if (!$file->isValid()) {
+                throw ValidationException::withMessages([
+                    'image' => $this->uploadErrorMessage((int) $file->getError()),
+                ]);
+            }
+        }
+
+        return $files;
+    }
 
     private function saveUploadedImage($img): string
     {
