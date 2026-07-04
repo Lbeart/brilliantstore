@@ -52,14 +52,65 @@
   </style>
 </head>
 <body>
+  @php
+    $sizes = $product->sizes;
+    if (is_string($sizes)) {
+        $decoded = json_decode($sizes, true);
+        $sizes = is_array($decoded) ? $decoded : [];
+    }
+    $sizes = is_array($sizes) ? array_values(array_filter($sizes, fn ($row) => is_array($row) && !empty($row['label']))) : [];
+    $selectedSize = request('size', 'all');
+    $labels = [];
+
+    if (!empty($sizes)) {
+        foreach ($sizes as $index => $size) {
+            if ($selectedSize !== 'all' && (string) $selectedSize !== (string) $index) {
+                continue;
+            }
+
+            $labels[] = [
+                'name' => $product->name,
+                'size' => $size['label'] ?? '',
+                'price' => (float) ($size['price'] ?? $product->price),
+                'stock' => (int) ($size['stock'] ?? 0),
+                'sku' => $product->sku ?: '-',
+                'barcode' => $size['barcode'] ?? $product->barcode ?? $product->sku ?? ('BRL'.$product->id),
+            ];
+        }
+    }
+
+    if (empty($labels)) {
+        $labels[] = [
+            'name' => $product->name,
+            'size' => '',
+            'price' => (float) $product->price,
+            'stock' => (int) ($product->stock ?? 0),
+            'sku' => $product->sku ?: '-',
+            'barcode' => $product->barcode ?: $product->sku ?: ('BRL'.$product->id),
+        ];
+    }
+  @endphp
   <form class="toolbar" method="GET" action="{{ route('admin.products.barcode', $product) }}">
     <div>
       <label>Kopje per printim</label>
       <input type="number" name="copies" min="1" max="100" value="{{ $copies }}">
     </div>
+    @if(!empty($sizes))
+      <div>
+        <label>Dimensioni</label>
+        <select name="size" style="border:1px solid var(--line);border-radius:8px;padding:9px;font-size:14px;min-width:130px">
+          <option value="all" @selected($selectedSize === 'all')>Krejt</option>
+          @foreach($sizes as $index => $size)
+            <option value="{{ $index }}" @selected((string) $selectedSize === (string) $index)>
+              {{ $size['label'] }} - {{ number_format((float) ($size['price'] ?? $product->price), 2) }} EUR
+            </option>
+          @endforeach
+        </select>
+      </div>
+    @endif
     <div style="flex:1">
       <label>Etiketa</label>
-      <div style="font-weight:800">{{ $product->name }} - {{ number_format((float) $product->price, 2) }} EUR</div>
+      <div style="font-weight:800">{{ $product->name }}</div>
       <div style="font-size:12px;color:#667085">Madhesia: 50mm x 35mm. Ne printer zgjidhe paper size 50 x 35 mm.</div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -70,21 +121,28 @@
   </form>
 
   <div class="sheet">
-    @for($i = 0; $i < $copies; $i++)
-      <div class="label">
-        <div>
-          <div class="topline">
-            <div class="name">{{ $product->name }}</div>
-            <div class="price">{{ number_format((float) $product->price, 2) }}€</div>
+    @foreach($labels as $label)
+      @for($i = 0; $i < $copies; $i++)
+        <div class="label">
+          <div>
+            <div class="topline">
+              <div class="name">{{ $label['name'] }}</div>
+              <div class="price">{{ number_format((float) $label['price'], 2) }}€</div>
+            </div>
+            <div class="meta">
+              @if($label['size'] !== '')
+                {{ $label['size'] }} /
+              @endif
+              SKU: {{ $label['sku'] }}
+            </div>
           </div>
-          <div class="meta">SKU: {{ $product->sku ?: '-' }}</div>
+          <div class="barcode-wrap">
+            <svg class="barcode" data-code="{{ $label['barcode'] }}"></svg>
+          </div>
+          <div class="code">{{ $label['barcode'] }}</div>
         </div>
-        <div class="barcode-wrap">
-          <svg class="barcode" data-code="{{ $product->barcode ?: $product->sku ?: ('BRL'.$product->id) }}"></svg>
-        </div>
-        <div class="code">{{ $product->barcode ?: $product->sku ?: ('BRL'.$product->id) }}</div>
-      </div>
-    @endfor
+      @endfor
+    @endforeach
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>

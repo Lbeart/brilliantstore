@@ -166,6 +166,7 @@
                               'label' => $lbl,
                               'price' => $sizes['price'][$i] ?? null,
                               'stock' => $sizes['stock'][$i] ?? null,
+                              'barcode' => $sizes['barcode'][$i] ?? null,
                             ];
                           }
                         }
@@ -179,6 +180,7 @@
                           <div class="col-md-5">
                             <label class="form-label mb-1">Dimensioni</label>
                             <input name="sizes[label][]" class="form-control" placeholder="p.sh. 80x150" value="{{ $s['label'] ?? '' }}">
+                            <input type="hidden" name="sizes[barcode][]" value="{{ $s['barcode'] ?? '' }}">
                           </div>
                           <div class="col-md-3">
                             <label class="form-label mb-1">Çmimi (€)</label>
@@ -197,6 +199,7 @@
                           <div class="col-md-5">
                             <label class="form-label mb-1">Dimensioni</label>
                             <input name="sizes[label][]" class="form-control" placeholder="p.sh. 90x200">
+                            <input type="hidden" name="sizes[barcode][]" value="">
                           </div>
                           <div class="col-md-3">
                             <label class="form-label mb-1">Çmimi (€)</label>
@@ -262,6 +265,7 @@ document.addEventListener('click', function(e){
       <div class="col-md-5">
         <label class="form-label mb-1">Dimensioni</label>
         <input name="sizes[label][]" class="form-control" placeholder="p.sh. 120x180">
+        <input type="hidden" name="sizes[barcode][]" value="">
       </div>
       <div class="col-md-3">
         <label class="form-label mb-1">Çmimi (€)</label>

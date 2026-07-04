@@ -93,6 +93,10 @@ class ProductController extends Controller
             $data['sku'] = Str::upper(Str::slug($data['name'])) . '-' . Str::random(4);
         }
 
+        if (empty($data['barcode'])) {
+            $data['barcode'] = Product::generateBarcode();
+        }
+
         // ❌ MOS E NDRYSHO category në perde-ditore/perde-anesore
         //    category mbetet 'perde', subcategory mban ditore/anesore
 
@@ -114,7 +118,7 @@ class ProductController extends Controller
         $data['image_path'] = !empty($paths) ? json_encode($paths, JSON_UNESCAPED_SLASHES) : null;
 
         // Normalizo sizes
-        $norm = $this->normalizeSizes($request->input('sizes', []));
+        $norm = $this->normalizeSizes($request->input('sizes', []), $data['barcode']);
         $data['sizes'] = !empty($norm) ? $norm : null;
 
         // Derivo price/stock nga sizes
@@ -241,7 +245,7 @@ class ProductController extends Controller
         // =========================================
 
         // Normalizo sizes
-        $norm = $this->normalizeSizes($request->input('sizes', []));
+        $norm = $this->normalizeSizes($request->input('sizes', []), $data['barcode']);
         $data['sizes'] = !empty($norm) ? $norm : null;
 
         if (!empty($norm)) {
@@ -272,6 +276,7 @@ class ProductController extends Controller
 
     public function barcode(Request $request, Product $product)
     {
+        $product = $this->ensureSizeBarcodes($product);
         $copies = min(max((int) $request->query('copies', 1), 1), 100);
 
         return view('admin.products.barcode', compact('product', 'copies'));
@@ -563,7 +568,7 @@ class ProductController extends Controller
         };
     }
 
-    private function normalizeSizes(array $sizes): array
+    private function normalizeSizes(array $sizes, ?string $baseBarcode = null): array
     {
         $out = [];
         if (isset($sizes['label']) && is_array($sizes['label'])) {
@@ -573,10 +578,57 @@ class ProductController extends Controller
 
                 $price = isset($sizes['price'][$i]) && $sizes['price'][$i] !== '' ? (float) $sizes['price'][$i] : null;
                 $stock = isset($sizes['stock'][$i]) && $sizes['stock'][$i] !== '' ? (int) $sizes['stock'][$i] : 0;
+                $barcode = trim((string) ($sizes['barcode'][$i] ?? ''));
+                if ($barcode === '') {
+                    $barcode = $this->makeSizeBarcode($baseBarcode ?: Product::generateBarcode(), $lbl, $i);
+                }
 
-                $out[] = ['label' => $lbl, 'price' => $price, 'stock' => $stock];
+                $out[] = ['label' => $lbl, 'price' => $price, 'stock' => $stock, 'barcode' => $barcode];
             }
         }
         return $out;
+    }
+
+    private function ensureSizeBarcodes(Product $product): Product
+    {
+        $sizes = $product->sizes;
+        if (is_string($sizes)) {
+            $decoded = json_decode($sizes, true);
+            $sizes = is_array($decoded) ? $decoded : [];
+        }
+
+        if (!is_array($sizes) || empty($sizes)) {
+            return $product;
+        }
+
+        $changed = false;
+        foreach ($sizes as $index => &$size) {
+            if (!is_array($size) || empty($size['label'])) {
+                continue;
+            }
+
+            if (empty($size['barcode'])) {
+                $size['barcode'] = $this->makeSizeBarcode($product->barcode ?: $product->sku ?: Product::generateBarcode(), (string) $size['label'], $index);
+                $changed = true;
+            }
+        }
+        unset($size);
+
+        if ($changed) {
+            $product->sizes = $sizes;
+            $product->save();
+            $product->refresh();
+        }
+
+        return $product;
+    }
+
+    private function makeSizeBarcode(string $baseBarcode, string $label, int $index): string
+    {
+        $base = strtoupper(preg_replace('/[^A-Z0-9]/i', '', $baseBarcode)) ?: 'BRL';
+        $size = strtoupper(preg_replace('/[^A-Z0-9]/i', '', $label));
+        $barcode = $base.'-S'.($index + 1).($size !== '' ? '-'.$size : '');
+
+        return substr($barcode, 0, 80);
     }
 }

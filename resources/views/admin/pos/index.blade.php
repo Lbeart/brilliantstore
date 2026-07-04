@@ -466,7 +466,7 @@
   }
 
   function addProduct(product){
-    const size = Array.isArray(product.sizes) && product.sizes.length ? product.sizes[0] : null;
+    const size = product.selected_size || (Array.isArray(product.sizes) && product.sizes.length ? product.sizes[0] : null);
     const sizeLabel = size ? String(size.label || '') : '';
     const price = size && size.price !== null && size.price !== '' ? Number(size.price) : Number(product.price || 0);
     const key = [product.id, sizeLabel, price].join('|');

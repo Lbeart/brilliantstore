@@ -96,6 +96,34 @@ class SearchController extends Controller
             return redirect()->route('products.show', $barcodeMatch);
         }
 
+        $sizeBarcodeMatch = Product::query()
+            ->where('is_active', 1)
+            ->where('sizes', 'like', '%'.trim($raw).'%')
+            ->get(['id', 'slug', 'sizes'])
+            ->first(function ($product) use ($raw) {
+                $sizes = $product->sizes;
+                if (is_string($sizes)) {
+                    $decoded = json_decode($sizes, true);
+                    $sizes = is_array($decoded) ? $decoded : [];
+                }
+
+                if (!is_array($sizes)) {
+                    return false;
+                }
+
+                foreach ($sizes as $size) {
+                    if (is_array($size) && ($size['barcode'] ?? null) === trim($raw)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+
+        if ($sizeBarcodeMatch) {
+            return redirect()->route('products.show', $sizeBarcodeMatch);
+        }
+
         $ctx = $this->inferContextFromReferer($request);
 
         // ========= 1) PERDE LOGIC (smart) =========

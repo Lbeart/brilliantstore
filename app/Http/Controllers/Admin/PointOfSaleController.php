@@ -67,6 +67,25 @@ class PointOfSaleController extends Controller
             })
             ->orderByRaw('CASE WHEN barcode = ? THEN 0 WHEN sku = ? THEN 1 ELSE 2 END', [$term, $term])
             ->first();
+        $selectedSize = null;
+
+        if (!$product) {
+            $product = Product::query()
+                ->where('is_active', true)
+                ->where('sizes', 'like', "%{$term}%")
+                ->get()
+                ->first(function (Product $candidate) use ($term, &$selectedSize) {
+                    foreach ($this->decodeProductSizes($candidate->sizes) as $size) {
+                        if (($size['barcode'] ?? null) === $term) {
+                            $selectedSize = $size;
+
+                            return true;
+                        }
+                    }
+
+                    return false;
+                });
+        }
 
         if (!$product) {
             return response()->json([
@@ -75,7 +94,7 @@ class PointOfSaleController extends Controller
         }
 
         return response()->json([
-            'product' => $this->productPayload($product),
+            'product' => $this->productPayload($product, $selectedSize),
         ]);
     }
 
@@ -254,7 +273,7 @@ class PointOfSaleController extends Controller
         $product->save();
     }
 
-    private function productPayload(Product $product): array
+    private function productPayload(Product $product, ?array $selectedSize = null): array
     {
         return [
             'id' => $product->id,
@@ -264,6 +283,7 @@ class PointOfSaleController extends Controller
             'price' => (float) $product->price,
             'stock' => (int) ($product->stock ?? 0),
             'sizes' => $this->decodeProductSizes($product->sizes),
+            'selected_size' => $selectedSize,
         ];
     }
 
