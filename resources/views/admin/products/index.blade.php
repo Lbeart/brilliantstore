@@ -238,6 +238,9 @@
                 </td>
                 <td class="text-end actions">
                   <div class="btn-group">
+                    <a href="{{ route('admin.products.barcode', $p) }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-danger">
+                      <i class="fa fa-barcode"></i> Barkod
+                    </a>
                     <a href="{{ route('admin.products.edit', $p) }}" class="btn btn-sm btn-outline-dark">
                       <i class="fa fa-pen"></i> Edito
                     </a>
