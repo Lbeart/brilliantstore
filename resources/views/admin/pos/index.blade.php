@@ -52,6 +52,8 @@
     .scanner{border:2px solid var(--brand);box-shadow:0 0 0 .25rem rgba(220,53,69,.08)}
     .cart-table th{font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);white-space:nowrap}
     .cart-table td{vertical-align:middle}
+    .cart-product{display:flex;align-items:center;gap:.7rem;min-width:260px}
+    .cart-thumb{width:58px;height:58px;border-radius:8px;object-fit:cover;background:#f2f4f7;border:1px solid var(--line);flex:0 0 58px}
     .qty-input{width:84px}
     .price-input{width:108px}
     .empty-cart{padding:2rem;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:var(--radius);background:#fbfcfd}
@@ -60,6 +62,8 @@
     .total-panel .value{font-size:1.75rem;font-weight:950;line-height:1.1}
     .quick-product{display:flex;align-items:center;justify-content:space-between;gap:.75rem;width:100%;border:1px solid var(--line);background:#fff;border-radius:var(--radius);padding:.72rem;text-align:left}
     .quick-product:hover{border-color:var(--brand);color:var(--brand)}
+    .quick-left{display:flex;align-items:center;gap:.65rem;min-width:0}
+    .quick-thumb{width:46px;height:46px;border-radius:8px;object-fit:cover;background:#f2f4f7;border:1px solid var(--line);flex:0 0 46px}
     .receipt-row{border-bottom:1px solid var(--line);padding:.75rem 0}
     .receipt-row:last-child{border-bottom:0}
     .badge-soft{background:#f2f4f7;color:#344054;border:1px solid var(--line)}
@@ -94,6 +98,7 @@
           'barcode' => $product->barcode,
           'price' => (float) $product->price,
           'stock' => (int) ($product->stock ?? 0),
+          'image_url' => \App\Support\ProductImages::url($product->image_path, asset('images/placeholder-product.png'), $product),
           'sizes' => is_array($sizes) ? array_values(array_filter($sizes, fn ($row) => is_array($row))) : [],
       ];
   })->values();
@@ -260,9 +265,12 @@
                 @forelse($quickProductPayload as $product)
                   <div class="col-12 col-md-6">
                     <button type="button" class="quick-product" data-quick-product="{{ $product['id'] }}">
-                      <span>
-                        <span class="fw-bold">{{ $product['name'] }}</span><br>
-                        <span class="small text-muted">{{ $product['barcode'] ?: $product['sku'] }}</span>
+                      <span class="quick-left">
+                        <img class="quick-thumb" src="{{ $product['image_url'] }}" alt="{{ $product['name'] }}" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+                        <span>
+                          <span class="fw-bold">{{ $product['name'] }}</span><br>
+                          <span class="small text-muted">{{ $product['barcode'] ?: $product['sku'] }}</span>
+                        </span>
                       </span>
                       <span class="fw-bold">{{ number_format((float) $product['price'], 2) }} EUR</span>
                     </button>
@@ -481,6 +489,7 @@
         item_name: product.name,
         barcode: product.barcode || product.sku || '',
         stock: Number(product.stock || 0),
+        image_url: product.image_url || '',
         sizes: Array.isArray(product.sizes) ? product.sizes : [],
         size: sizeLabel,
         quantity: 1,
@@ -533,7 +542,7 @@
         : '<input class="form-control form-control-sm" value="' + escapeHtml(line.size || '') + '" data-line-size-text="' + index + '">';
 
       tr.innerHTML = ''
-        + '<td><div class="fw-bold">' + escapeHtml(line.item_name) + '</div><div class="small text-muted">' + escapeHtml(line.barcode || '-') + (line.stock <= 0 ? ' / stok 0' : ' / stok ' + line.stock) + '</div></td>'
+        + '<td><div class="cart-product"><img class="cart-thumb" src="' + escapeAttr(line.image_url || '') + '" alt="' + escapeAttr(line.item_name) + '" onerror="this.onerror=null;this.src=\\'{{ asset('images/placeholder-product.png') }}\\'"><div><div class="fw-bold">' + escapeHtml(line.item_name) + '</div><div class="small text-muted">' + escapeHtml(line.barcode || '-') + (line.stock <= 0 ? ' / stok 0' : ' / stok ' + line.stock) + '</div></div></div></td>'
         + '<td>' + sizeOptions + '</td>'
         + '<td><input type="number" min="1" class="form-control form-control-sm qty-input" value="' + line.quantity + '" data-line-qty="' + index + '"></td>'
         + '<td><input type="number" min="0" step="0.01" class="form-control form-control-sm price-input" value="' + money(line.unit_price) + '" data-line-price="' + index + '"></td>'
@@ -582,6 +591,10 @@
       '"': '&quot;',
       "'": '&#039;'
     }[char]));
+  }
+
+  function escapeAttr(value){
+    return escapeHtml(value).replace(/`/g, '&#096;');
   }
 
   scanInput?.addEventListener('keydown', event => {

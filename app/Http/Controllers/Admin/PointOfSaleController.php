@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\CustomerPurchase;
 use App\Models\CustomerReceipt;
 use App\Models\Product;
+use App\Support\ProductImages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -44,7 +45,7 @@ class PointOfSaleController extends Controller
             ->where('is_active', true)
             ->orderByDesc('id')
             ->limit(24)
-            ->get(['id', 'name', 'price', 'stock', 'sku', 'barcode', 'sizes']);
+            ->get(['id', 'name', 'price', 'stock', 'sku', 'barcode', 'sizes', 'image_path', 'category', 'subcategory']);
 
         return view('admin.pos.index', compact('receipts', 'summary', 'quickProducts'));
     }
@@ -282,6 +283,7 @@ class PointOfSaleController extends Controller
             'barcode' => $product->barcode,
             'price' => (float) $product->price,
             'stock' => (int) ($product->stock ?? 0),
+            'image_url' => ProductImages::url($product->image_path, asset('images/placeholder-product.png'), $product),
             'sizes' => $this->decodeProductSizes($product->sizes),
             'selected_size' => $selectedSize,
         ];
