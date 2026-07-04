@@ -20,6 +20,7 @@ class ProductController extends Controller
         'category',
         'subcategory',
         'sku',
+        'barcode',
         'sizes',
     ];
 
@@ -95,7 +96,8 @@ class ProductController extends Controller
                     $query->where(function ($q) use ($term) {
                         $q->where('name', 'like', "%{$term}%")
                           ->orWhere('description', 'like', "%{$term}%")
-                          ->orWhere('sku', 'like', "%{$term}%");
+                          ->orWhere('sku', 'like', "%{$term}%")
+                          ->orWhere('barcode', 'like', "%{$term}%");
                     });
                 }
             }

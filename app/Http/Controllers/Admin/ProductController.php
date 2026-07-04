@@ -270,9 +270,11 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')->with('ok', 'Produkti u përditësua.');
     }
 
-    public function barcode(Product $product)
+    public function barcode(Request $request, Product $product)
     {
-        return view('admin.products.barcode', compact('product'));
+        $copies = min(max((int) $request->query('copies', 1), 1), 100);
+
+        return view('admin.products.barcode', compact('product', 'copies'));
     }
 
     public function destroy(Product $product)

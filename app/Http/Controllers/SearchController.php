@@ -61,6 +61,7 @@ class SearchController extends Controller
                 $qq->where('name', 'like', "%{$rawQ}%")
                    ->orWhere('description', 'like', "%{$rawQ}%")
                    ->orWhere('sku', 'like', "%{$rawQ}%")
+                   ->orWhere('barcode', 'like', "%{$rawQ}%")
                    ->orWhere('sizes', 'like', "%{$rawQ}%"); // JSON text search
 
                 // match për fjalë (p.sh. "kumash")
@@ -68,6 +69,7 @@ class SearchController extends Controller
                     $qq->orWhere('name', 'like', "%{$t}%")
                        ->orWhere('description', 'like', "%{$t}%")
                        ->orWhere('sku', 'like', "%{$t}%")
+                       ->orWhere('barcode', 'like', "%{$t}%")
                        ->orWhere('sizes', 'like', "%{$t}%");
                 }
             })
@@ -81,6 +83,18 @@ class SearchController extends Controller
         $q = $this->normalize($raw);
 
         if ($q === '') return back();
+
+        $barcodeMatch = Product::query()
+            ->where('is_active', 1)
+            ->where(function ($query) use ($raw) {
+                $query->where('barcode', trim($raw))
+                    ->orWhere('sku', trim($raw));
+            })
+            ->first(['id', 'slug']);
+
+        if ($barcodeMatch) {
+            return redirect()->route('products.show', $barcodeMatch);
+        }
 
         $ctx = $this->inferContextFromReferer($request);
 

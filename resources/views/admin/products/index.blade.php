@@ -258,6 +258,11 @@
                           <i class="fa fa-barcode me-2"></i> Printo barkod
                         </a>
                       </li>
+                      <li>
+                        <a class="dropdown-item" href="{{ route('admin.products.barcode', ['product' => $p, 'print' => 1]) }}" target="_blank" rel="noopener">
+                          <i class="fa fa-print me-2"></i> Printo direkt
+                        </a>
+                      </li>
                       <li><hr class="dropdown-divider"></li>
                       <li>
                         <form action="{{ route('admin.products.destroy', $p) }}" method="POST" onsubmit="return confirm('Ta fshij produktin?');">
