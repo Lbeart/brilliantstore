@@ -151,8 +151,9 @@
                   <div class="card-body">
                     <h6 class="mb-2">Dimensione / opsione për <span id="sizesCatLabel">Tepiha</span></h6>
                     <small class="text-muted d-block mb-3">
-                      Per mbulesa shkruaj <strong>meter</strong> me cmimin per meter, ose <strong>3+2+1</strong>
-                      me cmimin total te atij seti. Klienti pastaj mund ta llogarise ne faqe me metra ose me kombinim si 3+3+2+1.
+                      Per mbulesa shkruaj <strong>meter</strong> me cmimin per meter, p.sh. 8 euro,
+                      ose <strong>3+2+1</strong> me cmimin total te setit, p.sh. 30 euro.
+                      Nese klienti shkruan 3+3+2+1, sistemi e llogarit proporcionalisht: 45 euro.
                     </small>
 
                     @php

@@ -1135,7 +1135,8 @@
         <div class="section-card mb-3" id="coverCalculator">
           <div class="dim-title">Llogarit mbulesen</div>
           <div class="small text-muted mb-2">
-            Zgjidh opsionin, pastaj shkruaj metrat ose kombinimin p.sh. 3+3+2+1.
+            Zgjidh meter per metrazh, ose setin 3+2+1. Shembull: nese 3+2+1 kushton 30 euro,
+            atehere 3+3+2+1 del 45 euro.
           </div>
 
           <div class="size-grid mb-3" id="coverOptions" role="radiogroup" aria-label="Opsionet e mbuleses">
@@ -1167,13 +1168,13 @@
             <div id="coverMeterGroup">
               <label class="form-label mb-1" for="coverMeters">Metra</label>
               <input id="coverMeters" type="number" min="0.1" step="0.1" value="1" class="form-control">
-              <div class="small text-muted mt-1">Cmimi llogaritet per meter.</div>
+              <div class="small text-muted mt-1">Shembull: 8 euro per meter x metrat qe i duhen klientit.</div>
             </div>
 
             <div id="coverSetGroup" style="display:none;">
               <label class="form-label mb-1" for="coverSetExpression">Kombinimi</label>
               <input id="coverSetExpression" type="text" value="3+2+1" placeholder="p.sh. 3+3+2+1" class="form-control" data-autofill="1">
-              <div class="small text-muted mt-1">Shembull: 3 eshte e barabarte me 2+1.</div>
+              <div class="small text-muted mt-1">Shembull: 3 eshte e barabarte me 2+1, pra llogaritet me njesi.</div>
             </div>
 
             <div class="cover-total">
@@ -1543,15 +1544,16 @@
       const meters = Math.max(parseFloat(String(coverMeters?.value || '1').replace(',', '.')) || 0, 0);
       const total = basePrice * meters;
       const label = `Me meter: ${formatNumber(meters)} m`;
-      return { mode, option: optionLabel, value: formatNumber(meters), label, price: total, stock };
+      return { mode, option: optionLabel, value: formatNumber(meters), label, price: total, stock, basePrice };
     }
 
     const expression = normalizeCoverExpression(coverSetExpression?.value || optionLabel);
     const wantedUnits = sumCoverExpression(expression);
     const baseUnits = Math.max(sumCoverExpression(optionLabel), 1);
+    const unitPrice = baseUnits > 0 ? basePrice / baseUnits : 0;
     const total = (basePrice / baseUnits) * wantedUnits;
     const label = expression ? `Set: ${expression}` : 'Set';
-    return { mode, option: optionLabel, value: expression, label, price: total, stock };
+    return { mode, option: optionLabel, value: expression, label, price: total, stock, basePrice, baseUnits, wantedUnits, unitPrice };
   }
 
   function cleanQty(){
@@ -1572,8 +1574,8 @@
     }
     if(coverDetail && cover){
       coverDetail.textContent = cover.mode === 'meter'
-        ? `${cover.option} x ${cover.value} m`
-        : `${cover.option} -> ${cover.value || 'â€”'}`;
+        ? `${cover.basePrice.toFixed(2)} EUR/m x ${cover.value} m = ${price.toFixed(2)} EUR`
+        : `${cover.option} = ${cover.basePrice.toFixed(2)} EUR, 1 njesi = ${cover.unitPrice.toFixed(2)} EUR, ${cover.value || '-'} = ${price.toFixed(2)} EUR`;
     }
 
     const oldPrice = price ? (price * 1.25) : null;
