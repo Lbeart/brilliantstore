@@ -256,6 +256,13 @@ class CartController extends Controller
             }
         }
 
+        if (!$matched && $mode === 'meter' && strtolower($option) === 'meter') {
+            $matched = [
+                'label' => 'meter',
+                'price' => $product->price,
+            ];
+        }
+
         if (!$matched) {
             return null;
         }

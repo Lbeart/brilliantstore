@@ -1077,6 +1077,32 @@
             if(((int)($sz['stock'] ?? 0)) > 0){ $defaultIndex = $i; break; }
           }
         }
+
+        $coverOptions = [];
+        if($isCover){
+          $meterOption = null;
+          $setOptions = [];
+
+          foreach($sizes as $size){
+            $label = trim((string)($size['label'] ?? ''));
+            if($label === '') continue;
+
+            $normalizedLabel = strtolower(str_replace([' ', '-', '_'], '', $label));
+            if(str_contains($label, '+')){
+              $setOptions[] = $size;
+            } elseif(in_array($normalizedLabel, ['meter', 'metra', 'meteri', 'memeter', 'm'], true)) {
+              $meterOption = $size;
+            }
+          }
+
+          $meterOption = $meterOption ?: [
+            'label' => 'meter',
+            'price' => $product->price,
+            'stock' => $product->stock,
+          ];
+
+          $coverOptions = array_merge([$meterOption], $setOptions);
+        }
       @endphp
 
       <div id="priceContainer" class="price-block mb-2">
@@ -1131,7 +1157,7 @@
         </div>
       @endif
 
-      @if($isCover && count($sizes)>0)
+      @if($isCover && count($coverOptions)>0)
         <div class="section-card mb-3" id="coverCalculator">
           <div class="dim-title">Llogarit mbulesen</div>
           <div class="small text-muted mb-2">
@@ -1140,12 +1166,13 @@
           </div>
 
           <div class="size-grid mb-3" id="coverOptions" role="radiogroup" aria-label="Opsionet e mbuleses">
-            @foreach($sizes as $i => $size)
+            @foreach($coverOptions as $i => $size)
               @php
                 $p = (float)($size['price'] ?? $product->price);
                 $st = (int)($size['stock'] ?? 0);
                 $label = trim((string)($size['label'] ?? ''));
-                $isActive = ($i === $defaultIndex);
+                $displayLabel = str_contains($label, '+') ? $label : 'Me meter';
+                $isActive = ($i === 0);
                 $coverMode = str_contains($label, '+') ? 'set' : 'meter';
               @endphp
               <button
@@ -1159,7 +1186,7 @@
                 {{ $st <= 0 ? 'disabled' : '' }}
               >
                 <span class="dot" aria-hidden="true"></span>
-                <span>{{ $label }}</span>
+                <span>{{ $displayLabel }}</span>
               </button>
             @endforeach
           </div>

@@ -220,8 +220,9 @@
                     <div class="card-soft p-3">
                         <h6 class="mb-2">Dimensione / opsione</h6>
                         <small class="text-muted d-block mb-3">
-                            Per mbulesa shkruaj <strong>meter</strong> me cmimin per meter, p.sh. 8 euro,
-                            ose <strong>3+2+1</strong> me cmimin total te setit, p.sh. 30 euro.
+                            Per mbulesa cmimi kryesor perdoret si cmim per meter; nese don cmim tjeter, shto rresht
+                            <strong>meter</strong> me cmimin per meter, p.sh. 8 euro. Per set shto <strong>3+2+1</strong>
+                            me cmimin total te setit, p.sh. 30 euro.
                             Nese klienti shkruan 3+3+2+1, sistemi e llogarit proporcionalisht: 45 euro.
                         </small>
 
