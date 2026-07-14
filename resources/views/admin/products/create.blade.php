@@ -246,6 +246,70 @@
                   </div>
                 </div>
 
+                @php
+                  $oldColorInput = old('color_variants', []);
+                  $colorVariants = [];
+                  if(isset($oldColorInput['name']) && is_array($oldColorInput['name'])){
+                    foreach($oldColorInput['name'] as $i => $name){
+                      $colorVariants[] = [
+                        'name' => $name,
+                        'hex' => $oldColorInput['hex'][$i] ?? '#d1d5db',
+                      ];
+                    }
+                  }
+                @endphp
+
+                <div class="card border-0 shadow-sm mt-3">
+                  <div class="card-body">
+                    <h6 class="mb-2">Ngjyrat / variantet</h6>
+                    <small class="text-muted d-block mb-3">
+                      Shto ngjyra kur produkti ka te njejtin dizajn, por foto/ngjyre tjeter. Klienti e zgjedh ngjyren dhe fotoja nderrohet.
+                    </small>
+
+                    <div id="colorVariantsRepeater">
+                      @forelse($colorVariants as $variant)
+                        <div class="row g-2 align-items-end mb-2 color-variant-row">
+                          <div class="col-md-3">
+                            <label class="form-label mb-1">Emri ngjyres</label>
+                            <input name="color_variants[name][]" class="form-control" placeholder="p.sh. Gri" value="{{ $variant['name'] ?? '' }}">
+                          </div>
+                          <div class="col-md-2">
+                            <label class="form-label mb-1">Ngjyra</label>
+                            <input name="color_variants[hex][]" type="color" class="form-control form-control-color" value="{{ $variant['hex'] ?? '#d1d5db' }}">
+                          </div>
+                          <div class="col-md-5">
+                            <label class="form-label mb-1">Foto per kete ngjyre</label>
+                            <input name="color_variant_images[]" type="file" class="form-control" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+                          </div>
+                          <div class="col-md-2 text-end">
+                            <button type="button" class="btn btn-outline-danger remove-color-variant">Fshi</button>
+                          </div>
+                        </div>
+                      @empty
+                        <div class="row g-2 align-items-end mb-2 color-variant-row">
+                          <div class="col-md-3">
+                            <label class="form-label mb-1">Emri ngjyres</label>
+                            <input name="color_variants[name][]" class="form-control" placeholder="p.sh. Gri">
+                          </div>
+                          <div class="col-md-2">
+                            <label class="form-label mb-1">Ngjyra</label>
+                            <input name="color_variants[hex][]" type="color" class="form-control form-control-color" value="#d1d5db">
+                          </div>
+                          <div class="col-md-5">
+                            <label class="form-label mb-1">Foto per kete ngjyre</label>
+                            <input name="color_variant_images[]" type="file" class="form-control" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+                          </div>
+                          <div class="col-md-2 text-end">
+                            <button type="button" class="btn btn-outline-danger remove-color-variant">Fshi</button>
+                          </div>
+                        </div>
+                      @endforelse
+                    </div>
+
+                    <button type="button" id="addColorVariant" class="btn btn-outline-primary btn-sm mt-2">+ Shto ngjyre</button>
+                  </div>
+                </div>
+
                 <div class="col-md-6">
                     <label class="form-label">Foto (jpg/png/webp, max 40MB)</label>
                     <input type="file" name="image[]" class="form-control" multiple accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
@@ -308,6 +372,31 @@ document.addEventListener('click', function(e){
   }
   if(e.target && e.target.classList.contains('remove-size')){
     e.target.closest('.size-row')?.remove();
+  }
+  if(e.target && e.target.id === 'addColorVariant'){
+    const wrap = document.getElementById('colorVariantsRepeater');
+    const row = document.createElement('div');
+    row.className = 'row g-2 align-items-end mb-2 color-variant-row';
+    row.innerHTML = `
+      <div class="col-md-3">
+        <label class="form-label mb-1">Emri ngjyres</label>
+        <input name="color_variants[name][]" class="form-control" placeholder="p.sh. Gri">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label mb-1">Ngjyra</label>
+        <input name="color_variants[hex][]" type="color" class="form-control form-control-color" value="#d1d5db">
+      </div>
+      <div class="col-md-5">
+        <label class="form-label mb-1">Foto per kete ngjyre</label>
+        <input name="color_variant_images[]" type="file" class="form-control" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+      </div>
+      <div class="col-md-2 text-end">
+        <button type="button" class="btn btn-outline-danger remove-color-variant">Fshi</button>
+      </div>`;
+    wrap.appendChild(row);
+  }
+  if(e.target && e.target.classList.contains('remove-color-variant')){
+    e.target.closest('.color-variant-row')?.remove();
   }
 });
 

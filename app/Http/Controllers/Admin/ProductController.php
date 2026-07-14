@@ -78,6 +78,14 @@ class ProductController extends Controller
             'image'       => 'nullable|array',
             'image.*'     => 'file|max:40960',
 
+            'color_variants' => 'nullable|array',
+            'color_variants.name' => 'nullable|array',
+            'color_variants.name.*' => 'nullable|string|max:80',
+            'color_variants.hex' => 'nullable|array',
+            'color_variants.hex.*' => ['nullable', 'string', 'max:20', 'regex:/^#?[A-Fa-f0-9]{3,8}$/'],
+            'color_variant_images' => 'nullable|array',
+            'color_variant_images.*' => 'nullable|file|max:40960',
+
             'sku'         => 'nullable|alpha_dash|unique:products,sku',
             'barcode'     => ['nullable', 'string', 'max:80', 'regex:/^[A-Za-z0-9._-]+$/', 'unique:products,barcode'],
         ], $this->productValidationMessages());
@@ -117,6 +125,18 @@ class ProductController extends Controller
                 ->withInput();
         }
         $data['image_path'] = !empty($paths) ? json_encode($paths, JSON_UNESCAPED_SLASHES) : null;
+
+        try {
+            $data['color_variants'] = $this->normalizeColorVariants($request);
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()
+                ->withErrors(['color_variants' => 'Ngjyrat nuk u ruajten. Provo foto JPG/PNG/WEBP me madhesi me te vogel.'])
+                ->withInput();
+        }
 
         // Normalizo sizes
         $rawSizes = $this->mergeCoverMeterPrice(
@@ -196,6 +216,16 @@ class ProductController extends Controller
             'image.*'     => 'file|max:40960',
 
             // ✅ mbaj/fshi foto ekzistuese
+            'color_variants' => 'nullable|array',
+            'color_variants.name' => 'nullable|array',
+            'color_variants.name.*' => 'nullable|string|max:80',
+            'color_variants.hex' => 'nullable|array',
+            'color_variants.hex.*' => ['nullable', 'string', 'max:20', 'regex:/^#?[A-Fa-f0-9]{3,8}$/'],
+            'color_variants.existing_image' => 'nullable|array',
+            'color_variants.existing_image.*' => 'nullable|string',
+            'color_variant_images' => 'nullable|array',
+            'color_variant_images.*' => 'nullable|file|max:40960',
+
             'existing_images'   => 'nullable|array',
             'existing_images.*' => 'string',
 
@@ -252,6 +282,18 @@ class ProductController extends Controller
         $data['image_path'] = !empty($keep) ? json_encode(array_values($keep), JSON_UNESCAPED_SLASHES) : null;
         // =========================================
 
+        try {
+            $data['color_variants'] = $this->normalizeColorVariants($request, $product);
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()
+                ->withErrors(['color_variants' => 'Ngjyrat nuk u perditesuan. Provo foto JPG/PNG/WEBP me madhesi me te vogel.'])
+                ->withInput();
+        }
+
         // Normalizo sizes
         $rawSizes = $this->mergeCoverMeterPrice(
             $request->input('sizes', []),
@@ -301,6 +343,10 @@ class ProductController extends Controller
         $paths = $this->decodeImagePaths($product->image_path);
         foreach ($paths as $p) {
             $this->deleteImagePath($p);
+        }
+
+        foreach ($this->decodeColorVariants($product->color_variants) as $variant) {
+            $this->deleteImagePath($variant['image_path'] ?? null);
         }
 
         $product->delete();
@@ -560,6 +606,97 @@ class ProductController extends Controller
     private function decodeImagePaths($value): array
     {
         return ProductImages::decode($value);
+    }
+
+    private function decodeColorVariants($value): array
+    {
+        if (empty($value)) {
+            return [];
+        }
+
+        if (is_array($value)) {
+            return array_values(array_filter($value, fn ($variant) => is_array($variant)));
+        }
+
+        $decoded = json_decode((string) $value, true);
+
+        return is_array($decoded) ? array_values(array_filter($decoded, fn ($variant) => is_array($variant))) : [];
+    }
+
+    private function normalizeColorVariants(Request $request, ?Product $product = null): array
+    {
+        $input = $request->input('color_variants', []);
+        $names = $input['name'] ?? [];
+        $hexes = $input['hex'] ?? [];
+        $existingImages = $input['existing_image'] ?? [];
+        $files = $request->file('color_variant_images', []);
+
+        if ($files instanceof \Illuminate\Http\UploadedFile) {
+            $files = [$files];
+        }
+
+        $oldImages = collect($this->decodeColorVariants($product?->color_variants))
+            ->pluck('image_path')
+            ->filter()
+            ->values()
+            ->all();
+
+        $variants = [];
+        $keptImages = [];
+        $rowCount = max(count($names), count($hexes), count($existingImages), is_array($files) ? count($files) : 0);
+
+        for ($index = 0; $index < $rowCount; $index++) {
+            $name = trim((string) ($names[$index] ?? ''));
+            $hex = $this->normalizeHexColor((string) ($hexes[$index] ?? ''));
+            $imagePath = trim((string) ($existingImages[$index] ?? ''));
+            $file = is_array($files) ? ($files[$index] ?? null) : null;
+
+            if (is_object($file) && method_exists($file, 'isValid') && $file->isValid()) {
+                if ($imagePath !== '') {
+                    $this->deleteImagePath($imagePath);
+                }
+
+                $imagePath = $this->saveUploadedImage($file);
+            }
+
+            if ($name === '' && $imagePath === '') {
+                continue;
+            }
+
+            if ($name === '') {
+                $name = 'Ngjyra';
+            }
+
+            $variant = [
+                'name' => $name,
+                'hex' => $hex ?: '#d1d5db',
+                'image_path' => $imagePath ?: null,
+            ];
+
+            $variants[] = $variant;
+
+            if (!empty($variant['image_path'])) {
+                $keptImages[] = $variant['image_path'];
+            }
+        }
+
+        foreach (array_diff($oldImages, $keptImages) as $removedImage) {
+            $this->deleteImagePath($removedImage);
+        }
+
+        return $variants;
+    }
+
+    private function normalizeHexColor(string $value): ?string
+    {
+        $hex = trim($value);
+        if ($hex === '') {
+            return null;
+        }
+
+        $hex = ltrim($hex, '#');
+
+        return preg_match('/^[A-Fa-f0-9]{3,8}$/', $hex) ? '#'.$hex : null;
     }
 
     private function productValidationMessages(): array

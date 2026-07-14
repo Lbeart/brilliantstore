@@ -24,6 +24,7 @@ class CartController extends Controller
             'product_id' => 'required|integer|exists:products,id',
             'qty'        => 'required|integer|min:1',
             'size'       => 'nullable|string|max:100',
+            'color'      => 'nullable|string|max:80',
             'cover_mode'   => 'nullable|in:meter,set',
             'cover_option' => 'nullable|string|max:100',
             'cover_value'  => 'nullable|string|max:100',
@@ -34,6 +35,7 @@ class CartController extends Controller
         // ✅ Mos e merr price prej request-it (security)
         $unitPrice = (float) $product->price;
         $sizeLabel = $data['size'] ?? null;
+        $colorLabel = $this->selectedColorLabel($product, $data['color'] ?? null);
 
         if (($product->category ?? '') === 'mbulesa' && !empty($data['cover_mode']) && !empty($data['cover_option'])) {
             $cover = $this->calculateCoverPrice(
@@ -62,7 +64,7 @@ class CartController extends Controller
         }
 
         $cart = session('cart', []);
-        $key = 'product|'.$product->id.'|'.($sizeLabel ?? '');
+        $key = 'product|'.$product->id.'|'.($sizeLabel ?? '').'|'.($colorLabel ?? '');
 
         if (isset($cart[$key])) {
             $cart[$key]['qty'] += (int)$data['qty'];
@@ -71,10 +73,11 @@ class CartController extends Controller
                 'type'       => 'product',
                 'product_id' => $product->id,
                 'name'       => $product->name,
-                'image'      => $this->productImage($product),
+                'image'      => $this->productImageForColor($product, $colorLabel),
                 'qty'        => (int)$data['qty'],
                 'price'      => round($unitPrice, 2),
                 'size'       => $sizeLabel,
+                'color'      => $colorLabel,
             ];
         }
 
@@ -95,9 +98,11 @@ class CartController extends Controller
             'width'      => 'required|numeric|min:0.1|max:50',
             'height'     => 'required|numeric|min:0.1|max:50',
             'fold_type'  => 'required|string|max:50',
+            'color'      => 'nullable|string|max:80',
         ]);
 
         $product = Product::findOrFail($data['product_id']);
+        $colorLabel = $this->selectedColorLabel($product, $data['color'] ?? null);
 
         $foldMap = [
             'fold1'   => ['label' => 'Fold 1 (1:2)',     'ratio' => 2.0,  'extra' => 0.0],
@@ -155,7 +160,8 @@ class CartController extends Controller
         $key = "curtain|{$product->id}|"
             .number_format($width,2,'.','')."|"
             .number_format($height,2,'.','')."|"
-            .$data['fold_type'];
+            .$data['fold_type']."|"
+            .($colorLabel ?? '');
 
         if (isset($cart[$key])) {
             $cart[$key]['qty'] += 1;
@@ -164,9 +170,10 @@ class CartController extends Controller
                 'type'       => 'curtain',
                 'product_id' => $product->id,
                 'name'       => $product->name,
-                'image'      => $this->productImage($product),
+                'image'      => $this->productImageForColor($product, $colorLabel),
                 'qty'        => 1,
                 'price'      => $unitPrice,
+                'color'      => $colorLabel,
                 'curtain'    => [
                     'width'  => $width,
                     'height' => $height,
@@ -227,6 +234,64 @@ class CartController extends Controller
     private function productImage(Product $product): string
     {
         return ProductImages::url($product->image_path, asset('images/placeholder-product.png'), $product);
+    }
+
+    private function productImageForColor(Product $product, ?string $colorLabel): string
+    {
+        $variant = $this->findColorVariant($product, $colorLabel);
+        $imagePath = $variant['image_path'] ?? null;
+
+        if (!empty($imagePath)) {
+            return ProductImages::url($imagePath, asset('images/placeholder-product.png'), $product);
+        }
+
+        return $this->productImage($product);
+    }
+
+    private function selectedColorLabel(Product $product, ?string $color): ?string
+    {
+        $color = trim((string) $color);
+        if ($color === '') {
+            return null;
+        }
+
+        $variant = $this->findColorVariant($product, $color);
+
+        return $variant ? trim((string) ($variant['name'] ?? '')) : null;
+    }
+
+    private function findColorVariant(Product $product, ?string $color): ?array
+    {
+        $color = trim((string) $color);
+        if ($color === '') {
+            return null;
+        }
+
+        foreach ($this->productColorVariants($product) as $variant) {
+            $name = trim((string) ($variant['name'] ?? ''));
+            if ($name !== '' && ($name === $color || strtolower($name) === strtolower($color))) {
+                return $variant;
+            }
+        }
+
+        return null;
+    }
+
+    private function productColorVariants(Product $product): array
+    {
+        $variants = $product->color_variants;
+
+        if (is_array($variants)) {
+            return array_values(array_filter($variants, fn ($variant) => is_array($variant)));
+        }
+
+        if (empty($variants)) {
+            return [];
+        }
+
+        $decoded = json_decode((string) $variants, true);
+
+        return is_array($decoded) ? array_values(array_filter($decoded, fn ($variant) => is_array($variant))) : [];
     }
 
     private function productSizes(Product $product): array

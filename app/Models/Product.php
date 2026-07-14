@@ -11,12 +11,13 @@ class Product extends Model
 // app/Models/Product.php
 protected $fillable = [
   'name','slug','price','old_price','description','image_path',
-  'is_active','stock','category','sizes','subcategory','sku','barcode'
+  'is_active','stock','category','sizes','color_variants','subcategory','sku','barcode'
 ];
 
 protected $casts = [
   'is_active' => 'boolean',
   'sizes'     => 'array',
+  'color_variants' => 'array',
 ];
 
    

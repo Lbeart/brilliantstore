@@ -313,6 +313,91 @@
                     </div>
                 </div>
 
+                <div class="col-12">
+                    <div class="card-soft p-3">
+                        <h6 class="mb-2">Ngjyrat / variantet</h6>
+                        <small class="text-muted d-block mb-3">
+                            Shto ngjyra kur produkti ka te njejtin dizajn, por foto/ngjyre tjeter. Klienti e zgjedh ngjyren dhe fotoja nderrohet.
+                        </small>
+
+                        @php
+                          $oldColorInput = old('color_variants');
+                          if(is_array($oldColorInput) && isset($oldColorInput['name'])){
+                            $colorVariants = [];
+                            foreach(($oldColorInput['name'] ?? []) as $i => $name){
+                              $colorVariants[] = [
+                                'name' => $name,
+                                'hex' => $oldColorInput['hex'][$i] ?? '#d1d5db',
+                                'image_path' => $oldColorInput['existing_image'][$i] ?? null,
+                              ];
+                            }
+                          } else {
+                            $colorVariants = is_array($product->color_variants ?? null) ? $product->color_variants : [];
+                          }
+                        @endphp
+
+                        <div id="colorVariantsRepeater">
+                          @forelse($colorVariants as $variant)
+                            @php
+                              $variantImage = $variant['image_path'] ?? null;
+                              $variantImageUrl = $variantImage ? \App\Support\ProductImages::url($variantImage, $placeholder, $product) : null;
+                            @endphp
+                            <div class="row g-2 align-items-end mb-2 color-variant-row">
+                              <div class="col-md-3">
+                                <label class="form-label mb-1">Emri ngjyres</label>
+                                <input name="color_variants[name][]" class="form-control" placeholder="p.sh. Gri" value="{{ $variant['name'] ?? '' }}">
+                              </div>
+                              <div class="col-md-2">
+                                <label class="form-label mb-1">Ngjyra</label>
+                                <input name="color_variants[hex][]" type="color" class="form-control form-control-color" value="{{ $variant['hex'] ?? '#d1d5db' }}">
+                              </div>
+                              <div class="col-md-2">
+                                <label class="form-label mb-1">Aktuale</label>
+                                @if($variantImageUrl)
+                                  <img src="{{ $variantImageUrl }}" alt="{{ $variant['name'] ?? 'Ngjyra' }}" style="width:58px;height:58px;object-fit:cover;border-radius:10px;border:1px solid #e5e7eb;">
+                                @else
+                                  <div class="text-muted small">Pa foto</div>
+                                @endif
+                                <input type="hidden" name="color_variants[existing_image][]" value="{{ $variantImage }}">
+                              </div>
+                              <div class="col-md-3">
+                                <label class="form-label mb-1">Foto e re</label>
+                                <input name="color_variant_images[]" type="file" class="form-control" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+                              </div>
+                              <div class="col-md-2 text-end">
+                                <button type="button" class="btn btn-outline-danger remove-color-variant">Fshi</button>
+                              </div>
+                            </div>
+                          @empty
+                            <div class="row g-2 align-items-end mb-2 color-variant-row">
+                              <div class="col-md-3">
+                                <label class="form-label mb-1">Emri ngjyres</label>
+                                <input name="color_variants[name][]" class="form-control" placeholder="p.sh. Gri">
+                              </div>
+                              <div class="col-md-2">
+                                <label class="form-label mb-1">Ngjyra</label>
+                                <input name="color_variants[hex][]" type="color" class="form-control form-control-color" value="#d1d5db">
+                              </div>
+                              <div class="col-md-2">
+                                <label class="form-label mb-1">Aktuale</label>
+                                <div class="text-muted small">Pa foto</div>
+                                <input type="hidden" name="color_variants[existing_image][]" value="">
+                              </div>
+                              <div class="col-md-3">
+                                <label class="form-label mb-1">Foto e re</label>
+                                <input name="color_variant_images[]" type="file" class="form-control" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+                              </div>
+                              <div class="col-md-2 text-end">
+                                <button type="button" class="btn btn-outline-danger remove-color-variant">Fshi</button>
+                              </div>
+                            </div>
+                          @endforelse
+                        </div>
+
+                        <button type="button" id="addColorVariant" class="btn btn-outline-primary btn-sm mt-2">+ Shto ngjyre</button>
+                    </div>
+                </div>
+
                 <!-- FOTO MULTI -->
                 <div class="col-12">
                     <div class="card-soft p-3">
@@ -417,6 +502,36 @@ document.addEventListener('click', function(e){
   }
   if(e.target.classList.contains('remove-size')){
     e.target.closest('.size-row')?.remove();
+  }
+  if(e.target.id === 'addColorVariant'){
+    const wrap = document.getElementById('colorVariantsRepeater');
+    const row = document.createElement('div');
+    row.className = 'row g-2 align-items-end mb-2 color-variant-row';
+    row.innerHTML = `
+      <div class="col-md-3">
+        <label class="form-label mb-1">Emri ngjyres</label>
+        <input name="color_variants[name][]" class="form-control" placeholder="p.sh. Gri">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label mb-1">Ngjyra</label>
+        <input name="color_variants[hex][]" type="color" class="form-control form-control-color" value="#d1d5db">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label mb-1">Aktuale</label>
+        <div class="text-muted small">Pa foto</div>
+        <input type="hidden" name="color_variants[existing_image][]" value="">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label mb-1">Foto e re</label>
+        <input name="color_variant_images[]" type="file" class="form-control" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+      </div>
+      <div class="col-md-2 text-end">
+        <button type="button" class="btn btn-outline-danger remove-color-variant">Fshi</button>
+      </div>`;
+    wrap.appendChild(row);
+  }
+  if(e.target.classList.contains('remove-color-variant')){
+    e.target.closest('.color-variant-row')?.remove();
   }
 });
 

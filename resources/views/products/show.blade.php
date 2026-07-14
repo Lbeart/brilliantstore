@@ -16,6 +16,18 @@
     // ✅ IMAGES: image_path mund të jetë JSON array ose string e vjetër
     $imageUrls = \App\Support\ProductImages::urls($product->image_path ?? null, asset('images/placeholder-product.png'), $product);
     $mainImageUrl = $imageUrls[0] ?? asset('images/placeholder-product.png');
+    $colorVariants = collect(is_array($product->color_variants ?? null) ? $product->color_variants : [])
+      ->map(function ($variant) use ($product) {
+        $imagePath = $variant['image_path'] ?? null;
+
+        return [
+          'name' => trim((string)($variant['name'] ?? '')),
+          'hex' => $variant['hex'] ?? '#d1d5db',
+          'image_url' => $imagePath ? \App\Support\ProductImages::url($imagePath, null, $product) : null,
+        ];
+      })
+      ->filter(fn ($variant) => $variant['name'] !== '')
+      ->values();
 
     $pageCategory = trim($product->category ?? 'Produkt');
     $cleanDescription = trim(strip_tags($product->description ?? ''));
@@ -316,6 +328,37 @@
       text-decoration:line-through;
       box-shadow:none;
       transform:none;
+    }
+
+    .color-grid{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.55rem;
+    }
+    .color-option{
+      border:1px solid #e5e7eb;
+      background:#fff;
+      border-radius:999px;
+      padding:.45rem .72rem;
+      display:inline-flex;
+      align-items:center;
+      gap:.45rem;
+      font-weight:700;
+      font-size:.88rem;
+      color:#111827;
+      box-shadow:0 3px 10px rgba(0,0,0,.04);
+    }
+    .color-option.active{
+      border-color:rgba(220,53,69,.4);
+      background:rgba(220,53,69,.06);
+      box-shadow:0 10px 22px rgba(220,53,69,.10);
+    }
+    .color-swatch{
+      width:18px;
+      height:18px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.18);
+      flex:0 0 auto;
     }
 
     .cover-calc-grid{
@@ -1125,6 +1168,26 @@
         </span>
       </div>
 
+      @if($colorVariants->count())
+        <div class="section-card mb-3">
+          <div class="dim-title">Ngjyra</div>
+          <div class="color-grid" id="colorOptions" role="radiogroup" aria-label="Zgjidh ngjyren">
+            @foreach($colorVariants as $i => $variant)
+              <button
+                type="button"
+                class="color-option {{ $i === 0 ? 'active' : '' }}"
+                data-color-name="{{ $variant['name'] }}"
+                data-color-image="{{ $variant['image_url'] }}"
+                aria-checked="{{ $i === 0 ? 'true' : 'false' }}"
+              >
+                <span class="color-swatch" style="background: {{ $variant['hex'] }}"></span>
+                <span>{{ $variant['name'] }}</span>
+              </button>
+            @endforeach
+          </div>
+        </div>
+      @endif
+
       {{-- ✅ DIMENSIONET si pills --}}
       @if(count($sizes)>0 && !$isCover)
         <div class="section-card mb-3">
@@ -1252,6 +1315,7 @@
         <form action="{{ route('cart.addCurtain') }}" method="POST" id="curtainForm" class="mt-4">
           @csrf
           <input type="hidden" name="product_id" value="{{ $product->id }}">
+          <input type="hidden" name="color" id="curtainColorInput" value="{{ $colorVariants->first()['name'] ?? '' }}">
 
           <div class="section-card mb-3">
             <h5 class="mb-3">Përmasa</h5>
@@ -1507,9 +1571,12 @@
   const coverSetGroup = document.getElementById('coverSetGroup');
   const coverTotal = document.getElementById('coverTotal');
   const coverDetail = document.getElementById('coverDetail');
+  const colorOptions = Array.from(document.querySelectorAll('.color-option'));
+  const curtainColorInput = document.getElementById('curtainColorInput');
 
   const basePriceDefault = parseFloat({{ json_encode((float)$product->price) }});
   const baseStockDefault = parseInt({{ json_encode((int)($product->stock ?? 0)) }},10) || 0;
+  const isCurtainProduct = {{ $isCurtain ? 'true' : 'false' }};
 
   function getActivePill(){
     if(!pills.length) return null;
@@ -1527,6 +1594,15 @@
   function selStock(){
     const p = getActivePill();
     return p ? parseInt(p.dataset.stock || 0,10) : baseStockDefault;
+  }
+
+  function selectedColorName(){
+    const active = colorOptions.find(b => b.classList.contains('active'));
+    return active ? (active.dataset.colorName || '') : '';
+  }
+
+  function syncCurtainColor(){
+    if(curtainColorInput) curtainColorInput.value = selectedColorName();
   }
 
   function getActiveCoverOption(){
@@ -1666,9 +1742,14 @@
       `;
     }
 
-    const baseMsg = `Përshëndetje! Dua ta porosis produktin:\n- {{ addslashes($product->name) }}\n- Dimensioni: ${selectedLabel}\n- Çmimi: ${price.toFixed(2)} €\n- Sasia: `;
-    const coverMsg = `Përshëndetje! Dua ta porosis produktin:\n- {{ addslashes($product->name) }}\n- Opsioni: ${selectedLabel}\n- Çmimi: ${price.toFixed(2)} €\n- Sasia: `;
-    waBtn.href = `https://wa.me/38344960661?text=${encodeURIComponent(cover ? coverMsg : baseMsg)}${qty.value}`;
+    syncCurtainColor();
+
+    if(!isCurtainProduct){
+      const colorLine = selectedColorName() ? `\n- Ngjyra: ${selectedColorName()}` : '';
+      const baseMsg = `Përshëndetje! Dua ta porosis produktin:\n- {{ addslashes($product->name) }}${colorLine}\n- Dimensioni: ${selectedLabel}\n- Çmimi: ${price.toFixed(2)} €\n- Sasia: `;
+      const coverMsg = `Përshëndetje! Dua ta porosis produktin:\n- {{ addslashes($product->name) }}${colorLine}\n- Opsioni: ${selectedLabel}\n- Çmimi: ${price.toFixed(2)} €\n- Sasia: `;
+      waBtn.href = `https://wa.me/38344960661?text=${encodeURIComponent(cover ? coverMsg : baseMsg)}${qty.value}`;
+    }
   }
 
   // ✅ Pills click
@@ -1832,6 +1913,29 @@
     initZoom();
   };
 
+  if(colorOptions.length){
+    colorOptions.forEach(btn => {
+      btn.addEventListener('click', () => {
+        colorOptions.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-checked', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-checked', 'true');
+
+        const src = btn.dataset.colorImage || '';
+        if(src) window.setMainImg(src, null);
+
+        syncCurtainColor();
+        updateUI();
+
+        if(typeof window.updateCurtainWhatsapp === 'function'){
+          window.updateCurtainWhatsapp();
+        }
+      });
+    });
+  }
+
   document.querySelectorAll('.thumb-btn[data-product-image]').forEach(btn => {
     btn.addEventListener('click', () => {
       window.setMainImg(btn.dataset.productImage, btn);
@@ -1907,12 +2011,18 @@ function currentPrice(){
   return active ? parseFloat(active.dataset.price) : parseFloat({{ json_encode((float)$product->price) }});
 }
 
+function currentColorName(){
+  const active = document.querySelector('.color-option.active');
+  return active ? (active.dataset.colorName || '') : '';
+}
+
 addBtn?.addEventListener('click', async () => {
   const payload = {
     product_id: {{ $product->id }},
     qty: parseInt(document.getElementById('qty').value || '1', 10),
     size: currentSizeLabel(),
-    price: currentPrice()
+    price: currentPrice(),
+    color: currentColorName() || null
   };
 
   if(window.currentCoverSelection){
@@ -2008,6 +2118,7 @@ function updateCurtainWhatsapp(){
     let width = parseFloat(document.querySelector('[name="width"]').value) || 0;
     let height = parseFloat(document.querySelector('[name="height"]').value) || 0;
     let fold = document.querySelector('[name="fold_type"]:checked');
+    let color = document.querySelector('.color-option.active')?.dataset.colorName || '';
 
     if(!fold) return;
 
@@ -2031,6 +2142,7 @@ Përshëndetje 👋
 Dua të porosis këtë perde:
 
 Produkti: {{ addslashes($product->name) }}
+${color ? `Ngjyra: ${color}\n` : ''}
 Gjerësia: ${width} m
 Lartësia: ${height} m
 Sistemi: ${fold.value}

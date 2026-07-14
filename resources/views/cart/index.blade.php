@@ -133,6 +133,7 @@
                 $price= (float)($item['price'] ?? 0);
                 $qty  = (int)($item['qty'] ?? 1);
                 $size = $item['size'] ?? ($item['dimension'] ?? '—');
+                $color = $item['color'] ?? null;
                 $line = $price * $qty;
 
                 $img  = $item['image'] ?? ($item['image_path'] ?? null);
@@ -145,7 +146,12 @@
                          src="{{ $src }}"
                          alt="{{ $name }}"
                          onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
-                    <div class="fw-semibold">{{ $name }}</div>
+                    <div>
+                      <div class="fw-semibold">{{ $name }}</div>
+                      @if($color)
+                        <div class="small text-muted">Ngjyra: {{ $color }}</div>
+                      @endif
+                    </div>
                   </div>
                 </td>
                 <td>{{ number_format($price,2) }} €</td>
@@ -225,6 +231,7 @@
               $price= (float)($item['price'] ?? 0);
               $qty  = (int)($item['qty'] ?? 1);
               $size = $item['size'] ?? ($item['dimension'] ?? '—');
+              $color = $item['color'] ?? null;
               $line = $price * $qty;
 
               $img  = $item['image'] ?? ($item['image_path'] ?? null);
@@ -239,6 +246,9 @@
 
                 <div class="flex-grow-1">
                   <div class="fw-semibold">{{ $name }}</div>
+                  @if($color)
+                    <div class="small muted">Ngjyra: {{ $color }}</div>
+                  @endif
                   @if(isset($item['curtain']) && is_array($item['curtain']))
 
     <div class="small muted">
