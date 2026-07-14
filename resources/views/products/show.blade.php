@@ -1260,7 +1260,7 @@
             $simImgUrl = \App\Support\ProductImages::url($p->image_path ?? null, asset('images/placeholder-product.png'), $p);
           @endphp
 
-          <a class="similar-card" href="{{ route('products.show', $p) }}">
+          <a class="similar-card" href="{{ route('products.show', $p->slug) }}">
             <div class="similar-card-inner">
               <div class="similar-img">
 <img

@@ -93,7 +93,7 @@ class SearchController extends Controller
             ->first(['id', 'slug']);
 
         if ($barcodeMatch) {
-            return redirect()->route('products.show', $barcodeMatch);
+            return redirect()->route('products.show', $barcodeMatch->slug);
         }
 
         $sizeBarcodeMatch = Product::query()
@@ -121,7 +121,7 @@ class SearchController extends Controller
             });
 
         if ($sizeBarcodeMatch) {
-            return redirect()->route('products.show', $sizeBarcodeMatch);
+            return redirect()->route('products.show', $sizeBarcodeMatch->slug);
         }
 
         $ctx = $this->inferContextFromReferer($request);

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class SitemapController extends Controller
 {
@@ -58,6 +58,7 @@ class SitemapController extends Controller
     {
         try {
             $products = Product::query()
+                ->where('is_active', 1)
                 ->whereNotNull('slug')
                 ->where('slug', '!=', '')
                 ->latest('updated_at')
@@ -76,31 +77,57 @@ class SitemapController extends Controller
         }
     }
 
+    private function sitemapResponse(array $urls)
+    {
+        $content = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+        $content .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
+
+        foreach ($urls as $url) {
+            $content .= '  <url>' . PHP_EOL;
+            $content .= '    <loc>' . $this->xml($url['loc']) . '</loc>' . PHP_EOL;
+            $content .= '    <lastmod>' . $this->xml($url['lastmod']) . '</lastmod>' . PHP_EOL;
+            $content .= '    <changefreq>' . $this->xml($url['changefreq']) . '</changefreq>' . PHP_EOL;
+            $content .= '    <priority>' . $this->xml($url['priority']) . '</priority>' . PHP_EOL;
+            $content .= '  </url>' . PHP_EOL;
+        }
+
+        $content .= '</urlset>' . PHP_EOL;
+
+        return response($content, 200)
+            ->header('Content-Type', 'application/xml; charset=UTF-8')
+            ->header('X-Content-Type-Options', 'nosniff');
+    }
+
+    private function xml(string $value): string
+    {
+        return htmlspecialchars($value, ENT_XML1 | ENT_COMPAT, 'UTF-8');
+    }
+
     public function index()
     {
         $this->fillMissingProductSlugs();
 
-        $pages = $this->pages;
         $products = $this->loadProducts();
+        $latestProductUpdate = optional($products->max('updated_at'))->toAtomString() ?? now()->toAtomString();
 
         Log::info('SitemapController index', ['products_count' => $products->count()]);
 
-        $content = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-        $content .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
+        $urls = collect($this->pages)
+            ->map(fn (array $page) => [
+                'loc' => url($page['path']),
+                'lastmod' => $latestProductUpdate,
+                'changefreq' => $page['changefreq'],
+                'priority' => $page['priority'],
+            ]);
 
-        foreach ($pages as $page) {
-            $content .= "<url><loc>" . url($page['path']) . "</loc><lastmod>" . now()->toAtomString() . "</lastmod><changefreq>" . $page['changefreq'] . "</changefreq><priority>" . $page['priority'] . "</priority></url>" . PHP_EOL;
-        }
+        $productUrls = $products->map(fn (Product $product) => [
+            'loc' => url('/products/'.$product->slug),
+            'lastmod' => optional($product->updated_at)->toAtomString() ?? now()->toAtomString(),
+            'changefreq' => 'weekly',
+            'priority' => '0.85',
+        ]);
 
-        foreach ($products as $product) {
-            $content .= "<url><loc>" . url('/products/'.$product->slug) . "</loc><lastmod>" . (optional($product->updated_at)->toAtomString() ?? now()->toAtomString()) . "</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>" . PHP_EOL;
-        }
-
-        $content .= '</urlset>';
-
-        return response($content, 200)
-            ->header('Content-Type', 'application/xml')
-            ->header('X-Content-Type-Options', 'nosniff');
+        return $this->sitemapResponse($urls->concat($productUrls)->values()->all());
     }
 
     public function products()
@@ -109,15 +136,13 @@ class SitemapController extends Controller
 
         $products = $this->loadProducts();
 
-        $content = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-        $content .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
-        foreach ($products as $product) {
-            $content .= "<url><loc>" . url('/products/'.$product->slug) . "</loc><lastmod>" . (optional($product->updated_at)->toAtomString() ?? now()->toAtomString()) . "</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>" . PHP_EOL;
-        }
-        $content .= '</urlset>';
+        $urls = $products->map(fn (Product $product) => [
+            'loc' => url('/products/'.$product->slug),
+            'lastmod' => optional($product->updated_at)->toAtomString() ?? now()->toAtomString(),
+            'changefreq' => 'weekly',
+            'priority' => '0.85',
+        ]);
 
-        return response($content, 200)
-            ->header('Content-Type', 'application/xml')
-            ->header('X-Content-Type-Options', 'nosniff');
+        return $this->sitemapResponse($urls->values()->all());
     }
 }
