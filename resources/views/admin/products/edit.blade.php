@@ -215,12 +215,13 @@
                     </div>
                 </div>
 
-                {{-- Dimensione (vetëm për Tepiha) --}}
+                {{-- Dimensione / opsione --}}
                 <div class="col-12">
                     <div class="card-soft p-3">
-                        <h6 class="mb-2">Dimensione për Tepiha</h6>
+                        <h6 class="mb-2">Dimensione / opsione</h6>
                         <small class="text-muted d-block mb-3">
-                            Fillo vetem nese <strong>kategoria = Tepiha</strong>. Zbraz këtë seksion për kategori tjera.
+                            Per mbulesa shkruaj <strong>meter</strong> me cmimin per meter, ose <strong>3+2+1</strong>
+                            me cmimin total te atij seti. Klienti pastaj mund ta llogarise ne faqe me metra ose me kombinim si 3+3+2+1.
                         </small>
 
                         @php

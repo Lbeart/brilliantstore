@@ -9,6 +9,7 @@
 
   @php
     $isCurtain = str_contains(strtolower($product->category ?? ''), 'perde');
+    $isCover = strtolower(trim($product->category ?? '')) === 'mbulesa';
   @endphp
 
   @php
@@ -315,6 +316,26 @@
       text-decoration:line-through;
       box-shadow:none;
       transform:none;
+    }
+
+    .cover-calc-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:.75rem;
+    }
+    .cover-total{
+      border:1px dashed rgba(220,53,69,.35);
+      background:rgba(220,53,69,.04);
+      border-radius:12px;
+      padding:12px;
+      font-weight:800;
+    }
+    .cover-total span{
+      color:var(--brand);
+      font-size:1.15rem;
+    }
+    @media (max-width:576px){
+      .cover-calc-grid{grid-template-columns:1fr}
     }
 
     /* ✅ Shipping / Payment info (si ne foto) */
@@ -1079,7 +1100,7 @@
       </div>
 
       {{-- ✅ DIMENSIONET si pills --}}
-      @if(count($sizes)>0)
+      @if(count($sizes)>0 && !$isCover)
         <div class="section-card mb-3">
           <div class="dim-title">Dimensionet</div>
           <div class="size-grid" id="sizePills" role="radiogroup" aria-label="Zgjidh dimensionin">
@@ -1106,6 +1127,59 @@
           </div>
           <div class="small text-muted mt-2">
             * Dimensionet pa stok janë të çaktivizuara.
+          </div>
+        </div>
+      @endif
+
+      @if($isCover && count($sizes)>0)
+        <div class="section-card mb-3" id="coverCalculator">
+          <div class="dim-title">Llogarit mbulesen</div>
+          <div class="small text-muted mb-2">
+            Zgjidh opsionin, pastaj shkruaj metrat ose kombinimin p.sh. 3+3+2+1.
+          </div>
+
+          <div class="size-grid mb-3" id="coverOptions" role="radiogroup" aria-label="Opsionet e mbuleses">
+            @foreach($sizes as $i => $size)
+              @php
+                $p = (float)($size['price'] ?? $product->price);
+                $st = (int)($size['stock'] ?? 0);
+                $label = trim((string)($size['label'] ?? ''));
+                $isActive = ($i === $defaultIndex);
+                $coverMode = str_contains($label, '+') ? 'set' : 'meter';
+              @endphp
+              <button
+                type="button"
+                class="size-pill cover-option {{ $isActive ? 'active' : '' }}"
+                data-label="{{ $label }}"
+                data-price="{{ $p }}"
+                data-stock="{{ $st }}"
+                data-mode="{{ $coverMode }}"
+                aria-checked="{{ $isActive ? 'true' : 'false' }}"
+                {{ $st <= 0 ? 'disabled' : '' }}
+              >
+                <span class="dot" aria-hidden="true"></span>
+                <span>{{ $label }}</span>
+              </button>
+            @endforeach
+          </div>
+
+          <div class="cover-calc-grid">
+            <div id="coverMeterGroup">
+              <label class="form-label mb-1" for="coverMeters">Metra</label>
+              <input id="coverMeters" type="number" min="0.1" step="0.1" value="1" class="form-control">
+              <div class="small text-muted mt-1">Cmimi llogaritet per meter.</div>
+            </div>
+
+            <div id="coverSetGroup" style="display:none;">
+              <label class="form-label mb-1" for="coverSetExpression">Kombinimi</label>
+              <input id="coverSetExpression" type="text" value="3+2+1" placeholder="p.sh. 3+3+2+1" class="form-control" data-autofill="1">
+              <div class="small text-muted mt-1">Shembull: 3 eshte e barabarte me 2+1.</div>
+            </div>
+
+            <div class="cover-total">
+              Totali: <span id="coverTotal">0.00 €</span>
+              <div class="small text-muted fw-normal" id="coverDetail"></div>
+            </div>
           </div>
         </div>
       @endif
@@ -1388,6 +1462,14 @@
 
   const sizePills = document.getElementById('sizePills');
   const pills = sizePills ? Array.from(sizePills.querySelectorAll('.size-pill')) : [];
+  const coverCalculator = document.getElementById('coverCalculator');
+  const coverOptions = coverCalculator ? Array.from(coverCalculator.querySelectorAll('.cover-option')) : [];
+  const coverMeters = document.getElementById('coverMeters');
+  const coverSetExpression = document.getElementById('coverSetExpression');
+  const coverMeterGroup = document.getElementById('coverMeterGroup');
+  const coverSetGroup = document.getElementById('coverSetGroup');
+  const coverTotal = document.getElementById('coverTotal');
+  const coverDetail = document.getElementById('coverDetail');
 
   const basePriceDefault = parseFloat({{ json_encode((float)$product->price) }});
   const baseStockDefault = parseInt({{ json_encode((int)($product->stock ?? 0)) }},10) || 0;
@@ -1410,14 +1492,89 @@
     return p ? parseInt(p.dataset.stock || 0,10) : baseStockDefault;
   }
 
+  function getActiveCoverOption(){
+    if(!coverOptions.length) return null;
+    return coverOptions.find(b => b.classList.contains('active')) || coverOptions[0] || null;
+  }
+
+  function normalizeCoverExpression(value){
+    return String(value || '')
+      .replace(/[^0-9+]/g, '')
+      .replace(/\++/g, '+')
+      .replace(/^\+|\+$/g, '');
+  }
+
+  function sumCoverExpression(value){
+    const expression = normalizeCoverExpression(value);
+    if(!expression) return 0;
+    return expression.split('+').reduce((sum, part) => sum + (parseInt(part || '0', 10) || 0), 0);
+  }
+
+  function formatNumber(value){
+    return Number(value || 0).toFixed(2).replace(/\.?0+$/, '');
+  }
+
+  function syncCoverFields(){
+    const option = getActiveCoverOption();
+    if(!option) return null;
+
+    const mode = option.dataset.mode || ((option.dataset.label || '').includes('+') ? 'set' : 'meter');
+    if(coverMeterGroup) coverMeterGroup.style.display = mode === 'meter' ? '' : 'none';
+    if(coverSetGroup) coverSetGroup.style.display = mode === 'set' ? '' : 'none';
+
+    if(mode === 'set' && coverSetExpression && (!coverSetExpression.value || coverSetExpression.dataset.autofill === '1')){
+      coverSetExpression.value = option.dataset.label || '3+2+1';
+      coverSetExpression.dataset.autofill = '1';
+    }
+
+    return option;
+  }
+
+  function calculateCover(){
+    const option = syncCoverFields();
+    if(!option) return null;
+
+    const mode = option.dataset.mode || 'meter';
+    const optionLabel = option.dataset.label || '';
+    const basePrice = parseFloat(option.dataset.price || basePriceDefault) || 0;
+    const stock = parseInt(option.dataset.stock || 0, 10) || 0;
+
+    if(mode === 'meter'){
+      const meters = Math.max(parseFloat(String(coverMeters?.value || '1').replace(',', '.')) || 0, 0);
+      const total = basePrice * meters;
+      const label = `Me meter: ${formatNumber(meters)} m`;
+      return { mode, option: optionLabel, value: formatNumber(meters), label, price: total, stock };
+    }
+
+    const expression = normalizeCoverExpression(coverSetExpression?.value || optionLabel);
+    const wantedUnits = sumCoverExpression(expression);
+    const baseUnits = Math.max(sumCoverExpression(optionLabel), 1);
+    const total = (basePrice / baseUnits) * wantedUnits;
+    const label = expression ? `Set: ${expression}` : 'Set';
+    return { mode, option: optionLabel, value: expression, label, price: total, stock };
+  }
+
   function cleanQty(){
     const v=parseInt(qty.value||1,10);
     qty.value=Math.max(1,isNaN(v)?1:v);
   }
 
   function updateUI(){
-    const price=selPrice();
-    const stock=selStock();
+    const cover = coverCalculator ? calculateCover() : null;
+    const price = cover ? cover.price : selPrice();
+    const stock = cover ? cover.stock : selStock();
+    const selectedLabel = cover ? cover.label : (selDim() || 'â€”');
+
+    window.currentCoverSelection = cover;
+
+    if(coverTotal && cover){
+      coverTotal.textContent = `${price.toFixed(2)} â‚¬`;
+    }
+    if(coverDetail && cover){
+      coverDetail.textContent = cover.mode === 'meter'
+        ? `${cover.option} x ${cover.value} m`
+        : `${cover.option} -> ${cover.value || 'â€”'}`;
+    }
 
     const oldPrice = price ? (price * 1.25) : null;
     const discount = (oldPrice && price && oldPrice > price)
@@ -1444,8 +1601,9 @@
       `;
     }
 
-    const baseMsg = `Përshëndetje! Dua ta porosis produktin:\n- {{ addslashes($product->name) }}\n- Dimensioni: ${selDim()||'—'}\n- Çmimi: ${price.toFixed(2)} €\n- Sasia: `;
-    waBtn.href = `https://wa.me/38344960661?text=${encodeURIComponent(baseMsg)}${qty.value}`;
+    const baseMsg = `Përshëndetje! Dua ta porosis produktin:\n- {{ addslashes($product->name) }}\n- Dimensioni: ${selectedLabel}\n- Çmimi: ${price.toFixed(2)} €\n- Sasia: `;
+    const coverMsg = `Përshëndetje! Dua ta porosis produktin:\n- {{ addslashes($product->name) }}\n- Opsioni: ${selectedLabel}\n- Çmimi: ${price.toFixed(2)} €\n- Sasia: `;
+    waBtn.href = `https://wa.me/38344960661?text=${encodeURIComponent(cover ? coverMsg : baseMsg)}${qty.value}`;
   }
 
   // ✅ Pills click
@@ -1463,6 +1621,28 @@
       });
     });
   }
+
+  if(coverOptions.length){
+    coverOptions.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if(btn.disabled) return;
+        coverOptions.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-checked','false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-checked','true');
+        if(coverSetExpression) coverSetExpression.dataset.autofill = '1';
+        updateUI();
+      });
+    });
+  }
+
+  coverMeters?.addEventListener('input', updateUI);
+  coverSetExpression?.addEventListener('input', () => {
+    coverSetExpression.dataset.autofill = '0';
+    updateUI();
+  });
 
   minus?.addEventListener('click',()=>{
     cleanQty();
@@ -1621,6 +1801,7 @@
 const addBtn = document.getElementById('addToCartBtn');
 
 function currentSizeLabel(){
+  if(window.currentCoverSelection) return window.currentCoverSelection.label || null;
   const wrap = document.getElementById('sizePills');
   if(!wrap) return null;
   const active = wrap.querySelector('.size-pill.active');
@@ -1628,6 +1809,7 @@ function currentSizeLabel(){
 }
 
 function currentPrice(){
+  if(window.currentCoverSelection) return parseFloat(window.currentCoverSelection.price || 0);
   const wrap = document.getElementById('sizePills');
   if(!wrap) return parseFloat({{ json_encode((float)$product->price) }});
   const active = wrap.querySelector('.size-pill.active');
@@ -1641,6 +1823,12 @@ addBtn?.addEventListener('click', async () => {
     size: currentSizeLabel(),
     price: currentPrice()
   };
+
+  if(window.currentCoverSelection){
+    payload.cover_mode = window.currentCoverSelection.mode;
+    payload.cover_option = window.currentCoverSelection.option;
+    payload.cover_value = window.currentCoverSelection.value;
+  }
 
   try {
     const res = await fetch(`{{ route('cart.add') }}`, {

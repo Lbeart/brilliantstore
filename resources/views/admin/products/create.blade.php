@@ -146,13 +146,13 @@
                     <small class="text-muted">Per barkod te brendshem POS. Nese e le bosh, krijohet automatikisht.</small>
                 </div>
 
-                {{-- Dimensione (Tepiha & Postava) --}}
+                {{-- Dimensione / opsione --}}
                 <div id="sizesCard" class="card border-0 shadow-sm mt-3" style="display:none;">
                   <div class="card-body">
-                    <h6 class="mb-2">Dimensione për <span id="sizesCatLabel">Tepiha</span></h6>
+                    <h6 class="mb-2">Dimensione / opsione për <span id="sizesCatLabel">Tepiha</span></h6>
                     <small class="text-muted d-block mb-3">
-                      Përdor këtë seksion kur <strong>kategoria = Tepiha</strong> ose <strong>Postava</strong>.
-                      Nëse i plotëson dimensionet, sistemi llogarit automatikisht çmimin minimal dhe stokun total si fallback.
+                      Per mbulesa shkruaj <strong>meter</strong> me cmimin per meter, ose <strong>3+2+1</strong>
+                      me cmimin total te atij seti. Klienti pastaj mund ta llogarise ne faqe me metra ose me kombinim si 3+3+2+1.
                     </small>
 
                     @php
@@ -304,10 +304,10 @@ document.addEventListener('DOMContentLoaded', function () {
       if (subSel) subSel.value = '';
     }
 
-    // Dimensionet: kur është 'tepiha' OSE 'postava'
-    const showSizes = (cat === 'tepiha' || cat === 'postava' || cat==='batanije' || cat==='posteqia' || cat==='garnishte');
+    // Dimensione / opsione per kategori qe kane variante.
+    const showSizes = (cat === 'tepiha' || cat === 'postava' || cat === 'mbulesa' || cat==='batanije' || cat==='posteqia' || cat==='garnishte');
     sizesCard.style.display = showSizes ? '' : 'none';
-    sizesLabel.textContent = (cat === 'postava') ? 'Postava' : 'Tepiha';
+    sizesLabel.textContent = categorySel.options[categorySel.selectedIndex]?.text || 'Produkt';
   }
 
   categorySel?.addEventListener('change', toggleByCategory);

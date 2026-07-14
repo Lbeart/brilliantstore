@@ -24,6 +24,9 @@ class CartController extends Controller
             'product_id' => 'required|integer|exists:products,id',
             'qty'        => 'required|integer|min:1',
             'size'       => 'nullable|string|max:100',
+            'cover_mode'   => 'nullable|in:meter,set',
+            'cover_option' => 'nullable|string|max:100',
+            'cover_value'  => 'nullable|string|max:100',
         ]);
 
         $product = Product::findOrFail($data['product_id']);
@@ -32,14 +35,28 @@ class CartController extends Controller
         $unitPrice = (float) $product->price;
         $sizeLabel = $data['size'] ?? null;
 
-        if ($sizeLabel) {
-            $sizes = json_decode($product->sizes ?? '[]', true);
-            if (is_array($sizes)) {
-                foreach ($sizes as $s) {
-                    if ((string)($s['label'] ?? '') === (string)$sizeLabel) {
-                        if (isset($s['price'])) $unitPrice = (float)$s['price'];
-                        break;
-                    }
+        if (($product->category ?? '') === 'mbulesa' && !empty($data['cover_mode']) && !empty($data['cover_option'])) {
+            $cover = $this->calculateCoverPrice(
+                $product,
+                (string) $data['cover_mode'],
+                (string) $data['cover_option'],
+                (string) ($data['cover_value'] ?? '')
+            );
+
+            if (!$cover) {
+                return response()->json([
+                    'ok' => false,
+                    'message' => 'Llogaritja e mbuleses nuk eshte valide.',
+                ], 422);
+            }
+
+            $unitPrice = $cover['price'];
+            $sizeLabel = $cover['label'];
+        } elseif ($sizeLabel) {
+            foreach ($this->productSizes($product) as $s) {
+                if ((string)($s['label'] ?? '') === (string)$sizeLabel) {
+                    if (isset($s['price'])) $unitPrice = (float)$s['price'];
+                    break;
                 }
             }
         }
@@ -210,5 +227,99 @@ class CartController extends Controller
     private function productImage(Product $product): string
     {
         return ProductImages::url($product->image_path, asset('images/placeholder-product.png'), $product);
+    }
+
+    private function productSizes(Product $product): array
+    {
+        $sizes = $product->sizes;
+
+        if (is_array($sizes)) {
+            return $sizes;
+        }
+
+        if (empty($sizes)) {
+            return [];
+        }
+
+        $decoded = json_decode((string) $sizes, true);
+
+        return is_array($decoded) ? $decoded : [];
+    }
+
+    private function calculateCoverPrice(Product $product, string $mode, string $option, string $value): ?array
+    {
+        $matched = null;
+        foreach ($this->productSizes($product) as $size) {
+            if ((string) ($size['label'] ?? '') === $option) {
+                $matched = $size;
+                break;
+            }
+        }
+
+        if (!$matched) {
+            return null;
+        }
+
+        $basePrice = (float) ($matched['price'] ?? $product->price);
+        if ($basePrice <= 0) {
+            return null;
+        }
+
+        if ($mode === 'meter') {
+            $meters = (float) str_replace(',', '.', $value);
+            if ($meters < 0.1 || $meters > 100) {
+                return null;
+            }
+
+            return [
+                'price' => round($basePrice * $meters, 2),
+                'label' => 'Me meter: '.$this->formatNumber($meters).' m',
+            ];
+        }
+
+        $wantedExpression = $this->normalizeCoverExpression($value ?: $option);
+        $baseExpression = $this->normalizeCoverExpression($option);
+        $wantedUnits = $this->sumCoverExpression($wantedExpression);
+        $baseUnits = $this->sumCoverExpression($baseExpression);
+
+        if ($wantedUnits <= 0 || $baseUnits <= 0) {
+            return null;
+        }
+
+        return [
+            'price' => round(($basePrice / $baseUnits) * $wantedUnits, 2),
+            'label' => 'Set: '.$wantedExpression,
+        ];
+    }
+
+    private function normalizeCoverExpression(string $value): string
+    {
+        $expression = preg_replace('/[^0-9+]/', '', $value) ?? '';
+        $expression = preg_replace('/\++/', '+', $expression) ?? '';
+
+        return trim($expression, '+');
+    }
+
+    private function sumCoverExpression(string $expression): int
+    {
+        if ($expression === '') {
+            return 0;
+        }
+
+        $sum = 0;
+        foreach (explode('+', $expression) as $part) {
+            if ($part === '') {
+                return 0;
+            }
+
+            $sum += (int) $part;
+        }
+
+        return $sum;
+    }
+
+    private function formatNumber(float $value): string
+    {
+        return rtrim(rtrim(number_format($value, 2, '.', ''), '0'), '.');
     }
 }
