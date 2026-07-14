@@ -273,7 +273,7 @@ class CartController extends Controller
         }
 
         if ($mode === 'meter') {
-            $meters = (float) str_replace(',', '.', $value);
+            $meters = $this->sumMeterExpression($value);
             if ($meters < 0.1 || $meters > 100) {
                 return null;
             }
@@ -320,6 +320,34 @@ class CartController extends Controller
             }
 
             $sum += (int) $part;
+        }
+
+        return $sum;
+    }
+
+    private function sumMeterExpression(string $expression): float
+    {
+        $normalized = str_replace(',', '.', trim($expression));
+        $normalized = preg_replace('/[^0-9.+]/', '', $normalized) ?? '';
+        $normalized = preg_replace('/\++/', '+', $normalized) ?? '';
+        $normalized = trim($normalized, '+');
+
+        if ($normalized === '') {
+            return 0.0;
+        }
+
+        $sum = 0.0;
+        foreach (explode('+', $normalized) as $part) {
+            if ($part === '') {
+                return 0.0;
+            }
+
+            $value = (float) $part;
+            if ($value <= 0) {
+                return 0.0;
+            }
+
+            $sum += $value;
         }
 
         return $sum;

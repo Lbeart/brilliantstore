@@ -1193,9 +1193,17 @@
 
           <div class="cover-calc-grid">
             <div id="coverMeterGroup">
-              <label class="form-label mb-1" for="coverMeters">Metra</label>
-              <input id="coverMeters" type="number" min="0.1" step="0.1" value="1" class="form-control">
-              <div class="small text-muted mt-1">Shembull: 8 euro per meter x metrat qe i duhen klientit.</div>
+              <label class="form-label mb-1">Metra</label>
+              <div id="coverMeterRows" class="vstack gap-2">
+                <div class="input-group cover-meter-row">
+                  <input type="number" min="0.1" step="0.01" value="1" class="form-control cover-meter-input" aria-label="Metra">
+                  <button type="button" class="btn btn-outline-danger cover-remove-meter" aria-label="Hiqe metrin" style="display:none;">&times;</button>
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="addCoverMeter">
+                + Shto meter
+              </button>
+              <div class="small text-muted mt-1">Shembull: 2.40 + 3.40 m llogariten bashke.</div>
             </div>
 
             <div id="coverSetGroup" style="display:none;">
@@ -1492,7 +1500,8 @@
   const pills = sizePills ? Array.from(sizePills.querySelectorAll('.size-pill')) : [];
   const coverCalculator = document.getElementById('coverCalculator');
   const coverOptions = coverCalculator ? Array.from(coverCalculator.querySelectorAll('.cover-option')) : [];
-  const coverMeters = document.getElementById('coverMeters');
+  const coverMeterRows = document.getElementById('coverMeterRows');
+  const addCoverMeter = document.getElementById('addCoverMeter');
   const coverSetExpression = document.getElementById('coverSetExpression');
   const coverMeterGroup = document.getElementById('coverMeterGroup');
   const coverSetGroup = document.getElementById('coverSetGroup');
@@ -1542,6 +1551,32 @@
     return Number(value || 0).toFixed(2).replace(/\.?0+$/, '');
   }
 
+  function meterInputs(){
+    return coverMeterRows ? Array.from(coverMeterRows.querySelectorAll('.cover-meter-input')) : [];
+  }
+
+  function meterParts(){
+    return meterInputs()
+      .map(input => Math.max(parseFloat(String(input.value || '').replace(',', '.')) || 0, 0))
+      .filter(value => value > 0);
+  }
+
+  function meterExpression(){
+    return meterParts().map(value => formatNumber(value)).join('+');
+  }
+
+  function meterTotal(){
+    return meterParts().reduce((sum, value) => sum + value, 0);
+  }
+
+  function syncMeterRemoveButtons(){
+    const rows = coverMeterRows ? Array.from(coverMeterRows.querySelectorAll('.cover-meter-row')) : [];
+    rows.forEach(row => {
+      const button = row.querySelector('.cover-remove-meter');
+      if(button) button.style.display = rows.length > 1 ? '' : 'none';
+    });
+  }
+
   function syncCoverFields(){
     const option = getActiveCoverOption();
     if(!option) return null;
@@ -1568,10 +1603,11 @@
     const stock = parseInt(option.dataset.stock || 0, 10) || 0;
 
     if(mode === 'meter'){
-      const meters = Math.max(parseFloat(String(coverMeters?.value || '1').replace(',', '.')) || 0, 0);
+      const meters = meterTotal();
+      const expression = meterExpression();
       const total = basePrice * meters;
-      const label = `Me meter: ${formatNumber(meters)} m`;
-      return { mode, option: optionLabel, value: formatNumber(meters), label, price: total, stock, basePrice };
+      const label = `Me meter: ${expression || formatNumber(meters)} m`;
+      return { mode, option: optionLabel, value: expression || formatNumber(meters), label, price: total, stock, basePrice, meters };
     }
 
     const expression = normalizeCoverExpression(coverSetExpression?.value || optionLabel);
@@ -1601,7 +1637,7 @@
     }
     if(coverDetail && cover){
       coverDetail.textContent = cover.mode === 'meter'
-        ? `${cover.basePrice.toFixed(2)} EUR/m x ${cover.value} m = ${price.toFixed(2)} EUR`
+        ? `${cover.basePrice.toFixed(2)} EUR/m x (${cover.value || '0'} m = ${formatNumber(cover.meters || 0)} m) = ${price.toFixed(2)} EUR`
         : `${cover.option} = ${cover.basePrice.toFixed(2)} EUR, 1 njesi = ${cover.unitPrice.toFixed(2)} EUR, ${cover.value || '-'} = ${price.toFixed(2)} EUR`;
     }
 
@@ -1667,7 +1703,33 @@
     });
   }
 
-  coverMeters?.addEventListener('input', updateUI);
+  addCoverMeter?.addEventListener('click', () => {
+    if(!coverMeterRows) return;
+    const row = document.createElement('div');
+    row.className = 'input-group cover-meter-row';
+    row.innerHTML = `
+      <input type="number" min="0.1" step="0.01" value="" class="form-control cover-meter-input" aria-label="Metra">
+      <button type="button" class="btn btn-outline-danger cover-remove-meter" aria-label="Hiqe metrin">&times;</button>
+    `;
+    coverMeterRows.appendChild(row);
+    syncMeterRemoveButtons();
+    row.querySelector('.cover-meter-input')?.focus();
+    updateUI();
+  });
+
+  coverMeterRows?.addEventListener('input', event => {
+    if(event.target.classList.contains('cover-meter-input')) updateUI();
+  });
+
+  coverMeterRows?.addEventListener('click', event => {
+    const button = event.target.closest('.cover-remove-meter');
+    if(!button) return;
+    button.closest('.cover-meter-row')?.remove();
+    syncMeterRemoveButtons();
+    updateUI();
+  });
+
+  syncMeterRemoveButtons();
   coverSetExpression?.addEventListener('input', () => {
     coverSetExpression.dataset.autofill = '0';
     updateUI();
