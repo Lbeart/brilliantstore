@@ -69,6 +69,7 @@ class ProductController extends Controller
 
             'price'       => 'nullable|numeric|min:0',
             'stock'       => 'nullable|integer|min:0',
+            'cover_meter_price' => 'nullable|numeric|min:0',
             'sizes'       => 'nullable|array',
             'description' => 'nullable|string',
             'is_active'   => 'sometimes|boolean',
@@ -118,7 +119,13 @@ class ProductController extends Controller
         $data['image_path'] = !empty($paths) ? json_encode($paths, JSON_UNESCAPED_SLASHES) : null;
 
         // Normalizo sizes
-        $norm = $this->normalizeSizes($request->input('sizes', []), $data['barcode']);
+        $rawSizes = $this->mergeCoverMeterPrice(
+            $request->input('sizes', []),
+            $request,
+            $data['category'] ?? null,
+            isset($data['stock']) ? (int) $data['stock'] : 0
+        );
+        $norm = $this->normalizeSizes($rawSizes, $data['barcode']);
         $data['sizes'] = !empty($norm) ? $norm : null;
 
         // Derivo price/stock nga sizes
@@ -179,6 +186,7 @@ class ProductController extends Controller
 
             'price'       => 'nullable|numeric|min:0',
             'stock'       => 'nullable|integer|min:0',
+            'cover_meter_price' => 'nullable|numeric|min:0',
             'sizes'       => 'nullable|array',
             'description' => 'nullable|string',
             'is_active'   => 'sometimes|boolean',
@@ -245,7 +253,13 @@ class ProductController extends Controller
         // =========================================
 
         // Normalizo sizes
-        $norm = $this->normalizeSizes($request->input('sizes', []), $data['barcode']);
+        $rawSizes = $this->mergeCoverMeterPrice(
+            $request->input('sizes', []),
+            $request,
+            $data['category'] ?? null,
+            isset($data['stock']) ? (int) $data['stock'] : (int) $product->stock
+        );
+        $norm = $this->normalizeSizes($rawSizes, $data['barcode']);
         $data['sizes'] = !empty($norm) ? $norm : null;
 
         if (!empty($norm)) {
@@ -566,6 +580,52 @@ class ProductController extends Controller
             UPLOAD_ERR_EXTENSION => 'PHP e ndali upload-in e fotos. Provo JPG/PNG/WEBP me te vogel.',
             default => 'Fotoja nuk u pranua nga serveri. Provo JPG/PNG/WEBP me te vogel.',
         };
+    }
+
+    private function mergeCoverMeterPrice(array $sizes, Request $request, ?string $category, int $stock): array
+    {
+        if (($category ?? '') !== 'mbulesa') {
+            return $sizes;
+        }
+
+        $labels = $sizes['label'] ?? [];
+        $prices = $sizes['price'] ?? [];
+        $stocks = $sizes['stock'] ?? [];
+        $barcodes = $sizes['barcode'] ?? [];
+
+        $filtered = [
+            'label' => [],
+            'price' => [],
+            'stock' => [],
+            'barcode' => [],
+        ];
+
+        foreach ($labels as $index => $label) {
+            if ($this->isCoverMeterLabel((string) $label)) {
+                continue;
+            }
+
+            $filtered['label'][] = $label;
+            $filtered['price'][] = $prices[$index] ?? null;
+            $filtered['stock'][] = $stocks[$index] ?? null;
+            $filtered['barcode'][] = $barcodes[$index] ?? null;
+        }
+
+        if ($request->filled('cover_meter_price')) {
+            array_unshift($filtered['label'], 'meter');
+            array_unshift($filtered['price'], $request->input('cover_meter_price'));
+            array_unshift($filtered['stock'], $stock);
+            array_unshift($filtered['barcode'], null);
+        }
+
+        return $filtered;
+    }
+
+    private function isCoverMeterLabel(string $label): bool
+    {
+        $normalized = strtolower(preg_replace('/[\s\-_]+/', '', trim($label)) ?? '');
+
+        return in_array($normalized, ['meter', 'metra', 'meteri', 'memeter', 'm'], true);
     }
 
     private function normalizeSizes(array $sizes, ?string $baseBarcode = null): array

@@ -220,9 +220,8 @@
                     <div class="card-soft p-3">
                         <h6 class="mb-2">Dimensione / opsione</h6>
                         <small class="text-muted d-block mb-3">
-                            Per mbulesa cmimi kryesor perdoret si cmim per meter; nese don cmim tjeter, shto rresht
-                            <strong>meter</strong> me cmimin per meter, p.sh. 8 euro. Per set shto <strong>3+2+1</strong>
-                            me cmimin total te setit, p.sh. 30 euro.
+                            Per mbulesa cakto <strong>Cmimi me meter</strong> ne fushen e vecante, p.sh. 8 euro.
+                            Per set shto <strong>3+2+1</strong> me cmimin total te setit, p.sh. 30 euro.
                             Nese klienti shkruan 3+3+2+1, sistemi e llogarit proporcionalisht: 45 euro.
                         </small>
 
@@ -241,7 +240,32 @@
                             }
                             $sizes = $tmp;
                           }
+
+                          $coverMeterPrice = old('cover_meter_price');
+                          $filteredSizes = [];
+                          foreach($sizes as $s){
+                            $label = trim((string)($s['label'] ?? ''));
+                            $normalized = strtolower(preg_replace('/[\s\-_]+/', '', $label));
+                            if(in_array($normalized, ['meter','metra','meteri','memeter','m'], true)){
+                              if($coverMeterPrice === null || $coverMeterPrice === ''){
+                                $coverMeterPrice = $s['price'] ?? '';
+                              }
+                              continue;
+                            }
+                            $filteredSizes[] = $s;
+                          }
+                          $sizes = $filteredSizes;
                         @endphp
+
+                        <div id="coverMeterPriceWrap" class="row g-2 mb-3" style="{{ $catValue === 'mbulesa' ? '' : 'display:none' }}">
+                          <div class="col-md-4">
+                            <label class="form-label mb-1">Cmimi me meter (€)</label>
+                            <input name="cover_meter_price" type="number" step="0.01" min="0" class="form-control" value="{{ $coverMeterPrice }}" placeholder="p.sh. 8">
+                          </div>
+                          <div class="col-md-8 d-flex align-items-end">
+                            <small class="text-muted">Ky cmim perdoret vetem kur klienti zgjedh me meter. Setet poshte kane cmimin e vet.</small>
+                          </div>
+                        </div>
 
                         <div id="sizesRepeater">
                           @forelse($sizes as $s)
@@ -431,6 +455,7 @@ if(input && wrap){
 const catSel = document.getElementById('categorySelect');
 const subWrap = document.getElementById('subcatWrap');
 const subSel = document.getElementById('subcatSelect');
+const coverMeterPriceWrap = document.getElementById('coverMeterPriceWrap');
 
 if(catSel && subWrap){
   catSel.addEventListener('change', function(){
@@ -439,6 +464,10 @@ if(catSel && subWrap){
     }else{
       subWrap.style.display = 'none';
       if(subSel) subSel.value = '';
+    }
+
+    if(coverMeterPriceWrap){
+      coverMeterPriceWrap.style.display = this.value === 'mbulesa' ? '' : 'none';
     }
   });
 }
