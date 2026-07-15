@@ -35,6 +35,14 @@
       ->filter(fn ($variant) => $variant['name'] !== '')
       ->values();
 
+    $initialColorVariant = $colorVariants->first();
+    $initialColorName = $initialColorVariant['name'] ?? null;
+    $initialColorImageUrl = $initialColorVariant['image_url'] ?? null;
+    if ($initialColorImageUrl) {
+      $mainImageUrl = $initialColorImageUrl;
+    }
+    $colorImageUrls = $colorVariants->pluck('image_url')->filter()->unique()->values();
+
     $pageCategory = trim($product->category ?? 'Produkt');
     $cleanDescription = trim(strip_tags($product->description ?? ''));
     if ($cleanDescription === '') {
@@ -92,6 +100,11 @@
   <meta name="description" content="{{ $metaDesc }}">
   <link rel="canonical" href="{{ $pageUrl }}">
   <link rel="preload" as="image" href="{{ $mainImageUrl }}" fetchpriority="high">
+  @foreach($colorImageUrls->take(6) as $colorImageUrl)
+    @if($colorImageUrl !== $mainImageUrl)
+      <link rel="preload" as="image" href="{{ $colorImageUrl }}">
+    @endif
+  @endforeach
   <meta property="og:type" content="product">
   <meta property="og:site_name" content="B-Brillant">
   <meta property="og:locale" content="sq_AL">
@@ -197,6 +210,7 @@
       margin-top:12px;
     }
     .thumb-btn{
+      position:relative;
       width:82px;
       height:82px;
       border:1px solid #e5e7eb;
@@ -217,6 +231,19 @@
     .thumb-btn.active{
       border-color:rgba(220,53,69,.45);
       box-shadow:0 10px 22px rgba(220,53,69,.10);
+    }
+    .thumb-btn.color-thumb{
+      border-color:#fecdd3;
+    }
+    .thumb-color-dot{
+      position:absolute;
+      right:6px;
+      bottom:6px;
+      width:16px;
+      height:16px;
+      border-radius:999px;
+      border:2px solid #fff;
+      box-shadow:0 2px 8px rgba(0,0,0,.18);
     }
 
     /* PRODUCT INFO SIDE */
@@ -1077,16 +1104,29 @@
       </div>
 
       {{-- ✅ thumbnails poshtë fotos --}}
-      @if(count($imageUrls) > 1)
+      @if(count($imageUrls) > 1 || $colorImageUrls->count())
         <div class="thumb-row" aria-label="Fotot e produktit">
           @foreach($imageUrls as $i => $imgUrl)
-  <button type="button"
-    class="thumb-btn {{ $i === 0 ? 'active' : '' }}"
-    data-product-image="{{ $imgUrl }}">
+            <button type="button"
+              class="thumb-btn {{ (!$initialColorImageUrl && $i === 0) ? 'active' : '' }}"
+              data-product-image="{{ $imgUrl }}">
+              <img src="{{ $imgUrl }}" alt="thumb {{ $i+1 }}" loading="lazy" decoding="async" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+            </button>
+          @endforeach
 
-    <img src="{{ $imgUrl }}" alt="thumb {{ $i+1 }}" loading="lazy" decoding="async" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
-  </button>
-@endforeach
+          @foreach($colorVariants as $variant)
+            @if(!empty($variant['image_url']))
+              <button type="button"
+                class="thumb-btn color-thumb {{ ($variant['name'] ?? '') === ($initialColorName ?? '') ? 'active' : '' }}"
+                data-product-image="{{ $variant['image_url'] }}"
+                data-color-name="{{ $variant['name'] }}"
+                title="Ngjyra: {{ $variant['name'] }}"
+                aria-label="Ngjyra {{ $variant['name'] }}">
+                <img src="{{ $variant['image_url'] }}" alt="Ngjyra {{ $variant['name'] }}" loading="eager" decoding="async" fetchpriority="low" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+                <span class="thumb-color-dot" style="background: {{ $variant['hex'] }}"></span>
+              </button>
+            @endif
+          @endforeach
         </div>
       @endif
     </div>
@@ -1179,12 +1219,13 @@
           <div class="dim-title">Ngjyra</div>
           <div class="color-grid" id="colorOptions" role="radiogroup" aria-label="Zgjidh ngjyren">
             @foreach($colorVariants as $i => $variant)
+              @php $isActiveColor = ($variant['name'] ?? '') === ($initialColorName ?? ''); @endphp
               <button
                 type="button"
-                class="color-option {{ $i === 0 ? 'active' : '' }}"
+                class="color-option {{ $isActiveColor ? 'active' : '' }}"
                 data-color-name="{{ $variant['name'] }}"
                 data-color-image="{{ $variant['image_url'] }}"
-                aria-checked="{{ $i === 0 ? 'true' : 'false' }}"
+                aria-checked="{{ $isActiveColor ? 'true' : 'false' }}"
               >
                 <span class="color-swatch" style="background: {{ $variant['hex'] }}"></span>
                 <span>{{ $variant['name'] }}</span>
@@ -1583,6 +1624,13 @@
   const basePriceDefault = parseFloat({{ json_encode((float)$product->price) }});
   const baseStockDefault = parseInt({{ json_encode((int)($product->stock ?? 0)) }},10) || 0;
   const isCurtainProduct = {{ $isCurtain ? 'true' : 'false' }};
+  const colorImageUrls = @json($colorImageUrls->values());
+  colorImageUrls.forEach(src => {
+    if(!src) return;
+    const preloaded = new Image();
+    preloaded.decoding = 'async';
+    preloaded.src = src;
+  });
 
   function getActivePill(){
     if(!pills.length) return null;
@@ -1610,6 +1658,35 @@
   function syncCurtainColor(){
     if(curtainColorInput) curtainColorInput.value = selectedColorName();
   }
+
+  function activateColorName(colorName){
+    if(!colorName || !colorOptions.length) return;
+    colorOptions.forEach(btn => {
+      const active = (btn.dataset.colorName || '') === colorName;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-checked', active ? 'true' : 'false');
+    });
+    syncCurtainColor();
+  }
+
+  function colorThumbFor(colorName, src){
+    return Array.from(document.querySelectorAll('.thumb-btn[data-color-name]')).find(btn => {
+      const sameColor = (btn.dataset.colorName || '') === colorName;
+      const sameImage = !src || (btn.dataset.productImage || '') === src;
+      return sameColor && sameImage;
+    }) || null;
+  }
+
+  function refreshColorUi(){
+    syncCurtainColor();
+    updateUI();
+    if(typeof window.updateCurtainWhatsapp === 'function'){
+      window.updateCurtainWhatsapp();
+    }
+  }
+
+  window.activateProductColorName = activateColorName;
+  window.refreshProductColorUi = refreshColorUi;
 
   function getActiveCoverOption(){
     if(!coverOptions.length) return null;
@@ -1922,29 +1999,22 @@
   if(colorOptions.length){
     colorOptions.forEach(btn => {
       btn.addEventListener('click', () => {
-        colorOptions.forEach(b => {
-          b.classList.remove('active');
-          b.setAttribute('aria-checked', 'false');
-        });
-        btn.classList.add('active');
-        btn.setAttribute('aria-checked', 'true');
-
+        const colorName = btn.dataset.colorName || '';
         const src = btn.dataset.colorImage || '';
-        if(src) window.setMainImg(src, null);
+        activateColorName(colorName);
 
-        syncCurtainColor();
-        updateUI();
-
-        if(typeof window.updateCurtainWhatsapp === 'function'){
-          window.updateCurtainWhatsapp();
-        }
+        if(src) window.setMainImg(src, colorThumbFor(colorName, src));
+        refreshColorUi();
       });
     });
   }
 
   document.querySelectorAll('.thumb-btn[data-product-image]').forEach(btn => {
     btn.addEventListener('click', () => {
+      const colorName = btn.dataset.colorName || '';
+      if(colorName) activateColorName(colorName);
       window.setMainImg(btn.dataset.productImage, btn);
+      refreshColorUi();
     });
   });
 
@@ -2185,7 +2255,13 @@ updateCurtainWhatsapp();
     idx = (idx + btns.length) % btns.length;
     const btn = btns[idx];
     const src = btn.dataset.productImage || btn.querySelector('img')?.getAttribute('src');
+    if(btn.dataset.colorName && typeof window.activateProductColorName === 'function'){
+      window.activateProductColorName(btn.dataset.colorName);
+    }
     window.setMainImg(src, btn);
+    if(typeof window.refreshProductColorUi === 'function'){
+      window.refreshProductColorUi();
+    }
   }
 
   const hero = document.querySelector('.product-hero');

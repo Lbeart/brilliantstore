@@ -402,6 +402,7 @@ class ProductController extends Controller
         try {
             $this->ensureDirectory($path);
             $img->move($path, $filename);
+            $this->writeOptimizedCache($path . DIRECTORY_SEPARATOR . $filename, 'images/' . $dbPath);
 
             return $dbPath;
         } catch (\Throwable $e) {
