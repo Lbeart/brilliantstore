@@ -16,7 +16,13 @@
     // ✅ IMAGES: image_path mund të jetë JSON array ose string e vjetër
     $imageUrls = \App\Support\ProductImages::urls($product->image_path ?? null, asset('images/placeholder-product.png'), $product);
     $mainImageUrl = $imageUrls[0] ?? asset('images/placeholder-product.png');
-    $colorVariants = collect(is_array($product->color_variants ?? null) ? $product->color_variants : [])
+    $rawColorVariants = $product->color_variants ?? [];
+    if (is_string($rawColorVariants)) {
+      $decodedColorVariants = json_decode($rawColorVariants, true);
+      $rawColorVariants = is_array($decodedColorVariants) ? $decodedColorVariants : [];
+    }
+
+    $colorVariants = collect(is_array($rawColorVariants) ? $rawColorVariants : [])
       ->map(function ($variant) use ($product) {
         $imagePath = $variant['image_path'] ?? null;
 

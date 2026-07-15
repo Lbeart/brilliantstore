@@ -332,7 +332,12 @@
                               ];
                             }
                           } else {
-                            $colorVariants = is_array($product->color_variants ?? null) ? $product->color_variants : [];
+                            $colorVariants = $product->color_variants ?? [];
+                            if(is_string($colorVariants)){
+                              $decodedColorVariants = json_decode($colorVariants, true);
+                              $colorVariants = is_array($decodedColorVariants) ? $decodedColorVariants : [];
+                            }
+                            $colorVariants = is_array($colorVariants) ? $colorVariants : [];
                           }
                         @endphp
 
