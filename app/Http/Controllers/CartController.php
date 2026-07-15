@@ -239,7 +239,8 @@ class CartController extends Controller
     private function productImageForColor(Product $product, ?string $colorLabel): string
     {
         $variant = $this->findColorVariant($product, $colorLabel);
-        $imagePath = $variant['image_path'] ?? null;
+        $variantImages = $variant ? ProductImages::decode($variant['image_paths'] ?? ($variant['image_path'] ?? null)) : [];
+        $imagePath = $variantImages[0] ?? null;
 
         if (!empty($imagePath)) {
             return ProductImages::url($imagePath, asset('images/placeholder-product.png'), $product);

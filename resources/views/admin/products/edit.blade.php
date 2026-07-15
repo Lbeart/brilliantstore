@@ -317,7 +317,7 @@
                     <div class="card-soft p-3">
                         <h6 class="mb-2">Ngjyrat / variantet</h6>
                         <small class="text-muted d-block mb-3">
-                            Shto ngjyra kur produkti ka te njejtin dizajn, por foto/ngjyre tjeter. Klienti e zgjedh ngjyren dhe fotoja nderrohet.
+                            Shto ngjyra kur produkti ka te njejtin dizajn, por foto/ngjyre tjeter. Per nje ngjyre mundesh me mbajt 2-3 foto.
                         </small>
 
                         @php
@@ -325,10 +325,17 @@
                           if(is_array($oldColorInput) && isset($oldColorInput['name'])){
                             $colorVariants = [];
                             foreach(($oldColorInput['name'] ?? []) as $i => $name){
+                              $oldImages = $oldColorInput['existing_images'][$i] ?? [];
+                              if(!is_array($oldImages)) $oldImages = [$oldImages];
+                              if(empty($oldImages) && !empty($oldColorInput['existing_image'][$i] ?? null)){
+                                $oldImages = [$oldColorInput['existing_image'][$i]];
+                              }
+
                               $colorVariants[] = [
                                 'name' => $name,
                                 'hex' => $oldColorInput['hex'][$i] ?? '#d1d5db',
-                                'image_path' => $oldColorInput['existing_image'][$i] ?? null,
+                                'image_paths' => $oldImages,
+                                'image_path' => $oldImages[0] ?? null,
                               ];
                             }
                           } else {
@@ -344,8 +351,14 @@
                         <div id="colorVariantsRepeater">
                           @forelse($colorVariants as $variant)
                             @php
-                              $variantImage = $variant['image_path'] ?? null;
-                              $variantImageUrl = $variantImage ? \App\Support\ProductImages::url($variantImage, $placeholder, $product) : null;
+                              $rowIndex = $loop->index;
+                              $variantImages = \App\Support\ProductImages::decode($variant['image_paths'] ?? ($variant['image_path'] ?? null));
+                              $variantImageUrls = collect($variantImages)
+                                ->map(fn($imagePath) => [
+                                  'path' => $imagePath,
+                                  'url' => \App\Support\ProductImages::url($imagePath, $placeholder, $product),
+                                ])
+                                ->values();
                             @endphp
                             <div class="row g-2 align-items-end mb-2 color-variant-row">
                               <div class="col-md-3">
@@ -356,20 +369,30 @@
                                 <label class="form-label mb-1">Ngjyra</label>
                                 <input name="color_variants[hex][]" type="color" class="form-control form-control-color" value="{{ $variant['hex'] ?? '#d1d5db' }}">
                               </div>
-                              <div class="col-md-2">
+                              <div class="col-md-3">
                                 <label class="form-label mb-1">Aktuale</label>
-                                @if($variantImageUrl)
-                                  <img src="{{ $variantImageUrl }}" alt="{{ $variant['name'] ?? 'Ngjyra' }}" style="width:58px;height:58px;object-fit:cover;border-radius:10px;border:1px solid #e5e7eb;">
+                                @if($variantImageUrls->count())
+                                  <div class="img-grid">
+                                    @foreach($variantImageUrls as $variantImage)
+                                      <div class="img-box existing-item" style="width:58px;height:58px;">
+                                        <img src="{{ $variantImage['url'] }}" alt="{{ $variant['name'] ?? 'Ngjyra' }}">
+                                        <input type="hidden" name="color_variants[existing_images][{{ $rowIndex }}][]" value="{{ $variantImage['path'] }}">
+                                        <button type="button" class="img-remove remove-existing" title="Hiqe">
+                                          <i class="fa fa-times"></i>
+                                        </button>
+                                      </div>
+                                    @endforeach
+                                  </div>
                                 @else
                                   <div class="text-muted small">Pa foto</div>
                                 @endif
-                                <input type="hidden" name="color_variants[existing_image][]" value="{{ $variantImage }}">
                               </div>
                               <div class="col-md-3">
-                                <label class="form-label mb-1">Foto e re</label>
-                                <input name="color_variant_images[]" type="file" class="form-control" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+                                <label class="form-label mb-1">Foto te reja</label>
+                                <input name="color_variant_images[{{ $rowIndex }}][]" type="file" class="form-control" multiple accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+                                <small class="text-muted">Shto disa foto per kete ngjyre.</small>
                               </div>
-                              <div class="col-md-2 text-end">
+                              <div class="col-md-1 text-end">
                                 <button type="button" class="btn btn-outline-danger remove-color-variant">Fshi</button>
                               </div>
                             </div>
@@ -383,16 +406,16 @@
                                 <label class="form-label mb-1">Ngjyra</label>
                                 <input name="color_variants[hex][]" type="color" class="form-control form-control-color" value="#d1d5db">
                               </div>
-                              <div class="col-md-2">
+                              <div class="col-md-3">
                                 <label class="form-label mb-1">Aktuale</label>
                                 <div class="text-muted small">Pa foto</div>
-                                <input type="hidden" name="color_variants[existing_image][]" value="">
                               </div>
                               <div class="col-md-3">
-                                <label class="form-label mb-1">Foto e re</label>
-                                <input name="color_variant_images[]" type="file" class="form-control" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+                                <label class="form-label mb-1">Foto te reja</label>
+                                <input name="color_variant_images[0][]" type="file" class="form-control" multiple accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+                                <small class="text-muted">Shto disa foto per kete ngjyre.</small>
                               </div>
-                              <div class="col-md-2 text-end">
+                              <div class="col-md-1 text-end">
                                 <button type="button" class="btn btn-outline-danger remove-color-variant">Fshi</button>
                               </div>
                             </div>
@@ -480,6 +503,18 @@
 @include('admin.products.partials.image-compressor')
 
 <script>
+function reindexColorVariantRows(){
+  document.querySelectorAll('#colorVariantsRepeater .color-variant-row').forEach((row, index) => {
+    row.querySelectorAll('input[type="file"][name^="color_variant_images"]').forEach(input => {
+      input.name = `color_variant_images[${index}][]`;
+    });
+
+    row.querySelectorAll('input[type="hidden"][name^="color_variants[existing_images]"]').forEach(input => {
+      input.name = `color_variants[existing_images][${index}][]`;
+    });
+  });
+}
+
 // repeater për size
 document.addEventListener('click', function(e){
   if(e.target.id === 'addSize'){
@@ -510,6 +545,7 @@ document.addEventListener('click', function(e){
   }
   if(e.target.id === 'addColorVariant'){
     const wrap = document.getElementById('colorVariantsRepeater');
+    const index = wrap ? wrap.querySelectorAll('.color-variant-row').length : 0;
     const row = document.createElement('div');
     row.className = 'row g-2 align-items-end mb-2 color-variant-row';
     row.innerHTML = `
@@ -521,22 +557,24 @@ document.addEventListener('click', function(e){
         <label class="form-label mb-1">Ngjyra</label>
         <input name="color_variants[hex][]" type="color" class="form-control form-control-color" value="#d1d5db">
       </div>
-      <div class="col-md-2">
+      <div class="col-md-3">
         <label class="form-label mb-1">Aktuale</label>
         <div class="text-muted small">Pa foto</div>
-        <input type="hidden" name="color_variants[existing_image][]" value="">
       </div>
       <div class="col-md-3">
-        <label class="form-label mb-1">Foto e re</label>
-        <input name="color_variant_images[]" type="file" class="form-control" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+        <label class="form-label mb-1">Foto te reja</label>
+        <input name="color_variant_images[${index}][]" type="file" class="form-control" multiple accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+        <small class="text-muted">Shto disa foto per kete ngjyre.</small>
       </div>
-      <div class="col-md-2 text-end">
+      <div class="col-md-1 text-end">
         <button type="button" class="btn btn-outline-danger remove-color-variant">Fshi</button>
       </div>`;
     wrap.appendChild(row);
+    reindexColorVariantRows();
   }
   if(e.target.classList.contains('remove-color-variant')){
     e.target.closest('.color-variant-row')?.remove();
+    reindexColorVariantRows();
   }
 });
 

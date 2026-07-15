@@ -24,12 +24,17 @@
 
     $colorVariants = collect(is_array($rawColorVariants) ? $rawColorVariants : [])
       ->map(function ($variant) use ($product) {
-        $imagePath = $variant['image_path'] ?? null;
+        $imagePaths = \App\Support\ProductImages::decode($variant['image_paths'] ?? ($variant['image_path'] ?? null));
+        $imageUrls = collect(\App\Support\ProductImages::urls($imagePaths, null, $product))
+          ->filter()
+          ->unique()
+          ->values();
 
         return [
           'name' => trim((string)($variant['name'] ?? '')),
           'hex' => $variant['hex'] ?? '#d1d5db',
-          'image_url' => $imagePath ? \App\Support\ProductImages::url($imagePath, null, $product) : null,
+          'image_url' => $imageUrls->first(),
+          'image_urls' => $imageUrls,
         ];
       })
       ->filter(fn ($variant) => $variant['name'] !== '')
@@ -41,7 +46,11 @@
     if ($initialColorImageUrl) {
       $mainImageUrl = $initialColorImageUrl;
     }
-    $colorImageUrls = $colorVariants->pluck('image_url')->filter()->unique()->values();
+    $colorImageUrls = $colorVariants
+      ->flatMap(fn ($variant) => $variant['image_urls'] ?? [])
+      ->filter()
+      ->unique()
+      ->values();
 
     $pageCategory = trim($product->category ?? 'Produkt');
     $cleanDescription = trim(strip_tags($product->description ?? ''));
@@ -1115,17 +1124,19 @@
           @endforeach
 
           @foreach($colorVariants as $variant)
-            @if(!empty($variant['image_url']))
-              <button type="button"
-                class="thumb-btn color-thumb {{ ($variant['name'] ?? '') === ($initialColorName ?? '') ? 'active' : '' }}"
-                data-product-image="{{ $variant['image_url'] }}"
-                data-color-name="{{ $variant['name'] }}"
-                title="Ngjyra: {{ $variant['name'] }}"
-                aria-label="Ngjyra {{ $variant['name'] }}">
-                <img src="{{ $variant['image_url'] }}" alt="Ngjyra {{ $variant['name'] }}" loading="eager" decoding="async" fetchpriority="low" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
-                <span class="thumb-color-dot" style="background: {{ $variant['hex'] }}"></span>
-              </button>
-            @endif
+            @foreach(($variant['image_urls'] ?? []) as $variantImageIndex => $variantImageUrl)
+              @if(!empty($variantImageUrl))
+                <button type="button"
+                  class="thumb-btn color-thumb {{ (($variant['name'] ?? '') === ($initialColorName ?? '') && $variantImageIndex === 0) ? 'active' : '' }}"
+                  data-product-image="{{ $variantImageUrl }}"
+                  data-color-name="{{ $variant['name'] }}"
+                  title="Ngjyra: {{ $variant['name'] }}"
+                  aria-label="Ngjyra {{ $variant['name'] }} foto {{ $variantImageIndex + 1 }}">
+                  <img src="{{ $variantImageUrl }}" alt="Ngjyra {{ $variant['name'] }} foto {{ $variantImageIndex + 1 }}" loading="eager" decoding="async" fetchpriority="low" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+                  <span class="thumb-color-dot" style="background: {{ $variant['hex'] }}"></span>
+                </button>
+              @endif
+            @endforeach
           @endforeach
         </div>
       @endif

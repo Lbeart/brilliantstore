@@ -84,7 +84,8 @@ class ProductController extends Controller
             'color_variants.hex' => 'nullable|array',
             'color_variants.hex.*' => ['nullable', 'string', 'max:20', 'regex:/^#?[A-Fa-f0-9]{3,8}$/'],
             'color_variant_images' => 'nullable|array',
-            'color_variant_images.*' => 'nullable|file|max:40960',
+            'color_variant_images.*' => 'nullable|array',
+            'color_variant_images.*.*' => 'nullable|file|max:40960',
 
             'sku'         => 'nullable|alpha_dash|unique:products,sku',
             'barcode'     => ['nullable', 'string', 'max:80', 'regex:/^[A-Za-z0-9._-]+$/', 'unique:products,barcode'],
@@ -223,8 +224,12 @@ class ProductController extends Controller
             'color_variants.hex.*' => ['nullable', 'string', 'max:20', 'regex:/^#?[A-Fa-f0-9]{3,8}$/'],
             'color_variants.existing_image' => 'nullable|array',
             'color_variants.existing_image.*' => 'nullable|string',
+            'color_variants.existing_images' => 'nullable|array',
+            'color_variants.existing_images.*' => 'nullable|array',
+            'color_variants.existing_images.*.*' => 'nullable|string',
             'color_variant_images' => 'nullable|array',
-            'color_variant_images.*' => 'nullable|file|max:40960',
+            'color_variant_images.*' => 'nullable|array',
+            'color_variant_images.*.*' => 'nullable|file|max:40960',
 
             'existing_images'   => 'nullable|array',
             'existing_images.*' => 'string',
@@ -347,6 +352,9 @@ class ProductController extends Controller
 
         foreach ($this->decodeColorVariants($product->color_variants) as $variant) {
             $this->deleteImagePath($variant['image_path'] ?? null);
+            foreach ($this->decodeImagePaths($variant['image_paths'] ?? null) as $variantImage) {
+                $this->deleteImagePath($variantImage);
+            }
         }
 
         $product->delete();
@@ -629,38 +637,83 @@ class ProductController extends Controller
         $input = $request->input('color_variants', []);
         $names = $input['name'] ?? [];
         $hexes = $input['hex'] ?? [];
-        $existingImages = $input['existing_image'] ?? [];
+        $existingImages = $input['existing_images'] ?? [];
+        $legacyExistingImages = $input['existing_image'] ?? [];
         $files = $request->file('color_variant_images', []);
 
         if ($files instanceof \Illuminate\Http\UploadedFile) {
-            $files = [$files];
+            $files = [[$files]];
         }
 
-        $oldImages = collect($this->decodeColorVariants($product?->color_variants))
-            ->pluck('image_path')
-            ->filter()
-            ->values()
-            ->all();
+        $oldImages = [];
+        foreach ($this->decodeColorVariants($product?->color_variants) as $variant) {
+            foreach ($this->decodeImagePaths($variant['image_paths'] ?? null) as $imagePath) {
+                $oldImages[] = $imagePath;
+            }
+
+            if (!empty($variant['image_path'])) {
+                $oldImages[] = $variant['image_path'];
+            }
+        }
+        $oldImages = array_values(array_unique(array_filter($oldImages)));
 
         $variants = [];
         $keptImages = [];
-        $rowCount = max(count($names), count($hexes), count($existingImages), is_array($files) ? count($files) : 0);
+        $rowCount = max(
+            count($names),
+            count($hexes),
+            count($existingImages),
+            count($legacyExistingImages),
+            is_array($files) ? count($files) : 0
+        );
 
         for ($index = 0; $index < $rowCount; $index++) {
             $name = trim((string) ($names[$index] ?? ''));
             $hex = $this->normalizeHexColor((string) ($hexes[$index] ?? ''));
-            $imagePath = trim((string) ($existingImages[$index] ?? ''));
-            $file = is_array($files) ? ($files[$index] ?? null) : null;
+            $imagePaths = [];
 
-            if (is_object($file) && method_exists($file, 'isValid') && $file->isValid()) {
-                if ($imagePath !== '') {
-                    $this->deleteImagePath($imagePath);
-                }
-
-                $imagePath = $this->saveUploadedImage($file);
+            $rowExistingImages = $existingImages[$index] ?? [];
+            if (!is_array($rowExistingImages)) {
+                $rowExistingImages = [$rowExistingImages];
             }
 
-            if ($name === '' && $imagePath === '') {
+            foreach ($rowExistingImages as $existingImage) {
+                $existingImage = trim((string) $existingImage);
+                if ($existingImage !== '') {
+                    $imagePaths[] = $existingImage;
+                }
+            }
+
+            $legacyImage = trim((string) ($legacyExistingImages[$index] ?? ''));
+            if ($legacyImage !== '') {
+                $imagePaths[] = $legacyImage;
+            }
+
+            $rowFiles = is_array($files) ? ($files[$index] ?? []) : [];
+            if ($rowFiles instanceof \Illuminate\Http\UploadedFile) {
+                $rowFiles = [$rowFiles];
+            }
+            if (!is_array($rowFiles)) {
+                $rowFiles = [];
+            }
+
+            foreach ($rowFiles as $file) {
+                if (!is_object($file) || !method_exists($file, 'isValid')) {
+                    continue;
+                }
+
+                if (!$file->isValid()) {
+                    throw ValidationException::withMessages([
+                        'color_variant_images' => $this->uploadErrorMessage((int) $file->getError()),
+                    ]);
+                }
+
+                $imagePaths[] = $this->saveUploadedImage($file);
+            }
+
+            $imagePaths = array_values(array_unique(array_filter($imagePaths)));
+
+            if ($name === '' && empty($imagePaths)) {
                 continue;
             }
 
@@ -671,17 +724,16 @@ class ProductController extends Controller
             $variant = [
                 'name' => $name,
                 'hex' => $hex ?: '#d1d5db',
-                'image_path' => $imagePath ?: null,
+                'image_path' => $imagePaths[0] ?? null,
+                'image_paths' => $imagePaths,
             ];
 
             $variants[] = $variant;
 
-            if (!empty($variant['image_path'])) {
-                $keptImages[] = $variant['image_path'];
-            }
+            $keptImages = array_merge($keptImages, $imagePaths);
         }
 
-        foreach (array_diff($oldImages, $keptImages) as $removedImage) {
+        foreach (array_diff($oldImages, array_values(array_unique($keptImages))) as $removedImage) {
             $this->deleteImagePath($removedImage);
         }
 

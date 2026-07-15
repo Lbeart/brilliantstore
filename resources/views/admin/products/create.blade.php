@@ -263,11 +263,12 @@
                   <div class="card-body">
                     <h6 class="mb-2">Ngjyrat / variantet</h6>
                     <small class="text-muted d-block mb-3">
-                      Shto ngjyra kur produkti ka te njejtin dizajn, por foto/ngjyre tjeter. Klienti e zgjedh ngjyren dhe fotoja nderrohet.
+                      Shto ngjyra kur produkti ka te njejtin dizajn, por foto/ngjyre tjeter. Per nje ngjyre mundesh me zgjedh 2-3 foto.
                     </small>
 
                     <div id="colorVariantsRepeater">
                       @forelse($colorVariants as $variant)
+                        @php $rowIndex = $loop->index; @endphp
                         <div class="row g-2 align-items-end mb-2 color-variant-row">
                           <div class="col-md-3">
                             <label class="form-label mb-1">Emri ngjyres</label>
@@ -278,8 +279,9 @@
                             <input name="color_variants[hex][]" type="color" class="form-control form-control-color" value="{{ $variant['hex'] ?? '#d1d5db' }}">
                           </div>
                           <div class="col-md-5">
-                            <label class="form-label mb-1">Foto per kete ngjyre</label>
-                            <input name="color_variant_images[]" type="file" class="form-control" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+                            <label class="form-label mb-1">Fotot per kete ngjyre</label>
+                            <input name="color_variant_images[{{ $rowIndex }}][]" type="file" class="form-control" multiple accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+                            <small class="text-muted">Mundesh me zgjedh disa foto per te njejten ngjyre.</small>
                           </div>
                           <div class="col-md-2 text-end">
                             <button type="button" class="btn btn-outline-danger remove-color-variant">Fshi</button>
@@ -296,8 +298,9 @@
                             <input name="color_variants[hex][]" type="color" class="form-control form-control-color" value="#d1d5db">
                           </div>
                           <div class="col-md-5">
-                            <label class="form-label mb-1">Foto per kete ngjyre</label>
-                            <input name="color_variant_images[]" type="file" class="form-control" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+                            <label class="form-label mb-1">Fotot per kete ngjyre</label>
+                            <input name="color_variant_images[0][]" type="file" class="form-control" multiple accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+                            <small class="text-muted">Mundesh me zgjedh disa foto per te njejten ngjyre.</small>
                           </div>
                           <div class="col-md-2 text-end">
                             <button type="button" class="btn btn-outline-danger remove-color-variant">Fshi</button>
@@ -345,6 +348,14 @@
 @include('admin.products.partials.image-compressor')
 
 <script>
+function reindexColorVariantRows(){
+  document.querySelectorAll('#colorVariantsRepeater .color-variant-row').forEach((row, index) => {
+    row.querySelectorAll('input[type="file"][name^="color_variant_images"]').forEach(input => {
+      input.name = `color_variant_images[${index}][]`;
+    });
+  });
+}
+
 /* Repeater i dimensioneve */
 document.addEventListener('click', function(e){
   if(e.target && e.target.id === 'addSize'){
@@ -375,6 +386,7 @@ document.addEventListener('click', function(e){
   }
   if(e.target && e.target.id === 'addColorVariant'){
     const wrap = document.getElementById('colorVariantsRepeater');
+    const index = wrap ? wrap.querySelectorAll('.color-variant-row').length : 0;
     const row = document.createElement('div');
     row.className = 'row g-2 align-items-end mb-2 color-variant-row';
     row.innerHTML = `
@@ -387,16 +399,19 @@ document.addEventListener('click', function(e){
         <input name="color_variants[hex][]" type="color" class="form-control form-control-color" value="#d1d5db">
       </div>
       <div class="col-md-5">
-        <label class="form-label mb-1">Foto per kete ngjyre</label>
-        <input name="color_variant_images[]" type="file" class="form-control" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+        <label class="form-label mb-1">Fotot per kete ngjyre</label>
+        <input name="color_variant_images[${index}][]" type="file" class="form-control" multiple accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+        <small class="text-muted">Mundesh me zgjedh disa foto per te njejten ngjyre.</small>
       </div>
       <div class="col-md-2 text-end">
         <button type="button" class="btn btn-outline-danger remove-color-variant">Fshi</button>
       </div>`;
     wrap.appendChild(row);
+    reindexColorVariantRows();
   }
   if(e.target && e.target.classList.contains('remove-color-variant')){
     e.target.closest('.color-variant-row')?.remove();
+    reindexColorVariantRows();
   }
 });
 
