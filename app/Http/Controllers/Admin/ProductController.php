@@ -519,9 +519,16 @@ class ProductController extends Controller
             'optimized-cache/' . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, ltrim($publicRelativePath, '/')) . '.jpg'
         );
 
-        $this->ensureDirectory(dirname($cachePath));
-
         try {
+            $cacheDir = dirname($cachePath);
+            if (!is_dir($cacheDir) && !mkdir($cacheDir, 0775, true) && !is_dir($cacheDir)) {
+                return;
+            }
+
+            if (!is_writable($cacheDir)) {
+                return;
+            }
+
             Image::make($sourcePath)
                 ->orientate()
                 ->resize(1100, 1100, function ($constraint) {
