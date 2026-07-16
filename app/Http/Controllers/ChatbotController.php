@@ -25,7 +25,7 @@ class ChatbotController extends Controller
             'history' => ['sometimes', 'array', 'max:8'],
             'history.*.role' => ['required_with:history', 'in:user,assistant'],
             'history.*.content' => ['required_with:history', 'string', 'max:600'],
-            'context_product_ids' => ['sometimes', 'array', 'max:5'],
+            'context_product_ids' => ['sometimes', 'array', 'max:30'],
             'context_product_ids.*' => ['integer', 'min:1'],
         ]);
 

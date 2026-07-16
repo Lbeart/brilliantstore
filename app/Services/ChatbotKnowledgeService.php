@@ -10,7 +10,9 @@ use Throwable;
 
 class ChatbotKnowledgeService
 {
-    private const PRODUCT_LIMIT = 5;
+    // Mjafton për ta kthyer koleksionin real pa fshehur rezultatet pas pesë
+    // kartave të para, por mbron përgjigjen nga katalogë jashtëzakonisht të mëdhenj.
+    private const PRODUCT_LIMIT = 30;
 
     public function build(
         string $message,

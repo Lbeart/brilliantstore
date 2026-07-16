@@ -2422,7 +2422,7 @@
         if (!chatBody || !Array.isArray(products) || !products.length) return;
         const grid = document.createElement('div');
         grid.className = 'chat-product-grid';
-        products.slice(0, 5).forEach(function (product) {
+        products.forEach(function (product) {
           const card = document.createElement('a');
           card.className = 'chat-product-card';
           card.href = product.url;
@@ -2527,7 +2527,7 @@
           appendChatMessage(reply, 'assistant', data.action || null);
           appendChatProducts(data.products || []);
           if (Array.isArray(data.products) && data.products.length) {
-            lastChatProductIds = data.products.map(function (product) { return Number(product.id); }).filter(Number.isInteger).slice(0, 5);
+            lastChatProductIds = data.products.map(function (product) { return Number(product.id); }).filter(Number.isInteger).slice(0, 30);
           }
           chatHistory.push({ role: 'assistant', content: reply });
         } catch (error) {

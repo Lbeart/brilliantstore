@@ -247,6 +247,40 @@ class ChatbotCatalogTest extends TestCase
         $this->assertSame($rail->id, $railResponse->json('products.0.id'));
     }
 
+    public function test_dimension_search_returns_every_matching_active_rug_not_only_the_first_five(): void
+    {
+        $matchingIds = [];
+
+        foreach (range(1, 8) as $index) {
+            $matchingIds[] = $this->product([
+                'name' => 'Tepih Model '.$index,
+                'category' => 'tepiha',
+                'sizes' => [
+                    ['label' => '150x230', 'price' => 60 + $index, 'stock' => 2],
+                    ['label' => $index % 2 === 0 ? '200 x 300 cm' : '300x200', 'price' => 100 + $index, 'stock' => 3],
+                ],
+            ])->id;
+        }
+
+        $this->product([
+            'name' => 'Tepih Pa Përputhje',
+            'category' => 'tepiha',
+            'sizes' => [['label' => '120x180', 'price' => 40, 'stock' => 3]],
+        ]);
+
+        $response = $this->postJson(route('chatbot.message'), ['message' => 'A keni tepiha 300x200?'])
+            ->assertOk()
+            ->assertJsonCount(8, 'products');
+
+        $this->assertEqualsCanonicalizing($matchingIds, $response->json('products.*.id'));
+        foreach ($response->json('products') as $product) {
+            $this->assertSame('300x200', str_replace([' ', 'cm'], '', $product['matched_size']['label']) === '200x300'
+                ? '300x200'
+                : $product['matched_size']['label']);
+            $this->assertTrue($product['requested_size_confirmed']);
+        }
+    }
+
     public function test_ai_reply_with_an_invented_price_is_rejected(): void
     {
         config(['services.openai.key' => 'test-key']);
