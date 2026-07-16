@@ -200,7 +200,15 @@ class ChatbotKnowledgeService
             }
 
             foreach ($dimensions as $dimensionSet) {
-                if (! collect($dimensionSet)->contains(fn (string $needle) => str_contains($fields['dimensions'], $needle))) {
+                $dimensionMatch = collect($dimensionSet)->contains(fn (string $needle) => str_contains($fields['dimensions'], $needle)
+                    || str_contains($fields['description_dimensions'], $needle)
+                );
+
+                // Kur modeli identifikohet qartë, por admini s'i ka regjistruar
+                // përmasat, shfaqe si rezultat për konfirmim në vend se të thuash
+                // gabimisht se produkti nuk ekziston.
+                if (! $dimensionMatch
+                    && ($fields['dimensions'] !== '' || ! $this->hasStrongIdentityMatch($required, $fields))) {
                     return null;
                 }
             }
@@ -246,6 +254,9 @@ class ChatbotKnowledgeService
         return [
             'name' => $this->normalize((string) $product->name),
             'description' => $this->normalize(strip_tags((string) $product->description)),
+            'description_dimensions' => $this->normalizeDimensions(
+                $this->normalize(strip_tags((string) $product->description))
+            ),
             'category' => $this->normalize((string) $product->category.' '.(string) $product->subcategory),
             'dimensions' => $this->normalizeDimensions(collect($sizes)->pluck('label')->implode(' ')),
             'colors' => $this->normalize(collect($colors)->pluck('name')->implode(' ')),
@@ -261,6 +272,23 @@ class ChatbotKnowledgeService
         foreach ($this->expandedTerms($term) as $needle) {
             foreach ($fields as $field) {
                 if ($needle !== '' && str_contains($field, $needle)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function hasStrongIdentityMatch(array $terms, array $fields): bool
+    {
+        foreach ($terms as $term) {
+            if ($this->isColorTerm($term)) {
+                continue;
+            }
+
+            foreach ($this->expandedTerms($term) as $needle) {
+                if ($needle !== '' && (str_contains($fields['name'], $needle) || str_contains($fields['codes'], $needle))) {
                     return true;
                 }
             }
@@ -297,6 +325,7 @@ class ChatbotKnowledgeService
         $colors = $this->colors($product);
         $range = $this->priceRange($product);
         $matchedSize = $this->matchedSize($sizes, $message);
+        $requestedDimensions = $this->requestedDimensionLabel($message);
         $isCover = (string) $product->category === 'mbulesa';
 
         if ($matchedSize !== null && $matchedSize['price'] !== null) {
@@ -315,6 +344,9 @@ class ChatbotKnowledgeService
         } elseif ($matchedSize !== null) {
             $stockStatus = $matchedSize['stock'] > 0 ? 'in_stock' : 'out_of_stock';
             $stockLabel = $matchedSize['stock'] > 0 ? 'Në stok për këtë përmasë' : 'Pa stok për këtë përmasë';
+        } elseif ($requestedDimensions !== null) {
+            $stockStatus = 'confirm';
+            $stockLabel = 'Konfirmo përmasën '.$requestedDimensions;
         } else {
             $available = $this->hasAvailableOption($product);
             $stockStatus = $available ? 'in_stock' : 'out_of_stock';
@@ -336,6 +368,8 @@ class ChatbotKnowledgeService
             'stock_status' => $stockStatus,
             'stock_label' => $stockLabel,
             'matched_size' => $matchedSize,
+            'requested_size' => $requestedDimensions,
+            'requested_size_confirmed' => $requestedDimensions === null || $matchedSize !== null,
             'sizes' => array_slice($sizes, 0, 12),
             'colors' => array_slice(array_column($colors, 'name'), 0, 12),
             'image' => $product->image_url,
@@ -580,6 +614,21 @@ class ChatbotKnowledgeService
         }
 
         return $dimensions;
+    }
+
+    private function requestedDimensionLabel(string $text): ?string
+    {
+        $text = $this->normalizeDimensions($this->normalize($text));
+
+        if (preg_match('/(\d+(?:[.,]\d+)?)x(\d+(?:[.,]\d+)?)/', $text, $match)) {
+            return str_replace(',', '.', $match[1]).'x'.str_replace(',', '.', $match[2]);
+        }
+
+        if (preg_match('/\b(\d+(?:[.,]\d+)?)\s*(?:m|meter|metra|metre|meters)\b/', $text, $match)) {
+            return str_replace(',', '.', $match[1]).' m';
+        }
+
+        return null;
     }
 
     private function normalizeDimensions(string $value): string

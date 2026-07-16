@@ -332,6 +332,47 @@ class ChatbotCatalogTest extends TestCase
         $this->assertSame($otto->id, $response->json('products.0.id'));
     }
 
+    public function test_known_model_without_structured_sizes_is_returned_for_confirmation(): void
+    {
+        $hali = $this->product([
+            'name' => 'Tepih Hali 256',
+            'category' => 'tepiha',
+            'price' => 75,
+            'sizes' => [],
+        ]);
+        $this->product([
+            'name' => 'Tepih Nova',
+            'category' => 'tepiha',
+            'sizes' => [['label' => '300x200', 'price' => 105, 'stock' => 2]],
+        ]);
+
+        $response = $this->postJson(route('chatbot.message'), ['message' => 'Hali 300x200'])
+            ->assertOk()
+            ->assertJsonCount(1, 'products')
+            ->assertJsonPath('products.0.requested_size', '300x200')
+            ->assertJsonPath('products.0.requested_size_confirmed', false)
+            ->assertJsonPath('products.0.stock_status', 'confirm')
+            ->assertJsonPath('products.0.stock_label', 'Konfirmo përmasën 300x200');
+
+        $this->assertSame($hali->id, $response->json('products.0.id'));
+    }
+
+    public function test_dimensions_written_only_in_description_can_find_the_named_product(): void
+    {
+        $hali = $this->product([
+            'name' => 'Tepih Hali 256',
+            'category' => 'tepiha',
+            'description' => 'Modeli ofrohet 200×300 cm.',
+            'sizes' => [],
+        ]);
+
+        $response = $this->postJson(route('chatbot.message'), ['message' => 'Hali 300x200'])
+            ->assertOk()->assertJsonCount(1, 'products');
+
+        $this->assertSame($hali->id, $response->json('products.0.id'));
+        $this->assertFalse($response->json('products.0.requested_size_confirmed'));
+    }
+
     private function product(array $attributes): Product
     {
         static $counter = 0;
