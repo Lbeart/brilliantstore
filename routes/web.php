@@ -11,6 +11,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\LegacyImageController;
+use App\Http\Controllers\ChatbotController;
 
 // Auth
 use App\Http\Controllers\Auth\LoginController;
@@ -46,6 +47,9 @@ Route::get('/receipt/{receipt}/invoice', [AdminCustomerController::class, 'publi
 Route::get('/track', [OrderTrackingController::class, 'form'])->name('track.form');//
 Route::get('/track/{code}', [OrderTrackingController::class, 'show'])->name('track.show');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
+Route::post('/chatbot/message', ChatbotController::class)
+    ->middleware('throttle:chatbot')
+    ->name('chatbot.message');
 Route::get('/legacy-image/{encoded}', [LegacyImageController::class, 'show'])
     ->where('encoded', '[A-Za-z0-9\-_]+')
     ->name('legacy.image');

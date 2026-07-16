@@ -30,6 +30,11 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    'openai' => [
+        'key' => env('OPENAI_API_KEY'),
+        'model' => env('OPENAI_CHAT_MODEL', 'gpt-5.4-mini'),
+        'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
+    ],
     'whatsapp' => [
     'enabled' => env('WHATSAPP_NOTIFICATIONS_ENABLED', false),
     'provider' => env('WHATSAPP_PROVIDER', 'meta'),

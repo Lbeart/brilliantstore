@@ -36,6 +36,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>{{ $seo['title'] }}</title>
   <meta name="description" content="{{ $seo['description'] }}">
   <meta name="keywords" content="{{ $seo['keywords'] }}">
@@ -1481,7 +1482,8 @@
       .hero-content h1 { max-width:690px; font-size:clamp(3rem,12vw,5.8rem); }
     }
     @media (max-width:560px) {
-      html, body { background:#30251f; }
+      html { background:#30251f; }
+      body { background:var(--bg); }
       .site-header { padding-top:max(12px,env(safe-area-inset-top)); }
       .hero {
         width:100%;
@@ -1584,6 +1586,290 @@
       .categories-home .hero-category-card.featured .hero-category-media { height:126px; min-height:126px; }
       .categories-home .hero-category-body,
       .categories-home .hero-category-card.featured .hero-category-body { min-height:84px; padding:11px; }
+    }
+
+    /* Search: no overlap, consistent spacing and compact mobile actions */
+    .search-panel {
+      position:relative;
+      z-index:3;
+      margin-top:0;
+      padding:48px 0 72px;
+      background:var(--bg);
+    }
+    .categories-home .hero-category-card.featured .hero-category-media {
+      position:static;
+      inset:auto;
+      z-index:auto;
+    }
+    .search-card {
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:14px;
+      padding:14px;
+    }
+    .search-actions {
+      display:grid;
+      grid-auto-flow:column;
+      gap:10px;
+    }
+    .search-actions .btn { min-width:132px; white-space:nowrap; }
+    .btn-assistant { color:#fff; border-color:#31251f; background:#31251f; }
+    .btn-assistant:hover { color:#fff; background:#4a3930; }
+    .quick-links { margin-top:18px; }
+
+    /* Writable assistant with a viewport-safe mobile layout */
+    .sr-only {
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+    .chatbot {
+      position:fixed;
+      right:max(18px,env(safe-area-inset-right));
+      bottom:max(18px,env(safe-area-inset-bottom));
+      z-index:3000;
+    }
+    .chat-toggle {
+      position:relative;
+      display:grid;
+      place-items:center;
+      width:60px;
+      height:60px;
+      padding:0;
+      border:1px solid rgba(255,255,255,.22);
+      border-radius:50%;
+      color:#fff;
+      background:var(--brand);
+      box-shadow:0 16px 40px rgba(127,29,45,.34);
+      cursor:pointer;
+      font-size:1.35rem;
+    }
+    .chat-toggle::after { width:11px; height:11px; right:1px; top:1px; }
+    .chat-backdrop { display:none; }
+    .chat-panel {
+      position:absolute;
+      right:0;
+      bottom:76px;
+      display:flex;
+      flex-direction:column;
+      width:min(400px,calc(100vw - 32px));
+      height:min(620px,calc(100dvh - 112px));
+      min-height:420px;
+      overflow:hidden;
+      border:1px solid #dfd2c6;
+      border-radius:24px;
+      background:#fff;
+      box-shadow:0 26px 80px rgba(35,25,20,.28);
+      transform-origin:bottom right;
+    }
+    .chat-panel[hidden],.chat-backdrop[hidden] { display:none !important; }
+    .chat-head {
+      flex:none;
+      display:flex;
+      align-items:center;
+      gap:11px;
+      min-height:76px;
+      padding:14px 15px;
+      color:#fff;
+      background:linear-gradient(135deg,#31251f,#201915);
+    }
+    .chat-avatar {
+      flex:none;
+      display:grid;
+      place-items:center;
+      width:44px;
+      height:44px;
+      border-radius:50%;
+      color:#fff;
+      background:var(--brand);
+    }
+    .chat-title-wrap { min-width:0; }
+    .chat-title-wrap strong,.chat-title-wrap small { display:block; }
+    .chat-title-wrap strong { font-size:.95rem; }
+    .chat-title-wrap small { margin-top:2px; color:rgba(255,255,255,.72); font-size:.72rem; }
+    .chat-status-dot { display:inline-block; width:7px; height:7px; margin-right:4px; border-radius:50%; background:#42cf79; }
+    .chat-close {
+      flex:none;
+      display:grid;
+      place-items:center;
+      width:38px;
+      height:38px;
+      margin-left:auto;
+      padding:0;
+      border:0;
+      border-radius:50%;
+      color:#fff;
+      background:rgba(255,255,255,.08);
+      cursor:pointer;
+    }
+    .chat-close:hover { background:rgba(255,255,255,.16); }
+    .chat-body {
+      flex:1;
+      min-height:0;
+      max-height:none;
+      overflow-y:auto;
+      padding:18px;
+      background:#f8f4ef;
+      overscroll-behavior:contain;
+      scrollbar-width:thin;
+    }
+    .chat-message {
+      width:fit-content;
+      max-width:88%;
+      margin:0 0 11px;
+      padding:11px 13px;
+      border:1px solid rgba(55,35,25,.06);
+      border-radius:16px 16px 16px 5px;
+      color:#392f29;
+      background:#fff;
+      box-shadow:0 5px 16px rgba(46,31,23,.06);
+      font-size:.86rem;
+      line-height:1.55;
+      white-space:pre-wrap;
+      overflow-wrap:anywhere;
+    }
+    .chat-message.user {
+      margin-left:auto;
+      border-color:transparent;
+      border-radius:16px 16px 5px 16px;
+      color:#fff;
+      background:var(--brand);
+    }
+    .chat-message.is-loading { display:flex; align-items:center; gap:5px; color:var(--muted); }
+    .chat-message.is-loading span { width:6px; height:6px; border-radius:50%; background:#9b8e85; animation:chatPulse 1s infinite ease-in-out; }
+    .chat-message.is-loading span:nth-child(2) { animation-delay:.14s; }
+    .chat-message.is-loading span:nth-child(3) { animation-delay:.28s; }
+    @keyframes chatPulse { 0%,70%,100%{opacity:.35;transform:translateY(0)} 35%{opacity:1;transform:translateY(-3px)} }
+    .chat-suggestions { display:flex; flex-wrap:wrap; gap:7px; margin:5px 0 2px; }
+    .chat-option,.chat-action-link {
+      display:inline-flex;
+      align-items:center;
+      width:auto;
+      padding:9px 11px;
+      border:1px solid #d9c8ba;
+      border-radius:999px;
+      color:#4a3930;
+      background:#fff;
+      text-align:left;
+      cursor:pointer;
+      font-size:.76rem;
+      font-weight:700;
+    }
+    .chat-option:hover,.chat-action-link:hover { border-color:var(--brand); color:var(--brand); }
+    .chat-action-link { margin:0 0 12px; text-decoration:none; }
+    .chat-composer {
+      flex:none;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 44px;
+      align-items:end;
+      gap:9px;
+      padding:11px 12px;
+      border-top:1px solid #eadfd5;
+      background:#fff;
+    }
+    .chat-composer textarea {
+      width:100%;
+      min-height:44px;
+      max-height:104px;
+      resize:none;
+      overflow-y:auto;
+      padding:11px 13px;
+      border:1px solid #ddd0c5;
+      border-radius:14px;
+      outline:0;
+      color:var(--ink);
+      background:#fbf8f5;
+      font:500 .86rem/1.45 Poppins,sans-serif;
+    }
+    .chat-composer textarea:focus { border-color:rgba(127,29,45,.55); box-shadow:0 0 0 3px rgba(127,29,45,.08); }
+    .chat-send {
+      display:grid;
+      place-items:center;
+      width:44px;
+      height:44px;
+      padding:0;
+      border:0;
+      border-radius:14px;
+      color:#fff;
+      background:var(--brand);
+      cursor:pointer;
+      font-size:1.05rem;
+    }
+    .chat-send:disabled { cursor:wait; opacity:.58; }
+    .chat-footer {
+      flex:none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:42px;
+      padding:7px 12px;
+      border-top:1px solid #f0e8e1;
+      color:var(--muted);
+      background:#fff;
+      font-size:.7rem;
+    }
+    .chat-footer .chat-wa {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      margin:0;
+      padding:5px 8px;
+      border-radius:99px;
+      color:#167747;
+      background:#e9f7ef;
+      font-size:.7rem;
+      font-weight:800;
+    }
+    @media (max-width:700px) {
+      body.chat-open { overflow:hidden; }
+      .search-panel { padding:32px 0 54px; }
+      .search-card { grid-template-columns:1fr; gap:10px; padding:12px; }
+      .search-actions { grid-template-columns:repeat(2,minmax(0,1fr)); grid-auto-flow:row; gap:9px; }
+      .search-actions .btn { width:100%; min-width:0; padding-inline:10px; font-size:.78rem; }
+      .quick-links { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; overflow:visible; padding-bottom:0; }
+      .quick-links a { min-width:0; white-space:normal; line-height:1.25; }
+
+      .chatbot { right:max(12px,env(safe-area-inset-right)); bottom:max(14px,env(safe-area-inset-bottom)); }
+      .chat-toggle { width:54px; height:54px; }
+      .chat-backdrop:not([hidden]) {
+        position:fixed;
+        inset:0;
+        display:block;
+        width:100%;
+        height:100%;
+        padding:0;
+        border:0;
+        background:rgba(18,13,11,.54);
+        backdrop-filter:blur(2px);
+      }
+      .chat-panel {
+        position:fixed;
+        inset:max(10px,env(safe-area-inset-top)) 10px max(78px,calc(env(safe-area-inset-bottom) + 68px)) 10px;
+        width:auto;
+        height:auto;
+        min-height:0;
+        max-height:none;
+        border-radius:20px;
+        transform-origin:bottom center;
+      }
+      .chat-head { min-height:68px; padding:11px 12px; }
+      .chat-avatar { width:40px; height:40px; }
+      .chat-body { padding:14px; }
+      .chat-suggestions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; margin:5px 0 2px; padding:0; overflow:visible; }
+      .chat-option { width:100%; justify-content:center; white-space:normal; text-align:center; line-height:1.25; }
+      .chat-composer { padding:10px; }
+      .chat-footer { min-height:38px; }
+      .chat-toggle[aria-expanded="true"] { opacity:0; pointer-events:none; }
+    }
+    @media (max-width:370px) {
+      .search-actions,.quick-links { grid-template-columns:1fr; }
+      .chat-footer > span { display:none; }
     }
   </style>
 </head>
@@ -1734,12 +2020,14 @@
         <form class="search-card" action="{{ route('search') }}" method="GET">
           <label class="search-field">
             <i class="bi bi-search"></i>
-            <input name="q" type="search" placeholder="Kerko tepih, perde, Set çarçafësh, batanije..." autocomplete="off" data-placeholder-sq="Kerko tepih, perde, Set çarçafësh, batanije..." data-placeholder-en="Search rugs, curtains, bedsheet sets, blankets..." data-placeholder-sr="Pretrazi tepihe, zavese, set posteljine, cebad...">
+            <input name="q" type="search" placeholder="Kërko produkt..." autocomplete="off" data-placeholder-sq="Kërko produkt..." data-placeholder-en="Search products..." data-placeholder-sr="Pretraži proizvode...">
           </label>
-          <button class="btn btn-primary" type="submit" data-sq="Kerko" data-en="Search" data-sr="Pretrazi">Kerko</button>
-          <a class="btn btn-whatsapp" href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Pershendetje! Po kerkoj nje produkt ne Brillant.') }}" target="_blank" rel="noopener">
-            <i class="bi bi-whatsapp"></i> Chat
-          </a>
+          <div class="search-actions">
+            <button class="btn btn-primary" type="submit" data-sq="Kërko" data-en="Search" data-sr="Pretraži">Kërko</button>
+            <button class="btn btn-assistant" type="button" data-open-chat>
+              <i class="bi bi-chat-dots"></i> <span data-sq="Pyet asistentin" data-en="Ask assistant" data-sr="Pitaj asistenta">Pyet asistentin</span>
+            </button>
+          </div>
         </form>
 
         <div class="quick-links" aria-label="Kerkime te shpejta">
@@ -2022,25 +2310,40 @@
     <i class="bi bi-whatsapp fs-4"></i>
   </a>
 
-  <div class="chatbot" id="brillantChat">
-    <div class="chat-panel" id="chatPanel" hidden role="dialog" aria-label="Asistenti Brillant">
-      <div class="chat-head">
-        <i class="bi bi-chat-heart"></i>
-        <div><strong>Asistenti Brillant</strong><small>Online · përgjigje e shpejtë</small></div>
+  <div class="chatbot" id="brillantChat" data-endpoint="{{ route('chatbot.message', [], false) }}">
+    <button class="chat-backdrop" type="button" hidden aria-label="Mbyll asistentin"></button>
+    <section class="chat-panel" id="chatPanel" hidden role="dialog" aria-modal="true" aria-labelledby="chatTitle">
+      <header class="chat-head">
+        <span class="chat-avatar"><i class="bi bi-chat-heart"></i></span>
+        <div class="chat-title-wrap">
+          <strong id="chatTitle">Asistenti Brillant</strong>
+          <small><span class="chat-status-dot"></span> Shkruaj pyetjen tënde</small>
+        </div>
         <button class="chat-close" type="button" aria-label="Mbyll chatbot-in"><i class="bi bi-x-lg"></i></button>
-      </div>
-      <div class="chat-body" id="chatBody">
-        <div class="chat-message">Përshëndetje! 👋 Si mund t'ju ndihmoj sot?</div>
-        <div class="chat-options">
-          <button class="chat-option" type="button" data-chat-answer="Po kërkoj perde" data-chat-reply="Shumë mirë. Mund të shikoni koleksionin e perdeve ose të na dërgoni foton dhe masat e dritares në WhatsApp." data-chat-url="{{ route('products.perdeDitore') }}">Dua të shikoj perde</button>
-          <button class="chat-option" type="button" data-chat-answer="Po kërkoj tepih" data-chat-reply="Kemi modele për sallon, dhomë gjumi dhe korridor. Hapeni koleksionin për t'i parë sipas stilit dhe çmimit." data-chat-url="{{ route('products.tepiha') }}">Dua të shikoj tepiha</button>
-          <button class="chat-option" type="button" data-chat-answer="Kam nevojë për këshillë" data-chat-reply="Na dërgoni një foto të ambientit në WhatsApp. Ju ndihmojmë me ngjyrën, materialin dhe kombinimin." data-chat-whatsapp="1">Kam nevojë për këshillë</button>
-          <button class="chat-option" type="button" data-chat-answer="Dua ta gjurmoj porosinë" data-chat-reply="Sigurisht. Hapeni faqen e gjurmimit dhe vendosni kodin e porosisë." data-chat-url="{{ route('track.form') }}">Ku është porosia ime?</button>
+      </header>
+
+      <div class="chat-body" id="chatBody" role="log" aria-live="polite" aria-relevant="additions">
+        <div class="chat-message">Përshëndetje! 👋 Mund të më pyesësh për perde, tepiha, çmime, dërgesë ose porosinë tënde.</div>
+        <div class="chat-suggestions" aria-label="Pyetje të shpejta">
+          <button class="chat-option" type="button" data-chat-message="Po kërkoj perde për sallon">Perde për sallon</button>
+          <button class="chat-option" type="button" data-chat-message="Po kërkoj një tepih">Tepiha</button>
+          <button class="chat-option" type="button" data-chat-message="Sa kushton dërgesa?">Dërgesa</button>
+          <button class="chat-option" type="button" data-chat-message="Dua ta gjurmoj porosinë">Gjurmo porosinë</button>
         </div>
       </div>
-      <a class="chat-wa" href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Përshëndetje! Kam nevojë për ndihmë nga Brillant.') }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> Vazhdo në WhatsApp</a>
-    </div>
-    <button class="chat-toggle" type="button" aria-label="Hap asistentin" aria-expanded="false"><i class="bi bi-chat-dots-fill"></i></button>
+
+      <form class="chat-composer" id="chatForm">
+        <label class="sr-only" for="chatInput">Shkruaj mesazhin</label>
+        <textarea id="chatInput" rows="1" maxlength="600" placeholder="Shkruaj këtu..." autocomplete="off"></textarea>
+        <button class="chat-send" type="submit" aria-label="Dërgo mesazhin"><i class="bi bi-arrow-up"></i></button>
+      </form>
+
+      <footer class="chat-footer">
+        <span>Për përgjigje nga ekipi:</span>
+        <a class="chat-wa" href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Përshëndetje! Kam nevojë për ndihmë nga Brillant.') }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> WhatsApp</a>
+      </footer>
+    </section>
+    <button class="chat-toggle" type="button" aria-label="Hap asistentin" aria-controls="chatPanel" aria-expanded="false"><i class="bi bi-chat-dots-fill"></i></button>
   </div>
 
   <script>
@@ -2054,36 +2357,142 @@
       const chatToggle = document.querySelector('.chat-toggle');
       const chatClose = document.querySelector('.chat-close');
       const chatBody = document.getElementById('chatBody');
+      const chatbot = document.getElementById('brillantChat');
+      const chatBackdrop = document.querySelector('.chat-backdrop');
+      const chatForm = document.getElementById('chatForm');
+      const chatInput = document.getElementById('chatInput');
+      const chatSend = document.querySelector('.chat-send');
+      const csrfToken = document.querySelector('meta[name="csrf-token"]');
+      const chatHistory = [];
+      let chatBusy = false;
 
       function setChat(open) {
         if (!chatPanel || !chatToggle) return;
         chatPanel.hidden = !open;
+        if (chatBackdrop) chatBackdrop.hidden = !open;
         chatToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         chatToggle.innerHTML = open ? '<i class="bi bi-x-lg"></i>' : '<i class="bi bi-chat-dots-fill"></i>';
+        document.body.classList.toggle('chat-open', open);
+        if (open && chatInput) window.setTimeout(function () { chatInput.focus(); }, 80);
       }
       if (chatToggle) chatToggle.addEventListener('click', function () { setChat(chatPanel.hidden); });
       if (chatClose) chatClose.addEventListener('click', function () { setChat(false); });
-      Array.prototype.forEach.call(document.querySelectorAll('.chat-option'), function (option) {
-        option.addEventListener('click', function () {
-          if (!chatBody) return;
-          const userMessage = document.createElement('div');
-          userMessage.className = 'chat-message user';
-          userMessage.textContent = option.dataset.chatAnswer;
-          const reply = document.createElement('div');
-          reply.className = 'chat-message';
-          reply.textContent = option.dataset.chatReply;
-          chatBody.appendChild(userMessage);
-          chatBody.appendChild(reply);
-          if (option.dataset.chatUrl) {
-            const link = document.createElement('a');
-            link.className = 'chat-option';
-            link.href = option.dataset.chatUrl;
-            link.textContent = 'Hape koleksionin →';
-            chatBody.appendChild(link);
+      if (chatBackdrop) chatBackdrop.addEventListener('click', function () { setChat(false); });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-open-chat]'), function (button) {
+        button.addEventListener('click', function () { setChat(true); });
+      });
+
+      function scrollChatToEnd() {
+        if (chatBody) chatBody.scrollTop = chatBody.scrollHeight;
+      }
+
+      function appendChatMessage(text, role, action) {
+        if (!chatBody) return null;
+        const message = document.createElement('div');
+        message.className = 'chat-message' + (role === 'user' ? ' user' : '');
+        message.textContent = text;
+        chatBody.appendChild(message);
+
+        if (action && action.url && action.label) {
+          const link = document.createElement('a');
+          link.className = 'chat-action-link';
+          link.href = action.url;
+          link.textContent = action.label + ' →';
+          chatBody.appendChild(link);
+        }
+
+        scrollChatToEnd();
+        return message;
+      }
+
+      function appendTypingIndicator() {
+        if (!chatBody) return null;
+        const indicator = document.createElement('div');
+        indicator.className = 'chat-message is-loading';
+        indicator.setAttribute('aria-label', 'Asistenti po shkruan');
+        indicator.innerHTML = '<span></span><span></span><span></span>';
+        chatBody.appendChild(indicator);
+        scrollChatToEnd();
+        return indicator;
+      }
+
+      function resizeChatInput() {
+        if (!chatInput) return;
+        chatInput.style.height = 'auto';
+        chatInput.style.height = Math.min(chatInput.scrollHeight, 104) + 'px';
+      }
+
+      async function sendChatMessage(rawMessage) {
+        const message = (rawMessage || '').trim();
+        if (!message || chatBusy || !chatbot) return;
+
+        const previousHistory = chatHistory.slice(-8);
+        appendChatMessage(message, 'user');
+        chatHistory.push({ role: 'user', content: message });
+        chatBusy = true;
+        if (chatSend) chatSend.disabled = true;
+        if (chatInput) {
+          chatInput.value = '';
+          resizeChatInput();
+        }
+        const typing = appendTypingIndicator();
+
+        try {
+          const response = await fetch(chatbot.dataset.endpoint, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': csrfToken ? csrfToken.content : ''
+            },
+            body: JSON.stringify({ message: message, history: previousHistory })
+          });
+
+          if (!response.ok) {
+            if (response.status === 429) throw new Error('rate_limit');
+            throw new Error('request_failed');
           }
-          if (option.dataset.chatWhatsapp) document.querySelector('.chat-wa').focus();
-          chatBody.scrollTop = chatBody.scrollHeight;
+
+          const data = await response.json();
+          if (typing) typing.remove();
+          const reply = data.reply || 'Nuk munda të jap përgjigje tani. Na shkruaj në WhatsApp dhe ekipi të ndihmon.';
+          appendChatMessage(reply, 'assistant', data.action || null);
+          chatHistory.push({ role: 'assistant', content: reply });
+        } catch (error) {
+          if (typing) typing.remove();
+          const errorText = error.message === 'rate_limit'
+            ? 'U dërguan shumë mesazhe përnjëherë. Prit pak dhe provo sërish, ose na shkruaj në WhatsApp.'
+            : 'Lidhja u ndërpre. Provo përsëri ose vazhdo direkt në WhatsApp.';
+          appendChatMessage(errorText, 'assistant');
+        } finally {
+          chatBusy = false;
+          if (chatSend) chatSend.disabled = false;
+          if (chatInput) chatInput.focus();
+        }
+      }
+
+      if (chatForm) chatForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        sendChatMessage(chatInput ? chatInput.value : '');
+      });
+      if (chatInput) {
+        chatInput.addEventListener('input', resizeChatInput);
+        chatInput.addEventListener('keydown', function (event) {
+          if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            if (chatForm) chatForm.requestSubmit();
+          }
         });
+      }
+      Array.prototype.forEach.call(document.querySelectorAll('.chat-option[data-chat-message]'), function (option) {
+        option.addEventListener('click', function () {
+          setChat(true);
+          sendChatMessage(option.dataset.chatMessage);
+        });
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && chatPanel && !chatPanel.hidden) setChat(false);
       });
 
       if (recommended && benefits && recommended.parentNode) {
