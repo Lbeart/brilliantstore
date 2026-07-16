@@ -294,6 +294,44 @@ class ChatbotCatalogTest extends TestCase
         });
     }
 
+    public function test_advice_question_that_mentions_a_catalog_category_still_goes_to_ai(): void
+    {
+        config(['services.openai.key' => 'test-key']);
+        $this->product(['name' => 'Tepih Hali 256', 'category' => 'tepiha']);
+
+        Http::fake(['*' => Http::response([
+            'output' => [[
+                'type' => 'message',
+                'content' => [['type' => 'output_text', 'text' => 'Pastroje tepihun me aspirim të rregullt dhe trajto njollat pa e fërkuar fort.']],
+            ]],
+        ], 200)]);
+
+        $this->postJson(route('chatbot.message'), ['message' => 'Si pastrohet tepihu?'])
+            ->assertOk()
+            ->assertJsonPath('ai', true)
+            ->assertJsonCount(0, 'products')
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Pastroje tepihun'));
+
+        Http::assertSent(fn ($request) => str_contains((string) $request['instructions'], '"catalog_searched":false'));
+    }
+
+    public function test_general_ai_answer_may_contain_euros_without_being_rejected_as_a_fake_catalog_price(): void
+    {
+        config(['services.openai.key' => 'test-key']);
+
+        Http::fake(['*' => Http::response([
+            'output' => [[
+                'type' => 'message',
+                'content' => [['type' => 'output_text', 'text' => 'Një buxhet prej 100 € mund ta ndash sipas prioriteteve të tua.']],
+            ]],
+        ], 200)]);
+
+        $this->postJson(route('chatbot.message'), ['message' => 'Si ta ndaj një buxhet prej njëqind eurosh?'])
+            ->assertOk()
+            ->assertJsonPath('ai', true)
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, '100 €'));
+    }
+
     public function test_ai_cannot_claim_that_a_missing_product_is_in_stock(): void
     {
         config(['services.openai.key' => 'test-key']);

@@ -29,7 +29,13 @@ class ChatbotKnowledgeService
         }
 
         $greetingOnly = $this->isGreetingOnly($current);
-        $productSearch = ! $greetingOnly && ($intent !== null || $this->looksLikeProductSearch($current, $operational));
+        $explicitProductSearch = $this->looksLikeProductSearch($current, $operational);
+        $generalQuestion = $this->isGeneralQuestion($current);
+        $productSearch = ! $greetingOnly
+            && ! $operational
+            && ($explicitProductSearch
+                || ($followUp && $historyIntent !== null && $contextProductIds !== [])
+                || ($intent !== null && ! $generalQuestion));
         $terms = $productSearch ? $this->searchTerms($message, $intent) : [];
         if ($productSearch && $followUp && $this->ordinalProductId($message, $contextProductIds) === null) {
             $historyTerms = $this->searchTerms($this->recentConversationText($history), $intent);
@@ -839,6 +845,28 @@ class ChatbotKnowledgeService
         // Një kod/model i shkurtër si "Otto 1010" duhet kërkuar në katalog,
         // por pyetjet e zakonshme nuk duhen kthyer automatikisht në kërkim produkti.
         return preg_match('/\b[a-z]{2,}[\s-]*\d{2,}\b|\b\d{5,}\b/u', $text) === 1;
+    }
+
+    private function isGeneralQuestion(string $text): bool
+    {
+        if (Str::contains($text, [
+            'si ta ', 'si te ', 'si të ', 'si mund', 'si duhet', 'si pastro', 'si lahet', 'si laj',
+            'si matet', 'si kombino', 'si zgjedh', 'si vendos', 'si perdor', 'si përdor',
+            'pse ', 'qka eshte', 'cka eshte', 'çka është', 'cfare eshte', 'çfarë është',
+            'qka dmth', 'cka dmth', 'çka dmth', 'me trego per', 'më trego për',
+            'a mund ta laj', 'a mund ta pastroj', 'a pershtatet', 'a përshtatet',
+            'cila ngjyre', 'cilen ngjyre', 'çfarë ngjyre', 'qfare ngjyre',
+            'keshille', 'këshillë', 'ide per', 'ide për',
+        ])) {
+            return true;
+        }
+
+        return Str::endsWith($text, '?')
+            && ! Str::contains($text, [
+                'a keni', 'a kena', 'a kini', 'a ka ', 'e keni', 'ne stok', 'në stok',
+                'sa kushton', 'sa osht', 'sa eshte', 'sa është', 'cmimi', 'çmimi',
+                'me gjej', 'ma gjej', 'porosit',
+            ]);
     }
 
     private function isFollowUp(string $text): bool

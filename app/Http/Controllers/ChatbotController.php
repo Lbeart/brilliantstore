@@ -153,6 +153,7 @@ RREGULLAT E DETYRUESHME:
 14. `request_analysis.no_exact_match=true` do të thotë se produkti ose varianti i kërkuar NUK figuron në katalogun aktiv të B-Brillant. Thuaje qartë këtë, pastaj mund të shpjegosh shkurt çfarë është sendi dhe të ofrosh ndihmë për një alternativë. Mos thuaj kurrë se e kemi, se është në stok, ose jep çmim/dimension për të.
 15. Kur `request_analysis.catalog_searched=false`, mos deklaro se një produkt mungon. Përgjigju natyrshëm ose bëj një pyetje të vetme sqaruese. Kur ka `matching_products`, mbështetu te ato edhe nëse klienti shkruan me gabime ose në dialekt.
 16. Nuk je vetëm motor kërkimi. Për pyetje normale të klientit, këshilla për shtëpinë, kombinim ngjyrash, matje, pastrim, mirëmbajtje dhe bisedë të zakonshme, përgjigju drejtpërdrejt dhe natyrshëm si ChatGPT. Mos e kthe çdo pyetje te WhatsApp dhe mos thuaj “nuk gjeta produkt” kur klienti nuk po kërkon produkt.
+17. Përgjigju edhe pyetjeve të përgjithshme që s'kanë lidhje me dyqanin, aq sa mundesh, njësoj si një asistent i përgjithshëm AI. Mos e qorto klientin që pyet jashtë temës dhe mos refuzo vetëm pse pyetja s'është për B-Brillant. Ruaj saktësinë, privatësinë dhe sigurinë; kur nuk je i sigurt thuaje shkurt.
 
 WEBSITE_CONTEXT:
 PROMPT
@@ -209,6 +210,12 @@ PROMPT
             if (! $disclosesMissingProduct || $claimsAvailability) {
                 return false;
             }
+        }
+
+        // Numrat dhe eurot në një përgjigje të përgjithshme (p.sh. konvertim
+        // ose këshillë buxheti) nuk janë çmime të katalogut për t'u verifikuar.
+        if (($knowledge['catalog_searched'] ?? false) !== true) {
+            return true;
         }
 
         preg_match_all('/(\d+(?:[.,]\d{1,2})?)\s*(?:€|euro?)(?![\p{L}\p{N}])/ui', $reply, $matches);
