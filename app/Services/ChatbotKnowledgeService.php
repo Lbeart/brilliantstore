@@ -121,7 +121,7 @@ class ChatbotKnowledgeService
             return 'Hape “Gjurmo porosinë” dhe shkruaj kodin e gjurmimit që ke marrë pas porosisë. Për siguri, mos dërgo këtu të dhëna të kartelës ose fjalëkalime.';
         }
 
-        if (Str::contains($normalized, ['adresa', 'lokacion', 'ku jeni', 'kontakt', 'telefon', 'whatsapp'])) {
+        if (Str::contains($normalized, ['adresa', 'lokacion', 'ku jeni', 'ku gjendeni', 'ku gjendet', 'kontakt', 'telefon', 'whatsapp'])) {
             return 'B-Brillant gjendet në Rrugën Gjergj Fishta, 14000 Lipjan. Për ndihmë të shpejtë mund të na shkruash në WhatsApp në +383 44 960 661.';
         }
 
@@ -690,7 +690,7 @@ class ChatbotKnowledgeService
     private function isOperationalQuestion(string $text): bool
     {
         return Str::contains($text, [
-            'ku jeni', 'adresa', 'lokacion', 'kontakt', 'telefon', 'whatsapp', 'orar',
+            'ku jeni', 'ku gjendeni', 'ku gjendet', 'adresa', 'lokacion', 'kontakt', 'telefon', 'whatsapp', 'orar',
             'derges', 'transport', 'gjurmo', 'tracking', 'status poros', 'kodi poros',
             'pagese', 'pagesa', 'payment', 'kthim', 'garanci', 'privacy', 'privates',
             'login', 'llogari', 'regjistr', 'shporta', 'checkout', 'kush jeni', 'si jeni', 'qka dini', 'cka dini',

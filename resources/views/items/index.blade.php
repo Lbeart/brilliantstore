@@ -2430,8 +2430,12 @@
 
           const image = document.createElement('img');
           image.src = product.image;
-          image.alt = product.name || 'Produkt Brillant';
+          image.alt = '';
+          image.setAttribute('aria-hidden', 'true');
           image.loading = 'lazy';
+          image.addEventListener('error', function () {
+            image.remove();
+          }, { once: true });
 
           const details = document.createElement('span');
           details.className = 'chat-product-details';

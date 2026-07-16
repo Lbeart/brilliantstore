@@ -295,6 +295,43 @@ class ChatbotCatalogTest extends TestCase
         $this->assertSame(['White'], $response->json('products.0.colors'));
     }
 
+    public function test_location_question_does_not_inherit_previous_product_context(): void
+    {
+        $rug = $this->product(['name' => 'Tepih Hali 256', 'category' => 'tepiha']);
+
+        $this->postJson(route('chatbot.message'), [
+            'message' => 'Ku gjendeni?',
+            'history' => [
+                ['role' => 'user', 'content' => 'A keni tepih Hali?'],
+                ['role' => 'assistant', 'content' => 'Po, shiko kartën poshtë.'],
+            ],
+            'context_product_ids' => [$rug->id],
+        ])->assertOk()
+            ->assertJsonCount(0, 'products')
+            ->assertJsonPath('action.url', route('contact', [], false))
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Gjergj Fishta'));
+    }
+
+    public function test_colloquial_this_product_phrase_does_not_block_exact_match(): void
+    {
+        $otto = $this->product([
+            'name' => 'Tepih Otto 1010',
+            'category' => 'tepiha',
+            'color_variants' => [['name' => 'Cream', 'hex' => '#f5ead7']],
+        ]);
+
+        $response = $this->postJson(route('chatbot.message'), [
+            'message' => 'Qikjo 1010 Cream Otto a ka?',
+            'history' => [
+                ['role' => 'user', 'content' => 'Më trego tepiha 300x200'],
+                ['role' => 'assistant', 'content' => 'Shiko kartat poshtë.'],
+            ],
+            'context_product_ids' => [$otto->id],
+        ])->assertOk()->assertJsonCount(1, 'products');
+
+        $this->assertSame($otto->id, $response->json('products.0.id'));
+    }
+
     private function product(array $attributes): Product
     {
         static $counter = 0;
