@@ -352,7 +352,9 @@ class ChatbotCatalogTest extends TestCase
 
         Http::assertSent(function ($request) {
             return str_contains((string) $request['instructions'], '"catalog_searched":false')
-                && str_contains((string) $request['instructions'], '"no_exact_match":false');
+                && str_contains((string) $request['instructions'], '"no_exact_match":false')
+                && str_contains((string) $request['instructions'], '"full_active_catalog"')
+                && str_contains((string) $request['instructions'], 'Tepih Hali 256');
         });
     }
 

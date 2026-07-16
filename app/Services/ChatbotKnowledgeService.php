@@ -10,10 +10,6 @@ use Throwable;
 
 class ChatbotKnowledgeService
 {
-    // Mjafton për ta kthyer koleksionin real pa fshehur rezultatet pas pesë
-    // kartave të para, por mbron përgjigjen nga katalogë jashtëzakonisht të mëdhenj.
-    private const PRODUCT_LIMIT = 30;
-
     public function build(
         string $message,
         array $history = [],
@@ -56,19 +52,24 @@ class ChatbotKnowledgeService
         }
         $products = [];
         $inventory = [];
-        $catalogAvailable = $productSearch ? true : null;
+        $catalogOverview = [];
+        $catalogAvailable = true;
 
-        if ($productSearch) {
-            try {
-                $catalog = Product::query()
-                    ->where('is_active', true)
-                    ->orderByDesc('id')
-                    ->get([
-                        'id', 'name', 'slug', 'price', 'description', 'image_path', 'stock',
-                        'category', 'subcategory', 'sizes', 'color_variants', 'sku', 'barcode',
-                    ]);
+        try {
+            // Katalogu lexohet në ÇDO mesazh. Kështu AI e njeh gjithë website-in
+            // edhe kur klienti pyet me një fjali që parseri lokal s'e parashikon.
+            $catalog = Product::query()
+                ->where('is_active', true)
+                ->orderByDesc('id')
+                ->get([
+                    'id', 'name', 'slug', 'price', 'description', 'image_path', 'stock',
+                    'category', 'subcategory', 'sizes', 'color_variants', 'sku', 'barcode',
+                ]);
 
-                $inventory = $this->inventorySummary($catalog);
+            $inventory = $this->inventorySummary($catalog);
+            $catalogOverview = $this->catalogOverview($catalog);
+
+            if ($productSearch) {
                 $products = $this->rankProducts(
                     $catalog,
                     $message,
@@ -77,10 +78,10 @@ class ChatbotKnowledgeService
                     array_values(array_unique(array_map('intval', $contextProductIds))),
                     $followUp
                 );
-            } catch (Throwable $exception) {
-                $catalogAvailable = false;
-                Log::warning('Brillant chatbot catalog search failed.', ['exception_class' => $exception::class]);
             }
+        } catch (Throwable $exception) {
+            $catalogAvailable = false;
+            Log::warning('Brillant chatbot catalog search failed.', ['exception_class' => $exception::class]);
         }
 
         $noExactMatch = $productSearch && $catalogAvailable === true && $products === [];
@@ -103,7 +104,8 @@ class ChatbotKnowledgeService
                 $catalogAvailable,
                 $productSearch,
                 $noExactMatch,
-                $intent
+                $intent,
+                $catalogOverview
             ),
         ];
     }
@@ -258,8 +260,7 @@ class ChatbotKnowledgeService
             return $right['product']->id <=> $left['product']->id;
         });
 
-        return $ranked->take(self::PRODUCT_LIMIT)
-            ->map(fn (array $row) => $this->serializeProduct($row['product'], $message))
+        return $ranked->map(fn (array $row) => $this->serializeProduct($row['product'], $message))
             ->values()->all();
     }
 
@@ -685,6 +686,32 @@ class ChatbotKnowledgeService
         return $catalog->groupBy('category')->map->count()->sortDesc()->all();
     }
 
+    private function catalogOverview(Collection $catalog): array
+    {
+        return $catalog->map(function (Product $product) {
+            $sizes = $this->sizes($product);
+            $colors = $this->colors($product);
+            $prices = $this->priceRange($product);
+
+            return [
+                'id' => (int) $product->id,
+                'name' => (string) $product->name,
+                'category' => (string) $product->category,
+                'subcategory' => $product->subcategory ?: null,
+                'price_min' => $prices['min'],
+                'price_max' => $prices['max'],
+                'sizes' => collect($sizes)->map(fn (array $size) => [
+                    'label' => $size['label'],
+                    'price' => $size['price'],
+                    'in_stock' => $size['stock'] > 0,
+                ])->values()->all(),
+                'colors' => array_column($colors, 'name'),
+                'in_stock' => $this->hasAvailableOption($product),
+                'url' => route('products.show', $product->slug, false),
+            ];
+        })->values()->all();
+    }
+
     private function promptContext(
         array $products,
         array $inventory,
@@ -692,7 +719,8 @@ class ChatbotKnowledgeService
         ?bool $catalogAvailable,
         bool $catalogSearched,
         bool $noExactMatch,
-        ?array $intent
+        ?array $intent,
+        array $catalogOverview
     ): string
     {
         $business = (array) config('chatbot.business', []);
@@ -720,6 +748,7 @@ class ChatbotKnowledgeService
             ],
             'catalog_available' => $catalogAvailable,
             'active_inventory_counts' => $inventory,
+            'full_active_catalog' => $catalogOverview,
             'matching_products' => $promptProducts,
             'current_cart' => $cart,
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?: '{}';
