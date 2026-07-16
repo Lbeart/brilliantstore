@@ -51,15 +51,14 @@
   <meta property="og:description" content="{{ $seo['ogDescription'] }}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="{{ $canonicalUrl }}">
-  <meta property="og:image" content="{{ asset('optimized/home/hero.jpg') }}">
+  <meta property="og:image" content="{{ asset('images/home/perde-elegante-1.jpg') }}">
   <meta property="og:locale" content="{{ $pageLocale === 'en' ? 'en_US' : ($pageLocale === 'sr' ? 'sr_RS' : 'sq_AL') }}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ $seo['ogTitle'] }}">
   <meta name="twitter:description" content="{{ $seo['ogDescription'] }}">
 
   <link rel="icon" type="image/png" href="{{ asset('images/llogo.png') }}">
-  <link rel="preload" as="image" href="{{ asset('optimized/home/hero.jpg') }}" media="(max-width: 767px)" fetchpriority="high">
-  <link rel="preload" as="image" href="{{ asset('optimized/home/hero.jpg') }}" media="(min-width: 768px)" fetchpriority="high">
+  <link rel="preload" as="image" href="{{ asset('images/home/perde-elegante-1.jpg') }}" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1365,6 +1364,88 @@
       .site-footer { padding-bottom: 100px; }
       .floating-wa { width: 50px; height: 50px; right: 14px; }
     }
+
+    /* 2026 homepage refresh: calm, editorial and mobile-first */
+    .hero { padding: 24px 0 54px; background: #f7f2eb; }
+    .hero::before, .hero::after { display: none; }
+    .hero-grid { display: grid; grid-template-columns: .82fr 1.18fr; gap: 22px; padding: 0; min-height: 680px; }
+    .hero-intro { position: relative; z-index: 2; padding: clamp(34px,5vw,76px); border: 1px solid #e6dacd; border-radius: 28px; background: #fffdf9; box-shadow: 0 24px 70px rgba(46,31,23,.09); justify-content: center; }
+    .hero-intro img { width: 220px; margin: 0 0 32px; filter: none; }
+    .hero-intro h1 { max-width: 590px; margin: 0; color: #241b17; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(3rem,5.8vw,5.8rem); font-weight: 500; line-height: .96; letter-spacing: -.055em; }
+    .hero-intro p { max-width: 530px; margin: 26px 0 0; color: #71645c; font-size: 1.03rem; line-height: 1.75; }
+    .hero-mini-stats { margin-top: 34px; }
+    .hero-mini-stat { border-color: #e9ded3; background: #f8f3ed; }
+    .hero-actions { margin-top: 34px; }
+    .hero-gallery { display: grid; grid-template-columns: 1fr .52fr; grid-template-rows: 1fr 1fr; gap: 14px; min-width: 0; }
+    .hero-photo { position: relative; overflow: hidden; border-radius: 28px; background: #d8cec3; box-shadow: 0 24px 70px rgba(46,31,23,.14); }
+    .hero-photo:first-child { grid-row: 1 / 3; }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s ease; }
+    .hero-photo:hover img { transform: scale(1.025); }
+    .hero-photo:first-child img { object-position: 48% center; }
+    .hero-photo:nth-child(2) img { object-position: 22% center; }
+    .hero-photo-note { position: absolute; left: 18px; right: 18px; bottom: 18px; padding: 16px 18px; border: 1px solid rgba(255,255,255,.35); border-radius: 16px; color: #fff; background: rgba(27,20,16,.62); backdrop-filter: blur(12px); }
+    .hero-photo-note strong { display: block; font-family: Georgia,serif; font-size: 1.3rem; }
+    .hero-photo-note span { display: block; margin-top: 3px; font-size: .78rem; opacity: .84; }
+    .hero-accent { display: grid; place-items: center; padding: 25px; border-radius: 28px; color: #f9f2e9; background: #31251f; text-align: center; }
+    .hero-accent i { color: #d8b471; font-size: 2rem; }
+    .hero-accent strong { display: block; margin-top: 12px; font-family: Georgia,serif; font-size: clamp(1.35rem,2vw,2rem); font-weight: 500; line-height: 1.15; }
+    .categories-home { padding: 68px 0 42px; background: #fffdf9; }
+    .categories-home .hero-category-board { grid-template-columns: repeat(5,minmax(0,1fr)); }
+    .categories-home .hero-category-card, .categories-home .hero-category-card.featured { grid-column: auto; grid-row: auto; min-height: 280px; border-radius: 20px; }
+    .categories-home .hero-category-card.featured .hero-category-media, .categories-home .hero-category-media { height: 170px; }
+    .categories-home .hero-category-card.featured::after { display:none; }
+    .categories-home .hero-category-card.featured .hero-category-body { position: static; color: inherit; background: #fff; padding: 15px; }
+    .categories-home .hero-category-card.featured h2 { font: 700 1rem/1.2 Poppins,sans-serif; }
+    .categories-home .hero-category-card.featured p { color: var(--muted); }
+    .categories-home .hero-category-card.featured .hero-category-link { color: var(--brand); }
+    .chatbot { position: fixed; right: 20px; bottom: 20px; z-index: 120; }
+    .chat-toggle { width: 62px; height: 62px; border: 0; border-radius: 50%; color: #fff; background: var(--brand); box-shadow: 0 14px 35px rgba(127,29,45,.32); cursor: pointer; font-size: 1.5rem; }
+    .chat-toggle::after { content:''; position:absolute; width:12px; height:12px; right:2px; top:2px; border:3px solid #fff; border-radius:50%; background:#36b66a; }
+    .chat-panel { position: absolute; right: 0; bottom: 76px; width: min(370px,calc(100vw - 28px)); overflow: hidden; border: 1px solid #e5d8cc; border-radius: 22px; background: #fff; box-shadow: 0 24px 70px rgba(36,27,23,.22); transform-origin: bottom right; }
+    .chat-panel[hidden] { display:none; }
+    .chat-head { display:flex; align-items:center; gap:12px; padding:18px; color:#fff; background:#31251f; }
+    .chat-head i { display:grid; place-items:center; width:42px; height:42px; border-radius:50%; background:#7f1d2d; }
+    .chat-head strong,.chat-head small { display:block; }
+    .chat-head small { opacity:.72; }
+    .chat-close { margin-left:auto; border:0; color:#fff; background:transparent; cursor:pointer; font-size:1.1rem; }
+    .chat-body { max-height: 420px; overflow:auto; padding:18px; background:#faf7f3; }
+    .chat-message { width:fit-content; max-width:88%; margin:0 0 12px; padding:12px 14px; border-radius:15px 15px 15px 4px; background:#fff; box-shadow:0 4px 14px rgba(46,31,23,.07); font-size:.87rem; line-height:1.55; }
+    .chat-message.user { margin-left:auto; border-radius:15px 15px 4px 15px; color:#fff; background:var(--brand); }
+    .chat-options { display:grid; gap:8px; margin-top:14px; }
+    .chat-option { padding:11px 13px; border:1px solid #ddcfc2; border-radius:12px; color:#392b24; background:#fff; text-align:left; cursor:pointer; font-size:.82rem; font-weight:600; }
+    .chat-option:hover { border-color:var(--brand); color:var(--brand); }
+    .chat-wa { display:flex; justify-content:center; gap:8px; margin:14px 18px 18px; padding:12px; border-radius:12px; color:#fff; background:#198754; font-size:.85rem; font-weight:700; }
+    .floating-wa { display:none; }
+    @media (max-width: 1050px) {
+      .hero-grid { grid-template-columns:1fr; min-height:0; }
+      .hero-gallery { height:560px; }
+      .categories-home .hero-category-board { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    }
+    @media (max-width: 620px) {
+      .hero { padding: 10px 0 34px; }
+      .hero-grid { padding:0; gap:12px; }
+      .hero-intro { padding:34px 22px; border-radius:20px; }
+      .hero-intro img { width:165px; margin-bottom:24px; }
+      .hero-intro h1 { font-size:clamp(2.65rem,14vw,4rem); }
+      .hero-intro p { margin-top:18px; font-size:.92rem; }
+      .hero-mini-stats { margin-top:24px; grid-template-columns:repeat(3,1fr); }
+      .hero-mini-stat:last-child { grid-column:auto; }
+      .hero-actions { display:grid; margin-top:24px; }
+      .hero-gallery { height:430px; grid-template-columns:1fr .48fr; gap:8px; }
+      .hero-photo,.hero-accent { border-radius:18px; }
+      .hero-photo-note { left:10px; right:10px; bottom:10px; padding:11px; }
+      .hero-photo-note strong { font-size:1rem; }
+      .hero-photo-note span { display:none; }
+      .hero-accent { padding:12px; }
+      .hero-accent strong { font-size:1rem; }
+      .categories-home { padding:46px 0 28px; }
+      .categories-home .hero-category-board { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+      .categories-home .hero-category-card,.categories-home .hero-category-card.featured { min-height:205px; }
+      .categories-home .hero-category-card.featured .hero-category-media,.categories-home .hero-category-media { height:122px; }
+      .categories-home .hero-category-body p { display:none; }
+      .chatbot { right:14px; bottom:88px; }
+      .chat-toggle { width:54px; height:54px; }
+    }
   </style>
 </head>
 <body>
@@ -1472,13 +1553,13 @@
         <section class="hero-intro" aria-label="Brillant home">
           <div>
             <img src="{{ asset('images/brillant.png') }}" alt="Brillant" width="320" height="120" fetchpriority="high" decoding="async">
-            <h1 data-sq="Koleksione per shtepi." data-en="Home collections." data-sr="Kolekcije za dom.">Koleksione per shtepi.</h1>
-            <p data-sq="Zgjidh kategorine, shiko produktet dhe porosit lehte ne Brillant." data-en="Choose a category, view products and order easily at Brillant." data-sr="Izaberi kategoriju, pogledaj proizvode i poruci lako u Brillant.">Zgjidh kategorine, shiko produktet dhe porosit lehte ne Brillant.</p>
+            <h1 data-sq="Elegancë që ndihet si shtëpi." data-en="Elegance that feels like home." data-sr="Elegancija koja se oseća kao dom.">Elegancë që ndihet si shtëpi.</h1>
+            <p data-sq="Perde, tepiha dhe tekstile të zgjedhura për një ambient të ngrohtë, klasik dhe krejtësisht tuajin." data-en="Selected curtains, rugs and textiles for a warm, classic space that is entirely yours." data-sr="Odabrane zavese, tepisi i tekstil za topao, klasičan prostor koji je potpuno vaš.">Perde, tepiha dhe tekstile të zgjedhura për një ambient të ngrohtë, klasik dhe krejtësisht tuajin.</p>
 
             <div class="hero-mini-stats" aria-label="Pikat kryesore">
-              <div class="hero-mini-stat"><strong>10</strong><span>Kategori</span></div>
-              <div class="hero-mini-stat"><strong>24h</strong><span>WhatsApp</span></div>
-              <div class="hero-mini-stat"><strong>1</strong><span>Dyqan</span></div>
+              <div class="hero-mini-stat"><strong>10+</strong><span>Kategori</span></div>
+              <div class="hero-mini-stat"><strong>Direkt</strong><span>Këshillim</span></div>
+              <div class="hero-mini-stat"><strong>Lipjan</strong><span>Showroom</span></div>
             </div>
           </div>
 
@@ -1488,7 +1569,30 @@
           </div>
         </section>
 
-        <div class="hero-category-board" aria-label="Kategorite Brillant">
+        <div class="hero-gallery" aria-label="Perde elegante Brillant">
+          <figure class="hero-photo">
+            <img src="{{ asset('images/home/perde-elegante-1.jpg') }}" alt="Perde ditore dhe anësore elegante në ambient klasik" width="1440" height="1080" fetchpriority="high">
+            <figcaption class="hero-photo-note"><strong>Përshtatje për ambientin tuaj</strong><span>Ngjyrë, material dhe qepje me kujdes.</span></figcaption>
+          </figure>
+          <figure class="hero-photo">
+            <img src="{{ asset('images/home/perde-elegante-2.jpg') }}" alt="Detaj i perdeve Brillant" width="1440" height="1080" fetchpriority="high">
+          </figure>
+          <div class="hero-accent"><div><i class="bi bi-stars"></i><strong>Detaje klasike.<br>Pamje moderne.</strong></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="categories-home" aria-labelledby="categoriesTitle">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Koleksionet</div>
+            <h2 id="categoriesTitle">Gjeje shpejt atë që të duhet.</h2>
+            <p>Kategoritë më të kërkuara, të organizuara qartë për një blerje pa humbur kohë.</p>
+          </div>
+          <a class="btn btn-outline" href="{{ route('products.index') }}">Shiko të gjitha</a>
+        </div>
+        <div class="hero-category-board" aria-label="Kategoritë Brillant">
           @foreach($categories as $category)
             <a class="hero-category-card {{ $loop->first ? 'featured' : '' }}" href="{{ $category['url'] }}">
               <span class="hero-category-media" role="img" aria-label="{{ $category['title'] }}" style="background-image: url('{{ $category['img'] }}')"></span>
@@ -1507,7 +1611,7 @@
             </a>
           @endforeach
         </div>
-      </div>
+        </div>
     </section>
 
     <section id="searchSection" class="search-panel">
@@ -1772,8 +1876,6 @@
           <a href="{{ route('products.tepiha') }}">Tepiha</a>
           <a href="{{ route('products.perdeDitore') }}">Perde ditore</a>
           <a href="{{ route('products.anesore') }}">Perde anesore</a>
-          <a href="{{ route('products.anesore') }}">Perde anesore</a>
-          <a href="{{ route('products.perdeDitore') }}">Perde ditore</a>
           <a href="{{ route('products.tepihebanjo') }}">Tepiha banjo</a>
           <a href="{{ route('products.garnishte') }}">Garnishte</a>
         </div>
@@ -1805,6 +1907,27 @@
     <i class="bi bi-whatsapp fs-4"></i>
   </a>
 
+  <div class="chatbot" id="brillantChat">
+    <div class="chat-panel" id="chatPanel" hidden role="dialog" aria-label="Asistenti Brillant">
+      <div class="chat-head">
+        <i class="bi bi-chat-heart"></i>
+        <div><strong>Asistenti Brillant</strong><small>Online · përgjigje e shpejtë</small></div>
+        <button class="chat-close" type="button" aria-label="Mbyll chatbot-in"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="chat-body" id="chatBody">
+        <div class="chat-message">Përshëndetje! 👋 Si mund t'ju ndihmoj sot?</div>
+        <div class="chat-options">
+          <button class="chat-option" type="button" data-chat-answer="Po kërkoj perde" data-chat-reply="Shumë mirë. Mund të shikoni koleksionin e perdeve ose të na dërgoni foton dhe masat e dritares në WhatsApp." data-chat-url="{{ route('products.perdeDitore') }}">Dua të shikoj perde</button>
+          <button class="chat-option" type="button" data-chat-answer="Po kërkoj tepih" data-chat-reply="Kemi modele për sallon, dhomë gjumi dhe korridor. Hapeni koleksionin për t'i parë sipas stilit dhe çmimit." data-chat-url="{{ route('products.tepiha') }}">Dua të shikoj tepiha</button>
+          <button class="chat-option" type="button" data-chat-answer="Kam nevojë për këshillë" data-chat-reply="Na dërgoni një foto të ambientit në WhatsApp. Ju ndihmojmë me ngjyrën, materialin dhe kombinimin." data-chat-whatsapp="1">Kam nevojë për këshillë</button>
+          <button class="chat-option" type="button" data-chat-answer="Dua ta gjurmoj porosinë" data-chat-reply="Sigurisht. Hapeni faqen e gjurmimit dhe vendosni kodin e porosisë." data-chat-url="{{ route('track.form') }}">Ku është porosia ime?</button>
+        </div>
+      </div>
+      <a class="chat-wa" href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Përshëndetje! Kam nevojë për ndihmë nga Brillant.') }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> Vazhdo në WhatsApp</a>
+    </div>
+    <button class="chat-toggle" type="button" aria-label="Hap asistentin" aria-expanded="false"><i class="bi bi-chat-dots-fill"></i></button>
+  </div>
+
   <script>
     (function () {
       const menu = document.getElementById('mainMenu');
@@ -1812,6 +1935,41 @@
       const recommended = document.querySelector('.recommended-section');
       const benefits = document.querySelector('.removed-benefits');
       const latestCarousel = document.getElementById('latestProductsCarousel');
+      const chatPanel = document.getElementById('chatPanel');
+      const chatToggle = document.querySelector('.chat-toggle');
+      const chatClose = document.querySelector('.chat-close');
+      const chatBody = document.getElementById('chatBody');
+
+      function setChat(open) {
+        if (!chatPanel || !chatToggle) return;
+        chatPanel.hidden = !open;
+        chatToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        chatToggle.innerHTML = open ? '<i class="bi bi-x-lg"></i>' : '<i class="bi bi-chat-dots-fill"></i>';
+      }
+      if (chatToggle) chatToggle.addEventListener('click', function () { setChat(chatPanel.hidden); });
+      if (chatClose) chatClose.addEventListener('click', function () { setChat(false); });
+      Array.prototype.forEach.call(document.querySelectorAll('.chat-option'), function (option) {
+        option.addEventListener('click', function () {
+          if (!chatBody) return;
+          const userMessage = document.createElement('div');
+          userMessage.className = 'chat-message user';
+          userMessage.textContent = option.dataset.chatAnswer;
+          const reply = document.createElement('div');
+          reply.className = 'chat-message';
+          reply.textContent = option.dataset.chatReply;
+          chatBody.appendChild(userMessage);
+          chatBody.appendChild(reply);
+          if (option.dataset.chatUrl) {
+            const link = document.createElement('a');
+            link.className = 'chat-option';
+            link.href = option.dataset.chatUrl;
+            link.textContent = 'Hape koleksionin →';
+            chatBody.appendChild(link);
+          }
+          if (option.dataset.chatWhatsapp) document.querySelector('.chat-wa').focus();
+          chatBody.scrollTop = chatBody.scrollHeight;
+        });
+      });
 
       if (recommended && benefits && recommended.parentNode) {
         recommended.parentNode.insertBefore(benefits, recommended.nextSibling);
