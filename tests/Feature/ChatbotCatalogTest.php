@@ -103,7 +103,7 @@ class ChatbotCatalogTest extends TestCase
             ->assertOk()
             ->assertJsonPath('ai', false)
             ->assertJsonCount(0, 'products')
-            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Nuk gjeta'));
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'nuk figuron aktualisht'));
         Http::assertNothingSent();
     }
 
@@ -218,6 +218,49 @@ class ChatbotCatalogTest extends TestCase
             ->assertJsonPath('ai', false)
             ->assertJsonPath('products.0.price_text', '75.00 €')
             ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Tepih Asya'));
+    }
+
+    public function test_missing_product_is_explained_by_ai_without_claiming_it_is_sold(): void
+    {
+        config(['services.openai.key' => 'test-key']);
+        $this->product(['name' => 'Tepih Hali 256', 'category' => 'tepiha']);
+
+        Http::fake(['*' => Http::response([
+            'output' => [[
+                'type' => 'message',
+                'content' => [[
+                    'type' => 'output_text',
+                    'text' => 'Laminati është një material praktik për dysheme. Nuk figuron në katalogun aktiv të B-Brillant; ne merremi kryesisht me tekstile për shtëpi.',
+                ]],
+            ]],
+        ], 200)]);
+
+        $this->postJson(route('chatbot.message'), ['message' => 'A keni laminat dhe çka është?'])
+            ->assertOk()
+            ->assertJsonPath('ai', true)
+            ->assertJsonCount(0, 'products')
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Laminati') && str_contains($reply, 'Nuk figuron'));
+
+        Http::assertSentCount(1);
+    }
+
+    public function test_ai_cannot_claim_that_a_missing_product_is_in_stock(): void
+    {
+        config(['services.openai.key' => 'test-key']);
+        $this->product(['name' => 'Tepih Hali 256', 'category' => 'tepiha']);
+
+        Http::fake(['*' => Http::response([
+            'output' => [[
+                'type' => 'message',
+                'content' => [['type' => 'output_text', 'text' => 'Po, e kemi në stok dhe kushton 20 €.']],
+            ]],
+        ], 200)]);
+
+        $this->postJson(route('chatbot.message'), ['message' => 'A keni laminat?'])
+            ->assertOk()
+            ->assertJsonPath('ai', false)
+            ->assertJsonCount(0, 'products')
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'nuk figuron aktualisht'));
     }
 
     public function test_chatbot_reads_the_current_session_cart(): void

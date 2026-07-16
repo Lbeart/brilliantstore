@@ -88,7 +88,15 @@ class ChatbotKnowledgeService
             'catalog_available' => $catalogAvailable,
             'no_exact_match' => $noExactMatch,
             'cart' => $cartSummary,
-            'prompt_context' => $this->promptContext($products, $inventory, $cartSummary, $catalogAvailable),
+            'prompt_context' => $this->promptContext(
+                $products,
+                $inventory,
+                $cartSummary,
+                $catalogAvailable,
+                $productSearch,
+                $noExactMatch,
+                $intent
+            ),
         ];
     }
 
@@ -98,9 +106,9 @@ class ChatbotKnowledgeService
         $intent = $knowledge['intent'] ?? null;
 
         if (($knowledge['no_exact_match'] ?? false) === true) {
-            $label = is_array($intent) ? ($intent['label'] ?? 'atë që kërkove') : 'atë produkt';
+            $label = is_array($intent) ? mb_strtolower((string) ($intent['label'] ?? 'produkti që kërkove')) : 'produkti që kërkove';
 
-            return "Nuk gjeta përputhje aktive për {$label} me ato kërkesa. Provo një ngjyrë ose përmasë tjetër, ose na shkruaj në WhatsApp që ta kontrollojmë me ekipin.";
+            return "{$label} nuk figuron aktualisht në katalogun aktiv të B-Brillant me kërkesat që dhe. Mund të të ndihmoj të gjesh alternativën më të afërt, ose mund të na shkruash në WhatsApp që ta kontrollojmë me ekipin.";
         }
 
         if ($products !== []) {
@@ -646,7 +654,15 @@ class ChatbotKnowledgeService
         return $catalog->groupBy('category')->map->count()->sortDesc()->all();
     }
 
-    private function promptContext(array $products, array $inventory, array $cart, ?bool $catalogAvailable): string
+    private function promptContext(
+        array $products,
+        array $inventory,
+        array $cart,
+        ?bool $catalogAvailable,
+        bool $catalogSearched,
+        bool $noExactMatch,
+        ?array $intent
+    ): string
     {
         $business = (array) config('chatbot.business', []);
         $promptProducts = collect($products)
@@ -666,6 +682,11 @@ class ChatbotKnowledgeService
             'business' => $business,
             'website_pages' => $pages,
             'categories' => $categories,
+            'request_analysis' => [
+                'catalog_searched' => $catalogSearched,
+                'no_exact_match' => $noExactMatch,
+                'requested_collection' => is_array($intent) ? ($intent['label'] ?? null) : null,
+            ],
             'catalog_available' => $catalogAvailable,
             'active_inventory_counts' => $inventory,
             'matching_products' => $promptProducts,
