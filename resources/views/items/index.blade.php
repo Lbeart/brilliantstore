@@ -51,14 +51,14 @@
   <meta property="og:description" content="{{ $seo['ogDescription'] }}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="{{ $canonicalUrl }}">
-  <meta property="og:image" content="{{ asset('images/home/perde-elegante-1.jpg') }}">
+  <meta property="og:image" content="{{ asset('images/home/hero-luxury-curtains.jpg') }}">
   <meta property="og:locale" content="{{ $pageLocale === 'en' ? 'en_US' : ($pageLocale === 'sr' ? 'sr_RS' : 'sq_AL') }}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ $seo['ogTitle'] }}">
   <meta name="twitter:description" content="{{ $seo['ogDescription'] }}">
 
   <link rel="icon" type="image/png" href="{{ asset('images/llogo.png') }}">
-  <link rel="preload" as="image" href="{{ asset('images/home/perde-elegante-1.jpg') }}" fetchpriority="high">
+  <link rel="preload" as="image" href="{{ asset('images/home/hero-luxury-curtains.jpg') }}" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1446,6 +1446,39 @@
       .chatbot { right:14px; bottom:88px; }
       .chat-toggle { width:54px; height:54px; }
     }
+
+    /* Full-bleed hero inspired by premium interior brands */
+    .site-header { position:absolute; inset:0 0 auto; padding:28px 0; background:transparent; backdrop-filter:none; }
+    .nav { min-height:72px; padding:0 24px; border:1px solid rgba(255,255,255,.6); border-radius:36px; background:rgba(255,253,249,.9); box-shadow:0 14px 38px rgba(25,18,14,.14); backdrop-filter:blur(14px); }
+    .brand img { width:205px; height:56px; }
+    .nav-links a,.nav-dropdown summary { color:#211b18; font-size:.91rem; }
+    .nav-links a:hover,.nav-dropdown:hover summary,.nav-dropdown[open] summary { color:var(--brand); background:rgba(127,29,45,.07); }
+    .nav-actions .icon-btn,.nav-actions .login-btn { color:#211b18; border-color:rgba(33,27,24,.16); background:rgba(255,255,255,.55); }
+    .hero { min-height:100svh; padding:18px; background:#30251f; }
+    .hero-stage { position:relative; display:grid; place-items:center; min-height:calc(100svh - 36px); overflow:hidden; border-radius:0 0 48px 48px; background:url('{{ asset('images/home/hero-luxury-curtains.jpg') }}') center center/cover no-repeat; }
+    .hero-stage::before { content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(22,16,13,.24),rgba(22,16,13,.42) 50%,rgba(22,16,13,.58)); }
+    .hero-content { position:relative; z-index:2; width:min(1050px,calc(100% - 36px)); margin-top:96px; color:#fff; text-align:center; }
+    .hero-content h1 { margin:0 auto; max-width:1000px; font-family:Georgia,'Times New Roman',serif; font-size:clamp(3.4rem,7.4vw,7.6rem); font-weight:400; line-height:.92; letter-spacing:-.055em; text-wrap:balance; text-shadow:0 5px 30px rgba(0,0,0,.28); }
+    .hero-content .hero-cta { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-width:230px; margin-top:42px; padding:16px 26px; border:1px solid rgba(255,255,255,.85); border-radius:999px; color:#fff; background:rgba(34,26,22,.24); backdrop-filter:blur(10px); font-weight:600; transition:.25s ease; }
+    .hero-content .hero-cta:hover { color:#241b17; background:#fff; transform:translateY(-2px); }
+    .hero-scroll { position:absolute; z-index:2; bottom:24px; color:rgba(255,255,255,.8); font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; }
+    @media (max-width:900px) {
+      .site-header { padding:14px 0; }
+      .nav { min-height:64px; padding:0 14px; border-radius:24px; }
+      .brand img { width:150px; height:48px; }
+      .hero { padding:8px; }
+      .hero-stage { min-height:calc(100svh - 16px); border-radius:0 0 28px 28px; background-position:58% center; }
+      .hero-content { margin-top:68px; }
+      .hero-content h1 { max-width:690px; font-size:clamp(3rem,12vw,5.8rem); }
+    }
+    @media (max-width:560px) {
+      .hero-stage { background-position:57% center; }
+      .hero-stage::before { background:linear-gradient(180deg,rgba(20,14,11,.3),rgba(20,14,11,.46) 52%,rgba(20,14,11,.62)); }
+      .hero-content { width:calc(100% - 28px); margin-top:64px; }
+      .hero-content h1 { font-size:clamp(3.15rem,16vw,4.7rem); line-height:.94; }
+      .hero-content .hero-cta { min-width:210px; margin-top:32px; }
+      .hero-scroll { display:none; }
+    }
   </style>
 </head>
 <body>
@@ -1548,37 +1581,13 @@
   </header>
 
   <main>
-    <section class="hero">
-      <div class="container hero-grid">
-        <section class="hero-intro" aria-label="Brillant home">
-          <div>
-            <img src="{{ asset('images/brillant.png') }}" alt="Brillant" width="320" height="120" fetchpriority="high" decoding="async">
-            <h1 data-sq="Elegancë që ndihet si shtëpi." data-en="Elegance that feels like home." data-sr="Elegancija koja se oseća kao dom.">Elegancë që ndihet si shtëpi.</h1>
-            <p data-sq="Perde, tepiha dhe tekstile të zgjedhura për një ambient të ngrohtë, klasik dhe krejtësisht tuajin." data-en="Selected curtains, rugs and textiles for a warm, classic space that is entirely yours." data-sr="Odabrane zavese, tepisi i tekstil za topao, klasičan prostor koji je potpuno vaš.">Perde, tepiha dhe tekstile të zgjedhura për një ambient të ngrohtë, klasik dhe krejtësisht tuajin.</p>
-
-            <div class="hero-mini-stats" aria-label="Pikat kryesore">
-              <div class="hero-mini-stat"><strong>10+</strong><span>Kategori</span></div>
-              <div class="hero-mini-stat"><strong>Direkt</strong><span>Këshillim</span></div>
-              <div class="hero-mini-stat"><strong>Lipjan</strong><span>Showroom</span></div>
-            </div>
-          </div>
-
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="{{ route('products.index') }}" data-sq="Te gjitha produktet" data-en="All products" data-sr="Svi proizvodi">Te gjitha produktet</a>
-            <a class="btn btn-outline" href="#searchSection" data-sq="Kerko produkt" data-en="Search product" data-sr="Pretrazi proizvod"><i class="bi bi-search"></i> Kerko produkt</a>
-          </div>
-        </section>
-
-        <div class="hero-gallery" aria-label="Perde elegante Brillant">
-          <figure class="hero-photo">
-            <img src="{{ asset('images/home/perde-elegante-1.jpg') }}" alt="Perde ditore dhe anësore elegante në ambient klasik" width="1440" height="1080" fetchpriority="high">
-            <figcaption class="hero-photo-note"><strong>Përshtatje për ambientin tuaj</strong><span>Ngjyrë, material dhe qepje me kujdes.</span></figcaption>
-          </figure>
-          <figure class="hero-photo">
-            <img src="{{ asset('images/home/perde-elegante-2.jpg') }}" alt="Detaj i perdeve Brillant" width="1440" height="1080" fetchpriority="high">
-          </figure>
-          <div class="hero-accent"><div><i class="bi bi-stars"></i><strong>Detaje klasike.<br>Pamje moderne.</strong></div></div>
+    <section class="hero" aria-label="Brillant home">
+      <div class="hero-stage">
+        <div class="hero-content">
+          <h1 data-sq="Rehati. Stil. Brillant." data-en="Comfort. Style. Brillant." data-sr="Udobnost. Stil. Brillant.">Rehati. Stil. Brillant.</h1>
+          <a class="hero-cta" href="{{ route('products.index') }}"><span data-sq="Shiko koleksionet" data-en="Explore collections" data-sr="Pogledaj kolekcije">Shiko koleksionet</span><i class="bi bi-arrow-right"></i></a>
         </div>
+        <a class="hero-scroll" href="#searchSection">Zbulo më shumë ↓</a>
       </div>
     </section>
 
