@@ -621,7 +621,18 @@ class ChatbotKnowledgeService
             $dimensions[] = [$value, $value.'m', $value.'meter', $value.'metra'];
         }
 
-        return $dimensions;
+        // Shprehjet e zakonshme të klientëve për madhësinë e shtratit.
+        // Për dy persona përfshijmë edhe 200x220, sepse kjo është përmasa
+        // standarde e shumë batanijeve dopio në katalog.
+        if (preg_match('/\b(?:d+y|dy|2)\s*(?:persona|person|veta)\b/', $text)
+            || Str::contains($text, ['dopio', 'double', 'cift', 'matrimonial'])) {
+            $dimensions[] = ['200x200', '200x220', '220x200'];
+        } elseif (preg_match('/\b(?:nje|1)\s*(?:person|veta)\b/', $text)
+            || Str::contains($text, ['teke', 'single'])) {
+            $dimensions[] = ['150x200', '200x150'];
+        }
+
+        return collect($dimensions)->unique(fn (array $needles) => implode('|', $needles))->values()->all();
     }
 
     private function requestedDimensionLabel(string $text): ?string
@@ -634,6 +645,16 @@ class ChatbotKnowledgeService
 
         if (preg_match('/\b(\d+(?:[.,]\d+)?)\s*(?:m|meter|metra|metre|meters)\b/', $text, $match)) {
             return str_replace(',', '.', $match[1]).' m';
+        }
+
+        if (preg_match('/\b(?:d+y|dy|2)\s*(?:persona|person|veta)\b/', $text)
+            || Str::contains($text, ['dopio', 'double', 'cift', 'matrimonial'])) {
+            return 'për dy persona (rreth 200x200 / 200x220)';
+        }
+
+        if (preg_match('/\b(?:nje|1)\s*(?:person|veta)\b/', $text)
+            || Str::contains($text, ['teke', 'single'])) {
+            return 'për një person (rreth 150x200)';
         }
 
         return null;

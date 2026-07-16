@@ -152,6 +152,7 @@ return [
         'dimension', 'dimensione', 'permasa', 'përmasa', 'permasat', 'përmasat', 'stok', 'stock', 'disponueshem', 'disponueshëm', 'disponueshme', 'available',
         'vetem', 'vetëm', 'only', 'cmim', 'çmim', 'cmimet', 'çmimet', 'kushton', 'sa', 'jon', 'jane', 'janë',
         'meter', 'metra', 'metre', 'meters',
+        'person', 'persona', 'veta', 'dy', 'ddy', 'dopio', 'double', 'cift', 'çift', 'matrimonial', 'teke', 'single',
         'qit', 'qita', 'qito', 'qikjo', 'qiky', 'qika', 'kete', 'këtë', 'ket', 'kët', 'ate', 'atë', 'paren', 'parin', 'tparen', 'dyten', 'dytin', 'treten', 'tretin',
         'qka', 'cka', 'çka', 'produkt', 'produkte', 'produktet', 'katalog', 'shop', 'shisni', 'gjej', 'gjeni', 'kerkoj', 'kërkoj', 'trego', 'disa',
         'show', 'have', 'with', 'for', 'the', 'and', 'please', 'imate', 'treba', 'koji', 'koja', 'molim',

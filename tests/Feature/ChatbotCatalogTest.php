@@ -157,6 +157,28 @@ class ChatbotCatalogTest extends TestCase
         $this->assertSame(['Beige'], $response->json('products.0.colors'));
     }
 
+    public function test_blanket_for_two_people_understands_double_bed_dimensions(): void
+    {
+        $double = $this->product([
+            'name' => 'Batanije Rodos Dopio',
+            'category' => 'batanije',
+            'sizes' => [['label' => '200x220', 'price' => 17, 'stock' => 3]],
+        ]);
+        $this->product([
+            'name' => 'Batanije Rodos Teke',
+            'category' => 'batanije',
+            'sizes' => [['label' => '150x200', 'price' => 15, 'stock' => 3]],
+        ]);
+
+        $response = $this->postJson(route('chatbot.message'), ['message' => 'A keni batanije për ddy persona?'])
+            ->assertOk()
+            ->assertJsonCount(1, 'products')
+            ->assertJsonPath('products.0.matched_size.label', '200x220')
+            ->assertJsonPath('products.0.requested_size_confirmed', true);
+
+        $this->assertSame($double->id, $response->json('products.0.id'));
+    }
+
     public function test_follow_up_can_select_a_product_card_by_ordinal(): void
     {
         $first = $this->product(['name' => 'Tepih Nova', 'category' => 'tepiha']);
