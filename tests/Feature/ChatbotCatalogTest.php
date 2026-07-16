@@ -377,6 +377,25 @@ class ChatbotCatalogTest extends TestCase
             ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Gjergj Fishta'));
     }
 
+    public function test_misspelled_dialect_location_question_does_not_become_a_product_search(): void
+    {
+        $rug = $this->product(['name' => 'Tepih Hali 256', 'category' => 'tepiha']);
+
+        foreach (['ku gjindeni', 'Ku gjindet lokali?', 'ku e keni dyqanin'] as $question) {
+            $this->postJson(route('chatbot.message'), [
+                'message' => $question,
+                'history' => [
+                    ['role' => 'user', 'content' => 'A keni tepih Hali?'],
+                    ['role' => 'assistant', 'content' => 'Po, shiko kartën poshtë.'],
+                ],
+                'context_product_ids' => [$rug->id],
+            ])->assertOk()
+                ->assertJsonCount(0, 'products')
+                ->assertJsonPath('action.url', route('contact', [], false))
+                ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Gjergj Fishta'));
+        }
+    }
+
     public function test_colloquial_this_product_phrase_does_not_block_exact_match(): void
     {
         $otto = $this->product([

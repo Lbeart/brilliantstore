@@ -126,7 +126,7 @@ return [
         ['label' => 'Shporta', 'route' => 'cart.index', 'keywords' => ['shporta', 'cart']],
         ['label' => 'Përfundo porosinë', 'route' => 'checkout.index', 'keywords' => ['checkout', 'blej', 'porosit', 'porosi online']],
         ['label' => 'Gjurmo porosinë', 'route' => 'track.form', 'keywords' => ['gjurmo', 'tracking', 'kodi porosise', 'status porosie']],
-        ['label' => 'Kontakti dhe adresa', 'route' => 'contact', 'keywords' => ['kontakt', 'telefoni', 'whatsapp', 'adresa', 'lokacioni', 'lokacion', 'ku jeni', 'ku gjendeni', 'ku gjendet']],
+        ['label' => 'Kontakti dhe adresa', 'route' => 'contact', 'keywords' => ['kontakt', 'telefoni', 'whatsapp', 'adresa', 'lokacioni', 'lokacion', 'ku jeni', 'ku gjendeni', 'ku gjendet', 'ku gjindeni', 'ku gjindet', 'ku ndodheni']],
         ['label' => 'Rreth B-Brillant', 'route' => 'about', 'keywords' => ['rreth', 'about', 'historia', 'kush jeni']],
         ['label' => 'Hyr në llogari', 'route' => 'login', 'keywords' => ['login', 'kycu', 'kyçu', 'llogaria']],
     ],

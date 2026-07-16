@@ -129,7 +129,8 @@ class ChatbotKnowledgeService
             return 'Hape “Gjurmo porosinë” dhe shkruaj kodin e gjurmimit që ke marrë pas porosisë. Për siguri, mos dërgo këtu të dhëna të kartelës ose fjalëkalime.';
         }
 
-        if (Str::contains($normalized, ['adresa', 'lokacion', 'ku jeni', 'ku gjendeni', 'ku gjendet', 'kontakt', 'telefon', 'whatsapp'])) {
+        if ($this->isLocationQuestion($normalized)
+            || Str::contains($normalized, ['kontakt', 'telefon', 'whatsapp'])) {
             return 'B-Brillant gjendet në Rrugën Gjergj Fishta, 14000 Lipjan. Për ndihmë të shpejtë mund të na shkruash në WhatsApp në +383 44 960 661.';
         }
 
@@ -750,6 +751,10 @@ class ChatbotKnowledgeService
 
     private function suggestedAction(string $normalized, ?array $intent): ?array
     {
+        if ($this->isLocationQuestion($normalized)) {
+            return ['label' => 'Kontakti dhe adresa', 'url' => route('contact', [], false)];
+        }
+
         if ($intent !== null) {
             return [
                 'label' => $intent['action_label'] ?? 'Shiko '.$intent['label'],
@@ -780,12 +785,32 @@ class ChatbotKnowledgeService
 
     private function isOperationalQuestion(string $text): bool
     {
+        if ($this->isLocationQuestion($text)) {
+            return true;
+        }
+
         return Str::contains($text, [
-            'ku jeni', 'ku gjendeni', 'ku gjendet', 'adresa', 'lokacion', 'kontakt', 'telefon', 'whatsapp', 'orar',
+            'kontakt', 'telefon', 'whatsapp', 'orar', 'hapur', 'mbyllur',
             'derges', 'transport', 'gjurmo', 'tracking', 'status poros', 'kodi poros',
-            'pagese', 'pagesa', 'payment', 'kthim', 'garanci', 'privacy', 'privates',
+            'pagese', 'pagesa', 'paguaj', 'payment', 'kthim', 'kthej', 'garanci', 'privacy', 'privates',
             'login', 'llogari', 'regjistr', 'shporta', 'checkout', 'kush jeni', 'si jeni', 'qka dini', 'cka dini',
         ]);
+    }
+
+    private function isLocationQuestion(string $text): bool
+    {
+        $text = $this->normalize($text);
+
+        if (Str::contains($text, [
+            'adresa', 'adresen', 'lokacion', 'lokacioni', 'lokacionin', 'location',
+            'ku jeni', 'ku e keni lokalin', 'ku e keni dyqanin', 'ku ndodheni', 'ku ndodhet',
+        ])) {
+            return true;
+        }
+
+        // Pranon edhe dialekt e gabime të zakonshme: gjindeni, gjindet,
+        // gjendeni, gjendeni?, ku gjindet dyqani, etj.
+        return preg_match('/\bku\s+(?:gj(?:e|i)nd(?:eni|et|eteni)|jeni)\b/u', $text) === 1;
     }
 
     private function looksLikeProductSearch(string $text, bool $operational): bool
