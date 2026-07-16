@@ -155,6 +155,8 @@ return [
         'person', 'persona', 'veta', 'dy', 'ddy', 'dopio', 'double', 'cift', 'çift', 'matrimonial', 'teke', 'single',
         'qit', 'qita', 'qito', 'qikjo', 'qiky', 'qika', 'kete', 'këtë', 'ket', 'kët', 'ate', 'atë', 'paren', 'parin', 'tparen', 'dyten', 'dytin', 'treten', 'tretin',
         'qka', 'cka', 'çka', 'produkt', 'produkte', 'produktet', 'katalog', 'shop', 'shisni', 'gjej', 'gjeni', 'kerkoj', 'kërkoj', 'trego', 'disa',
+        'gjithe', 'gjithë', 'krejt', 'secili', 'secila', 'seciles', 'çdo', 'cdo', 'all', 'every',
+        'model', 'modele', 'modelet', 'cop', 'cope', 'copë', 'copa', 'osht', 'eshte', 'është', 'jepmi', 'qitmi',
         'show', 'have', 'with', 'for', 'the', 'and', 'please', 'imate', 'treba', 'koji', 'koja', 'molim',
     ],
 

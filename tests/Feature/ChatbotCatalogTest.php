@@ -251,7 +251,7 @@ class ChatbotCatalogTest extends TestCase
     {
         $matchingIds = [];
 
-        foreach (range(1, 8) as $index) {
+        foreach (range(1, 13) as $index) {
             $matchingIds[] = $this->product([
                 'name' => 'Tepih Model '.$index,
                 'category' => 'tepiha',
@@ -268,9 +268,9 @@ class ChatbotCatalogTest extends TestCase
             'sizes' => [['label' => '120x180', 'price' => 40, 'stock' => 3]],
         ]);
 
-        $response = $this->postJson(route('chatbot.message'), ['message' => 'A keni tepiha 300x200?'])
+        $response = $this->postJson(route('chatbot.message'), ['message' => 'Mi trego të gjithë tepihat 300x200'])
             ->assertOk()
-            ->assertJsonCount(8, 'products');
+            ->assertJsonCount(13, 'products');
 
         $this->assertEqualsCanonicalizing($matchingIds, $response->json('products.*.id'));
         foreach ($response->json('products') as $product) {
