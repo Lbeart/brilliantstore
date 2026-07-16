@@ -179,6 +179,34 @@ class ChatbotCatalogTest extends TestCase
         $this->assertSame($double->id, $response->json('products.0.id'));
     }
 
+    public function test_bedsheets_for_one_or_two_people_match_their_real_category_sizes(): void
+    {
+        $set = $this->product([
+            'name' => 'Set Qarqafësh Saten',
+            'category' => 'postava',
+            'sizes' => [
+                ['label' => '240x260', 'price' => 20, 'stock' => 10],
+                ['label' => '160x240', 'price' => 18, 'stock' => 4],
+            ],
+        ]);
+
+        $double = $this->postJson(route('chatbot.message'), ['message' => 'A keni postava për dy persona?'])
+            ->assertOk()
+            ->assertJsonCount(1, 'products')
+            ->assertJsonPath('products.0.matched_size.label', '240x260')
+            ->assertJsonPath('products.0.requested_size_confirmed', true);
+
+        $this->assertSame($set->id, $double->json('products.0.id'));
+
+        $single = $this->postJson(route('chatbot.message'), ['message' => 'A keni postava për një person?'])
+            ->assertOk()
+            ->assertJsonCount(1, 'products')
+            ->assertJsonPath('products.0.matched_size.label', '160x240')
+            ->assertJsonPath('products.0.requested_size_confirmed', true);
+
+        $this->assertSame($set->id, $single->json('products.0.id'));
+    }
+
     public function test_follow_up_can_select_a_product_card_by_ordinal(): void
     {
         $first = $this->product(['name' => 'Tepih Nova', 'category' => 'tepiha']);
