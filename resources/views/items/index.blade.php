@@ -1449,11 +1449,16 @@
 
     /* Full-bleed hero inspired by premium interior brands */
     .site-header { position:absolute; inset:0 0 auto; padding:28px 0; background:transparent; backdrop-filter:none; }
-    .nav { min-height:72px; padding:0 24px; border:1px solid rgba(255,255,255,.6); border-radius:36px; background:rgba(255,253,249,.9); box-shadow:0 14px 38px rgba(25,18,14,.14); backdrop-filter:blur(14px); }
+    .nav { min-height:72px; padding:0 24px; border:1px solid rgba(255,255,255,.28); border-radius:36px; background:rgba(28,21,18,.55); box-shadow:0 14px 38px rgba(25,18,14,.20); backdrop-filter:blur(18px) saturate(115%); -webkit-backdrop-filter:blur(18px) saturate(115%); }
     .brand img { width:205px; height:56px; }
-    .nav-links a,.nav-dropdown summary { color:#211b18; font-size:.91rem; }
-    .nav-links a:hover,.nav-dropdown:hover summary,.nav-dropdown[open] summary { color:var(--brand); background:rgba(127,29,45,.07); }
-    .nav-actions .icon-btn,.nav-actions .login-btn { color:#211b18; border-color:rgba(33,27,24,.16); background:rgba(255,255,255,.55); }
+    .nav-links a,.nav-dropdown summary { color:#fff; font-size:.91rem; text-shadow:0 1px 10px rgba(0,0,0,.32); }
+    .nav-links a:hover,.nav-dropdown:hover summary,.nav-dropdown[open] summary { color:#fff; background:rgba(255,255,255,.14); }
+    .nav-actions .icon-btn,.nav-actions .login-btn { color:#fff; border-color:rgba(255,255,255,.35); background:rgba(255,255,255,.10); }
+    .nav-actions .login-btn:hover,.nav-actions .icon-btn:hover { background:rgba(255,255,255,.20); }
+    .nav-actions .lang-switch { border-color:rgba(255,255,255,.28); background:rgba(255,255,255,.09); }
+    .nav-actions .lang-switch button { color:rgba(255,255,255,.82); }
+    .nav-actions .lang-switch button.active { color:var(--brand); background:#fff; }
+    .nav-actions .cart-more { color:rgba(255,255,255,.84); }
     .hero { min-height:100svh; padding:18px; background:#30251f; }
     .hero-stage { position:relative; display:grid; place-items:center; min-height:calc(100svh - 36px); overflow:hidden; border-radius:0 0 48px 48px; background:url('{{ asset('images/home/hero-luxury-curtains.jpg') }}') center center/cover no-repeat; }
     .hero-stage::before { content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(22,16,13,.24),rgba(22,16,13,.42) 50%,rgba(22,16,13,.58)); }
@@ -1466,6 +1471,10 @@
       .site-header { padding:14px 0; }
       .nav { min-height:64px; padding:0 14px; border-radius:24px; }
       .brand img { width:150px; height:48px; }
+      .nav-links.open a,.nav-links.open .nav-dropdown summary { color:#2b211c; text-shadow:none; }
+      .nav-links.open a:hover,.nav-links.open .nav-dropdown:hover summary,.nav-links.open .nav-dropdown[open] summary { color:var(--brand); background:rgba(127,29,45,.08); }
+      .nav-links.open .dropdown-menu a { color:#2b211c; }
+      .menu-toggle,.mobile-cart { color:#fff; border-color:rgba(255,255,255,.32); background:rgba(255,255,255,.10); }
       .hero { padding:8px; }
       .hero-stage { min-height:calc(100svh - 16px); border-radius:0 0 28px 28px; background-position:58% center; }
       .hero-content { margin-top:68px; }
