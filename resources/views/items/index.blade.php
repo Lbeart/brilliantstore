@@ -1481,7 +1481,23 @@
       .hero-content h1 { max-width:690px; font-size:clamp(3rem,12vw,5.8rem); }
     }
     @media (max-width:560px) {
-      .hero-stage { background-position:57% center; }
+      html, body { background:#30251f; }
+      .site-header { padding-top:max(12px,env(safe-area-inset-top)); }
+      .hero {
+        width:100%;
+        min-height:100svh;
+        min-height:100dvh;
+        margin:0;
+        padding:0;
+      }
+      .hero-stage {
+        width:100%;
+        min-height:100svh;
+        min-height:100dvh;
+        border-radius:0 0 28px 28px;
+        background-position:57% center;
+        background-size:cover;
+      }
       .hero-stage::before { background:linear-gradient(180deg,rgba(20,14,11,.3),rgba(20,14,11,.46) 52%,rgba(20,14,11,.62)); }
       .hero-content { width:calc(100% - 28px); margin-top:64px; }
       .hero-content h1 { font-size:clamp(3.15rem,16vw,4.7rem); line-height:.94; }
