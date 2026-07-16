@@ -823,11 +823,22 @@ class ChatbotKnowledgeService
             return false;
         }
 
-        if (Str::contains($text, ['produkt', 'katalog', 'qka keni', 'cka keni', 'çka keni', 'qfare shisni', 'çfarë shisni'])) {
+        if (Str::contains($text, [
+            'produkt', 'katalog', 'qka keni', 'cka keni', 'çka keni', 'qfare shisni', 'çfarë shisni',
+            'a keni', 'a kena', 'a kini', 'a ka ', 'e keni', 'ne stok', 'në stok', 'disponuesh',
+            'sa kushton', 'sa osht', 'sa eshte', 'sa është', 'cmimi', 'çmimi', 'me gjej', 'ma gjej',
+            'dua ta blej', 'du me ble', 'porosit', 'modelin', 'permasen', 'përmasën',
+        ])) {
             return true;
         }
 
-        return collect(preg_split('/[^a-z0-9]+/', $text) ?: [])->contains(fn ($token) => mb_strlen($token) >= 3);
+        if ($this->dimensionNeedles($text) !== []) {
+            return true;
+        }
+
+        // Një kod/model i shkurtër si "Otto 1010" duhet kërkuar në katalog,
+        // por pyetjet e zakonshme nuk duhen kthyer automatikisht në kërkim produkti.
+        return preg_match('/\b[a-z]{2,}[\s-]*\d{2,}\b|\b\d{5,}\b/u', $text) === 1;
     }
 
     private function isFollowUp(string $text): bool

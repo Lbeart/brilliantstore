@@ -266,6 +266,34 @@ class ChatbotCatalogTest extends TestCase
         Http::assertSentCount(1);
     }
 
+    public function test_general_customer_question_is_answered_by_ai_without_becoming_a_failed_catalog_search(): void
+    {
+        config(['services.openai.key' => 'test-key']);
+        $this->product(['name' => 'Tepih Hali 256', 'category' => 'tepiha']);
+
+        Http::fake(['*' => Http::response([
+            'output' => [[
+                'type' => 'message',
+                'content' => [[
+                    'type' => 'output_text',
+                    'text' => 'Për një sallon të vogël, ngjyrat e çelëta dhe perdet deri në dysheme e bëjnë hapësirën të duket më e madhe.',
+                ]],
+            ]],
+        ], 200)]);
+
+        $this->postJson(route('chatbot.message'), [
+            'message' => 'Si mund ta bëj sallonin e vogël të duket më i madh?',
+        ])->assertOk()
+            ->assertJsonPath('ai', true)
+            ->assertJsonCount(0, 'products')
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'ngjyrat e çelëta'));
+
+        Http::assertSent(function ($request) {
+            return str_contains((string) $request['instructions'], '"catalog_searched":false')
+                && str_contains((string) $request['instructions'], '"no_exact_match":false');
+        });
+    }
+
     public function test_ai_cannot_claim_that_a_missing_product_is_in_stock(): void
     {
         config(['services.openai.key' => 'test-key']);
