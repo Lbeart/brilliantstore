@@ -1,0 +1,319 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\Product;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Schema;
+use Tests\TestCase;
+
+class ChatbotCatalogTest extends TestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config([
+            'database.default' => 'chatbot_testing',
+            'database.connections.chatbot_testing' => [
+                'driver' => 'sqlite',
+                'database' => ':memory:',
+                'prefix' => '',
+                'foreign_key_constraints' => true,
+            ],
+            'services.openai.key' => null,
+        ]);
+
+        DB::purge('chatbot_testing');
+        Schema::connection('chatbot_testing')->create('products', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->decimal('price', 10, 2)->default(0);
+            $table->json('sizes')->nullable();
+            $table->json('color_variants')->nullable();
+            $table->integer('stock')->nullable();
+            $table->text('image_path')->nullable();
+            $table->text('description')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->string('category', 50)->index();
+            $table->string('subcategory')->nullable();
+            $table->string('sku')->nullable()->unique();
+            $table->string('barcode')->nullable()->unique();
+            $table->timestamps();
+        });
+    }
+
+    protected function tearDown(): void
+    {
+        Schema::connection('chatbot_testing')->dropIfExists('products');
+        DB::purge('chatbot_testing');
+
+        parent::tearDown();
+    }
+
+    public function test_greeting_does_not_show_random_products(): void
+    {
+        $this->product(['name' => 'Tepih Nova', 'category' => 'tepiha']);
+
+        $this->postJson(route('chatbot.message'), ['message' => 'Përshëndetje bro 👋'])
+            ->assertOk()
+            ->assertJsonCount(0, 'products');
+    }
+
+    public function test_bath_rug_intent_is_more_specific_than_general_rugs(): void
+    {
+        $this->product(['name' => 'Tepih Nova', 'category' => 'tepiha']);
+        $bath = $this->product(['name' => 'Set Banjo Soft', 'category' => 'tepihebanjo']);
+        $this->product(['name' => 'Set Banjo Joaktiv', 'category' => 'tepihebanjo', 'is_active' => false]);
+
+        $response = $this->postJson(route('chatbot.message'), ['message' => 'A keni tepih banjo?'])
+            ->assertOk()
+            ->assertJsonPath('action.url', route('products.tepihebanjo', [], false))
+            ->assertJsonCount(1, 'products');
+
+        $this->assertSame($bath->id, $response->json('products.0.id'));
+    }
+
+    public function test_curtain_intent_respects_subcategory(): void
+    {
+        $side = $this->product(['name' => 'Perde Elegance', 'category' => 'perde', 'subcategory' => 'anesore']);
+        $this->product(['name' => 'Perde Drita', 'category' => 'perde', 'subcategory' => 'ditore']);
+
+        $response = $this->postJson(route('chatbot.message'), ['message' => 'Më gjej perde anësore'])
+            ->assertOk()
+            ->assertJsonCount(1, 'products');
+
+        $this->assertSame($side->id, $response->json('products.0.id'));
+    }
+
+    public function test_unknown_color_and_size_never_fall_back_to_unrelated_products(): void
+    {
+        $this->product([
+            'name' => 'Tepih Otto 1010',
+            'category' => 'tepiha',
+            'sizes' => [['label' => '300x200', 'price' => 95, 'stock' => 2]],
+            'color_variants' => [['name' => 'Hiri', 'hex' => '#777777']],
+        ]);
+
+        Http::fake();
+        $this->postJson(route('chatbot.message'), ['message' => 'A keni tepih të kuq 160x230?'])
+            ->assertOk()
+            ->assertJsonPath('ai', false)
+            ->assertJsonCount(0, 'products')
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Nuk gjeta'));
+        Http::assertNothingSent();
+    }
+
+    public function test_follow_up_uses_previous_category_and_matches_reversed_dimensions(): void
+    {
+        $rug = $this->product([
+            'name' => 'Tepih Otto 1010',
+            'category' => 'tepiha',
+            'sizes' => [['label' => '300x200', 'price' => 95, 'stock' => 2]],
+            'color_variants' => [['name' => 'Hiri', 'hex' => '#777777']],
+        ]);
+        $this->product([
+            'name' => 'Batanije Hiri',
+            'category' => 'batanije',
+            'sizes' => [['label' => '200x300', 'price' => 25, 'stock' => 3]],
+            'color_variants' => [['name' => 'Grey', 'hex' => '#777777']],
+        ]);
+
+        $response = $this->postJson(route('chatbot.message'), [
+            'message' => 'Po në ngjyrë hiri 200x300?',
+            'history' => [
+                ['role' => 'user', 'content' => 'A keni tepih?'],
+                ['role' => 'assistant', 'content' => 'Po, shiko modelet më poshtë.'],
+            ],
+        ])->assertOk()->assertJsonCount(1, 'products');
+
+        $this->assertSame($rug->id, $response->json('products.0.id'));
+        $this->assertSame('300x200', $response->json('products.0.matched_size.label'));
+    }
+
+    public function test_cards_use_size_price_range_colors_and_stock_metadata(): void
+    {
+        $this->product([
+            'name' => 'Batanije Rodos',
+            'category' => 'batanije',
+            'price' => 15,
+            'sizes' => [
+                ['label' => '150x200', 'price' => 15, 'stock' => 3],
+                ['label' => '200x220', 'price' => 17, 'stock' => 1],
+            ],
+            'color_variants' => [['name' => 'Beige', 'hex' => '#d8c3a5']],
+        ]);
+
+        $response = $this->postJson(route('chatbot.message'), ['message' => 'A keni batanije Rodos?'])
+            ->assertOk()
+            ->assertJsonPath('products.0.price_min', 15)
+            ->assertJsonPath('products.0.price_max', 17)
+            ->assertJsonPath('products.0.price_text', '15.00–17.00 €')
+            ->assertJsonPath('products.0.stock_status', 'in_stock');
+
+        $this->assertSame(['Beige'], $response->json('products.0.colors'));
+    }
+
+    public function test_follow_up_can_select_a_product_card_by_ordinal(): void
+    {
+        $first = $this->product(['name' => 'Tepih Nova', 'category' => 'tepiha']);
+        $second = $this->product(['name' => 'Tepih Mara', 'category' => 'tepiha']);
+
+        $response = $this->postJson(route('chatbot.message'), [
+            'message' => 'Të dytin, sa kushton?',
+            'history' => [
+                ['role' => 'user', 'content' => 'Më trego disa tepiha'],
+                ['role' => 'assistant', 'content' => 'Shiko kartat më poshtë.'],
+            ],
+            'context_product_ids' => [$first->id, $second->id],
+        ])->assertOk()->assertJsonCount(1, 'products');
+
+        $this->assertSame($second->id, $response->json('products.0.id'));
+    }
+
+    public function test_colloquial_meter_dimensions_match_catalog_sizes(): void
+    {
+        $rug = $this->product([
+            'name' => 'Tepih Family',
+            'category' => 'tepiha',
+            'sizes' => [['label' => '300x400', 'price' => 120, 'stock' => 1]],
+        ]);
+
+        $rugResponse = $this->postJson(route('chatbot.message'), ['message' => 'A keni tepih 3 me 4?'])
+            ->assertOk()->assertJsonCount(1, 'products');
+        $this->assertSame($rug->id, $rugResponse->json('products.0.id'));
+
+        $rail = $this->product([
+            'name' => 'Garnishte Plastik',
+            'category' => 'garnishte',
+            'sizes' => [['label' => '6', 'price' => 24, 'stock' => 2]],
+        ]);
+
+        $railResponse = $this->postJson(route('chatbot.message'), ['message' => 'A keni garnishte 6 metra?'])
+            ->assertOk()->assertJsonCount(1, 'products');
+        $this->assertSame($rail->id, $railResponse->json('products.0.id'));
+    }
+
+    public function test_ai_reply_with_an_invented_price_is_rejected(): void
+    {
+        config(['services.openai.key' => 'test-key']);
+        $this->product([
+            'name' => 'Tepih Asya',
+            'category' => 'tepiha',
+            'sizes' => [['label' => '150x230', 'price' => 75, 'stock' => 2]],
+        ]);
+
+        Http::fake(['*' => Http::response([
+            'output' => [[
+                'type' => 'message',
+                'content' => [['type' => 'output_text', 'text' => 'Tepih Asya kushton 10 €.']],
+            ]],
+        ], 200)]);
+
+        $this->postJson(route('chatbot.message'), ['message' => 'Sa kushton Tepih Asya?'])
+            ->assertOk()
+            ->assertJsonPath('ai', false)
+            ->assertJsonPath('products.0.price_text', '75.00 €')
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Tepih Asya'));
+    }
+
+    public function test_chatbot_reads_the_current_session_cart(): void
+    {
+        $this->withSession([
+            'cart' => [
+                'product|1|150x230|' => [
+                    'name' => 'Tepih Nova',
+                    'qty' => 2,
+                    'price' => 45,
+                    'size' => '150x230',
+                    'color' => null,
+                ],
+            ],
+        ])->postJson(route('chatbot.message'), ['message' => 'Sa e kam totalin në shporta?'])
+            ->assertOk()
+            ->assertJsonPath('ai', false)
+            ->assertJsonPath('action.url', route('cart.index', [], false))
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, '2 artikuj') && str_contains($reply, '90.00 €'));
+    }
+
+    public function test_in_stock_request_excludes_unavailable_products(): void
+    {
+        $available = $this->product(['name' => 'Tepih Nova', 'category' => 'tepiha', 'stock' => 3]);
+        $this->product(['name' => 'Tepih Mara', 'category' => 'tepiha', 'stock' => 0]);
+
+        $response = $this->postJson(route('chatbot.message'), ['message' => 'Cilat tepiha i keni në stok?'])
+            ->assertOk()->assertJsonCount(1, 'products');
+
+        $this->assertSame($available->id, $response->json('products.0.id'));
+    }
+
+    public function test_follow_up_can_change_model_or_request_another_product(): void
+    {
+        $otto = $this->product(['name' => 'Tepih Otto', 'category' => 'tepiha']);
+        $mara = $this->product(['name' => 'Tepih Mara', 'category' => 'tepiha']);
+        $history = [
+            ['role' => 'user', 'content' => 'A keni Tepih Otto?'],
+            ['role' => 'assistant', 'content' => 'Po, shiko kartën më poshtë.'],
+        ];
+
+        $changed = $this->postJson(route('chatbot.message'), [
+            'message' => 'Po Mara?',
+            'history' => $history,
+            'context_product_ids' => [$otto->id],
+        ])->assertOk()->assertJsonCount(1, 'products');
+        $this->assertSame($mara->id, $changed->json('products.0.id'));
+
+        $another = $this->postJson(route('chatbot.message'), [
+            'message' => 'Po një tjetër?',
+            'history' => $history,
+            'context_product_ids' => [$otto->id],
+        ])->assertOk();
+        $this->assertNotContains($otto->id, $another->json('products.*.id'));
+    }
+
+    public function test_kosovar_dialect_and_color_variants_are_understood(): void
+    {
+        $hali = $this->product([
+            'name' => 'Tepih Hali 256',
+            'category' => 'tepiha',
+            'color_variants' => [['name' => 'White', 'hex' => '#ffffff']],
+        ]);
+
+        $response = $this->postJson(route('chatbot.message'), [
+            'message' => 'A ka të bardha?',
+            'history' => [
+                ['role' => 'user', 'content' => 'Qfar ngjyra ka tepih Hali?'],
+                ['role' => 'assistant', 'content' => 'Po e kontrolloj katalogun.'],
+            ],
+            'context_product_ids' => [$hali->id],
+        ])->assertOk()->assertJsonCount(1, 'products');
+
+        $this->assertSame($hali->id, $response->json('products.0.id'));
+        $this->assertSame(['White'], $response->json('products.0.colors'));
+    }
+
+    private function product(array $attributes): Product
+    {
+        static $counter = 0;
+        $counter++;
+
+        return Product::query()->create(array_merge([
+            'name' => 'Produkt '.$counter,
+            'slug' => 'produkt-'.$counter,
+            'price' => 20,
+            'description' => null,
+            'image_path' => null,
+            'is_active' => true,
+            'stock' => 5,
+            'category' => 'tepiha',
+            'subcategory' => null,
+            'sizes' => [],
+            'color_variants' => [],
+            'sku' => 'SKU-'.$counter,
+            'barcode' => 'BRL'.$counter,
+        ], $attributes));
+    }
+}

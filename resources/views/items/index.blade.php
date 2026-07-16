@@ -1762,12 +1762,18 @@
     }
     .chat-option:hover,.chat-action-link:hover { border-color:var(--brand); color:var(--brand); }
     .chat-action-link { margin:0 0 12px; text-decoration:none; }
-    .chat-product-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0 0 14px; }
-    .chat-product-card { display:flex; min-width:0; overflow:hidden; border:1px solid #eadbd2; border-radius:14px; background:#fff; color:var(--ink); text-decoration:none; box-shadow:0 7px 18px rgba(39,28,23,.07); }
-    .chat-product-card img { width:62px; height:68px; flex:0 0 62px; object-fit:cover; background:#f2eeeb; }
-    .chat-product-details { min-width:0; padding:9px 8px; display:flex; flex-direction:column; justify-content:center; gap:4px; }
-    .chat-product-details strong { overflow:hidden; font-size:.76rem; line-height:1.2; text-overflow:ellipsis; white-space:nowrap; }
-    .chat-product-details small { color:var(--brand); font-size:.7rem; font-weight:800; }
+    .chat-product-grid { display:grid; grid-template-columns:1fr; gap:8px; margin:0 0 14px; }
+    .chat-product-card { display:flex; min-width:0; overflow:hidden; border:1px solid #eadbd2; border-radius:14px; background:#fff; color:var(--ink); text-decoration:none; box-shadow:0 7px 18px rgba(39,28,23,.07); transition:transform .16s ease,border-color .16s ease; }
+    .chat-product-card:hover { transform:translateY(-1px); border-color:#cdaea0; color:var(--ink); }
+    .chat-product-card img { width:76px; height:84px; flex:0 0 76px; object-fit:cover; background:#f2eeeb; }
+    .chat-product-details { min-width:0; padding:9px 10px; display:flex; flex-direction:column; justify-content:center; gap:3px; }
+    .chat-product-details strong { overflow:hidden; font-size:.78rem; line-height:1.2; text-overflow:ellipsis; white-space:nowrap; }
+    .chat-product-price { color:var(--brand); font-size:.72rem; font-weight:800; }
+    .chat-product-meta { overflow:hidden; color:#75665e; font-size:.64rem; line-height:1.25; text-overflow:ellipsis; white-space:nowrap; }
+    .chat-product-stock { font-size:.64rem; font-weight:700; }
+    .chat-product-stock.in_stock { color:#15803d; }
+    .chat-product-stock.out_of_stock { color:#b91c1c; }
+    .chat-product-stock.confirm { color:#8a5a16; }
     .chat-composer {
       flex:none;
       display:grid;
@@ -2371,6 +2377,7 @@
       const csrfToken = document.querySelector('meta[name="csrf-token"]');
       const chatHistory = [];
       let chatBusy = false;
+      let lastChatProductIds = [];
 
       function setChat(open) {
         if (!chatPanel || !chatToggle) return;
@@ -2419,6 +2426,7 @@
           const card = document.createElement('a');
           card.className = 'chat-product-card';
           card.href = product.url;
+          card.setAttribute('aria-label', 'Shiko produktin ' + (product.name || 'Brillant'));
 
           const image = document.createElement('img');
           image.src = product.image;
@@ -2429,10 +2437,25 @@
           details.className = 'chat-product-details';
           const name = document.createElement('strong');
           name.textContent = product.name || 'Produkt';
-          const price = document.createElement('small');
-          price.textContent = product.price !== null ? Number(product.price).toFixed(2) + ' EUR' : 'Shiko produktin';
+          const price = document.createElement('span');
+          price.className = 'chat-product-price';
+          price.textContent = product.price_text || 'Shiko produktin';
+          const meta = document.createElement('span');
+          meta.className = 'chat-product-meta';
+          const sizeLabels = Array.isArray(product.sizes) ? product.sizes.slice(0, 3).map(function (size) { return size.label; }).filter(Boolean) : [];
+          const colorLabels = Array.isArray(product.colors) ? product.colors.slice(0, 3).filter(Boolean) : [];
+          const metaParts = [];
+          if (sizeLabels.length) metaParts.push('Përmasa: ' + sizeLabels.join(', '));
+          if (colorLabels.length) metaParts.push('Ngjyra: ' + colorLabels.join(', '));
+          meta.textContent = metaParts.length ? metaParts.join(' • ') : 'Kliko për detaje';
+          meta.title = meta.textContent;
+          const stock = document.createElement('span');
+          stock.className = 'chat-product-stock ' + (product.stock_status || 'confirm');
+          stock.textContent = product.stock_label || 'Konfirmo stokun';
           details.appendChild(name);
           details.appendChild(price);
+          details.appendChild(meta);
+          details.appendChild(stock);
           card.appendChild(image);
           card.appendChild(details);
           grid.appendChild(card);
@@ -2482,7 +2505,11 @@
               'Content-Type': 'application/json',
               'X-CSRF-TOKEN': csrfToken ? csrfToken.content : ''
             },
-            body: JSON.stringify({ message: message, history: previousHistory })
+            body: JSON.stringify({
+              message: message,
+              history: previousHistory,
+              context_product_ids: lastChatProductIds
+            })
           });
 
           if (!response.ok) {
@@ -2495,6 +2522,9 @@
           const reply = data.reply || 'Nuk munda të jap përgjigje tani. Na shkruaj në WhatsApp dhe ekipi të ndihmon.';
           appendChatMessage(reply, 'assistant', data.action || null);
           appendChatProducts(data.products || []);
+          if (Array.isArray(data.products) && data.products.length) {
+            lastChatProductIds = data.products.map(function (product) { return Number(product.id); }).filter(Number.isInteger).slice(0, 5);
+          }
           chatHistory.push({ role: 'assistant', content: reply });
         } catch (error) {
           if (typing) typing.remove();
