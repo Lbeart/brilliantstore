@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
@@ -34,6 +35,7 @@ class ChatbotController extends Controller
             ->all();
 
         $action = $this->suggestedAction($message);
+        $products = $this->findProducts($message);
         $apiKey = trim((string) config('services.openai.key'));
 
         if ($apiKey === '') {
@@ -41,6 +43,7 @@ class ChatbotController extends Controller
                 'reply' => $this->fallbackReply($message),
                 'ai' => false,
                 'action' => $action,
+                'products' => $products,
             ]);
         }
 
@@ -71,7 +74,7 @@ class ChatbotController extends Controller
                     'store' => false,
                     'max_output_tokens' => 500,
                     'reasoning' => ['effort' => 'low'],
-                    'instructions' => $this->instructions(),
+                    'instructions' => $this->instructions($products),
                     'input' => $input,
                 ]);
 
@@ -85,6 +88,7 @@ class ChatbotController extends Controller
                     'reply' => $this->fallbackReply($message),
                     'ai' => false,
                     'action' => $action,
+                    'products' => $products,
                 ]);
             }
 
@@ -99,6 +103,7 @@ class ChatbotController extends Controller
                 'reply' => Str::limit($reply, 1200, ''),
                 'ai' => $usedAi,
                 'action' => $action,
+                'products' => $products,
             ]);
         } catch (Throwable $exception) {
             Log::warning('Brillant chatbot could not reach the AI service.', [
@@ -109,17 +114,91 @@ class ChatbotController extends Controller
                 'reply' => $this->fallbackReply($message),
                 'ai' => false,
                 'action' => $action,
+                'products' => $products,
             ]);
         }
     }
 
-    private function instructions(): string
+    private function instructions(array $products = []): string
     {
-        return <<<'PROMPT'
+        $base = <<<'PROMPT'
 Ti je asistenti i dyqanit B-Brillant në Lipjan, Kosovë. Përgjigju në gjuhën e klientit, me ton të ngrohtë, profesional dhe të shkurtër (maksimumi 4 fjali).
 B-Brillant shet tepiha, perde ditore dhe anësore, sete çarçafësh/postava, batanije, mbulesa, jastëkë dekorues, tepiha banjoje, lëkurë pelushi dhe garnisha. Ofron këshillim për kombinim, matje dhe montim të perdeve sipas mundësisë, si dhe dërgesë në Kosovë.
 Mos shpik çmime, stok, afate ose status porosie. Për këto kërkoji klientit ta hapë produktin përkatës ose të kontaktojë ekipin në WhatsApp në +383 44 960 661. Mos kërko të dhëna të kartelës, fjalëkalime apo informacione të ndjeshme. Për gjurmim porosie drejtoje te faqja e gjurmimit.
 PROMPT;
+
+        if ($products === []) {
+            return $base."\nNuk u gjet produkt specifik. Bej nje pyetje te shkurter sqaruese ose drejtoje klientin te kategoria perkatese.";
+        }
+
+        $catalog = collect($products)->map(function (array $product) {
+            $price = $product['price'] !== null ? number_format($product['price'], 2).' EUR' : 'cmimi ne faqe';
+            return "- {$product['name']} | {$product['category']} | {$price} | {$product['url']}";
+        })->implode("\n");
+
+        return $base."\nRekomando vetem produkte nga kjo liste reale dhe thuaj se kartat jane nen pergjigje:\n".$catalog;
+    }
+
+    private function findProducts(string $message): array
+    {
+        $normalized = Str::lower(Str::ascii($message));
+        $stopWords = ['keni', 'kemi', 'dua', 'nje', 'naj', 'cilat', 'qfare', 'pershendetje'];
+        $tokens = collect(preg_split('/[^a-z0-9]+/', $normalized) ?: [])
+            ->filter(fn (string $token) => mb_strlen($token) >= 3 && ! in_array($token, $stopWords, true))
+            ->unique()->take(6)->values();
+
+        $category = null;
+        foreach ([
+            'tepiha' => ['tepih', 'tapet', 'hali'],
+            'perde' => ['perde', 'dritare', 'ditore', 'anesore'],
+            'batanije' => ['batanije', 'qebe'],
+            'mbulesa' => ['mbulesa', 'divan', 'sofa'],
+            'postava' => ['postava', 'carcaf', 'qarqaf'],
+            'jastekdekorues' => ['jastek', 'jastak'],
+            'tepihebanjo' => ['banjo'],
+            'garnishte' => ['garnish', 'karnish'],
+        ] as $value => $aliases) {
+            if (Str::contains($normalized, $aliases)) {
+                $category = $value;
+                break;
+            }
+        }
+
+        try {
+            $query = Product::query()->where('is_active', true);
+            if ($category !== null) {
+                $query->where('category', $category);
+            }
+            if ($tokens->isNotEmpty()) {
+                $query->where(function ($query) use ($tokens) {
+                    foreach ($tokens as $token) {
+                        $query->orWhere('name', 'like', "%{$token}%")
+                            ->orWhere('description', 'like', "%{$token}%")
+                            ->orWhere('category', 'like', "%{$token}%")
+                            ->orWhere('subcategory', 'like', "%{$token}%")
+                            ->orWhere('sizes', 'like', "%{$token}%")
+                            ->orWhere('color_variants', 'like', "%{$token}%");
+                    }
+                });
+            }
+
+            $matches = $query->latest('id')->limit(5)->get();
+            if ($matches->isEmpty() && $category !== null) {
+                $matches = Product::query()->where('is_active', true)
+                    ->where('category', $category)->latest('id')->limit(5)->get();
+            }
+
+            return $matches->map(fn (Product $product) => [
+                'name' => $product->name,
+                'category' => (string) $product->category,
+                'price' => is_numeric($product->price) ? (float) $product->price : null,
+                'image' => $product->image_url,
+                'url' => route('products.show', $product->slug, false),
+            ])->values()->all();
+        } catch (Throwable $exception) {
+            Log::warning('Brillant chatbot catalog search failed.', ['exception' => $exception::class]);
+            return [];
+        }
     }
 
     private function extractText(array $payload): string
