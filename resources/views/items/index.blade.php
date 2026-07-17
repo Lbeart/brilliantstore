@@ -1484,25 +1484,39 @@
       .hero-content h1 { max-width:690px; font-size:clamp(3rem,12vw,5.8rem); }
     }
     @media (max-width:560px) {
-      html { background:#30251f; }
-      body { background:var(--bg); }
+      html,
+      body {
+        margin:0;
+        padding:0;
+        background-color:#30251f;
+        background-image:url('{{ asset('images/home/hero-luxury-curtains.jpg') }}');
+        background-position:57% top;
+        background-size:100vw 100dvh;
+        background-repeat:no-repeat;
+      }
+      main { margin:0; padding:0; }
       .site-header { padding-top:max(12px,calc(env(safe-area-inset-top) + 6px)); }
       .hero {
+        position:relative;
+        z-index:1;
         width:100%;
         min-height:calc(100svh + env(safe-area-inset-top));
         min-height:calc(100dvh + env(safe-area-inset-top));
-        margin-top:calc(-1 * env(safe-area-inset-top));
+        margin:0;
         padding:0;
-        background:#30251f;
+        overflow:visible;
+        background:transparent;
       }
       .hero-stage {
         width:100%;
         min-height:calc(100svh + env(safe-area-inset-top));
         min-height:calc(100dvh + env(safe-area-inset-top));
-        padding-top:env(safe-area-inset-top);
+        margin-top:calc(-1 * env(safe-area-inset-top));
+        padding-top:calc(env(safe-area-inset-top) * 2);
         border-radius:0 0 28px 28px;
-        background-position:57% center;
-        background-size:cover;
+        background-position:57% top;
+        background-size:100vw 100dvh;
+        background-repeat:no-repeat;
       }
       .hero-stage::before { background:linear-gradient(180deg,rgba(20,14,11,.3),rgba(20,14,11,.46) 52%,rgba(20,14,11,.62)); }
       .hero-content { width:calc(100% - 28px); margin-top:64px; }
