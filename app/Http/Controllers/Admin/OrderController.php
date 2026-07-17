@@ -103,7 +103,7 @@ class OrderController extends Controller
                 'exception' => $e->getMessage(),
             ]);
 
-            return back()->with('error', 'Emaili nuk u dërgua. Shkak: ' . $e->getMessage());
+            return back()->with('error', 'Emaili nuk u dërgua. Kontrolloni konfigurimin SMTP dhe Gmail App Password. Detajet teknike u ruajtën në log.');
         }
     }
 
@@ -129,7 +129,7 @@ class OrderController extends Controller
                 'exception' => $e->getMessage(),
             ]);
 
-            return back()->with('error', 'Emaili nuk u dërgua. Shkak: ' . $e->getMessage());
+            return back()->with('error', 'Emaili nuk u dërgua. Kontrolloni konfigurimin SMTP dhe Gmail App Password. Detajet teknike u ruajtën në log.');
         }
     }
 
@@ -159,7 +159,7 @@ class OrderController extends Controller
                 'exception' => $e->getMessage(),
             ]);
 
-            return back()->with('error', 'Emaili nuk u dërgua. Shkak: ' . $e->getMessage());
+            return back()->with('error', 'Emaili nuk u dërgua. Kontrolloni konfigurimin SMTP dhe Gmail App Password. Detajet teknike u ruajtën në log.');
         }
     }
 
@@ -299,7 +299,7 @@ public function sendInvoice(Order $order)
             'exception' => $e->getMessage(),
         ]);
 
-        return back()->with('error', 'Fatura nuk u dergua. Shkak: ' . $e->getMessage());
+        return back()->with('error', 'Fatura nuk u dërgua. Kontrolloni konfigurimin SMTP dhe Gmail App Password. Detajet teknike u ruajtën në log.');
     }
 }
 public function invoicePublic($id)
