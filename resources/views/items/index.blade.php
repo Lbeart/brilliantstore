@@ -47,6 +47,8 @@
   <link rel="alternate" hreflang="sr" href="{{ $localizedUrl('sr') }}">
   <link rel="alternate" hreflang="x-default" href="{{ $localizedUrl('sq') }}">
   <meta name="theme-color" content="#7f1d2d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <meta property="og:title" content="{{ $seo['ogTitle'] }}">
   <meta property="og:description" content="{{ $seo['ogDescription'] }}">
@@ -1484,18 +1486,20 @@
     @media (max-width:560px) {
       html { background:#30251f; }
       body { background:var(--bg); }
-      .site-header { padding-top:max(12px,env(safe-area-inset-top)); }
+      .site-header { padding-top:max(12px,calc(env(safe-area-inset-top) + 6px)); }
       .hero {
         width:100%;
-        min-height:100svh;
-        min-height:100dvh;
-        margin:0;
+        min-height:calc(100svh + env(safe-area-inset-top));
+        min-height:calc(100dvh + env(safe-area-inset-top));
+        margin-top:calc(-1 * env(safe-area-inset-top));
         padding:0;
+        background:#30251f;
       }
       .hero-stage {
         width:100%;
-        min-height:100svh;
-        min-height:100dvh;
+        min-height:calc(100svh + env(safe-area-inset-top));
+        min-height:calc(100dvh + env(safe-area-inset-top));
+        padding-top:env(safe-area-inset-top);
         border-radius:0 0 28px 28px;
         background-position:57% center;
         background-size:cover;
@@ -1862,13 +1866,20 @@
       }
       .chat-panel {
         position:fixed;
-        inset:max(10px,env(safe-area-inset-top)) 10px max(78px,calc(env(safe-area-inset-bottom) + 68px)) 10px;
+        inset:auto 8px max(76px,calc(env(safe-area-inset-bottom) + 68px)) 8px;
         width:auto;
-        height:auto;
+        height:min(560px,72dvh);
         min-height:0;
-        max-height:none;
+        max-height:calc(var(--chat-visual-height,100dvh) - 24px);
         border-radius:20px;
         transform-origin:bottom center;
+        transition:max-height .14s ease,bottom .14s ease;
+      }
+      body.chat-keyboard-open .chat-panel {
+        bottom:calc(var(--chat-keyboard-offset,0px) + 8px);
+        height:min(440px,calc(var(--chat-visual-height,100dvh) - 16px));
+        max-height:calc(var(--chat-visual-height,100dvh) - 16px);
+        transition:none;
       }
       .chat-head { min-height:68px; padding:11px 12px; }
       .chat-avatar { width:40px; height:40px; }
@@ -2386,7 +2397,11 @@
         chatToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         chatToggle.innerHTML = open ? '<i class="bi bi-x-lg"></i>' : '<i class="bi bi-chat-dots-fill"></i>';
         document.body.classList.toggle('chat-open', open);
-        if (open && chatInput) window.setTimeout(function () { chatInput.focus(); }, 80);
+        // Në telefon mos e hap tastierën bashkë me panelin; ky kombinim shkakton
+        // kërcim të visual viewport. Klienti prek fushën kur është gati të shkruajë.
+        if (open && chatInput && window.matchMedia('(min-width: 701px)').matches) {
+          window.setTimeout(function () { chatInput.focus(); }, 80);
+        }
       }
       if (chatToggle) chatToggle.addEventListener('click', function () { setChat(chatPanel.hidden); });
       if (chatClose) chatClose.addEventListener('click', function () { setChat(false); });
@@ -2549,6 +2564,15 @@
       });
       if (chatInput) {
         chatInput.addEventListener('input', resizeChatInput);
+        chatInput.addEventListener('focus', function () {
+          document.body.classList.add('chat-keyboard-open');
+          updateChatViewport();
+          window.setTimeout(scrollChatToEnd, 120);
+        });
+        chatInput.addEventListener('blur', function () {
+          document.body.classList.remove('chat-keyboard-open');
+          updateChatViewport();
+        });
         chatInput.addEventListener('keydown', function (event) {
           if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
@@ -2556,6 +2580,24 @@
           }
         });
       }
+
+      function updateChatViewport() {
+        const viewport = window.visualViewport;
+        const visibleHeight = viewport ? viewport.height : window.innerHeight;
+        const offsetTop = viewport ? viewport.offsetTop : 0;
+        const keyboardOffset = Math.max(0, window.innerHeight - visibleHeight - offsetTop);
+        document.documentElement.style.setProperty('--chat-visual-height', Math.round(visibleHeight) + 'px');
+        document.documentElement.style.setProperty('--chat-keyboard-offset', Math.round(keyboardOffset) + 'px');
+      }
+
+      updateChatViewport();
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', updateChatViewport);
+        window.visualViewport.addEventListener('scroll', updateChatViewport);
+      }
+      window.addEventListener('orientationchange', function () {
+        window.setTimeout(updateChatViewport, 120);
+      });
       Array.prototype.forEach.call(document.querySelectorAll('.chat-option[data-chat-message]'), function (option) {
         option.addEventListener('click', function () {
           setChat(true);
