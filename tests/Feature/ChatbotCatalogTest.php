@@ -44,10 +44,17 @@ class ChatbotCatalogTest extends TestCase
             $table->string('barcode')->nullable()->unique();
             $table->timestamps();
         });
+        Schema::connection('chatbot_testing')->create('orders', function (Blueprint $table) {
+            $table->id();
+            $table->string('tracking_code')->nullable();
+            $table->string('status')->default('new');
+            $table->timestamps();
+        });
     }
 
     protected function tearDown(): void
     {
+        Schema::connection('chatbot_testing')->dropIfExists('orders');
         Schema::connection('chatbot_testing')->dropIfExists('products');
         DB::purge('chatbot_testing');
 
@@ -505,6 +512,32 @@ class ChatbotCatalogTest extends TestCase
             ->assertJsonCount(0, 'products')
             ->assertJsonPath('action.url', route('contact', [], false))
             ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Gjergj Fishta'));
+    }
+
+    public function test_tracking_code_is_looked_up_and_returns_real_order_status_without_personal_data(): void
+    {
+        DB::connection('chatbot_testing')->table('orders')->insert([
+            'tracking_code' => 'BRL-AB12-CD34',
+            'status' => 'processing',
+            'created_at' => '2026-07-17 10:30:00',
+            'updated_at' => '2026-07-17 10:30:00',
+        ]);
+
+        $this->postJson(route('chatbot.message'), ['message' => 'BRL AB12 CD34'])
+            ->assertOk()
+            ->assertJsonPath('ai', false)
+            ->assertJsonCount(0, 'products')
+            ->assertJsonPath('action.url', route('track.show', 'BRL-AB12-CD34', false))
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Në procesim')
+                && str_contains($reply, '17.07.2026 10:30'));
+    }
+
+    public function test_unknown_tracking_code_is_reported_as_not_found(): void
+    {
+        $this->postJson(route('chatbot.message'), ['message' => 'Ku është porosia BRL-ZZZZ-9999?'])
+            ->assertOk()
+            ->assertJsonPath('ai', false)
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Nuk gjeta porosi'));
     }
 
     public function test_misspelled_dialect_location_question_does_not_become_a_product_search(): void

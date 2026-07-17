@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -17,6 +18,8 @@ class ChatbotKnowledgeService
         array $cart = []
     ): array {
         $current = $this->normalize($message);
+        $trackingCode = $this->extractTrackingCode($message);
+        $tracking = $this->trackingSummary($trackingCode);
         $intent = $this->categoryIntent($current);
         $historyIntent = $this->historyIntent($history);
         $operational = $this->isOperationalQuestion($current);
@@ -85,7 +88,9 @@ class ChatbotKnowledgeService
         }
 
         $noExactMatch = $productSearch && $catalogAvailable === true && $products === [];
-        $action = $this->suggestedAction($current, $intent);
+        $action = $trackingCode !== null
+            ? ['label' => 'Shiko gjurmimin e porosisë', 'url' => route('track.show', $trackingCode, false)]
+            : $this->suggestedAction($current, $intent);
         $cartSummary = $this->cartSummary($cart);
 
         return [
@@ -97,6 +102,7 @@ class ChatbotKnowledgeService
             'catalog_available' => $catalogAvailable,
             'no_exact_match' => $noExactMatch,
             'cart' => $cartSummary,
+            'order_tracking' => $tracking,
             'prompt_context' => $this->promptContext(
                 $products,
                 $inventory,
@@ -105,7 +111,8 @@ class ChatbotKnowledgeService
                 $productSearch,
                 $noExactMatch,
                 $intent,
-                $catalogOverview
+                $catalogOverview,
+                $tracking
             ),
         ];
     }
@@ -114,6 +121,17 @@ class ChatbotKnowledgeService
     {
         $products = $knowledge['products'] ?? [];
         $intent = $knowledge['intent'] ?? null;
+        $tracking = (array) ($knowledge['order_tracking'] ?? []);
+
+        if (($tracking['lookup_requested'] ?? false) === true) {
+            if (($tracking['found'] ?? false) === true) {
+                return 'Porosia me kodin '.$tracking['code'].' është “'.$tracking['status_label'].'”.'
+                    .' Është regjistruar më '.$tracking['created_at'].'. Hape gjurmimin për ta parë statusin e plotë.';
+            }
+
+            return 'Nuk gjeta porosi me kodin '.($tracking['code'] ?? 'që dërgove')
+                .'. Kontrollo shkronjat dhe numrat e kodit, pastaj provo përsëri.';
+        }
 
         if (($knowledge['no_exact_match'] ?? false) === true) {
             $label = is_array($intent) ? mb_strtolower((string) ($intent['label'] ?? 'produkti që kërkove')) : 'produkti që kërkove';
@@ -720,7 +738,8 @@ class ChatbotKnowledgeService
         bool $catalogSearched,
         bool $noExactMatch,
         ?array $intent,
-        array $catalogOverview
+        array $catalogOverview,
+        array $tracking
     ): string
     {
         $business = (array) config('chatbot.business', []);
@@ -751,7 +770,62 @@ class ChatbotKnowledgeService
             'full_active_catalog' => $catalogOverview,
             'matching_products' => $promptProducts,
             'current_cart' => $cart,
+            'order_tracking' => $tracking,
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?: '{}';
+    }
+
+    private function extractTrackingCode(string $message): ?string
+    {
+        if (preg_match('/\bBRL[-\s]?[A-Z0-9]{4}[-\s]?[A-Z0-9]{4}\b/i', $message, $match) !== 1) {
+            return null;
+        }
+
+        $compact = preg_replace('/[^A-Z0-9]/', '', strtoupper($match[0])) ?? '';
+
+        return strlen($compact) === 11
+            ? substr($compact, 0, 3).'-'.substr($compact, 3, 4).'-'.substr($compact, 7, 4)
+            : null;
+    }
+
+    private function trackingSummary(?string $code): array
+    {
+        if ($code === null) {
+            return ['lookup_requested' => false];
+        }
+
+        try {
+            $order = Order::query()
+                ->whereRaw('UPPER(tracking_code) = ?', [strtoupper($code)])
+                ->first(['id', 'tracking_code', 'status', 'created_at']);
+        } catch (Throwable $exception) {
+            Log::warning('Brillant chatbot order tracking failed.', ['exception_class' => $exception::class]);
+
+            return ['lookup_requested' => true, 'found' => false, 'code' => $code, 'temporarily_unavailable' => true];
+        }
+
+        if ($order === null) {
+            return ['lookup_requested' => true, 'found' => false, 'code' => $code];
+        }
+
+        $status = $this->normalize((string) $order->status);
+        $statusLabel = match ($status) {
+            'new', 'pending', 'accepted', 'received', 'pranuar' => 'Pranuar',
+            'processing', 'in_progress', 'ne proces', 'procesim' => 'Në procesim',
+            'shipped', 'sent', 'derguar' => 'Dërguar',
+            'delivered', 'completed', 'finished', 'perfunduar', 'dorezuar' => 'Dorëzuar',
+            'cancelled', 'canceled', 'anuluar' => 'Anuluar',
+            default => Str::headline($status ?: 'Pranuar'),
+        };
+
+        return [
+            'lookup_requested' => true,
+            'found' => true,
+            'code' => (string) $order->tracking_code,
+            'status' => (string) $order->status,
+            'status_label' => $statusLabel,
+            'created_at' => optional($order->created_at)->format('d.m.Y H:i'),
+            'url' => route('track.show', $order->tracking_code, false),
+        ];
     }
 
     private function cartSummary(array $cart): array
@@ -823,6 +897,9 @@ class ChatbotKnowledgeService
 
     private function isOperationalQuestion(string $text): bool
     {
+        if ($this->extractTrackingCode($text) !== null) {
+            return true;
+        }
         if ($this->isLocationQuestion($text)) {
             return true;
         }
