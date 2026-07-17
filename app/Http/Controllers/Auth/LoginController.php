@@ -24,7 +24,7 @@ class LoginController extends Controller
 
             if (!Auth::user()->hasVerifiedEmail()) {
                 Auth::logout();
-                return back()->with('error', 'Ju lutem verifikoni emailin tuaj.');
+                return back()->with('error', 'Emaili juaj nuk është verifikuar. Kontrolloni Inbox, Spam ose Junk për emailin e verifikimit, pastaj kyçuni në b-brillant.com.');
             }
 
             return redirect()->route(Auth::user()->role === 'admin' ? 'admin.dashboard' : 'account.dashboard');

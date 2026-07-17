@@ -34,7 +34,6 @@ class RegisterController extends Controller
 
         $user->sendEmailVerificationNotification();
 
-        return redirect()->route('login')->with('error', 'Ju lutem verifikoni emailin tuaj para se të kyçeni.');
+        return redirect()->route('login')->with('error', 'Ju kemi dërguar një email verifikimi. Kontrolloni Inbox, Spam ose Junk dhe verifikoni emailin për t’u kyçur në b-brillant.com.');
     }
 }
-
