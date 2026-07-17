@@ -2361,12 +2361,6 @@
 
       <div class="chat-body" id="chatBody" role="log" aria-live="polite" aria-relevant="additions">
         <div class="chat-message">Përshëndetje! 👋 Mund të më pyesësh për perde, tepiha, çmime, dërgesë ose porosinë tënde.</div>
-        <div class="chat-suggestions" aria-label="Pyetje të shpejta">
-          <button class="chat-option" type="button" data-chat-message="Po kërkoj perde për sallon">Perde për sallon</button>
-          <button class="chat-option" type="button" data-chat-message="Po kërkoj një tepih">Tepiha</button>
-          <button class="chat-option" type="button" data-chat-message="Sa kushton dërgesa?">Dërgesa</button>
-          <button class="chat-option" type="button" data-chat-message="Dua ta gjurmoj porosinë">Gjurmo porosinë</button>
-        </div>
       </div>
 
       <form class="chat-composer" id="chatForm">
