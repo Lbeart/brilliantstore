@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use App\Jobs\SendWhatsAppOrderNotification;
 use App\Models\Customer;
+use App\Mail\AdminOrderNotificationMail;
+use App\Mail\OrderConfirmationMail;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
 {
@@ -120,6 +124,7 @@ class CheckoutController extends Controller
         'product_id' => $it['product_id'] ?? null,
         'name'       => $it['name'] ?? 'Produkt',
         'size'       => $sizeText, // ✅ KJO do shfaqet te admin
+        'color'      => $it['color'] ?? null,
         'qty'        => (int)($it['qty'] ?? 1),
         'price'      => (float)($it['price'] ?? 0),
         'image'      => $it['image'] ?? ($it['image_path'] ?? null),
@@ -146,6 +151,8 @@ class CheckoutController extends Controller
                 $customer->update(['last_purchase_at' => now()]);
             }
         });
+
+        $this->sendOrderEmails($order);
 
         // dërgo njoftim WhatsApp për pronarin (në background)
         if (config('services.whatsapp.enabled')) {
@@ -205,5 +212,27 @@ class CheckoutController extends Controller
         $customer->save();
 
         return $customer;
+    }
+
+    private function sendOrderEmails(Order $order): void
+    {
+        $order->loadMissing('items');
+
+        if (filled($order->email)) {
+            try {
+                Mail::to($order->email)->send(new OrderConfirmationMail($order));
+            } catch (\Throwable $e) {
+                Log::error('Order confirmation email failed.', ['order_id' => $order->id, 'recipient' => $order->email, 'error' => $e->getMessage()]);
+            }
+        }
+
+        $adminEmail = trim((string) config('mail.admin_address'));
+        if ($adminEmail !== '') {
+            try {
+                Mail::to($adminEmail)->send(new AdminOrderNotificationMail($order));
+            } catch (\Throwable $e) {
+                Log::error('Admin order notification email failed.', ['order_id' => $order->id, 'recipient' => $adminEmail, 'error' => $e->getMessage()]);
+            }
+        }
     }
 }

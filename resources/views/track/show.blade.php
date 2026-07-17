@@ -165,6 +165,7 @@
           <tr class="small text-uppercase text-muted">
             <th>Artikulli</th>
             <th>Dimensioni</th>
+            <th>Ngjyra</th>
             <th class="text-end">Sasia</th>
             <th class="text-end">Çmimi</th>
             <th class="text-end">Totali</th>
@@ -195,6 +196,7 @@
               </div>
             </td>
             <td class="text-muted">{{ $size }}</td>
+            <td class="text-muted">{{ $it->color ?: '—' }}</td>
             <td class="text-end">{{ $qty }}</td>
             <td class="text-end">€ {{ number_format($price, 2) }}</td>
             <td class="text-end price">€ {{ number_format($line, 2) }}</td>
@@ -203,7 +205,7 @@
         </tbody>
         <tfoot>
           <tr>
-            <th colspan="4" class="text-end">Totali:</th>
+            <th colspan="5" class="text-end">Totali:</th>
             <th class="text-end price">€ {{ number_format($order->total ?? 0, 2) }}</th>
           </tr>
         </tfoot>

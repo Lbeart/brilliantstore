@@ -125,8 +125,14 @@ class ChatbotKnowledgeService
 
         if (($tracking['lookup_requested'] ?? false) === true) {
             if (($tracking['found'] ?? false) === true) {
-                return 'Porosia me kodin '.$tracking['code'].' është “'.$tracking['status_label'].'”.'
-                    .' Është regjistruar më '.$tracking['created_at'].'. Hape gjurmimin për ta parë statusin e plotë.';
+                $items = collect($tracking['items'] ?? [])->map(function (array $item) {
+                    $details = array_filter([$item['size'] ?? null, filled($item['color'] ?? null) ? 'ngjyra '.$item['color'] : null]);
+                    return $item['name'].' ('.implode(', ', $details).') x'.$item['quantity'];
+                })->implode('; ');
+
+                return 'Porosia me kodin '.$tracking['code'].' është “'.$tracking['status_label'].'” dhe është regjistruar më '.$tracking['created_at'].'. '
+                    .($items !== '' ? 'Artikujt: '.$items.'. ' : '')
+                    .'Totali: '.number_format((float) ($tracking['total'] ?? 0), 2).' €. Hape gjurmimin për hollësi.';
             }
 
             return 'Nuk gjeta porosi me kodin '.($tracking['code'] ?? 'që dërgove')
@@ -795,8 +801,9 @@ class ChatbotKnowledgeService
 
         try {
             $order = Order::query()
+                ->with(['items:id,order_id,name,size,color,qty,price'])
                 ->whereRaw('UPPER(tracking_code) = ?', [strtoupper($code)])
-                ->first(['id', 'tracking_code', 'status', 'created_at']);
+                ->first(['id', 'tracking_code', 'status', 'payment', 'total', 'created_at']);
         } catch (Throwable $exception) {
             Log::warning('Brillant chatbot order tracking failed.', ['exception_class' => $exception::class]);
 
@@ -824,6 +831,16 @@ class ChatbotKnowledgeService
             'status' => (string) $order->status,
             'status_label' => $statusLabel,
             'created_at' => optional($order->created_at)->format('d.m.Y H:i'),
+            'payment' => (string) $order->payment,
+            'total' => round((float) $order->total, 2),
+            'items' => $order->items->map(fn ($item) => [
+                'name' => (string) $item->name,
+                'size' => $item->size,
+                'color' => $item->color,
+                'quantity' => (int) $item->qty,
+                'unit_price' => round((float) $item->price, 2),
+                'subtotal' => round((float) $item->price * (int) $item->qty, 2),
+            ])->values()->all(),
             'url' => route('track.show', $order->tracking_code, false),
         ];
     }

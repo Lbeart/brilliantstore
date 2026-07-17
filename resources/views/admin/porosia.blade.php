@@ -40,6 +40,7 @@
               <tr>
                 <th>Produkti</th>
                 <th>Dimensioni</th>
+                <th>Ngjyra</th>
                 <th style="width:80px">Sasia</th>
                 <th style="width:120px">Çmimi</th>
                 <th style="width:120px">Totali</th>
@@ -96,6 +97,7 @@
                   @endif
                 </td>
 
+                <td>{{ $it->color ?: '—' }}</td>
                 <td>{{ $it->qty }}</td>
                 <td>{{ number_format($it->price,2) }} €</td>
                 <td>{{ number_format($line,2) }} €</td>

@@ -48,12 +48,27 @@ class ChatbotCatalogTest extends TestCase
             $table->id();
             $table->string('tracking_code')->nullable();
             $table->string('status')->default('new');
+            $table->string('payment')->nullable();
+            $table->decimal('total', 10, 2)->default(0);
+            $table->timestamps();
+        });
+        Schema::connection('chatbot_testing')->create('order_items', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')->nullable();
+            $table->string('name');
+            $table->text('size')->nullable();
+            $table->string('color')->nullable();
+            $table->integer('qty')->default(1);
+            $table->decimal('price', 10, 2)->default(0);
+            $table->text('image')->nullable();
             $table->timestamps();
         });
     }
 
     protected function tearDown(): void
     {
+        Schema::connection('chatbot_testing')->dropIfExists('order_items');
         Schema::connection('chatbot_testing')->dropIfExists('orders');
         Schema::connection('chatbot_testing')->dropIfExists('products');
         DB::purge('chatbot_testing');
@@ -516,11 +531,23 @@ class ChatbotCatalogTest extends TestCase
 
     public function test_tracking_code_is_looked_up_and_returns_real_order_status_without_personal_data(): void
     {
-        DB::connection('chatbot_testing')->table('orders')->insert([
+        $orderId = DB::connection('chatbot_testing')->table('orders')->insertGetId([
             'tracking_code' => 'BRL-AB12-CD34',
             'status' => 'processing',
+            'payment' => 'cash',
+            'total' => 34,
             'created_at' => '2026-07-17 10:30:00',
             'updated_at' => '2026-07-17 10:30:00',
+        ]);
+        DB::connection('chatbot_testing')->table('order_items')->insert([
+            'order_id' => $orderId,
+            'name' => 'Batanije Rodos',
+            'size' => '200x220',
+            'color' => 'Cream',
+            'qty' => 2,
+            'price' => 17,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         $this->postJson(route('chatbot.message'), ['message' => 'BRL AB12 CD34'])
@@ -529,7 +556,11 @@ class ChatbotCatalogTest extends TestCase
             ->assertJsonCount(0, 'products')
             ->assertJsonPath('action.url', route('track.show', 'BRL-AB12-CD34', false))
             ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Në procesim')
-                && str_contains($reply, '17.07.2026 10:30'));
+                && str_contains($reply, '17.07.2026 10:30')
+                && str_contains($reply, 'Batanije Rodos')
+                && str_contains($reply, '200x220')
+                && str_contains($reply, 'Cream')
+                && str_contains($reply, '34.00'));
     }
 
     public function test_unknown_tracking_code_is_reported_as_not_found(): void

@@ -177,6 +177,7 @@ tr:hover{
 <tr>
     <th>Produkti</th>
     <th>Dimensioni</th> {{-- shtuar --}}
+    <th>Ngjyra</th>
     <th>Sasia</th>
     <th>Çmimi</th>
     <th>Total</th>
@@ -215,6 +216,7 @@ tr:hover{
         @endif
     </td>
 
+    <td>{{ $item->color ?: '—' }}</td>
     <td>{{ $item->qty ?? 0 }}</td>
     <td>{{ number_format($item->price ?? 0,2) }} €</td>
     <td>{{ number_format(($item->price ?? 0)*($item->qty ?? 0),2) }} €</td>

@@ -23,6 +23,7 @@ class OrderConfirmationMail extends Mailable
         return $this->subject('Konfirmimi i porosisë #'.$this->order->id)
                     ->markdown('emails.orders.confirmation', [
                         'order' => $this->order,
+                        'orderUrl' => route('track.show', $this->order->tracking_code),
                     ]);
     }
 }

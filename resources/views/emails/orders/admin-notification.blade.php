@@ -1,38 +1,22 @@
 <x-mail::message>
-# Porosi e Re - Notikim Administratori
+# Porosi e re #{{ $order->id }}
 
-Nje porosi e re u regjistrua në website! Detajet e porosisë:
-
-**Kodi i ndjekjes:** {{ $order->tracking_code }}  
-**ID Porosisë:** {{ $order->id }}
-
-## Informacioni i Klientit
-
-**Emri:** {{ $order->name }}  
-**Email:** {{ $order->email }}  
-**Telefoni:** {{ $order->phone }}  
+**Kodi i gjurmimit:** {{ $order->tracking_code }}<br>
+**Klienti:** {{ $order->name }}<br>
+**Telefoni:** {{ $order->phone }}<br>
+**Email:** {{ $order->email ?: '—' }}<br>
 **Adresa:** {{ $order->address }}@if($order->city), {{ $order->city }}@endif @if($order->zip) ({{ $order->zip }})@endif
 
-@if($order->notes)
-**Shënime:** {{ $order->notes }}
-@endif
-
-## Artikujt e Porosisë
-
-| Produkti | Dimensioni | Sasia | Çmimi | Totali |
-|:--|:--:|:--:|--:|--:|
+## Artikujt
+| Produkti | Dimensioni | Ngjyra | Sasia | Çmimi | Totali |
+|:--|:--:|:--:|:--:|--:|--:|
 @foreach($order->items as $it)
-| {{ $it->name }} | {{ $it->size ?? '—' }} | {{ $it->qty }} | {{ number_format($it->price,2) }} € | {{ number_format($it->price * $it->qty,2) }} € |
+| {{ $it->name }} | {{ $it->size ?? '—' }} | {{ $it->color ?? '—' }} | {{ $it->qty }} | {{ number_format($it->price,2) }} € | {{ number_format($it->price * $it->qty,2) }} € |
 @endforeach
 
-**Totali Porosisë:** **{{ number_format($order->total,2) }} €**  
-**Metoda e Pagesës:** {{ strtoupper($order->payment) }}  
+**Totali:** **{{ number_format($order->total,2) }} €**<br>
+**Pagesa:** {{ strtoupper($order->payment) }}<br>
 **Statusi:** {{ strtoupper($order->status) }}
 
-<x-mail::button :url="url('/admin/orders/' . $order->id)">
-Shiko Porosinë në Admin
-</x-mail::button>
-
----
-Këtë porosi u regjistrua më: {{ $order->created_at->format('d.m.Y H:i') }}
+<x-mail::button :url="route('admin.orders.show', $order)">Hape porosinë në admin</x-mail::button>
 </x-mail::message>
