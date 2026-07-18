@@ -667,6 +667,25 @@ class ChatbotCatalogTest extends TestCase
                 && ! str_contains($reply, 'nuk figuron'));
     }
 
+    public function test_verified_bedsheet_material_finds_and_promotes_real_bedsheets(): void
+    {
+        $set = $this->product([
+            'name' => 'Set Qarqafesh Saten',
+            'category' => 'postava',
+            'description' => null,
+        ]);
+
+        $this->postJson(route('chatbot.message'), [
+            'message' => 'A keni postava pambuk?',
+        ])->assertOk()
+            ->assertJsonPath('ai', false)
+            ->assertJsonPath('products.0.id', $set->id)
+            ->assertJsonPath('products.0.verified_facts.material', 'Pambuk')
+            ->assertJsonPath('products.0.verified_facts.features.0', 'I butë')
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Pambuk')
+                && ! str_contains($reply, 'nuk figuron'));
+    }
+
     public function test_known_model_without_structured_sizes_is_returned_for_confirmation(): void
     {
         $hali = $this->product([

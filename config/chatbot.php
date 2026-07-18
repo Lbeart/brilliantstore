@@ -27,6 +27,10 @@ return [
             'route' => 'products.tepihebanjo',
             'aliases' => ['tepih banjo', 'tepiha banjo', 'tapet banjo', 'banjoje', 'bath rug', 'bath mat', 'kupatilski tepih'],
             'generic' => ['tepih', 'tepiha', 'tapet', 'banjo', 'banjoje', 'bath', 'rug', 'mat', 'kupatilski'],
+            'verified_facts' => [
+                'features' => ['Bazë antirrëshqitëse', 'Thith ujin shpejt', 'Thahet lehtë', 'I butë'],
+                'search_terms' => ['antirreshqites', 'antirrëshqitës', 'thithes', 'thithës', 'quick dry', 'bath mat'],
+            ],
         ],
         'side_curtains' => [
             'label' => 'Perde anësore',
@@ -54,6 +58,11 @@ return [
             'route' => 'products.posteqia',
             'aliases' => ['posteqia', 'posteqe', 'lekure pelushi', 'lëkurë pelushi', 'pelush', 'plush fur', 'plisano krzno'],
             'generic' => ['posteqia', 'posteqe', 'lekure', 'lëkurë', 'pelushi', 'pelush', 'plush', 'fur', 'plisano', 'krzno'],
+            'verified_facts' => [
+                'material' => 'Pelush i butë',
+                'features' => ['I ngrohtë', 'Dekorativ', 'I përshtatshëm për sallon, divan dhe dhomë gjumi'],
+                'search_terms' => ['pelush', 'plush', 'bute', 'butë', 'ngrohte', 'ngrohtë'],
+            ],
         ],
         'rugs' => [
             'label' => 'Tepiha',
@@ -87,6 +96,11 @@ return [
             'route' => 'products.postava',
             'aliases' => ['postava', 'carcaf', 'çarçaf', 'qarqaf', 'qaraqaf', 'bedsheet', 'bed sheet', 'posteljina'],
             'generic' => ['postava', 'carcaf', 'çarçaf', 'qarqaf', 'qaraqaf', 'set', 'bedsheet', 'bed', 'sheet', 'posteljina'],
+            'verified_facts' => [
+                'material' => 'Pambuk',
+                'features' => ['I butë', 'Ajrosje e mirë', 'I përshtatshëm për përdorim të përditshëm'],
+                'search_terms' => ['pambuk', 'pambuku', 'cotton', 'pamuk', 'bute', 'butë', 'ajrosje'],
+            ],
         ],
         'blankets' => [
             'label' => 'Batanije',
@@ -96,6 +110,11 @@ return [
             'route' => 'products.batanije',
             'aliases' => ['batanije', 'qebe', 'blanket', 'blankets', 'cebe', 'ćebe'],
             'generic' => ['batanije', 'qebe', 'blanket', 'blankets', 'cebe', 'ćebe'],
+            'verified_facts' => [
+                'material' => 'Mikrofibër e trashë',
+                'features' => ['Antialergjike', 'E ngrohtë', 'E lehtë dhe e këndshme në prekje'],
+                'search_terms' => ['mikrofiber', 'mikrofibër', 'microfiber', 'antialergjik', 'antialergjike', 'hypoallergenic'],
+            ],
         ],
         'covers' => [
             'label' => 'Mbulesa',
@@ -170,6 +189,8 @@ return [
     'soft_preferences' => [
         'modern', 'moderne', 'klasik', 'klasike', 'premium', 'bute', 'butë', 'ngrohte', 'ngrohtë',
         'akril', 'akrill', 'akrilik', 'acrylic', 'antibakterial', 'antibacterial',
+        'pambuk', 'pambuku', 'cotton', 'pamuk', 'mikrofiber', 'mikrofibër', 'microfiber',
+        'antialergjik', 'antialergjike', 'hypoallergenic', 'pelush', 'plush',
         'sallon', 'dhom', 'korridor', 'kuzhin', 'zyre', 'zyrë', 'familje', 'ri', 'reja', 'latest', 'new',
         'lire', 'lirë', 'cheap', 'budget', 'shtrenjte', 'shtrenjtë', 'expensive', 'tjeter', 'tjetër', 'alternative', 'another',
     ],
