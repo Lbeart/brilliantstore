@@ -51,6 +51,11 @@
       ->filter()
       ->unique()
       ->values();
+    $galleryPreloadUrls = collect($imageUrls)
+      ->merge($colorImageUrls)
+      ->filter()
+      ->unique()
+      ->values();
 
     $pageCategory = trim($product->category ?? 'Produkt');
     $cleanDescription = trim(strip_tags($product->description ?? ''));
@@ -109,9 +114,9 @@
   <meta name="description" content="{{ $metaDesc }}">
   <link rel="canonical" href="{{ $pageUrl }}">
   <link rel="preload" as="image" href="{{ $mainImageUrl }}" fetchpriority="high">
-  @foreach($colorImageUrls->take(6) as $colorImageUrl)
-    @if($colorImageUrl !== $mainImageUrl)
-      <link rel="preload" as="image" href="{{ $colorImageUrl }}">
+  @foreach($galleryPreloadUrls as $galleryImageUrl)
+    @if($galleryImageUrl !== $mainImageUrl)
+      <link rel="preload" as="image" href="{{ $galleryImageUrl }}" fetchpriority="low">
     @endif
   @endforeach
   <meta property="og:type" content="product">
@@ -1119,7 +1124,7 @@
             <button type="button"
               class="thumb-btn {{ (!$initialColorImageUrl && $i === 0) ? 'active' : '' }}"
               data-product-image="{{ $imgUrl }}">
-              <img src="{{ $imgUrl }}" alt="thumb {{ $i+1 }}" loading="lazy" decoding="async" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+              <img src="{{ $imgUrl }}" alt="thumb {{ $i+1 }}" loading="eager" decoding="async" fetchpriority="low" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
             </button>
           @endforeach
 
@@ -1635,8 +1640,8 @@
   const basePriceDefault = parseFloat({{ json_encode((float)$product->price) }});
   const baseStockDefault = parseInt({{ json_encode((int)($product->stock ?? 0)) }},10) || 0;
   const isCurtainProduct = {{ $isCurtain ? 'true' : 'false' }};
-  const colorImageUrls = @json($colorImageUrls->values());
-  colorImageUrls.forEach(src => {
+  const galleryImageUrls = @json($galleryPreloadUrls);
+  galleryImageUrls.forEach(src => {
     if(!src) return;
     const preloaded = new Image();
     preloaded.decoding = 'async';
