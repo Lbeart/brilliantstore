@@ -64,6 +64,53 @@ class ProductController extends Controller
         return view('products.show', compact('product', 'similarProducts'));
     }
 
+    public function legacyRedirect(Request $request, string $legacySlug)
+    {
+        $slug = Str::slug($legacySlug);
+        $baseSlug = preg_replace('/-[a-z0-9]{5,8}$/i', '', $slug) ?: $slug;
+
+        $exact = Product::query()
+            ->where('is_active', 1)
+            ->where('slug', $baseSlug)
+            ->first();
+
+        if ($exact) {
+            return redirect()->route('products.show', $exact, 301);
+        }
+
+        $ignored = ['tepih', 'tepiha', 'shkallore', 'produkt', 'set', 'perde', 'online'];
+        $tokens = collect(explode('-', $baseSlug))
+            ->filter(fn (string $token) => mb_strlen($token) >= 4 && !in_array($token, $ignored, true))
+            ->values();
+
+        if ($tokens->isNotEmpty()) {
+            $matches = Product::query()
+                ->where('is_active', 1)
+                ->where(function ($query) use ($tokens) {
+                    foreach ($tokens as $token) {
+                        $query->orWhere('slug', 'like', '%'.$token.'%');
+                    }
+                })
+                ->get()
+                ->map(function (Product $product) use ($tokens) {
+                    $product->legacy_match_score = $tokens->filter(
+                        fn (string $token) => Str::contains($product->slug, $token)
+                    )->count();
+                    return $product;
+                })
+                ->sortByDesc('legacy_match_score')
+                ->values();
+
+            $best = $matches->first();
+            $second = $matches->get(1);
+            if ($best && (!$second || $best->legacy_match_score > $second->legacy_match_score)) {
+                return redirect()->route('products.show', $best, 301);
+            }
+        }
+
+        abort(404);
+    }
+
     // =====================================================
     // SEARCH FUNKSION I PËRBASHKËT (PËR KREJT KATEGORITË)
     // =====================================================

@@ -96,7 +96,14 @@ Route::get('/lang/{lang}', function (string $lang) {
 
 // 🛍 Storefront – lista & detajet (publike)
 Route::get('/products', [ShopProductController::class, 'index'])->name('products.index');
-Route::get('/products/{product:slug}', [ShopProductController::class, 'show'])->name('products.show');
+Route::get('/products/{product:slug}', [ShopProductController::class, 'show'])
+    ->missing(function (Request $request) {
+        return app(ShopProductController::class)->legacyRedirect(
+            $request,
+            (string) $request->route('product')
+        );
+    })
+    ->name('products.show');
 
 // 🗂 Kategori
 Route::get('/tepiha',         [ShopProductController::class, 'tepiha'])->name('products.tepiha');

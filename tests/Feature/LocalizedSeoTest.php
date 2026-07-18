@@ -65,4 +65,26 @@ class LocalizedSeoTest extends TestCase
             ->assertDontSee('<loc>'.url('/cart').'</loc>', false)
             ->assertDontSee('<loc>'.url('/track').'</loc>', false);
     }
+
+    public function test_old_generated_product_slug_redirects_to_unique_current_product(): void
+    {
+        DB::connection('seo_testing')->table('products')->insert([
+            'name' => 'Tepih Side',
+            'slug' => 'tepih-side',
+            'price' => 45,
+            'is_active' => 1,
+            'category' => 'tepiha',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->get('/products/shkallore-side-0VGEe0')
+            ->assertStatus(301)
+            ->assertRedirect(route('products.show', 'tepih-side'));
+    }
+
+    public function test_removed_product_without_a_real_replacement_stays_404(): void
+    {
+        $this->get('/products/tepih-mara')->assertNotFound();
+    }
 }
