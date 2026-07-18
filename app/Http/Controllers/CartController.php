@@ -11,6 +11,18 @@ class CartController extends Controller
     public function index(Request $request)
     {
         $cart = session('cart', []);
+        $productIds = collect($cart)->pluck('product_id')->filter()->unique()->values();
+        $products = Product::query()->whereIn('id', $productIds)->get()->keyBy('id');
+
+        foreach ($cart as &$item) {
+            $product = $products->get($item['product_id'] ?? null);
+            if ($product) {
+                $item['image'] = $this->productImageForColor($product, $item['color'] ?? null);
+            }
+        }
+        unset($item);
+
+        $this->storeCart($cart);
         $totalQty = array_sum(array_column($cart, 'qty'));
         $totalPrice = array_reduce($cart, fn($c,$i) => $c + ((float)$i['price'] * (int)$i['qty']), 0.0);
 

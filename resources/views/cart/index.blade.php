@@ -68,6 +68,10 @@
 
       $raw = trim((string)$raw);
 
+      // URL-të e gatshme (përfshirë /optimized-cache/) nuk duhen
+      // shndërruar në storage, sepse ajo krijon një adresë të gabuar.
+      if (preg_match('#^https?://#i', $raw)) return $raw;
+
       // ✅ nese është JSON array string: ["a.png","b.png"]
       if (str_starts_with($raw, '[')) {
         $d = json_decode($raw, true);

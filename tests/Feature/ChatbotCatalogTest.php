@@ -179,6 +179,42 @@ class ChatbotCatalogTest extends TestCase
         $this->assertSame(['Beige'], $response->json('products.0.colors'));
     }
 
+    public function test_cart_refreshes_a_stale_image_from_the_selected_color_variant(): void
+    {
+        $product = $this->product([
+            'name' => 'Tepih Hali 258',
+            'category' => 'tepiha',
+            'color_variants' => [[
+                'name' => 'Cream',
+                'hex' => '#eee7d8',
+                'image_paths' => ['https://cdn.example.com/tepih-hali-cream.jpg'],
+            ]],
+        ]);
+
+        $cart = [
+            'product|'.$product->id.'|150x230|Cream' => [
+                'type' => 'product',
+                'product_id' => $product->id,
+                'name' => $product->name,
+                'image' => asset('images/brillant.png'),
+                'qty' => 1,
+                'price' => 65,
+                'size' => '150x230',
+                'color' => 'Cream',
+            ],
+        ];
+
+        $this->withSession(['cart' => $cart])
+            ->get(route('cart.index'))
+            ->assertOk()
+            ->assertSee('https://cdn.example.com/tepih-hali-cream.jpg', false);
+
+        $this->assertSame(
+            'https://cdn.example.com/tepih-hali-cream.jpg',
+            session('cart.product|'.$product->id.'|150x230|Cream.image')
+        );
+    }
+
     public function test_blanket_for_two_people_understands_double_bed_dimensions(): void
     {
         $double = $this->product([
