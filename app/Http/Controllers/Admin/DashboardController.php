@@ -42,14 +42,16 @@ class DashboardController extends Controller
             $ordersCount   = Order::count();
 
             // të ardhurat totale (nëse do vetëm completed, shto ->where('status','completed'))
-            $revenue       = Order::sum('total');
+            $paidOrders    = Order::query()->where('status', '!=', 'canceled');
+            $revenue       = (clone $paidOrders)->sum('total');
 
             // metrika ditore / mujore
             $todayOrders   = Order::whereDate('created_at', $today)->count();
-            $todayRevenue  = Order::whereDate('created_at', $today)->sum('total');
-            $monthRevenue  = Order::whereBetween('created_at', [$monthStart, now()])->sum('total');
+            $todayRevenue  = (clone $paidOrders)->whereDate('created_at', $today)->sum('total');
+            $monthRevenue  = (clone $paidOrders)->whereBetween('created_at', [$monthStart, now()])->sum('total');
 
-            $avgOrderValue = $ordersCount ? round($revenue / $ordersCount, 2) : 0;
+            $revenueOrders = (clone $paidOrders)->count();
+            $avgOrderValue = $revenueOrders ? round($revenue / $revenueOrders, 2) : 0;
             $pendingOrders = Order::whereIn('status', ['new', 'processing'])->count();
 
             $statusCounts = [
@@ -69,6 +71,7 @@ class DashboardController extends Controller
             $topProducts = DB::table('order_items as oi')
                 ->join('orders as o', 'o.id', '=', 'oi.order_id')
                 ->where('o.created_at', '>=', $since)
+                ->where('o.status', '!=', 'canceled')
                 ->select('oi.name', DB::raw('SUM(oi.qty) as total_qty'))
                 ->groupBy('oi.name')
                 ->orderByDesc('total_qty')

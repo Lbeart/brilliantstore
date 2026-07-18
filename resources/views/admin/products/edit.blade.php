@@ -130,13 +130,16 @@
         <!-- Sidebar desktop -->
         <div class="col-lg-2 d-none d-lg-block sidebar desktop p-3">
             <div class="text-center mb-4">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo img-fluid">
+                <img src="{{ asset('images/llogo.png') }}" alt="Logo" class="logo img-fluid">
             </div>
             <nav class="nav flex-column">
                 <a class="nav-link" href="{{ route('admin.dashboard') }}"><i class="fas fa-home me-1"></i> Dashboard</a>
                 <a class="nav-link" href="{{ route('admin.users') }}"><i class="fas fa-users me-1"></i> Përdoruesit</a>
                 <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}"><i class="fas fa-address-book me-1"></i> Klientet</a>
+                <a class="nav-link" href="{{ route('admin.pos.index') }}"><i class="fas fa-cash-register me-1"></i> POS</a>
                 <a class="nav-link active" href="{{ route('admin.products.index') }}"><i class="fas fa-box-open me-1"></i> Produktet</a>
+                <a class="nav-link" href="{{ route('admin.orders.index') }}"><i class="fas fa-shopping-cart me-1"></i> Porositë</a>
+                <a class="nav-link" href="{{ route('admin.stats') }}"><i class="fas fa-chart-line me-1"></i> Statistikat</a>
             </nav>
         </div>
 
@@ -490,11 +493,15 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Mbyll"></button>
     </div>
     <div class="offcanvas-body">
+        <div class="text-center mb-4"><img src="{{ asset('images/llogo.png') }}" alt="Brillant" class="logo img-fluid"></div>
         <nav class="nav flex-column">
             <a class="nav-link" href="{{ route('admin.dashboard') }}"><i class="fas fa-home me-1"></i> Dashboard</a>
             <a class="nav-link" href="{{ route('admin.users') }}"><i class="fas fa-users me-1"></i> Përdoruesit</a>
             <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}"><i class="fas fa-address-book me-1"></i> Klientet</a>
+            <a class="nav-link" href="{{ route('admin.pos.index') }}"><i class="fas fa-cash-register me-1"></i> POS</a>
             <a class="nav-link active" href="{{ route('admin.products.index') }}"><i class="fas fa-box-open me-1"></i> Produktet</a>
+            <a class="nav-link" href="{{ route('admin.orders.index') }}"><i class="fas fa-shopping-cart me-1"></i> Porositë</a>
+            <a class="nav-link" href="{{ route('admin.stats') }}"><i class="fas fa-chart-line me-1"></i> Statistikat</a>
         </nav>
     </div>
 </div>

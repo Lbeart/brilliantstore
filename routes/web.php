@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\StatsController;
 use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\Admin\PointOfSaleController as AdminPointOfSaleController;
 use App\Http\Controllers\OrderTrackingController;
+use App\Http\Controllers\Admin\AdminAssistantController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,7 @@ use App\Http\Controllers\OrderTrackingController;
 */
 // routes/web.php
 Route::get('/invoice/{id}', [AdminOrderController::class, 'invoicePublic'])
+    ->middleware('signed')
     ->name('orders.invoice.public');
 
 Route::get('/receipt/{receipt}/invoice', [AdminCustomerController::class, 'publicReceiptInvoice'])
@@ -71,6 +73,7 @@ Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/add-curtain', [CartController::class, 'addCurtain'])->name('cart.addCurtain');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
 
 // 📄 Static
@@ -161,14 +164,6 @@ Route::middleware(['auth', 'verified'])
 |--------------------------------------------------------------------------
 */
 
-Route::get('/cart',          [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/add',     [CartController::class, 'add'])->name('cart.add');
-Route::post('/cart/update',  [CartController::class, 'update'])->name('cart.update');
-Route::post('/cart/remove',  [CartController::class, 'remove'])->name('cart.remove');
-Route::get('/checkout/success', [\App\Http\Controllers\CheckoutController::class, 'success'])
-    ->name('checkout.success');
-
-
 Route::get('/checkout',  [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])
     ->middleware('throttle:10,1') // mbrojtje nga spam
@@ -192,6 +187,9 @@ Route::middleware(['auth','verified','admin'])
         // Dashboard
         Route::get('/', fn () => redirect()->route('admin.dashboard'));
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::post('/assistant/message', AdminAssistantController::class)
+            ->middleware('throttle:20,1')
+            ->name('assistant.message');
 
         // Users
         Route::get('/users',                 [UserController::class, 'index'])->name('users');

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema; // ⬅️ SHTUAR
 use App\Mail\OrderCanceledMail;
 use App\Mail\OrderConfirmationMail;
@@ -81,6 +83,7 @@ class OrderController extends Controller
         ]);
 
         $order->update(['status' => $data['status']]);
+        Cache::forget('admin.metrics');
 
         return back()->with('success', 'Statusi u përditësua.');
     }
@@ -274,7 +277,7 @@ public function sendInvoice(Order $order)
         $qr = base64_encode(
             QrCode::format('png')
                 ->size(120)
-                ->generate(route('orders.invoice.public', $order->id))
+            ->generate(URL::temporarySignedRoute('orders.invoice.public', now()->addDays(30), ['id' => $order->id]))
         );
 
         $pdf = Pdf::loadView('admin.fatura', [

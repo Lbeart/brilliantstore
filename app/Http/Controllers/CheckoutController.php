@@ -14,6 +14,7 @@ use App\Mail\AdminOrderNotificationMail;
 use App\Mail\OrderConfirmationMail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 
 class CheckoutController extends Controller
 {
@@ -151,6 +152,8 @@ class CheckoutController extends Controller
                 $customer->update(['last_purchase_at' => now()]);
             }
         });
+
+        Cache::forget('admin.metrics');
 
         $this->sendOrderEmails($order);
 

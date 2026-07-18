@@ -222,6 +222,13 @@ class CartController extends Controller
         return back();
     }
 
+    public function clear()
+    {
+        session()->forget(['cart', 'cart_total_qty']);
+
+        return back()->with('success', 'Shporta u zbraz me sukses.');
+    }
+
     // =========================
     // Helpers
     // =========================

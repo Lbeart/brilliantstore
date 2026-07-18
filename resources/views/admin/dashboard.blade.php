@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Dashboard - Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -167,6 +168,22 @@
       flex:0 0 28px;
     }
 
+    .admin-ai-launcher{position:fixed;right:22px;bottom:22px;z-index:1060;width:58px;height:58px;border:0;border-radius:50%;background:var(--brand);color:#fff;box-shadow:0 14px 32px rgba(180,35,50,.3);font-size:1.25rem}
+    .admin-ai-panel{position:fixed;right:22px;bottom:92px;z-index:1060;width:min(410px,calc(100vw - 32px));height:min(610px,calc(100dvh - 120px));display:none;grid-template-rows:auto 1fr auto;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 70px rgba(16,24,40,.24);overflow:hidden}
+    .admin-ai-panel.open{display:grid}
+    .admin-ai-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:var(--sidebar);color:#fff}
+    .admin-ai-head strong{display:block}.admin-ai-head small{color:#cbd5e1}
+    .admin-ai-close{border:0;background:transparent;color:#fff;font-size:1.15rem;padding:7px}
+    .admin-ai-messages{overflow:auto;padding:15px;background:#f8fafc;overscroll-behavior:contain}
+    .admin-ai-message{width:fit-content;max-width:88%;margin:0 0 11px;padding:11px 13px;border-radius:14px;white-space:pre-wrap;line-height:1.45;font-size:.92rem;overflow-wrap:anywhere}
+    .admin-ai-message.assistant{background:#fff;border:1px solid var(--line);border-bottom-left-radius:5px}
+    .admin-ai-message.user{margin-left:auto;background:var(--brand);color:#fff;border-bottom-right-radius:5px}
+    .admin-ai-message.loading{color:var(--muted)}
+    .admin-ai-form{display:grid;grid-template-columns:1fr 46px;gap:8px;padding:12px;border-top:1px solid var(--line);background:#fff}
+    .admin-ai-input{min-width:0;resize:none;border:1px solid #d0d5dd;border-radius:12px;padding:11px 12px;max-height:105px;outline:none}
+    .admin-ai-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(220,53,69,.12)}
+    .admin-ai-send{border:0;border-radius:12px;background:var(--brand);color:#fff}
+
     @media (max-width:991px){
       .content{padding:1rem}
       .page-head{align-items:flex-start;flex-direction:column}
@@ -177,6 +194,8 @@
       .kpi{min-height:auto}
       .quick-actions .btn{width:100%}
       .table-responsive{border-radius:var(--radius)}
+      .admin-ai-launcher{right:14px;bottom:14px}
+      .admin-ai-panel{left:10px;right:10px;bottom:80px;width:auto;height:min(72dvh,560px);max-height:calc(100dvh - 96px);border-radius:14px}
     }
   </style>
 </head>
@@ -433,6 +452,23 @@
   </div>
 </div>
 
+<button class="admin-ai-launcher" id="adminAiLauncher" type="button" aria-label="Hape asistentin e adminit" aria-controls="adminAiPanel" aria-expanded="false">
+  <i class="fa fa-wand-magic-sparkles"></i>
+</button>
+<section class="admin-ai-panel" id="adminAiPanel" aria-label="Asistenti privat i adminit" aria-hidden="true">
+  <header class="admin-ai-head">
+    <div><strong>Asistenti i Adminit</strong><small>Porosi, statistika dhe stok</small></div>
+    <button class="admin-ai-close" id="adminAiClose" type="button" aria-label="Mbyll"><i class="fa fa-xmark"></i></button>
+  </header>
+  <div class="admin-ai-messages" id="adminAiMessages" role="log" aria-live="polite">
+    <div class="admin-ai-message assistant">Përshëndetje! Më pyet për porositë e reja, të ardhurat, stokun ose një porosi me ID/kod gjurmimi.</div>
+  </div>
+  <form class="admin-ai-form" id="adminAiForm">
+    <textarea class="admin-ai-input" id="adminAiInput" rows="1" maxlength="700" placeholder="P.sh. A ka porosi të reja?" required></textarea>
+    <button class="admin-ai-send" type="submit" aria-label="Dërgo"><i class="fa fa-arrow-up"></i></button>
+  </form>
+</section>
+
 <div class="offcanvas offcanvas-start sidebar d-lg-none" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarLabel">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title" id="sidebarLabel">Menu</h5>
@@ -469,5 +505,69 @@
 </div>
 
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(() => {
+  const launcher = document.getElementById('adminAiLauncher');
+  const panel = document.getElementById('adminAiPanel');
+  const close = document.getElementById('adminAiClose');
+  const form = document.getElementById('adminAiForm');
+  const input = document.getElementById('adminAiInput');
+  const messages = document.getElementById('adminAiMessages');
+  const history = [];
+  let pending = false;
+
+  const toggle = (open) => {
+    panel.classList.toggle('open', open);
+    panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+    launcher.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) setTimeout(() => input.focus(), 80);
+  };
+  const add = (text, role, extra = '') => {
+    const node = document.createElement('div');
+    node.className = `admin-ai-message ${role} ${extra}`.trim();
+    node.textContent = text;
+    messages.appendChild(node);
+    messages.scrollTop = messages.scrollHeight;
+    return node;
+  };
+
+  launcher.addEventListener('click', () => toggle(!panel.classList.contains('open')));
+  close.addEventListener('click', () => toggle(false));
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') toggle(false); });
+  input.addEventListener('input', () => { input.style.height = 'auto'; input.style.height = `${Math.min(input.scrollHeight, 105)}px`; });
+  input.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); form.requestSubmit(); } });
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    const message = input.value.trim();
+    if (!message || pending) return;
+    pending = true;
+    add(message, 'user');
+    input.value = '';
+    input.style.height = 'auto';
+    const loading = add('Duke kontrolluar të dhënat reale…', 'assistant', 'loading');
+
+    try {
+      const response = await fetch(@json(route('admin.assistant.message')), {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content},
+        body: JSON.stringify({message, history: history.slice(-8)})
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Kërkesa dështoi');
+      loading.remove();
+      add(data.reply, 'assistant');
+      history.push({role: 'user', content: message}, {role: 'assistant', content: data.reply});
+      if (history.length > 8) history.splice(0, history.length - 8);
+    } catch (error) {
+      loading.textContent = 'Nuk munda t’i lexoj të dhënat tani. Rifresko faqen dhe provo përsëri.';
+      loading.classList.remove('loading');
+    } finally {
+      pending = false;
+      input.focus();
+    }
+  });
+})();
+</script>
 </body>
 </html>
