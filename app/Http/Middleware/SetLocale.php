@@ -10,7 +10,10 @@ class SetLocale
 {
     public function handle(Request $request, Closure $next)
     {
-        $locale = $request->session()->get('locale', config('app.locale', 'sq'));
+        $queryLocale = $request->query('lang');
+        $locale = in_array($queryLocale, ['sq', 'en', 'sr'], true)
+            ? $queryLocale
+            : $request->session()->get('locale', config('app.locale', 'sq'));
 
         if (! in_array($locale, ['sq', 'en', 'sr'], true)) {
             $locale = 'sq';

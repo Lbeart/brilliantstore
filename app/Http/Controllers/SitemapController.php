@@ -22,14 +22,15 @@ class SitemapController extends Controller
         ['path' => '/tepihebanjo', 'changefreq' => 'weekly', 'priority' => '0.91'],
         ['path' => '/posteqia', 'changefreq' => 'weekly', 'priority' => '0.92'],
         ['path' => '/garnishte', 'changefreq' => 'weekly', 'priority' => '0.88'],
-        ['path' => '/search', 'changefreq' => 'weekly', 'priority' => '0.60'],
-        ['path' => '/track', 'changefreq' => 'weekly', 'priority' => '0.60'],
-        ['path' => '/cart', 'changefreq' => 'monthly', 'priority' => '0.40'],
-        ['path' => '/checkout', 'changefreq' => 'monthly', 'priority' => '0.40'],
         ['path' => '/about', 'changefreq' => 'monthly', 'priority' => '0.80'],
         ['path' => '/contact', 'changefreq' => 'monthly', 'priority' => '0.80'],
         ['path' => '/terms', 'changefreq' => 'yearly', 'priority' => '0.50'],
         ['path' => '/privacy', 'changefreq' => 'yearly', 'priority' => '0.50'],
+    ];
+
+    private array $localizedPaths = [
+        '/', '/tepiha', '/perde', '/anesore', '/perde-ditore', '/postava', '/mbulesa',
+        '/jastekdekorues', '/batanije', '/tepihebanjo', '/posteqia', '/garnishte',
     ];
 
     private function fillMissingProductSlugs(): void
@@ -80,7 +81,7 @@ class SitemapController extends Controller
     private function sitemapResponse(array $urls)
     {
         $content = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-        $content .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
+        $content .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' . PHP_EOL;
 
         foreach ($urls as $url) {
             $content .= '  <url>' . PHP_EOL;
@@ -88,6 +89,9 @@ class SitemapController extends Controller
             $content .= '    <lastmod>' . $this->xml($url['lastmod']) . '</lastmod>' . PHP_EOL;
             $content .= '    <changefreq>' . $this->xml($url['changefreq']) . '</changefreq>' . PHP_EOL;
             $content .= '    <priority>' . $this->xml($url['priority']) . '</priority>' . PHP_EOL;
+            foreach ($url['alternates'] ?? [] as $language => $href) {
+                $content .= '    <xhtml:link rel="alternate" hreflang="'.$this->xml($language).'" href="'.$this->xml($href).'" />' . PHP_EOL;
+            }
             $content .= '  </url>' . PHP_EOL;
         }
 
@@ -112,13 +116,25 @@ class SitemapController extends Controller
 
         Log::info('SitemapController index', ['products_count' => $products->count()]);
 
-        $urls = collect($this->pages)
-            ->map(fn (array $page) => [
-                'loc' => url($page['path']),
+        $urls = collect($this->pages)->flatMap(function (array $page) use ($latestProductUpdate) {
+            $base = url($page['path']);
+            $localized = in_array($page['path'], $this->localizedPaths, true);
+            $alternates = $localized ? [
+                'sq' => $base,
+                'en' => $base.'?lang=en',
+                'sr' => $base.'?lang=sr',
+                'x-default' => $base,
+            ] : [];
+            $locales = $localized ? ['sq', 'en', 'sr'] : ['sq'];
+
+            return collect($locales)->map(fn (string $locale) => [
+                'loc' => $locale === 'sq' ? $base : $base.'?lang='.$locale,
                 'lastmod' => $latestProductUpdate,
                 'changefreq' => $page['changefreq'],
                 'priority' => $page['priority'],
+                'alternates' => $alternates,
             ]);
+        });
 
         $productUrls = $products->map(fn (Product $product) => [
             'loc' => url('/products/'.$product->slug),
