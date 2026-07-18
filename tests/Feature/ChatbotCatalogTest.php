@@ -686,6 +686,23 @@ class ChatbotCatalogTest extends TestCase
                 && ! str_contains($reply, 'nuk figuron'));
     }
 
+    public function test_short_send_them_follow_up_returns_product_cards_without_previous_card_ids(): void
+    {
+        $first = $this->product(['name' => 'Tepih Hali 600', 'category' => 'tepiha']);
+        $second = $this->product(['name' => 'Tepih Rose 600', 'category' => 'tepiha']);
+
+        $response = $this->postJson(route('chatbot.message'), [
+            'message' => 'qomi',
+            'history' => [
+                ['role' => 'user', 'content' => 'A keni tepiha akril?'],
+                ['role' => 'assistant', 'content' => 'Po, kemi disa modele të bukura.'],
+            ],
+            'context_product_ids' => [],
+        ])->assertOk()->assertJsonCount(2, 'products');
+
+        $this->assertEqualsCanonicalizing([$first->id, $second->id], $response->json('products.*.id'));
+    }
+
     public function test_known_model_without_structured_sizes_is_returned_for_confirmation(): void
     {
         $hali = $this->product([

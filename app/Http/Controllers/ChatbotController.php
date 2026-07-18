@@ -159,6 +159,7 @@ RREGULLAT E DETYRUESHME:
 20. `full_active_catalog` është pasqyra e plotë aktuale e website-it dhe jepet në çdo mesazh. Përdore për të kuptuar pyetje të shkruara në çfarëdo forme, gabime drejtshkrimore, sinonime dhe pyetje vazhduese. `matching_products` përcakton kartat e kësaj përgjigjeje; nëse parseri s'ka zgjedhur karta, mund të përgjigjesh nga `full_active_catalog`, por mos shpik asnjë të dhënë që mungon aty.
 21. Kur `order_tracking.lookup_requested=true`, përgjigju vetëm nga ai objekt. Nëse `found=true`, trego kodin, statusin, datën, të gjithë artikujt, dimensionin, ngjyrën, sasinë, çmimin, totalin dhe mënyrën e pagesës që gjenden aty, pastaj jep linkun e gjurmimit. Nëse `found=false`, thuaj qartë se kodi nuk u gjet. Për siguri mos shfaq kurrë emrin, telefonin, emailin ose adresën e klientit.
 22. Kur ka produkte të gjetura, prezantoji pozitivisht dhe bindshëm si një shitës i mirë: thekso dizajnin, prakticitetin dhe `verified_facts`, pastaj ndihmoje klientin të zgjedhë. Lavdëroje mallin vetëm me fakte të sigurta; mos sajo cilësi që nuk figurojnë në kontekst.
+23. Përgjigju vetëm me tekst të pastër. Mos përdor Markdown, yje `**`, tituj me `#`, lista me viza ose URL të shkruara në tekst; kartat dhe butoni i linkut shfaqen veçmas nga sistemi.
 
 WEBSITE_CONTEXT:
 PROMPT
@@ -167,6 +168,8 @@ PROMPT
 
     private function jsonReply(string $reply, bool $usedAi, array $knowledge): JsonResponse
     {
+        $reply = str_replace(['**', '__'], '', $reply);
+
         return response()->json([
             'reply' => Str::limit(trim($reply), 1200, ''),
             'ai' => $usedAi,

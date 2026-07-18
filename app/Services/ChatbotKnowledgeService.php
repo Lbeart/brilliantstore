@@ -35,7 +35,7 @@ class ChatbotKnowledgeService
         $productSearch = ! $greetingOnly
             && ! $operational
             && ($explicitProductSearch
-                || ($followUp && $historyIntent !== null && $contextProductIds !== [])
+                || ($followUp && $historyIntent !== null)
                 || ($intent !== null && ! $generalQuestion));
         $terms = $productSearch ? $this->searchTerms($message, $intent) : [];
         if ($productSearch && $followUp && $this->ordinalProductId($message, $contextProductIds) === null) {
@@ -1032,6 +1032,8 @@ class ChatbotKnowledgeService
     {
         return Str::startsWith($text, [
             'po ', 'edhe ', 'e ', 'a ka', 'cilin', 'cilen', 'kete', 'atë', 'ate',
+            'qomi', 'çomi', 'comi', 'dergomi', 'dërgomi', 'mi qit', "m'i qit", 'ma qit',
+            'linkun', 'linket', 'fotot', 'kartat', 'modelet',
             'te parin', 'te dytin', 'te tretin', 't parin', 't dytin', 't tretin',
         ])
             || Str::contains($text, ['ngjyre', 'ngjyrë', 'madhesi', 'madhësi', 'dimension', 'permas', 'përmas', 'stok', 'cmim', 'çmim', 'kushton', 'me lire', 'më lirë']);
