@@ -62,7 +62,9 @@ Route::get('/storage/products/{filename}', function (string $filename) {
 
     abort_unless(is_file($path), 404);
 
-    return response()->file($path);
+    return response()->file($path, [
+        'Cache-Control' => 'public, max-age=31536000, immutable',
+    ]);
 })->where('filename', '[A-Za-z0-9._-]+')->name('storage.products.fallback');
 // 🏠 Home
 Route::get('/', [ItemController::class, 'index'])->name('home');

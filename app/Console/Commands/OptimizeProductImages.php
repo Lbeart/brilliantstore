@@ -68,14 +68,29 @@ class OptimizeProductImages extends Command
         $paths = [];
 
         Product::query()
-            ->select(['id', 'image_path'])
-            ->whereNotNull('image_path')
+            ->select(['id', 'image_path', 'color_variants', 'category', 'subcategory'])
+            ->where(function ($query) {
+                $query->whereNotNull('image_path')->orWhereNotNull('color_variants');
+            })
             ->cursor()
             ->each(function (Product $product) use (&$paths) {
                 foreach (ProductImages::decode($product->image_path) as $imagePath) {
-                    $relativePath = $this->publicRelativePath($imagePath);
+                    $relativePath = $this->publicRelativePath($imagePath, $product);
                     if ($relativePath) {
                         $paths[] = $relativePath;
+                    }
+                }
+
+                $variants = is_array($product->color_variants)
+                    ? $product->color_variants
+                    : (json_decode((string) $product->color_variants, true) ?: []);
+
+                foreach ($variants as $variant) {
+                    foreach (ProductImages::decode($variant['image_paths'] ?? ($variant['image_path'] ?? null)) as $imagePath) {
+                        $relativePath = $this->publicRelativePath($imagePath, $product);
+                        if ($relativePath) {
+                            $paths[] = $relativePath;
+                        }
                     }
                 }
             });
@@ -96,7 +111,7 @@ class OptimizeProductImages extends Command
         return array_values(array_unique($paths));
     }
 
-    private function publicRelativePath(string $raw): ?string
+    private function publicRelativePath(string $raw, ?Product $product = null): ?string
     {
         $path = trim($raw, " \t\n\r\0\x0B\"'");
         if ($path === '') {
@@ -121,6 +136,19 @@ class OptimizeProductImages extends Command
 
             if (is_file(public_path(str_replace('/', DIRECTORY_SEPARATOR, $candidate)))) {
                 return $candidate;
+            }
+        }
+
+        $resolvedUrl = ProductImages::url($raw, null, $product);
+        $resolvedPath = ltrim((string) parse_url($resolvedUrl, PHP_URL_PATH), '/');
+        if (!str_contains($resolvedPath, 'placeholder') && $this->isSupportedImage($resolvedPath)) {
+            if (str_starts_with($resolvedPath, 'optimized-cache/')) {
+                $resolvedPath = preg_replace('#^optimized-cache/#', '', $resolvedPath);
+                $resolvedPath = preg_replace('/\.jpg$/i', '', $resolvedPath);
+            }
+
+            if (is_file(public_path(str_replace('/', DIRECTORY_SEPARATOR, $resolvedPath)))) {
+                return $resolvedPath;
             }
         }
 

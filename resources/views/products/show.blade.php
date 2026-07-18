@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
@@ -48,11 +49,6 @@
     }
     $colorImageUrls = $colorVariants
       ->flatMap(fn ($variant) => $variant['image_urls'] ?? [])
-      ->filter()
-      ->unique()
-      ->values();
-    $galleryPreloadUrls = collect($imageUrls)
-      ->merge($colorImageUrls)
       ->filter()
       ->unique()
       ->values();
@@ -114,11 +110,6 @@
   <meta name="description" content="{{ $metaDesc }}">
   <link rel="canonical" href="{{ $pageUrl }}">
   <link rel="preload" as="image" href="{{ $mainImageUrl }}" fetchpriority="high">
-  @foreach($galleryPreloadUrls as $galleryImageUrl)
-    @if($galleryImageUrl !== $mainImageUrl)
-      <link rel="preload" as="image" href="{{ $galleryImageUrl }}" fetchpriority="low">
-    @endif
-  @endforeach
   <meta property="og:type" content="product">
   <meta property="og:site_name" content="B-Brillant">
   <meta property="og:locale" content="sq_AL">
@@ -1124,7 +1115,7 @@
             <button type="button"
               class="thumb-btn {{ (!$initialColorImageUrl && $i === 0) ? 'active' : '' }}"
               data-product-image="{{ $imgUrl }}">
-              <img src="{{ $imgUrl }}" alt="thumb {{ $i+1 }}" loading="eager" decoding="async" fetchpriority="low" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+              <img src="{{ $imgUrl }}" alt="thumb {{ $i+1 }}" loading="lazy" decoding="async" fetchpriority="low" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
             </button>
           @endforeach
 
@@ -1137,7 +1128,7 @@
                   data-color-name="{{ $variant['name'] }}"
                   title="Ngjyra: {{ $variant['name'] }}"
                   aria-label="Ngjyra {{ $variant['name'] }} foto {{ $variantImageIndex + 1 }}">
-                  <img src="{{ $variantImageUrl }}" alt="Ngjyra {{ $variant['name'] }} foto {{ $variantImageIndex + 1 }}" loading="eager" decoding="async" fetchpriority="low" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+                  <img src="{{ $variantImageUrl }}" alt="Ngjyra {{ $variant['name'] }} foto {{ $variantImageIndex + 1 }}" loading="lazy" decoding="async" fetchpriority="low" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
                   <span class="thumb-color-dot" style="background: {{ $variant['hex'] }}"></span>
                 </button>
               @endif
@@ -1503,8 +1494,8 @@
 <img
   src="{{ $simImgUrl }}"
   alt="{{ $p->name }}"
-  loading="{{ $loop->iteration <= 2 ? 'eager' : 'lazy' }}"
-  fetchpriority="{{ $loop->iteration <= 2 ? 'high' : 'auto' }}"
+  loading="lazy"
+  fetchpriority="low"
   decoding="async"
   sizes="(max-width: 576px) 50vw, 25vw"
   width="360"

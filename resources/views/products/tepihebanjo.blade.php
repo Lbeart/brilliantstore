@@ -374,8 +374,8 @@
         <div class="col-6 col-md-4 col-lg-3">
           <article class="product-card">
        <img class="product-thumb" src="{{ $src }}" alt="{{ $p->name }}"
-     loading="{{ $loop->iteration <= 4 ? 'eager' : 'lazy' }}"
-     fetchpriority="{{ $loop->iteration <= 4 ? 'high' : 'auto' }}"
+     loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+     fetchpriority="{{ $loop->first ? 'high' : 'low' }}"
      decoding="async"
      sizes="(max-width: 576px) 50vw, (max-width: 992px) 33vw, 25vw"
      onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
