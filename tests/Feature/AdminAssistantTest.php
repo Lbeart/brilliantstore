@@ -45,6 +45,11 @@ class AdminAssistantTest extends TestCase
             $table->boolean('is_active')->default(true);
             $table->integer('stock')->nullable();
             $table->string('category')->nullable();
+            $table->string('subcategory')->nullable();
+            $table->json('sizes')->nullable();
+            $table->json('color_variants')->nullable();
+            $table->string('sku')->nullable();
+            $table->string('barcode')->nullable();
             $table->timestamps();
         });
         Schema::create('orders', function (Blueprint $table) {
@@ -130,6 +135,32 @@ class AdminAssistantTest extends TestCase
             'message' => 'Me trego porosine #'.$order->id,
         ])->assertOk()
             ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Batanije Rodos') && str_contains($reply, 'Cream'));
+    }
+
+    public function test_stock_question_reads_the_exact_product_and_all_size_variants(): void
+    {
+        $this->actingAsAdmin();
+        \App\Models\Product::create([
+            'name' => 'Tepih Hali 256',
+            'slug' => 'tepih-hali-256',
+            'price' => 75,
+            'stock' => 8,
+            'category' => 'tepiha',
+            'is_active' => true,
+            'sizes' => [
+                ['label' => '150x230', 'stock' => 4, 'price' => 65],
+                ['label' => '300x200', 'stock' => 4, 'price' => 75],
+            ],
+            'color_variants' => [['name' => 'Hiri'], ['name' => 'Cream']],
+        ]);
+
+        $this->postJson(route('admin.assistant.message'), [
+            'message' => 'Tepih Hali a ka stok 300x200?',
+        ])->assertOk()
+            ->assertJsonPath('ai', false)
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Tepih Hali 256')
+                && str_contains($reply, '300x200: 4 copë')
+                && str_contains($reply, 'Cream'));
     }
 
     private function actingAsAdmin(): User

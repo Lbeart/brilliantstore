@@ -35,6 +35,13 @@ class AdminAssistantController extends Controller
             'content' => trim($item['content']),
         ])->filter(fn (array $item) => $item['content'] !== '')->values()->all();
         $context = $this->context($message);
+
+        // Pyetjet e stokut përgjigjen direkt nga databaza, pa i lënë AI-së
+        // mundësi të anashkalojë variantet ose të shpikë gjendje.
+        if ($this->isStockQuestion($message) && array_key_exists('requested_products', $context)) {
+            return response()->json(['reply' => $this->stockReply($context['requested_products']), 'ai' => false]);
+        }
+
         $apiKey = trim((string) config('services.openai.key'));
 
         if ($apiKey === '') {
@@ -140,7 +147,101 @@ class AdminAssistantController extends Controller
             ];
         }
 
+        $products = $this->requestedProducts($message);
+        if ($products !== null) {
+            $context['requested_products'] = $products;
+        }
+
         return $context;
+    }
+
+    private function requestedProducts(string $message): ?array
+    {
+        if (!$this->isStockQuestion($message)) {
+            return null;
+        }
+
+        $normalized = Str::lower(Str::ascii($message));
+        $normalized = preg_replace('/[^a-z0-9]+/', ' ', $normalized);
+        $stopWords = ['a', 'ka', 'keni', 'kemi', 'eshte', 'jane', 'ne', 'per', 'prej', 'me', 'te', 'ky', 'kjo', 'qiky', 'qikjo', 'stok', 'stock', 'gjendje', 'gjendeni', 'produkt', 'produkti', 'sa', 'cope', 'copa'];
+        $tokens = collect(preg_split('/\s+/', trim($normalized)))
+            ->filter(fn ($token) => strlen($token) >= 3 && !in_array($token, $stopWords, true))
+            ->unique()->values();
+
+        $query = Product::query()->where('is_active', 1);
+        if ($tokens->isNotEmpty()) {
+            foreach ($tokens as $token) {
+                $query->where(function ($part) use ($token) {
+                    $like = '%'.$token.'%';
+                    $part->whereRaw('LOWER(name) LIKE ?', [$like])
+                        ->orWhereRaw('LOWER(category) LIKE ?', [$like])
+                        ->orWhereRaw('LOWER(COALESCE(subcategory, ?)) LIKE ?', ['', $like])
+                        ->orWhereRaw('LOWER(COALESCE(sku, ?)) LIKE ?', ['', $like])
+                        ->orWhereRaw('LOWER(COALESCE(barcode, ?)) LIKE ?', ['', $like])
+                        ->orWhereRaw('LOWER(COALESCE(sizes, ?)) LIKE ?', ['', $like])
+                        ->orWhereRaw('LOWER(COALESCE(color_variants, ?)) LIKE ?', ['', $like]);
+                });
+            }
+        }
+
+        return $query->orderBy('name')->limit(30)->get([
+            'id', 'name', 'slug', 'price', 'stock', 'category', 'sizes', 'color_variants', 'sku', 'barcode',
+        ])->map(function (Product $product) {
+            $sizes = collect($product->sizes ?? [])->map(function ($size) {
+                if (!is_array($size)) return null;
+                return [
+                    'label' => $size['label'] ?? $size['size'] ?? null,
+                    'stock' => isset($size['stock']) && is_numeric($size['stock']) ? (int) $size['stock'] : null,
+                    'price' => isset($size['price']) && is_numeric($size['price']) ? round((float) $size['price'], 2) : null,
+                ];
+            })->filter(fn ($size) => $size && $size['label'])->values()->all();
+
+            $colors = collect($product->color_variants ?? [])->map(function ($color) {
+                return is_array($color) ? ($color['name'] ?? $color['label'] ?? null) : $color;
+            })->filter()->values()->all();
+
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => round((float) $product->price, 2),
+                'stock' => is_numeric($product->stock) ? (int) $product->stock : null,
+                'sizes' => $sizes,
+                'colors' => $colors,
+                'sku' => $product->sku,
+                'barcode' => $product->barcode,
+                'admin_url' => route('admin.products.edit', $product, false),
+            ];
+        })->all();
+    }
+
+    private function isStockQuestion(string $message): bool
+    {
+        $text = Str::lower(Str::ascii($message));
+        if (Str::contains($text, ['stok', 'stock', 'gjendje'])) {
+            return true;
+        }
+
+        return Str::contains($text, ['a ka', 'keni', 'kemi'])
+            && !Str::contains($text, ['porosi', 'order', 'statistik', 'klient', 'perdorues', 'shitje', 'xhiro']);
+    }
+
+    private function stockReply(array $products): string
+    {
+        if ($products === []) {
+            return 'Nuk gjeta produkt aktiv që përputhet me këtë emër, dimension, ngjyrë, SKU ose barkod.';
+        }
+
+        return collect($products)->map(function (array $product) {
+            $stock = $product['stock'] === null ? 'stoku total nuk është vendosur' : $product['stock'].' copë stok total';
+            $sizes = collect($product['sizes'])->map(function ($size) {
+                $stock = $size['stock'] === null ? 'stok i pacaktuar' : $size['stock'].' copë';
+                return $size['label'].': '.$stock;
+            })->implode(', ');
+            $colors = $product['colors'] ? '; ngjyrat: '.implode(', ', $product['colors']) : '';
+            $variants = $sizes !== '' ? '; dimensionet: '.$sizes : '';
+
+            return $product['name'].' (#'.$product['id'].'): '.$stock.$variants.$colors.'. Hape: '.$product['admin_url'];
+        })->implode("\n\n");
     }
 
     private function requestedOrder(string $message): ?Order
