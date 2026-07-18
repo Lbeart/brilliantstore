@@ -147,8 +147,12 @@ class ChatbotKnowledgeService
 
         if ($products !== []) {
             $names = collect($products)->take(3)->pluck('name')->implode(', ');
+            $facts = collect($products)->pluck('verified_facts')->filter()->first();
+            $factText = is_array($facts) && $facts !== []
+                ? ' '.ucfirst($this->verifiedFactsText(collect($facts)->except(['search_terms'])->all())).'.'
+                : '';
 
-            return "Gjeta këto opsione reale në katalog: {$names}. Shiko kartat më poshtë për çmimin, përmasat dhe faqen e secilit produkt.";
+            return "Po, kemi zgjedhje shumë të mira: {$names}.{$factText} Janë opsione elegante dhe praktike për shtëpinë; shiko kartat më poshtë për çmimin, përmasat dhe secilin model.";
         }
 
         if (is_array($intent)) {
@@ -292,6 +296,7 @@ class ChatbotKnowledgeService
     {
         $sizes = $this->sizes($product);
         $colors = $this->colors($product);
+        $verifiedFacts = $this->verifiedFacts($product);
 
         return [
             'name' => $this->normalize((string) $product->name),
@@ -300,6 +305,7 @@ class ChatbotKnowledgeService
                 $this->normalize(strip_tags((string) $product->description))
             ),
             'category' => $this->normalize((string) $product->category.' '.(string) $product->subcategory),
+            'verified_facts' => $this->normalize($this->verifiedFactsText($verifiedFacts)),
             'dimensions' => $this->normalizeDimensions(collect($sizes)->pluck('label')->implode(' ')),
             'colors' => $this->normalize(collect($colors)->pluck('name')->implode(' ')),
             'codes' => $this->normalize(
@@ -403,6 +409,7 @@ class ChatbotKnowledgeService
             'sku' => $product->sku ?: null,
             'barcode' => $product->barcode ?: null,
             'description' => Str::limit(trim(strip_tags((string) $product->description)), 240, ''),
+            'verified_facts' => $this->verifiedFacts($product),
             'price' => $range['min'],
             'price_min' => $range['min'],
             'price_max' => $range['max'],
@@ -470,6 +477,31 @@ class ChatbotKnowledgeService
         }
 
         return array_values($colors);
+    }
+
+    private function verifiedFacts(Product $product): array
+    {
+        foreach ((array) config('chatbot.categories', []) as $category) {
+            if ((string) ($category['category'] ?? '') !== (string) $product->category) {
+                continue;
+            }
+
+            $subcategory = $category['subcategory'] ?? null;
+            if ($subcategory !== null && (string) $subcategory !== (string) $product->subcategory) {
+                continue;
+            }
+
+            return (array) ($category['verified_facts'] ?? []);
+        }
+
+        return [];
+    }
+
+    private function verifiedFactsText(array $facts): string
+    {
+        return collect($facts)->flatMap(function ($value) {
+            return is_array($value) ? $value : [$value];
+        })->filter(fn ($value) => is_scalar($value))->implode(' ');
     }
 
     private function priceRange(Product $product): array
@@ -730,6 +762,7 @@ class ChatbotKnowledgeService
                     'in_stock' => $size['stock'] > 0,
                 ])->values()->all(),
                 'colors' => array_column($colors, 'name'),
+                'verified_facts' => $this->verifiedFacts($product),
                 'in_stock' => $this->hasAvailableOption($product),
                 'url' => route('products.show', $product->slug, false),
             ];

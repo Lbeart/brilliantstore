@@ -646,6 +646,27 @@ class ChatbotCatalogTest extends TestCase
         $this->assertSame($otto->id, $response->json('products.0.id'));
     }
 
+    public function test_verified_rug_material_and_feature_find_real_rugs(): void
+    {
+        $hali = $this->product([
+            'name' => 'Tepih Hali 256',
+            'category' => 'tepiha',
+            'description' => null,
+        ]);
+
+        $response = $this->postJson(route('chatbot.message'), [
+            'message' => 'A keni tepiha me material akril antibakterial?',
+        ]);
+        $response->assertOk()
+            ->assertJsonPath('ai', false)
+            ->assertJsonPath('products.0.id', $hali->id)
+            ->assertJsonPath('products.0.verified_facts.material', 'Akril')
+            ->assertJsonPath('products.0.verified_facts.features.0', 'Antibakterial')
+            ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Akril')
+                && str_contains($reply, 'Antibakterial')
+                && ! str_contains($reply, 'nuk figuron'));
+    }
+
     public function test_known_model_without_structured_sizes_is_returned_for_confirmation(): void
     {
         $hali = $this->product([

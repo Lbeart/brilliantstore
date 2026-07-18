@@ -63,6 +63,12 @@ return [
             'route' => 'products.tepiha',
             'aliases' => ['tepiha', 'tepih', 'tapet', 'hali', 'halli', 'rug', 'rugs', 'carpet', 'tepisi'],
             'generic' => ['tepiha', 'tepih', 'tapet', 'rug', 'rugs', 'tepisi'],
+            // Fakte të konfirmuara nga biznesi për krejt koleksionin e tepihave.
+            'verified_facts' => [
+                'material' => 'Akril',
+                'features' => ['Antibakterial'],
+                'search_terms' => ['akril', 'akrill', 'akrilik', 'acrylic', 'antibakterial', 'antibacterial'],
+            ],
         ],
         'curtains' => [
             'label' => 'Perde',
@@ -156,13 +162,14 @@ return [
         'qit', 'qita', 'qito', 'qikjo', 'qiky', 'qika', 'kete', 'këtë', 'ket', 'kët', 'ate', 'atë', 'paren', 'parin', 'tparen', 'dyten', 'dytin', 'treten', 'tretin',
         'qka', 'cka', 'çka', 'produkt', 'produkte', 'produktet', 'katalog', 'shop', 'shisni', 'gjej', 'gjeni', 'kerkoj', 'kërkoj', 'trego', 'disa',
         'gjithe', 'gjithë', 'krejt', 'secili', 'secila', 'seciles', 'çdo', 'cdo', 'all', 'every',
-        'model', 'modele', 'modelet', 'cop', 'cope', 'copë', 'copa', 'osht', 'eshte', 'është', 'jepmi', 'qitmi',
+        'model', 'modele', 'modelet', 'material', 'materiali', 'cop', 'cope', 'copë', 'copa', 'osht', 'eshte', 'është', 'jepmi', 'qitmi',
         'show', 'have', 'with', 'for', 'the', 'and', 'please', 'imate', 'treba', 'koji', 'koja', 'molim',
     ],
 
     // Këto ndikojnë renditjen, por mungesa e tyre nuk e përjashton produktin.
     'soft_preferences' => [
         'modern', 'moderne', 'klasik', 'klasike', 'premium', 'bute', 'butë', 'ngrohte', 'ngrohtë',
+        'akril', 'akrill', 'akrilik', 'acrylic', 'antibakterial', 'antibacterial',
         'sallon', 'dhom', 'korridor', 'kuzhin', 'zyre', 'zyrë', 'familje', 'ri', 'reja', 'latest', 'new',
         'lire', 'lirë', 'cheap', 'budget', 'shtrenjte', 'shtrenjtë', 'expensive', 'tjeter', 'tjetër', 'alternative', 'another',
     ],
