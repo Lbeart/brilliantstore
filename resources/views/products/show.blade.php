@@ -1631,13 +1631,6 @@
   const basePriceDefault = parseFloat({{ json_encode((float)$product->price) }});
   const baseStockDefault = parseInt({{ json_encode((int)($product->stock ?? 0)) }},10) || 0;
   const isCurtainProduct = {{ $isCurtain ? 'true' : 'false' }};
-  const galleryImageUrls = @json($galleryPreloadUrls);
-  galleryImageUrls.forEach(src => {
-    if(!src) return;
-    const preloaded = new Image();
-    preloaded.decoding = 'async';
-    preloaded.src = src;
-  });
 
   function getActivePill(){
     if(!pills.length) return null;
