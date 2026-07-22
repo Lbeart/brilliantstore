@@ -55,6 +55,20 @@ class LocalizedSeoTest extends TestCase
             ->assertSee('hreflang="x-default"', false);
     }
 
+    public function test_search_console_queries_are_used_on_their_relevant_categories(): void
+    {
+        $this->get('/perde')->assertOk()
+            ->assertSee('Perde Kosovë', false)
+            ->assertSee('Perde Moderne për Sallon', false);
+
+        $this->get('/tepiha')->assertOk()
+            ->assertSee('Tepiha Kosovë', false)
+            ->assertSee('Tepiha për Sallon', false);
+
+        $this->get('/garnishte')->assertOk()
+            ->assertSee('Shtaga dhe Mbajtëse për Perde', false);
+    }
+
     public function test_sitemap_contains_language_variants_and_excludes_private_flow_pages(): void
     {
         $response = $this->get('/sitemap.xml')->assertOk();

@@ -8,6 +8,22 @@ use Illuminate\Support\Facades\App;
 
 class LocalizedSeoMeta
 {
+    /** Search Console phrases that already bring qualified Albanian traffic. */
+    private const SEARCH_QUERY_META = [
+        'products.perde' => [
+            'Perde Kosovë | Perde Moderne për Sallon – B-Brillant',
+            'Perde Kosovë dhe perde online Kosovë: perde moderne për sallon e dhomë gjumi, me matje, qepje, montim dhe dërgesë nga B-Brillant.',
+        ],
+        'products.tepiha' => [
+            'Tepiha Kosovë | Tepiha për Sallon – B-Brillant',
+            'Tepiha Kosovë dhe tepiha online për sallon, dhomë gjumi e korridor: modele moderne, klasike dhe Hali me dërgesë në gjithë Kosovën.',
+        ],
+        'products.garnishte' => [
+            'Garnishte, Shtaga dhe Mbajtëse për Perde | Kosovë',
+            'Garnishte për perde, shtaga, shina dhe mbajtëse për perde në dimensione të ndryshme, me porosi online dhe dërgesë në Kosovë.',
+        ],
+    ];
+
     private const CATEGORIES = [
         'products.perde' => ['path' => '/perde', 'sq' => ['Perde Online në Kosovë | Brillant Lipjan', 'Perde moderne për sallon, dhomë gjumi dhe zyrë me matje, qepje, montim dhe dërgesë në gjithë Kosovën nga B-Brillant Lipjan.'], 'en' => ['Curtains Online in Kosovo | B-Brillant Lipjan', 'Modern curtains for living rooms, bedrooms and offices, with measuring, sewing, installation and delivery throughout Kosovo.'], 'sr' => ['Zavese Online na Kosovu | B-Brillant Lipljan', 'Moderne zavese za dnevnu sobu, spavaću sobu i kancelariju, sa merenjem, šivenjem, montažom i dostavom širom Kosova.']],
         'products.perdeDitore' => ['path' => '/perde-ditore', 'sq' => ['Perde Ditore Online | Matje dhe Montim në Kosovë', 'Perde ditore, perde të tejdukshme, bamboo dhe kumaş për shtëpi me matje, qepje, montim dhe dërgesë në Kosovë.'], 'en' => ['Sheer & Day Curtains Online in Kosovo | B-Brillant', 'Shop sheer and day curtains for homes, including measuring, custom sewing, installation and delivery throughout Kosovo.'], 'sr' => ['Dnevne i Prozračne Zavese Online | B-Brillant', 'Dnevne, prozračne i bambus zavese za dom sa merenjem, šivenjem, montažom i dostavom širom Kosova.']],
@@ -39,6 +55,9 @@ class LocalizedSeoMeta
         $locale = in_array(App::getLocale(), ['sq', 'en', 'sr'], true) ? App::getLocale() : 'sq';
         $seo = self::CATEGORIES[$routeName];
         [$title, $description] = $seo[$locale];
+        if ($locale === 'sq' && isset(self::SEARCH_QUERY_META[$routeName])) {
+            [$title, $description] = self::SEARCH_QUERY_META[$routeName];
+        }
         $base = url($seo['path']);
         $canonical = $locale === 'sq' ? $base : $base.'?lang='.$locale;
         $alternates = '<link rel="alternate" hreflang="sq" href="'.e($base).'">'

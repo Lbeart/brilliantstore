@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Product;
 use App\Support\ProductImages;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Intervention\Image\Facades\Image;
 
 class OptimizeProductImages extends Command
@@ -67,13 +68,14 @@ class OptimizeProductImages extends Command
     {
         $paths = [];
 
-        Product::query()
-            ->select(['id', 'image_path', 'color_variants', 'category', 'subcategory'])
-            ->where(function ($query) {
-                $query->whereNotNull('image_path')->orWhereNotNull('color_variants');
-            })
-            ->cursor()
-            ->each(function (Product $product) use (&$paths) {
+        try {
+            Product::query()
+                ->select(['id', 'image_path', 'color_variants', 'category', 'subcategory'])
+                ->where(function ($query) {
+                    $query->whereNotNull('image_path')->orWhereNotNull('color_variants');
+                })
+                ->cursor()
+                ->each(function (Product $product) use (&$paths) {
                 foreach (ProductImages::decode($product->image_path) as $imagePath) {
                     $relativePath = $this->publicRelativePath($imagePath, $product);
                     if ($relativePath) {
@@ -93,18 +95,35 @@ class OptimizeProductImages extends Command
                         }
                     }
                 }
-            });
+                });
+        } catch (\Throwable $exception) {
+            $this->warn('Database unavailable; optimizing images found in public folders.');
+            Log::notice('Product image optimizer continued without database.', [
+                'exception_class' => $exception::class,
+            ]);
+        }
 
-        $productFolder = public_path('images/products');
-        if (is_dir($productFolder)) {
-            $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($productFolder));
+        $publicFolders = [
+            'images/products', 'carpet', 'curtainn', 'perdeditoree', 'postavav',
+            'mbulesaa', 'jastak', 'batanijee', 'tepihebanjoo', 'posteqiaa',
+        ];
+
+        foreach ($publicFolders as $relativeFolder) {
+            $productFolder = public_path($relativeFolder);
+            if (!is_dir($productFolder)) {
+                continue;
+            }
+
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($productFolder, \FilesystemIterator::SKIP_DOTS)
+            );
 
             foreach ($iterator as $file) {
                 if (!$file->isFile() || !$this->isSupportedImage($file->getPathname())) {
                     continue;
                 }
 
-                $paths[] = 'images/products/'.str_replace('\\', '/', substr($file->getPathname(), strlen($productFolder) + 1));
+                $paths[] = $relativeFolder.'/'.str_replace('\\', '/', substr($file->getPathname(), strlen($productFolder) + 1));
             }
         }
 

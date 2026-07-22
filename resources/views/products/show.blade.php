@@ -58,7 +58,14 @@
     if ($cleanDescription === '') {
       $cleanDescription = $product->name . ' nga B-Brillant Lipjan. Porosit online ne Kosove me detaje, cmim dhe dergese te shpejte.';
     }
-    $metaDesc = Str::limit($cleanDescription, 155);
+    $categorySearchPhrase = match ($product->category) {
+      'tepiha' => 'tepiha Kosovë, tepiha për sallon',
+      'perde' => 'perde Kosovë, perde moderne për sallon, perde online Kosovë',
+      'garnishte' => 'garnishte për perde, shtaga për perde, mbajtëse për perde',
+      default => null,
+    };
+    $metaSource = trim($cleanDescription.' '.($categorySearchPhrase ? $categorySearchPhrase.' nga B-Brillant.' : ''));
+    $metaDesc = Str::limit($metaSource, 155);
     $pageTitle = trim($product->name . ($pageCategory ? ' – ' . $pageCategory : '') . ' | B-Brillant');
     $pageUrl = url()->current();
     $categoryLower = strtolower($pageCategory . ' ' . $product->name);
@@ -69,11 +76,11 @@
     } elseif (str_contains($categoryLower, 'tepih')) {
       $seoTitle = 'Tepiha online Kosove nga B-Brillant';
       $seoText = 'Ky produkt eshte pjese e koleksionit B-Brillant per tepiha online ne Kosove, duke perfshire tepiha akril, tepiha akrill, tepiha Hali, modele moderne, klasik, rrethore dhe tepiha per sallon apo dhome gjumi.';
-      $seoMore = 'Klientet shpesh kerkojne tepih online, tepiha Kosove, tapeta moderne, tepiha per sallon, tepiha per dhome gjumi, tepiha me oferta dhe dyqan tepihash ne Lipjan.';
+      $seoMore = 'Zbulo tepiha Kosovë, tepiha për sallon, tapeta moderne, tepiha për dhomë gjumi dhe modele me oferta, me porosi online nga B-Brillant.';
     } elseif (str_contains($categoryLower, 'perde')) {
       $seoTitle = 'Perde online ne Kosove nga B-Brillant';
       $seoText = 'Ky produkt eshte zgjedhje e mire per klientet qe kerkojne perde online ne Kosove, perde ditore, perde anesore, bamboo, kumash ose perde moderne per shtepi.';
-      $seoMore = 'Kjo faqe mund te ndihmoje klientet qe kerkojne perde per sallon, perde per dhome gjumi, perde ditore, perde anesore, perde bamboo, perde kumash dhe perde ne Kosove.';
+      $seoMore = 'Zbulo perde Kosovë, perde online Kosovë, perde moderne për sallon e dhomë gjumi, perde ditore, anësore, bamboo dhe kumash.';
     } elseif (str_contains($categoryLower, 'postava') || str_contains($categoryLower, 'carcaf') || str_contains($categoryLower, 'qar')) {
       $seoTitle = 'Set carcafesh dhe postava online ne Kosove nga B-Brillant';
       $seoText = 'Ky produkt eshte pjese e koleksionit te postavave dhe seteve te carcafeve per dhome gjumi, krevat dopio, krevat teke dhe perdorim te perditshem.';
@@ -97,7 +104,7 @@
     } elseif (str_contains($categoryLower, 'garnish')) {
       $seoTitle = 'Garnishte dhe aksesore perdeje online ne Kosove nga B-Brillant';
       $seoText = 'Ky produkt eshte i pershtatshem per montimin dhe dekorimin e perdeve ditore, perdeve anesore dhe perdeve blackout ne shtepi moderne.';
-      $seoMore = 'Klientet shpesh kerkojne garnishte Kosove, mbajtese perde, unaza per perde, shirita perde dhe aksesore perdeje online.';
+      $seoMore = 'Zbulo garnishte për perde, shtaga për perde, mbajtëse për perde, shina, unaza, shirita dhe aksesorë perdeje me porosi online në Kosovë.';
     } else {
       $seoTitle = 'Produkte shtepie online ne Kosove nga B-Brillant';
       $seoText = 'B-Brillant ofron produkte shtepie online ne Kosove me dizajn modern, cilesi te larte dhe dergese te shpejte ne Lipjan, Prishtine dhe qytete te tjera.';
