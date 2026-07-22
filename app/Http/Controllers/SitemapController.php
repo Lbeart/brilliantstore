@@ -107,6 +107,27 @@ class SitemapController extends Controller
         return htmlspecialchars($value, ENT_XML1 | ENT_COMPAT, 'UTF-8');
     }
 
+    private function localizedProductUrls(Collection $products): Collection
+    {
+        return $products->flatMap(function (Product $product) {
+            $base = url('/products/'.$product->slug);
+            $alternates = [
+                'sq' => $base,
+                'en' => $base.'?lang=en',
+                'sr' => $base.'?lang=sr',
+                'x-default' => $base,
+            ];
+
+            return collect(['sq', 'en', 'sr'])->map(fn (string $locale) => [
+                'loc' => $locale === 'sq' ? $base : $base.'?lang='.$locale,
+                'lastmod' => optional($product->updated_at)->toAtomString() ?? now()->toAtomString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.85',
+                'alternates' => $alternates,
+            ]);
+        });
+    }
+
     public function index()
     {
         $this->fillMissingProductSlugs();
@@ -136,12 +157,7 @@ class SitemapController extends Controller
             ]);
         });
 
-        $productUrls = $products->map(fn (Product $product) => [
-            'loc' => url('/products/'.$product->slug),
-            'lastmod' => optional($product->updated_at)->toAtomString() ?? now()->toAtomString(),
-            'changefreq' => 'weekly',
-            'priority' => '0.85',
-        ]);
+        $productUrls = $this->localizedProductUrls($products);
 
         return $this->sitemapResponse($urls->concat($productUrls)->values()->all());
     }
@@ -152,12 +168,7 @@ class SitemapController extends Controller
 
         $products = $this->loadProducts();
 
-        $urls = $products->map(fn (Product $product) => [
-            'loc' => url('/products/'.$product->slug),
-            'lastmod' => optional($product->updated_at)->toAtomString() ?? now()->toAtomString(),
-            'changefreq' => 'weekly',
-            'priority' => '0.85',
-        ]);
+        $urls = $this->localizedProductUrls($products);
 
         return $this->sitemapResponse($urls->values()->all());
     }

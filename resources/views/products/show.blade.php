@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sq">
+<html lang="{{ app()->getLocale() }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -53,6 +53,8 @@
       ->unique()
       ->values();
 
+    $locale = in_array(app()->getLocale(), ['sq', 'en', 'sr'], true) ? app()->getLocale() : 'sq';
+    $localizedSeo = \App\Support\ProductSeo::localized($product, $locale);
     $pageCategory = trim($product->category ?? 'Produkt');
     $cleanDescription = trim(strip_tags($product->description ?? ''));
     if ($cleanDescription === '') {
@@ -65,9 +67,10 @@
       default => null,
     };
     $metaSource = trim($cleanDescription.' '.($categorySearchPhrase ? $categorySearchPhrase.' nga B-Brillant.' : ''));
-    $metaDesc = Str::limit($metaSource, 155);
-    $pageTitle = trim($product->name . ($pageCategory ? ' – ' . $pageCategory : '') . ' | B-Brillant');
-    $pageUrl = url()->current();
+    $metaDesc = $locale === 'sq' ? Str::limit($metaSource, 155) : $localizedSeo['description'];
+    $pageTitle = $localizedSeo['title'];
+    $basePageUrl = url()->current();
+    $pageUrl = $locale === 'sq' ? $basePageUrl : $basePageUrl.'?lang='.$locale;
     $categoryLower = strtolower($pageCategory . ' ' . $product->name);
     if (str_contains($categoryLower, 'tepihebanjo') || str_contains($categoryLower, 'banjo') || str_contains($categoryLower, 'bath')) {
       $seoTitle = 'Tepiha banjo online ne Kosove nga B-Brillant';
@@ -116,10 +119,14 @@
   <title>{{ $pageTitle }}</title>
   <meta name="description" content="{{ $metaDesc }}">
   <link rel="canonical" href="{{ $pageUrl }}">
+  <link rel="alternate" hreflang="sq" href="{{ $basePageUrl }}">
+  <link rel="alternate" hreflang="en" href="{{ $basePageUrl }}?lang=en">
+  <link rel="alternate" hreflang="sr" href="{{ $basePageUrl }}?lang=sr">
+  <link rel="alternate" hreflang="x-default" href="{{ $basePageUrl }}">
   <link rel="preload" as="image" href="{{ $mainImageUrl }}" fetchpriority="high">
   <meta property="og:type" content="product">
   <meta property="og:site_name" content="B-Brillant">
-  <meta property="og:locale" content="sq_AL">
+  <meta property="og:locale" content="{{ $locale === 'en' ? 'en_US' : ($locale === 'sr' ? 'sr_RS' : 'sq_XK') }}">
   <meta property="og:url" content="{{ $pageUrl }}">
   <meta property="og:title" content="{{ $pageTitle }}">
   <meta property="og:description" content="{{ $metaDesc }}">
@@ -833,14 +840,15 @@
     '@context' => 'https://schema.org',
     '@type' => 'Product',
     '@id' => $pageUrl,
-    'name' => $product->name,
+    'name' => $localizedSeo['name'],
     'image' => count($imageUrls) ? $imageUrls : [$ogImage],
-    'description' => $cleanDescription,
+    'description' => $metaDesc,
     'sku' => $product->sku ?? (string)$product->id,
     'mpn' => $product->sku ?? (string)$product->id,
     'brand' => 'B-Brillant',
     'url' => $pageUrl,
-    'category' => $pageCategory,
+    'category' => $localizedSeo['category'],
+    'inLanguage' => $locale,
     'mainEntityOfPage' => [
       '@type' => 'WebPage',
       '@id' => $pageUrl,

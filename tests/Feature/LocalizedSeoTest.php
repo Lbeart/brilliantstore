@@ -101,4 +101,43 @@ class LocalizedSeoTest extends TestCase
     {
         $this->get('/products/tepih-mara')->assertNotFound();
     }
+
+    public function test_product_has_server_rendered_english_and_serbian_seo(): void
+    {
+        DB::connection('seo_testing')->table('products')->insert([
+            'name' => 'GARNISHTE PLASTIK',
+            'slug' => 'garnishte-plastik',
+            'price' => 2,
+            'description' => 'Garnishte plastike për perde.',
+            'is_active' => 1,
+            'category' => 'garnishte',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $base = url('/products/garnishte-plastik');
+        $this->get('/products/garnishte-plastik?lang=en')->assertOk()
+            ->assertSee('<html lang="en">', false)
+            ->assertSee('Plastic Curtain Rail', false)
+            ->assertSee('rel="canonical" href="'.$base.'?lang=en"', false)
+            ->assertSee('hreflang="sr" href="'.$base.'?lang=sr"', false);
+
+        $this->get('/products/garnishte-plastik?lang=sr')->assertOk()
+            ->assertSee('<html lang="sr">', false)
+            ->assertSee('Plastična Garnišna', false)
+            ->assertSee('dostavom širom Kosova', false);
+    }
+
+    public function test_product_sitemap_contains_all_language_versions(): void
+    {
+        DB::connection('seo_testing')->table('products')->insert([
+            'name' => 'GARNISHTE PLASTIK', 'slug' => 'garnishte-plastik', 'price' => 2,
+            'is_active' => 1, 'category' => 'garnishte', 'created_at' => now(), 'updated_at' => now(),
+        ]);
+
+        $this->get('/sitemap-products.xml')->assertOk()
+            ->assertSee(url('/products/garnishte-plastik').'?lang=en', false)
+            ->assertSee(url('/products/garnishte-plastik').'?lang=sr', false)
+            ->assertSee('hreflang="x-default"', false);
+    }
 }
