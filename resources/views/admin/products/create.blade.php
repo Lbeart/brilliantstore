@@ -130,6 +130,15 @@
                     </select>
                 </div>
 
+                <div class="col-md-4" id="soldByMeterWrap" style="display:none;">
+                    <label class="form-label d-block">Lloji i tepihut</label>
+                    <div class="form-check form-switch pt-2">
+                        <input type="hidden" name="sold_by_meter" value="0">
+                        <input class="form-check-input" type="checkbox" name="sold_by_meter" value="1" id="soldByMeter" @checked(old('sold_by_meter'))>
+                        <label class="form-check-label" for="soldByMeter">Stazë për korridor – shitet me metër</label>
+                    </div>
+                </div>
+
                 <div class="col-12">
                     <label class="form-label">Përshkrimi</label>
                     <textarea name="description" rows="4" class="form-control">{{ old('description') }}</textarea>
@@ -430,6 +439,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const sizesCard   = document.getElementById('sizesCard');
   const sizesLabel  = document.getElementById('sizesCatLabel');
   const coverMeterPriceWrap = document.getElementById('coverMeterPriceWrap');
+  const soldByMeterWrap = document.getElementById('soldByMeterWrap');
+  const soldByMeter = document.getElementById('soldByMeter');
 
   function toggleByCategory() {
     const cat = (categorySel.value || '').toLowerCase();
@@ -446,10 +457,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const showSizes = (cat === 'tepiha' || cat === 'postava' || cat === 'mbulesa' || cat==='batanije' || cat==='posteqia' || cat==='garnishte');
     sizesCard.style.display = showSizes ? '' : 'none';
     sizesLabel.textContent = categorySel.options[categorySel.selectedIndex]?.text || 'Produkt';
-    if (coverMeterPriceWrap) coverMeterPriceWrap.style.display = cat === 'mbulesa' ? '' : 'none';
+    if (soldByMeterWrap) soldByMeterWrap.style.display = cat === 'tepiha' ? '' : 'none';
+    if (cat !== 'tepiha' && soldByMeter) soldByMeter.checked = false;
+    if (coverMeterPriceWrap) coverMeterPriceWrap.style.display = (cat === 'mbulesa' || (cat === 'tepiha' && soldByMeter?.checked)) ? '' : 'none';
   }
 
   categorySel?.addEventListener('change', toggleByCategory);
+  soldByMeter?.addEventListener('change', toggleByCategory);
   toggleByCategory(); // init në load (respekton old() kur ka errora)
 });
 

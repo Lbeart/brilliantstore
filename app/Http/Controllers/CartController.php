@@ -49,7 +49,10 @@ class CartController extends Controller
         $sizeLabel = $data['size'] ?? null;
         $colorLabel = $this->selectedColorLabel($product, $data['color'] ?? null);
 
-        if (($product->category ?? '') === 'mbulesa' && !empty($data['cover_mode']) && !empty($data['cover_option'])) {
+        $hasMeterCalculator = ($product->category ?? '') === 'mbulesa'
+            || (($product->category ?? '') === 'tepiha' && (bool) $product->sold_by_meter);
+
+        if ($hasMeterCalculator && !empty($data['cover_mode']) && !empty($data['cover_option'])) {
             $cover = $this->calculateCoverPrice(
                 $product,
                 (string) $data['cover_mode'],
@@ -60,7 +63,7 @@ class CartController extends Controller
             if (!$cover) {
                 return response()->json([
                     'ok' => false,
-                    'message' => 'Llogaritja e mbuleses nuk eshte valide.',
+                    'message' => 'Metrazhi ose llogaritja e zgjedhur nuk është valide.',
                 ], 422);
             }
 

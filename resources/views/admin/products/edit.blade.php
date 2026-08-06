@@ -196,6 +196,15 @@
                                 </select>
                             </div>
 
+                            <div class="col-md-4" id="soldByMeterWrap" style="{{ $catValue === 'tepiha' ? '' : 'display:none' }}">
+                                <label class="form-label d-block">Lloji i tepihut</label>
+                                <div class="form-check form-switch pt-2">
+                                    <input type="hidden" name="sold_by_meter" value="0">
+                                    <input class="form-check-input" type="checkbox" name="sold_by_meter" value="1" id="soldByMeter" @checked(old('sold_by_meter', $product->sold_by_meter))>
+                                    <label class="form-check-label" for="soldByMeter">Stazë për korridor – shitet me metër</label>
+                                </div>
+                            </div>
+
                             <div class="col-md-3">
                                 <label class="form-label">Stoku</label>
                                 <input type="number" name="stock" class="form-control" value="{{ old('stock', $product->stock) }}" min="0" required>
@@ -260,7 +269,7 @@
                           $sizes = $filteredSizes;
                         @endphp
 
-                        <div id="coverMeterPriceWrap" class="row g-2 mb-3" style="{{ $catValue === 'mbulesa' ? '' : 'display:none' }}">
+                        <div id="coverMeterPriceWrap" class="row g-2 mb-3" style="{{ $catValue === 'mbulesa' || ($catValue === 'tepiha' && old('sold_by_meter', $product->sold_by_meter)) ? '' : 'display:none' }}">
                           <div class="col-md-4">
                             <label class="form-label mb-1">Cmimi me meter (€)</label>
                             <input name="cover_meter_price" type="number" step="0.01" min="0" class="form-control" value="{{ $coverMeterPrice }}" placeholder="p.sh. 8">
@@ -621,20 +630,26 @@ const catSel = document.getElementById('categorySelect');
 const subWrap = document.getElementById('subcatWrap');
 const subSel = document.getElementById('subcatSelect');
 const coverMeterPriceWrap = document.getElementById('coverMeterPriceWrap');
+const soldByMeterWrap = document.getElementById('soldByMeterWrap');
+const soldByMeter = document.getElementById('soldByMeter');
 
 if(catSel && subWrap){
-  catSel.addEventListener('change', function(){
-    if(this.value === 'perde'){
+  const toggleProductTypeFields = function(){
+    if(catSel.value === 'perde'){
       subWrap.style.display = '';
     }else{
       subWrap.style.display = 'none';
       if(subSel) subSel.value = '';
     }
 
+    if(soldByMeterWrap) soldByMeterWrap.style.display = catSel.value === 'tepiha' ? '' : 'none';
+    if(catSel.value !== 'tepiha' && soldByMeter) soldByMeter.checked = false;
     if(coverMeterPriceWrap){
-      coverMeterPriceWrap.style.display = this.value === 'mbulesa' ? '' : 'none';
+      coverMeterPriceWrap.style.display = (catSel.value === 'mbulesa' || (catSel.value === 'tepiha' && soldByMeter?.checked)) ? '' : 'none';
     }
-  });
+  };
+  catSel.addEventListener('change', toggleProductTypeFields);
+  soldByMeter?.addEventListener('change', toggleProductTypeFields);
 }
 
 document.addEventListener('click', function (e) {

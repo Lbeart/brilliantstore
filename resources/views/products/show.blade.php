@@ -11,6 +11,8 @@
   @php
     $isCurtain = str_contains(strtolower($product->category ?? ''), 'perde');
     $isCover = strtolower(trim($product->category ?? '')) === 'mbulesa';
+    $isMeterCarpet = strtolower(trim($product->category ?? '')) === 'tepiha' && (bool) $product->sold_by_meter;
+    $hasMeterCalculator = $isCover || $isMeterCarpet;
   @endphp
 
   @php
@@ -1190,7 +1192,7 @@
         }
 
         $coverOptions = [];
-        if($isCover){
+        if($hasMeterCalculator){
           $meterOption = null;
           $setOptions = [];
 
@@ -1212,7 +1214,7 @@
             'stock' => $product->stock,
           ];
 
-          $coverOptions = array_merge([$meterOption], $setOptions);
+          $coverOptions = $isMeterCarpet ? [$meterOption] : array_merge([$meterOption], $setOptions);
         }
       @endphp
 
@@ -1258,7 +1260,7 @@
       @endif
 
       {{-- ✅ DIMENSIONET si pills --}}
-      @if(count($sizes)>0 && !$isCover)
+      @if(count($sizes)>0 && !$hasMeterCalculator)
         <div class="section-card mb-3">
           <div class="dim-title">Dimensionet</div>
           <div class="size-grid" id="sizePills" role="radiogroup" aria-label="Zgjidh dimensionin">
@@ -1289,12 +1291,15 @@
         </div>
       @endif
 
-      @if($isCover && count($coverOptions)>0)
+      @if($hasMeterCalculator && count($coverOptions)>0)
         <div class="section-card mb-3" id="coverCalculator">
-          <div class="dim-title">Llogarit mbulesen</div>
+          <div class="dim-title">{{ $isMeterCarpet ? 'Zgjidh gjatësinë e stazës' : 'Llogarit mbulesën' }}</div>
           <div class="small text-muted mb-2">
-            Zgjidh meter per metrazh, ose setin 3+2+1. Shembull: nese 3+2+1 kushton 30 euro,
-            atehere 3+3+2+1 del 45 euro.
+            @if($isMeterCarpet)
+              Shkruaj gjatësinë në metra, p.sh. 2.50 ose 3. Çmimi total llogaritet automatikisht.
+            @else
+              Zgjidh metër për metrazh, ose setin 3+2+1.
+            @endif
           </div>
 
           <div class="size-grid mb-3" id="coverOptions" role="radiogroup" aria-label="Opsionet e mbuleses">
@@ -1332,10 +1337,10 @@
                   <button type="button" class="btn btn-outline-danger cover-remove-meter" aria-label="Hiqe metrin" style="display:none;">&times;</button>
                 </div>
               </div>
-              <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="addCoverMeter">
-                + Shto meter
-              </button>
-              <div class="small text-muted mt-1">Shembull: 2.40 + 3.40 m llogariten bashke.</div>
+              @unless($isMeterCarpet)
+                <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="addCoverMeter">+ Shto metër</button>
+                <div class="small text-muted mt-1">Shembull: 2.40 + 3.40 m llogariten bashkë.</div>
+              @endunless
             </div>
 
             <div id="coverSetGroup" style="display:none;">

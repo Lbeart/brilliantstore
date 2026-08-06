@@ -69,6 +69,7 @@ class ProductController extends Controller
 
             'price'       => 'nullable|numeric|min:0',
             'stock'       => 'nullable|integer|min:0',
+            'sold_by_meter' => 'sometimes|boolean',
             'cover_meter_price' => 'nullable|numeric|min:0',
             'sizes'       => 'nullable|array',
             'description' => 'nullable|string',
@@ -97,6 +98,7 @@ class ProductController extends Controller
         }
 
         $data['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : true;
+        $data['sold_by_meter'] = ($data['category'] ?? null) === 'tepiha' && $request->boolean('sold_by_meter');
         // Slug generated automatically in model
 
         if (empty($data['sku'])) {
@@ -207,6 +209,7 @@ class ProductController extends Controller
 
             'price'       => 'nullable|numeric|min:0',
             'stock'       => 'nullable|integer|min:0',
+            'sold_by_meter' => 'sometimes|boolean',
             'cover_meter_price' => 'nullable|numeric|min:0',
             'sizes'       => 'nullable|array',
             'description' => 'nullable|string',
@@ -244,6 +247,7 @@ class ProductController extends Controller
         }
 
         $data['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : $product->is_active;
+        $data['sold_by_meter'] = ($data['category'] ?? null) === 'tepiha' && $request->boolean('sold_by_meter');
 
         if ($product->name !== $data['name']) {
             $data['slug'] = Product::generateSlug($data['name']);
@@ -781,7 +785,10 @@ class ProductController extends Controller
 
     private function mergeCoverMeterPrice(array $sizes, Request $request, ?string $category, int $stock): array
     {
-        if (($category ?? '') !== 'mbulesa') {
+        $usesMeterPrice = ($category ?? '') === 'mbulesa'
+            || (($category ?? '') === 'tepiha' && $request->boolean('sold_by_meter'));
+
+        if (!$usesMeterPrice) {
             return $sizes;
         }
 
