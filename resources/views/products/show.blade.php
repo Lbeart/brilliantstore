@@ -11,7 +11,11 @@
   @php
     $isCurtain = str_contains(strtolower($product->category ?? ''), 'perde');
     $isCover = strtolower(trim($product->category ?? '')) === 'mbulesa';
-    $isMeterCarpet = strtolower(trim($product->category ?? '')) === 'tepiha' && (bool) $product->sold_by_meter;
+    $productNameAscii = strtolower(\Illuminate\Support\Str::ascii((string)($product->name ?? '')));
+    $isNamedRunner = str_contains($productNameAscii, 'staz') || str_contains($productNameAscii, 'runner');
+    // Produktet e vjetra mund të mos e kenë ende flamurin sold_by_meter në DB.
+    $isMeterCarpet = strtolower(trim($product->category ?? '')) === 'tepiha'
+      && ((bool) $product->sold_by_meter || $isNamedRunner);
     $hasMeterCalculator = $isCover || $isMeterCarpet;
   @endphp
 

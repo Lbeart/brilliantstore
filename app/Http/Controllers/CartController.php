@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Support\ProductImages;
+use Illuminate\Support\Str;
 
 class CartController extends Controller
 {
@@ -49,8 +50,11 @@ class CartController extends Controller
         $sizeLabel = $data['size'] ?? null;
         $colorLabel = $this->selectedColorLabel($product, $data['color'] ?? null);
 
-        $hasMeterCalculator = ($product->category ?? '') === 'mbulesa'
-            || (($product->category ?? '') === 'tepiha' && (bool) $product->sold_by_meter);
+        $isNamedRunner = str_contains(Str::lower(Str::ascii((string) $product->name)), 'staz')
+            || str_contains(Str::lower(Str::ascii((string) $product->name)), 'runner');
+        $isMeterCarpet = ($product->category ?? '') === 'tepiha'
+            && ((bool) $product->sold_by_meter || $isNamedRunner);
+        $hasMeterCalculator = ($product->category ?? '') === 'mbulesa' || $isMeterCarpet;
 
         if ($hasMeterCalculator && !empty($data['cover_mode']) && !empty($data['cover_option'])) {
             $cover = $this->calculateCoverPrice(
@@ -368,7 +372,7 @@ class CartController extends Controller
 
             return [
                 'price' => round($basePrice * $meters, 2),
-                'label' => (($product->category ?? '') === 'tepiha' && (bool) $product->sold_by_meter
+                'label' => (($product->category ?? '') === 'tepiha'
                     ? 'Gjerësia: '.$option.' / '
                     : '').'Me metër: '.$this->formatNumber($meters).' m',
             ];

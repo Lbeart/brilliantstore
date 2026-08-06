@@ -214,6 +214,16 @@
                       </div>
                     </div>
 
+                    <div id="runnerWidthsPanel" class="alert alert-primary mb-3" style="{{ old('sold_by_meter') ? '' : 'display:none' }}">
+                      <div class="fw-bold mb-2">Gjerësitë e stazës</div>
+                      <div class="small mb-2">Kliko gjerësitë që i ka kjo stazë. Pastaj shkruaj çmimin për metër dhe stokun për secilën.</div>
+                      <div class="d-flex flex-wrap gap-2">
+                        @foreach(['64 cm', '80 cm', '1 m', '1.20 m'] as $runnerWidth)
+                          <button type="button" class="btn btn-light border runner-width-preset" data-width="{{ $runnerWidth }}">+ {{ $runnerWidth }}</button>
+                        @endforeach
+                      </div>
+                    </div>
+
                     <div id="sizesRepeater">
                       @forelse($sizes as $s)
                         <div class="row g-2 align-items-end mb-2 size-row">
@@ -443,6 +453,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const coverMeterPriceWrap = document.getElementById('coverMeterPriceWrap');
   const soldByMeterWrap = document.getElementById('soldByMeterWrap');
   const soldByMeter = document.getElementById('soldByMeter');
+  const runnerWidthsPanel = document.getElementById('runnerWidthsPanel');
 
   function toggleByCategory() {
     const cat = (categorySel.value || '').toLowerCase();
@@ -462,11 +473,40 @@ document.addEventListener('DOMContentLoaded', function () {
     if (soldByMeterWrap) soldByMeterWrap.style.display = cat === 'tepiha' ? '' : 'none';
     if (cat !== 'tepiha' && soldByMeter) soldByMeter.checked = false;
     if (coverMeterPriceWrap) coverMeterPriceWrap.style.display = cat === 'mbulesa' ? '' : 'none';
+    if (runnerWidthsPanel) runnerWidthsPanel.style.display = (cat === 'tepiha' && soldByMeter?.checked) ? '' : 'none';
   }
 
   categorySel?.addEventListener('change', toggleByCategory);
-  soldByMeter?.addEventListener('change', toggleByCategory);
+  soldByMeter?.addEventListener('change', function () {
+    toggleByCategory();
+    if (this.checked) setTimeout(() => runnerWidthsPanel?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
+  });
   toggleByCategory(); // init në load (respekton old() kur ka errora)
+});
+
+document.addEventListener('click', function (e) {
+  const preset = e.target.closest('.runner-width-preset');
+  if (!preset) return;
+  const width = preset.dataset.width;
+  const wrap = document.getElementById('sizesRepeater');
+  const existing = Array.from(wrap.querySelectorAll('input[name="sizes[label][]"]'))
+    .find(input => input.value.trim().toLowerCase() === width.toLowerCase());
+  if (existing) { existing.focus(); return; }
+
+  let row = Array.from(wrap.querySelectorAll('.size-row')).find(item => {
+    const input = item.querySelector('input[name="sizes[label][]"]');
+    return input && !input.value.trim();
+  });
+  if (!row) {
+    document.getElementById('addSize').click();
+    row = wrap.querySelector('.size-row:last-child');
+  }
+  const labelInput = row.querySelector('input[name="sizes[label][]"]');
+  labelInput.value = width;
+  labelInput.placeholder = 'p.sh. 80 cm';
+  const priceLabel = row.querySelector('input[name="sizes[price][]"]')?.closest('div')?.querySelector('label');
+  if (priceLabel) priceLabel.textContent = 'Çmimi për metër (€)';
+  row.querySelector('input[name="sizes[price][]"]')?.focus();
 });
 
 document.addEventListener('click', function (e) {
