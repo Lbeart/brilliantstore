@@ -163,6 +163,8 @@
                   <div class="card-body">
                     <h6 class="mb-2">Dimensione / opsione për <span id="sizesCatLabel">Tepiha</span></h6>
                     <small class="text-muted d-block mb-3">
+                      Për staza shto poshtë gjerësitë, p.sh. <strong>64 cm</strong>, <strong>80 cm</strong>, <strong>1 m</strong>.
+                      Çmimi i secilës gjerësi është çmimi për një metër gjatësi.<br>
                       Per mbulesa cakto <strong>Cmimi me meter</strong> ne fushen e vecante, p.sh. 8 euro.
                       Per set shto <strong>3+2+1</strong> me cmimin total te setit, p.sh. 30 euro.
                       Nese klienti shkruan 3+3+2+1, sistemi e llogarit proporcionalisht: 45 euro.
@@ -459,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function () {
     sizesLabel.textContent = categorySel.options[categorySel.selectedIndex]?.text || 'Produkt';
     if (soldByMeterWrap) soldByMeterWrap.style.display = cat === 'tepiha' ? '' : 'none';
     if (cat !== 'tepiha' && soldByMeter) soldByMeter.checked = false;
-    if (coverMeterPriceWrap) coverMeterPriceWrap.style.display = (cat === 'mbulesa' || (cat === 'tepiha' && soldByMeter?.checked)) ? '' : 'none';
+    if (coverMeterPriceWrap) coverMeterPriceWrap.style.display = cat === 'mbulesa' ? '' : 'none';
   }
 
   categorySel?.addEventListener('change', toggleByCategory);

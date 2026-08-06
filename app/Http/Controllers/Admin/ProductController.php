@@ -165,7 +165,9 @@ class ProductController extends Controller
             report($e);
 
             return back()
-                ->withErrors(['image' => 'Produkti nuk u ruajt ne databaze. Nese ke vendos disa foto, provo vetem nje foto; pastaj duhet me u ekzekutu migrimi qe e zgjeron image_path.'])
+                ->withErrors(['product' => str_contains(strtolower($e->getMessage()), 'sold_by_meter')
+                    ? 'Produkti nuk u ruajt sepse mungon migrimi i stazave. Ekzekuto: php artisan migrate --force'
+                    : 'Produkti nuk u ruajt në databazë. Kontrollo migrimet dhe provo përsëri.'])
                 ->withInput();
         } catch (\Throwable $e) {
             report($e);
@@ -326,7 +328,9 @@ class ProductController extends Controller
             report($e);
 
             return back()
-                ->withErrors(['image' => 'Produkti nuk u perditesua ne databaze. Provo me nje foto me pak ose ekzekuto migrimet e fundit.'])
+                ->withErrors(['product' => str_contains(strtolower($e->getMessage()), 'sold_by_meter')
+                    ? 'Produkti nuk u përditësua sepse mungon migrimi i stazave. Ekzekuto: php artisan migrate --force'
+                    : 'Produkti nuk u përditësua në databazë. Kontrollo migrimet dhe provo përsëri.'])
                 ->withInput();
         } catch (\Throwable $e) {
             report($e);
@@ -785,10 +789,9 @@ class ProductController extends Controller
 
     private function mergeCoverMeterPrice(array $sizes, Request $request, ?string $category, int $stock): array
     {
-        $usesMeterPrice = ($category ?? '') === 'mbulesa'
-            || (($category ?? '') === 'tepiha' && $request->boolean('sold_by_meter'));
-
-        if (!$usesMeterPrice) {
+        // Stazat i mbajnë gjerësitë te sizes (64 cm, 80 cm, 1 m),
+        // ku çmimi i secilës gjerësi është çmimi për një metër gjatësi.
+        if (($category ?? '') !== 'mbulesa') {
             return $sizes;
         }
 

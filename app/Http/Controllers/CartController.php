@@ -368,7 +368,9 @@ class CartController extends Controller
 
             return [
                 'price' => round($basePrice * $meters, 2),
-                'label' => 'Me meter: '.$this->formatNumber($meters).' m',
+                'label' => (($product->category ?? '') === 'tepiha' && (bool) $product->sold_by_meter
+                    ? 'Gjerësia: '.$option.' / '
+                    : '').'Me metër: '.$this->formatNumber($meters).' m',
             ];
         }
 

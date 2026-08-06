@@ -232,6 +232,8 @@
                     <div class="card-soft p-3">
                         <h6 class="mb-2">Dimensione / opsione</h6>
                         <small class="text-muted d-block mb-3">
+                            Për staza shto poshtë gjerësitë, p.sh. <strong>64 cm</strong>, <strong>80 cm</strong>, <strong>1 m</strong>.
+                            Çmimi i secilës gjerësi është çmimi për një metër gjatësi.<br>
                             Per mbulesa cakto <strong>Cmimi me meter</strong> ne fushen e vecante, p.sh. 8 euro.
                             Per set shto <strong>3+2+1</strong> me cmimin total te setit, p.sh. 30 euro.
                             Nese klienti shkruan 3+3+2+1, sistemi e llogarit proporcionalisht: 45 euro.
@@ -269,7 +271,7 @@
                           $sizes = $filteredSizes;
                         @endphp
 
-                        <div id="coverMeterPriceWrap" class="row g-2 mb-3" style="{{ $catValue === 'mbulesa' || ($catValue === 'tepiha' && old('sold_by_meter', $product->sold_by_meter)) ? '' : 'display:none' }}">
+                        <div id="coverMeterPriceWrap" class="row g-2 mb-3" style="{{ $catValue === 'mbulesa' ? '' : 'display:none' }}">
                           <div class="col-md-4">
                             <label class="form-label mb-1">Cmimi me meter (€)</label>
                             <input name="cover_meter_price" type="number" step="0.01" min="0" class="form-control" value="{{ $coverMeterPrice }}" placeholder="p.sh. 8">
@@ -645,7 +647,7 @@ if(catSel && subWrap){
     if(soldByMeterWrap) soldByMeterWrap.style.display = catSel.value === 'tepiha' ? '' : 'none';
     if(catSel.value !== 'tepiha' && soldByMeter) soldByMeter.checked = false;
     if(coverMeterPriceWrap){
-      coverMeterPriceWrap.style.display = (catSel.value === 'mbulesa' || (catSel.value === 'tepiha' && soldByMeter?.checked)) ? '' : 'none';
+      coverMeterPriceWrap.style.display = catSel.value === 'mbulesa' ? '' : 'none';
     }
   };
   catSel.addEventListener('change', toggleProductTypeFields);

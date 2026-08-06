@@ -1214,7 +1214,10 @@
             'stock' => $product->stock,
           ];
 
-          $coverOptions = $isMeterCarpet ? [$meterOption] : array_merge([$meterOption], $setOptions);
+          // Për staza çdo size është gjerësi dhe çmimi i saj vlen për 1 metër gjatësi.
+          $coverOptions = $isMeterCarpet
+            ? (count($sizes) ? $sizes : [$meterOption])
+            : array_merge([$meterOption], $setOptions);
         }
       @endphp
 
@@ -1293,23 +1296,30 @@
 
       @if($hasMeterCalculator && count($coverOptions)>0)
         <div class="section-card mb-3" id="coverCalculator">
-          <div class="dim-title">{{ $isMeterCarpet ? 'Zgjidh gjatësinë e stazës' : 'Llogarit mbulesën' }}</div>
+          <div class="dim-title">{{ $isMeterCarpet ? 'Zgjidh gjerësinë dhe gjatësinë e stazës' : 'Llogarit mbulesën' }}</div>
           <div class="small text-muted mb-2">
             @if($isMeterCarpet)
-              Shkruaj gjatësinë në metra, p.sh. 2.50 ose 3. Çmimi total llogaritet automatikisht.
+              Së pari zgjidh gjerësinë (p.sh. 64 cm, 80 cm ose 1 m), pastaj shkruaj gjatësinë në metra, p.sh. 2.50 ose 3.
             @else
               Zgjidh metër për metrazh, ose setin 3+2+1.
             @endif
           </div>
 
-          <div class="size-grid mb-3" id="coverOptions" role="radiogroup" aria-label="Opsionet e mbuleses">
+          @if($isMeterCarpet)<label class="form-label fw-bold mb-2">Gjerësia</label>@endif
+          <div class="size-grid mb-3" id="coverOptions" role="radiogroup" aria-label="{{ $isMeterCarpet ? 'Gjerësia e stazës' : 'Opsionet e mbulesës' }}">
+            @php
+              $coverDefaultIndex = 0;
+              foreach($coverOptions as $optionIndex => $option) {
+                if((int)($option['stock'] ?? 0) > 0) { $coverDefaultIndex = $optionIndex; break; }
+              }
+            @endphp
             @foreach($coverOptions as $i => $size)
               @php
                 $p = (float)($size['price'] ?? $product->price);
                 $st = (int)($size['stock'] ?? 0);
                 $label = trim((string)($size['label'] ?? ''));
-                $displayLabel = str_contains($label, '+') ? $label : 'Me meter';
-                $isActive = ($i === 0);
+                $displayLabel = $isMeterCarpet ? $label : (str_contains($label, '+') ? $label : 'Me metër');
+                $isActive = ($i === $coverDefaultIndex);
                 $coverMode = str_contains($label, '+') ? 'set' : 'meter';
               @endphp
               <button
@@ -1330,7 +1340,7 @@
 
           <div class="cover-calc-grid">
             <div id="coverMeterGroup">
-              <label class="form-label mb-1">Metra</label>
+              <label class="form-label mb-1">{{ $isMeterCarpet ? 'Gjatësia në metra' : 'Metra' }}</label>
               <div id="coverMeterRows" class="vstack gap-2">
                 <div class="input-group cover-meter-row">
                   <input type="number" min="0.1" step="0.01" value="1" class="form-control cover-meter-input" aria-label="Metra">
