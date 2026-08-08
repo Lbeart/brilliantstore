@@ -55,5 +55,12 @@ class RouteServiceProvider extends ServiceProvider
                 Limit::perMinute(40)->by('chat-ip:'.$request->ip()),
             ];
         });
+
+        RateLimiter::for('registration', function (Request $request) {
+            return [
+                Limit::perMinute(3)->by('registration-minute:'.$request->ip()),
+                Limit::perHour(10)->by('registration-hour:'.$request->ip()),
+            ];
+        });
     }
 }

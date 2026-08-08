@@ -132,7 +132,7 @@ Route::post('/login',   [LoginController::class, 'login']);
 Route::post('/logout',  [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register',[RegisterController::class, 'register']);
+Route::post('/register',[RegisterController::class, 'register'])->middleware('throttle:registration');
 
 // Email verify
 Route::get('/email/verify', fn () => view('auth.verify-email'))

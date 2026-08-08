@@ -337,6 +337,12 @@
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
 
+                    {{-- Honeypot: hidden from people, but basic signup bots fill it. --}}
+                    <div aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;" tabindex="-1">
+                        <label for="website">Website</label>
+                        <input type="text" name="website" id="website" value="" tabindex="-1" autocomplete="off">
+                    </div>
+
                     <div class="mb-3">
                         <label for="name" class="form-label">Emri</label>
                         <div class="field-wrap">

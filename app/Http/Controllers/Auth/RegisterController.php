@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-namespace App\Http\Controllers\Auth;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -14,15 +12,28 @@ class RegisterController extends Controller
 {
     public function showRegistrationForm()
     {
+        session(['register_form_started_at' => now()->timestamp]);
+
         return view('auth.register');
     }
 
     public function register(Request $request)
     {
+        $startedAt = (int) $request->session()->pull('register_form_started_at', 0);
+
+        // Real visitors need a moment to fill the form. Bots commonly POST it
+        // directly or submit it immediately after loading the page.
+        if ($request->filled('website') || $startedAt === 0 || now()->timestamp - $startedAt < 3) {
+            return back()
+                ->withInput($request->except(['password', 'password_confirmation', 'website']))
+                ->withErrors(['email' => 'Regjistrimi nuk mund të përfundohej. Rifresko faqen dhe provo përsëri.']);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:6',
+            'password' => 'required|confirmed|min:8',
+            'website' => 'nullable|max:0',
         ]);
 
         $user = User::create([
