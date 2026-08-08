@@ -553,14 +553,20 @@
         headers: {'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content},
         body: JSON.stringify({message, history: history.slice(-8)})
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Kërkesa dështoi');
+      const contentType = response.headers.get('content-type') || '';
+      const data = contentType.includes('application/json') ? await response.json() : null;
+      if (!response.ok) {
+        if (response.status === 419) throw new Error('Sesioni ka skaduar. Rifresko faqen dhe provo përsëri. (419)');
+        if (response.status === 429) throw new Error('Shumë kërkesa brenda një minute. Prit pak dhe provo përsëri. (429)');
+        throw new Error(`Kërkesa dështoi në server. Kodi: ${response.status}`);
+      }
+      if (!data || typeof data.reply !== 'string') throw new Error('Serveri nuk ktheu përgjigje të vlefshme.');
       loading.remove();
       add(data.reply, 'assistant');
       history.push({role: 'user', content: message}, {role: 'assistant', content: data.reply});
       if (history.length > 8) history.splice(0, history.length - 8);
     } catch (error) {
-      loading.textContent = 'Nuk munda t’i lexoj të dhënat tani. Rifresko faqen dhe provo përsëri.';
+      loading.textContent = error.message || 'Nuk munda t’i lexoj të dhënat tani. Rifresko faqen dhe provo përsëri.';
       loading.classList.remove('loading');
     } finally {
       pending = false;
