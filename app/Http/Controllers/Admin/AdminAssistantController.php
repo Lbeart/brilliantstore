@@ -22,6 +22,18 @@ class AdminAssistantController extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {
+        // Long database previews can be sent back by the browser as chat history.
+        // Keep that context bounded instead of rejecting the next admin command.
+        if (is_array($request->input('history'))) {
+            $request->merge([
+                'history' => collect($request->input('history'))->take(-8)->map(function ($item) {
+                    if (! is_array($item)) return $item;
+                    $item['content'] = Str::limit((string) ($item['content'] ?? ''), 700, '');
+                    return $item;
+                })->all(),
+            ]);
+        }
+
         $validated = $request->validate([
             'message' => ['required', 'string', 'max:700'],
             'history' => ['sometimes', 'array', 'max:8'],

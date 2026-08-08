@@ -189,6 +189,9 @@ class AdminAssistantTest extends TestCase
 
         $this->postJson(route('admin.assistant.message'), [
             'message' => 'KONFIRMO FSHIRJEN',
+            'history' => [
+                ['role' => 'assistant', 'content' => str_repeat('Llogari e dyshimtë ', 200)],
+            ],
         ])->assertOk()->assertJsonPath('reply', fn (string $reply) => str_contains($reply, '1 llogari'));
 
         $this->assertNull(User::find($fake->id));

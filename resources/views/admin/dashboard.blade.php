@@ -563,7 +563,10 @@
       if (!data || typeof data.reply !== 'string') throw new Error('Serveri nuk ktheu përgjigje të vlefshme.');
       loading.remove();
       add(data.reply, 'assistant');
-      history.push({role: 'user', content: message}, {role: 'assistant', content: data.reply});
+      history.push(
+        {role: 'user', content: message.slice(0, 700)},
+        {role: 'assistant', content: data.reply.slice(0, 700)}
+      );
       if (history.length > 8) history.splice(0, history.length - 8);
     } catch (error) {
       loading.textContent = error.message || 'Nuk munda t’i lexoj të dhënat tani. Rifresko faqen dhe provo përsëri.';
