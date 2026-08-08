@@ -199,6 +199,28 @@ class AdminAssistantTest extends TestCase
         $this->assertNotNull(User::find($admin->id));
     }
 
+    public function test_verified_generated_bot_name_is_still_detected(): void
+    {
+        $this->actingAsAdmin();
+        $bot = User::create([
+            'name' => 'uynmwwjxog',
+            'email' => 'bot@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'user',
+        ]);
+        $bot->forceFill(['email_verified_at' => now()])->save();
+
+        $this->postJson(route('admin.assistant.message'), [
+            'message' => 'Tregomi llogarite fake bot',
+        ])->assertOk()->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'uynmwwjxog'));
+
+        $this->postJson(route('admin.assistant.message'), [
+            'message' => 'KONFIRMO FSHIRJEN',
+        ])->assertOk();
+
+        $this->assertNull(User::find($bot->id));
+    }
+
     private function actingAsAdmin(): User
     {
         $admin = User::create([

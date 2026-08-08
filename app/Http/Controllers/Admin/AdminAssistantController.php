@@ -194,8 +194,7 @@ class AdminAssistantController extends Controller
     private function suspiciousUsersQuery()
     {
         $query = User::query()
-            ->where('role', '!=', 'admin')
-            ->whereNull('email_verified_at');
+            ->where('role', '!=', 'admin');
 
         if (Schema::hasTable('orders') && Schema::hasColumn('orders', 'user_id')) {
             $query->whereDoesntHave('orders');
@@ -204,11 +203,27 @@ class AdminAssistantController extends Controller
         return $query;
     }
 
+    private function looksLikeGeneratedBotName(User $user): bool
+    {
+        $name = Str::lower(Str::ascii(trim($user->name)));
+
+        // Current spam wave uses one uninterrupted, random-looking lowercase
+        // token (for example "uynmwwjxog"). Normal full names contain spaces.
+        return preg_match('/^[a-z]{8,16}$/', $name) === 1;
+    }
+
+    private function isSuspiciousUser(User $user): bool
+    {
+        return $user->email_verified_at === null || $this->looksLikeGeneratedBotName($user);
+    }
+
     private function prepareSuspiciousUserDeletion(Request $request): string
     {
         $users = $this->suspiciousUsersQuery()
             ->oldest()
-            ->get(['id', 'name', 'email', 'created_at']);
+            ->get(['id', 'name', 'email', 'email_verified_at', 'created_at'])
+            ->filter(fn (User $user) => $this->isSuspiciousUser($user))
+            ->values();
 
         if ($users->isEmpty()) {
             $request->session()->forget('admin_assistant_pending_user_deletion');
@@ -231,7 +246,7 @@ class AdminAssistantController extends Controller
 
         $more = $users->count() > 25 ? "\n...dhe ".($users->count() - 25).' të tjera.' : '';
 
-        return "Gjeta {$users->count()} llogari të dyshimta (email i paverifikuar, pa porosi dhe jo admin):\n\n{$preview}{$more}\n\nPër t’i fshirë, shkruaj saktë: KONFIRMO FSHIRJEN";
+        return "Gjeta {$users->count()} llogari të dyshimta (email i paverifikuar ose emër automatik, pa porosi dhe jo admin):\n\n{$preview}{$more}\n\nPër t’i fshirë, shkruaj saktë: KONFIRMO FSHIRJEN";
     }
 
     private function deleteConfirmedSuspiciousUsers(Request $request): string
@@ -243,7 +258,10 @@ class AdminAssistantController extends Controller
         }
 
         $ids = array_map('intval', (array) $pending['ids']);
-        $users = $this->suspiciousUsersQuery()->whereKey($ids)->get();
+        $users = $this->suspiciousUsersQuery()
+            ->whereKey($ids)
+            ->get()
+            ->filter(fn (User $user) => $this->isSuspiciousUser($user));
         $deletedIds = [];
         $skippedIds = [];
 
