@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class RegistrationProtectionTest extends TestCase
@@ -22,6 +23,23 @@ class RegistrationProtectionTest extends TestCase
         ]));
 
         $response->assertSessionHasErrors('email');
+    }
+
+    public function test_invalid_turnstile_token_is_rejected(): void
+    {
+        config(['services.turnstile.secret_key' => 'test-secret']);
+        Http::fake([
+            'challenges.cloudflare.com/*' => Http::response(['success' => false]),
+        ]);
+
+        $response = $this->withSession([
+            'register_form_started_at' => now()->subSeconds(5)->timestamp,
+        ])->post('/register', array_merge($this->validRegistrationData(), [
+            'cf-turnstile-response' => 'invalid-token',
+        ]));
+
+        $response->assertSessionHasErrors('turnstile');
+        Http::assertSentCount(1);
     }
 
     private function validRegistrationData(): array

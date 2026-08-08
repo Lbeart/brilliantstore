@@ -35,6 +35,10 @@ return [
         'model' => env('OPENAI_CHAT_MODEL', 'gpt-5.4-mini'),
         'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
     ],
+    'turnstile' => [
+        'site_key' => env('TURNSTILE_SITE_KEY'),
+        'secret_key' => env('TURNSTILE_SECRET_KEY'),
+    ],
     'whatsapp' => [
     'enabled' => env('WHATSAPP_NOTIFICATIONS_ENABLED', false),
     'provider' => env('WHATSAPP_PROVIDER', 'meta'),

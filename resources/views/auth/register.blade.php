@@ -334,6 +334,8 @@
                     </div>
                 @endif
 
+                <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
 
@@ -408,6 +410,13 @@
                                 autocomplete="new-password"
                                 required>
                         </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.site_key') }}" data-theme="light"></div>
+                        @error('turnstile')
+                            <div class="text-danger mt-2">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="d-grid mt-4">

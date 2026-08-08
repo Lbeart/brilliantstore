@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class RegisterController extends Controller
 {
@@ -29,6 +30,15 @@ class RegisterController extends Controller
                 ->withErrors(['email' => 'Regjistrimi nuk mund të përfundohej. Rifresko faqen dhe provo përsëri.']);
         }
 
+        $turnstileToken = $request->input('cf-turnstile-response');
+        $turnstileSecret = config('services.turnstile.secret_key');
+
+        if (! $turnstileToken || ! $turnstileSecret || ! $this->turnstileIsValid($turnstileToken, $turnstileSecret, $request->ip())) {
+            return back()
+                ->withInput($request->except(['password', 'password_confirmation', 'website', 'cf-turnstile-response']))
+                ->withErrors(['turnstile' => 'Verifikimi kundër robotëve dështoi. Provo përsëri.']);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
@@ -46,5 +56,23 @@ class RegisterController extends Controller
         $user->sendEmailVerificationNotification();
 
         return redirect()->route('login')->with('error', 'Ju kemi dërguar një email verifikimi. Kontrolloni Inbox, Spam ose Junk dhe verifikoni emailin për t’u kyçur në b-brillant.com.');
+    }
+
+    private function turnstileIsValid(string $token, string $secret, ?string $ip): bool
+    {
+        try {
+            return Http::asForm()
+                ->timeout(8)
+                ->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+                    'secret' => $secret,
+                    'response' => $token,
+                    'remoteip' => $ip,
+                ])
+                ->json('success') === true;
+        } catch (\Throwable $exception) {
+            report($exception);
+
+            return false;
+        }
     }
 }
