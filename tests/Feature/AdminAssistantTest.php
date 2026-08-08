@@ -54,6 +54,7 @@ class AdminAssistantTest extends TestCase
         });
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable();
             $table->string('name');
             $table->string('phone');
             $table->string('email')->nullable();
@@ -161,6 +162,38 @@ class AdminAssistantTest extends TestCase
             ->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'Tepih Hali 256')
                 && str_contains($reply, '300x200: 4 copë')
                 && str_contains($reply, 'Cream'));
+    }
+
+    public function test_admin_must_confirm_before_suspicious_users_are_deleted(): void
+    {
+        $admin = $this->actingAsAdmin();
+        $fake = User::create([
+            'name' => 'Random Bot',
+            'email' => 'random-bot@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'user',
+        ]);
+        $verified = User::create([
+            'name' => 'Real Customer',
+            'email' => 'real@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'user',
+        ]);
+        $verified->forceFill(['email_verified_at' => now()])->save();
+
+        $this->postJson(route('admin.assistant.message'), [
+            'message' => 'Tregomi llogarite fake bot',
+        ])->assertOk()->assertJsonPath('reply', fn (string $reply) => str_contains($reply, 'KONFIRMO FSHIRJEN'));
+
+        $this->assertNotNull(User::find($fake->id));
+
+        $this->postJson(route('admin.assistant.message'), [
+            'message' => 'KONFIRMO FSHIRJEN',
+        ])->assertOk()->assertJsonPath('reply', fn (string $reply) => str_contains($reply, '1 llogari'));
+
+        $this->assertNull(User::find($fake->id));
+        $this->assertNotNull(User::find($verified->id));
+        $this->assertNotNull(User::find($admin->id));
     }
 
     private function actingAsAdmin(): User
