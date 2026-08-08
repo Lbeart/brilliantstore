@@ -232,19 +232,42 @@ class AdminAssistantController extends Controller
 
         $ids = array_map('intval', (array) $pending['ids']);
         $users = $this->suspiciousUsersQuery()->whereKey($ids)->get();
-        $deletedIds = $users->pluck('id')->all();
+        $deletedIds = [];
+        $skippedIds = [];
 
-        DB::transaction(function () use ($users) {
-            $users->each->delete();
-        });
+        foreach ($users as $user) {
+            try {
+                DB::transaction(function () use ($user) {
+                    if (Schema::hasTable('sessions') && Schema::hasColumn('sessions', 'user_id')) {
+                        DB::table('sessions')->where('user_id', $user->id)->delete();
+                    }
+
+                    $user->delete();
+                });
+                $deletedIds[] = $user->id;
+            } catch (Throwable $exception) {
+                $skippedIds[] = $user->id;
+                Log::warning('Admin assistant skipped a suspicious user that could not be deleted.', [
+                    'admin_id' => $request->user()->id,
+                    'user_id' => $user->id,
+                    'exception_class' => $exception::class,
+                ]);
+            }
+        }
 
         Log::notice('Admin assistant deleted suspicious user accounts.', [
             'admin_id' => $request->user()->id,
             'deleted_user_ids' => $deletedIds,
+            'skipped_user_ids' => $skippedIds,
             'count' => count($deletedIds),
         ]);
 
-        return count($deletedIds).' llogari të dyshimta u fshinë me sukses. Llogaritë admin, të verifikuara ose me porosi nuk u prekën.';
+        $reply = count($deletedIds).' llogari të dyshimta u fshinë me sukses.';
+        if ($skippedIds !== []) {
+            $reply .= ' '.count($skippedIds).' u anashkaluan sepse kishin të dhëna të lidhura ose databaza nuk lejoi fshirjen.';
+        }
+
+        return $reply.' Llogaritë admin, të verifikuara ose me porosi nuk u prekën.';
     }
 
     private function requestedProducts(string $message): ?array
