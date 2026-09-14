@@ -334,7 +334,9 @@
                     </div>
                 @endif
 
-                <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+                @if ($turnstileEnabled ?? false)
+                    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+                @endif
 
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
@@ -412,12 +414,14 @@
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.site_key') }}" data-theme="light"></div>
-                        @error('turnstile')
-                            <div class="text-danger mt-2">{{ $message }}</div>
-                        @enderror
-                    </div>
+                    @if ($turnstileEnabled ?? false)
+                        <div class="mb-3">
+                            <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.site_key') }}" data-theme="light"></div>
+                            @error('turnstile')
+                                <div class="text-danger mt-2">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    @endif
 
                     <div class="d-grid mt-4">
                         <button type="submit" class="btn btn-auth">

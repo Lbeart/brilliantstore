@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class RegisterController extends Controller
@@ -15,12 +14,14 @@ class RegisterController extends Controller
     {
         session(['register_form_started_at' => now()->timestamp]);
 
-        return view('auth.register');
+        return view('auth.register', [
+            'turnstileEnabled' => $this->turnstileIsConfigured(),
+        ]);
     }
 
     public function register(Request $request)
     {
-        $startedAt = (int) $request->session()->pull('register_form_started_at', 0);
+        $startedAt = (int) $request->session()->get('register_form_started_at', 0);
 
         // Real visitors need a moment to fill the form. Bots commonly POST it
         // directly or submit it immediately after loading the page.
@@ -30,13 +31,15 @@ class RegisterController extends Controller
                 ->withErrors(['email' => 'Regjistrimi nuk mund të përfundohej. Rifresko faqen dhe provo përsëri.']);
         }
 
-        $turnstileToken = $request->input('cf-turnstile-response');
-        $turnstileSecret = config('services.turnstile.secret_key');
+        if ($this->turnstileIsConfigured()) {
+            $turnstileToken = $request->input('cf-turnstile-response');
+            $turnstileSecret = (string) config('services.turnstile.secret_key');
 
-        if (! $turnstileToken || ! $turnstileSecret || ! $this->turnstileIsValid($turnstileToken, $turnstileSecret, $request->ip())) {
-            return back()
-                ->withInput($request->except(['password', 'password_confirmation', 'website', 'cf-turnstile-response']))
-                ->withErrors(['turnstile' => 'Verifikimi kundër robotëve dështoi. Provo përsëri.']);
+            if (! $turnstileToken || ! $this->turnstileIsValid($turnstileToken, $turnstileSecret, $request->ip())) {
+                return back()
+                    ->withInput($request->except(['password', 'password_confirmation', 'website', 'cf-turnstile-response']))
+                    ->withErrors(['turnstile' => 'Verifikimi kundër robotëve dështoi. Provo përsëri.']);
+            }
         }
 
         $request->validate([
@@ -54,8 +57,14 @@ class RegisterController extends Controller
         ]);
 
         $user->sendEmailVerificationNotification();
+        $request->session()->forget('register_form_started_at');
 
-        return redirect()->route('login')->with('error', 'Ju kemi dërguar një email verifikimi. Kontrolloni Inbox, Spam ose Junk dhe verifikoni emailin për t’u kyçur në b-brillant.com.');
+        return redirect()->route('login')->with('error', 'Ju kemi dërguar një email verifikimi. Kontrolloni Inbox, Spam ose Junk dhe verifikoni emailin për t\'u kyçur në b-brillant.com.');
+    }
+
+    private function turnstileIsConfigured(): bool
+    {
+        return filled(config('services.turnstile.site_key')) && filled(config('services.turnstile.secret_key'));
     }
 
     private function turnstileIsValid(string $token, string $secret, ?string $ip): bool
