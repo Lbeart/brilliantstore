@@ -36,7 +36,7 @@ return [
         'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
     ],
     'turnstile' => [
-        'enabled' => env('TURNSTILE_ENABLED', false),
+        'enabled' => env('TURNSTILE_ENABLED', true),
         'site_key' => env('TURNSTILE_SITE_KEY'),
         'secret_key' => env('TURNSTILE_SECRET_KEY'),
     ],
