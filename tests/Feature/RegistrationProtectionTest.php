@@ -27,6 +27,7 @@ class RegistrationProtectionTest extends TestCase
 
     public function test_invalid_turnstile_token_is_rejected(): void
     {
+        config(['services.turnstile.enabled' => true]);
         config(['services.turnstile.site_key' => 'test-site']);
         config(['services.turnstile.secret_key' => 'test-secret']);
         Http::fake([
@@ -45,6 +46,7 @@ class RegistrationProtectionTest extends TestCase
 
     public function test_turnstile_retry_keeps_registration_session_alive(): void
     {
+        config(['services.turnstile.enabled' => true]);
         config(['services.turnstile.site_key' => 'test-site']);
         config(['services.turnstile.secret_key' => 'test-secret']);
         Http::fake([

@@ -64,7 +64,9 @@ class RegisterController extends Controller
 
     private function turnstileIsConfigured(): bool
     {
-        return filled(config('services.turnstile.site_key')) && filled(config('services.turnstile.secret_key'));
+        return (bool) config('services.turnstile.enabled')
+            && filled(config('services.turnstile.site_key'))
+            && filled(config('services.turnstile.secret_key'));
     }
 
     private function turnstileIsValid(string $token, string $secret, ?string $ip): bool
