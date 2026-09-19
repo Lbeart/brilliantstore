@@ -2,7 +2,7 @@
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <title>POS - Admin</title>
+  <title>Arkë & barkode - Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -109,7 +109,7 @@
     <button class="btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Hape menun">
       <i class="fas fa-bars"></i>
     </button>
-    <div class="title m-0">POS</div>
+    <div class="title m-0">Arkë & barkode</div>
     <div class="dropdown">
       <a class="text-dark text-decoration-none fw-semibold" href="#" data-bs-toggle="dropdown">
         <i class="fas fa-user-circle me-1"></i> Admin
@@ -142,7 +142,7 @@
           <i class="fas fa-address-book me-1"></i> Klientet
         </a>
         <a class="nav-link {{ request()->routeIs('admin.pos*') ? 'active' : '' }}" href="{{ route('admin.pos.index') }}">
-          <i class="fas fa-cash-register me-1"></i> POS
+          <i class="fas fa-cash-register me-1"></i> Arkë & barkode
         </a>
         <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
           <i class="fas fa-box-open me-1"></i> Produktet
@@ -160,8 +160,8 @@
       <div class="page-head">
         <div>
           <div class="eyebrow">Point of sale</div>
-          <h1>Shitje me barkod, fature dhe raport ditor</h1>
-          <p>Regjistro shitjen ne dyqan dhe hap faturen menjehere pas pageses.</p>
+          <h1>Arkë & barkode</h1>
+          <p>Skano barkodin ose shkruaje me numra, kontrollo stokun dhe printo dokumentin e shitjes.</p>
         </div>
         <div class="d-flex gap-2 flex-wrap">
           @if(($summary['receipts_count'] ?? 0) > 0)
@@ -228,12 +228,13 @@
 
               <div class="input-group mb-3">
                 <span class="input-group-text"><i class="fa fa-barcode"></i></span>
-                <input type="text" class="form-control scanner" data-scan-input placeholder="Barkod, SKU ose emer produkti" autocomplete="off" autofocus>
+                <input type="text" class="form-control scanner" data-scan-input placeholder="Skano ose shkruaj barkod/SKU/ID/emër" autocomplete="off" inputmode="search" autofocus>
                 <button type="button" class="btn btn-danger" data-scan-button>
                   <i class="fa fa-plus me-1"></i> Shto
                 </button>
               </div>
               <div data-scan-message class="small text-muted mb-2"></div>
+              <div class="small text-muted mb-3">Skaneri USB/Bluetooth punon si tastierë: mbaje fokusin këtu dhe skano. Mund ta shkruash kodin edhe me dorë.</div>
 
               <div data-cart-empty class="empty-cart">
                 Shporta eshte bosh.
@@ -369,9 +370,11 @@
                 <div class="small mt-2">Subtotal <span data-subtotal>0.00</span> EUR / Zbritje <span data-discount-preview>0.00</span> EUR</div>
               </div>
 
-              <button class="btn btn-danger w-100 mt-3" type="submit">
-                <i class="fa fa-receipt me-1"></i> Ruaj dhe hap faturen
-              </button>
+              <div class="d-grid gap-2 mt-3">
+                <button class="btn btn-danger" type="submit" name="print_format" value="receipt"><i class="fa fa-receipt me-1"></i> Ruaj dhe hap kuponin 80 mm</button>
+                <button class="btn btn-outline-dark" type="submit" name="print_format" value="a4"><i class="fa fa-file-lines me-1"></i> Ruaj dhe hap faturën A4</button>
+              </div>
+              <div class="small text-muted mt-2">Kuponi 80 mm është dokument shitjeje, jo kupon fiskal zyrtar.</div>
             </div>
 
             <div class="card-soft p-3">
@@ -393,7 +396,7 @@
                   </div>
                   <div class="d-flex justify-content-between align-items-center mt-2">
                     <span class="small text-muted">{{ $paymentLabels[$receipt->payment_method] ?? $receipt->payment_method }}</span>
-                    <a href="{{ route('admin.customers.invoice', [$receipt->customer_id, $receipt->code]) }}" class="btn btn-sm btn-outline-dark">Hap</a>
+                    <span class="d-flex gap-1"><a href="{{ route('admin.pos.receipt', $receipt) }}" class="btn btn-sm btn-outline-dark">80 mm</a><a href="{{ route('admin.customers.invoice', [$receipt->customer_id, $receipt->code]) }}" class="btn btn-sm btn-outline-dark">A4</a></span>
                   </div>
                 </div>
               @empty
@@ -427,7 +430,7 @@
         <i class="fas fa-address-book me-1"></i> Klientet
       </a>
       <a class="nav-link {{ request()->routeIs('admin.pos*') ? 'active' : '' }}" href="{{ route('admin.pos.index') }}">
-        <i class="fas fa-cash-register me-1"></i> POS
+        <i class="fas fa-cash-register me-1"></i> Arkë & barkode
       </a>
       <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
         <i class="fas fa-box-open me-1"></i> Produktet
@@ -447,7 +450,12 @@
 (function(){
   const lookupUrl = @json(route('admin.pos.lookup'));
   const quickProducts = @json($quickProductPayload);
-  const cart = [];
+  const cartStorageKey = 'brillant-pos-cart';
+  let cart = [];
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(cartStorageKey) || '[]');
+    if (Array.isArray(saved)) cart = saved.filter(line => line && Number.isInteger(Number(line.product_id)) && Number(line.quantity) > 0);
+  } catch (_) { sessionStorage.removeItem(cartStorageKey); }
   const scanInput = document.querySelector('[data-scan-input]');
   const scanButton = document.querySelector('[data-scan-button]');
   const message = document.querySelector('[data-scan-message]');
@@ -474,11 +482,17 @@
   }
 
   function addProduct(product){
-    const size = product.selected_size || (Array.isArray(product.sizes) && product.sizes.length ? product.sizes[0] : null);
+    const size = product.selected_size || (Array.isArray(product.sizes) ? product.sizes.find(option => Number(option.stock || 0) > 0) || product.sizes[0] : null);
     const sizeLabel = size ? String(size.label || '') : '';
     const price = size && size.price !== null && size.price !== '' ? Number(size.price) : Number(product.price || 0);
     const key = [product.id, sizeLabel, price].join('|');
     const existing = cart.find(line => line.key === key);
+    const available = size ? Number(size.stock || 0) : Number(product.stock || 0);
+
+    if (available <= (existing ? existing.quantity : 0)) {
+      setMessage(product.name + ' (' + (sizeLabel || 'pa përmasë') + '): nuk ka më stok të lirë.', 'error');
+      return;
+    }
 
     if (existing) {
       existing.quantity += 1;
@@ -488,7 +502,7 @@
         product_id: product.id,
         item_name: product.name,
         barcode: product.barcode || product.sku || '',
-        stock: Number(product.stock || 0),
+        stock: available,
         image_url: product.image_url || '',
         sizes: Array.isArray(product.sizes) ? product.sizes : [],
         size: sizeLabel,
@@ -524,6 +538,7 @@
   }
 
   function renderCart(){
+    try { sessionStorage.setItem(cartStorageKey, JSON.stringify(cart)); } catch (_) {}
     cartBody.innerHTML = '';
     hiddenItems.innerHTML = '';
     cartWrap.classList.toggle('d-none', cart.length === 0);
@@ -537,7 +552,7 @@
             const label = String(size.label || '');
             const selected = label === line.size ? ' selected' : '';
             const price = size.price !== null && size.price !== undefined ? Number(size.price) : line.unit_price;
-            return '<option value="' + escapeHtml(label) + '" data-price="' + money(price) + '"' + selected + '>' + escapeHtml(label) + '</option>';
+            return '<option value="' + escapeHtml(label) + '" data-price="' + money(price) + '" data-stock="' + Number(size.stock || 0) + '"' + selected + (Number(size.stock || 0) <= 0 ? ' disabled' : '') + '>' + escapeHtml(label) + ' (' + Number(size.stock || 0) + ' në stok)</option>';
           }).join('') + '</select>'
         : '<input class="form-control form-control-sm" value="' + escapeHtml(line.size || '') + '" data-line-size-text="' + index + '">';
 
@@ -634,7 +649,9 @@
   document.addEventListener('change', event => {
     const qty = event.target.closest('[data-line-qty]');
     if (qty) {
-      cart[Number(qty.getAttribute('data-line-qty'))].quantity = Math.max(Number(qty.value || 1), 1);
+      const line = cart[Number(qty.getAttribute('data-line-qty'))];
+      line.quantity = Math.min(Math.max(Number(qty.value || 1), 1), line.stock);
+      if (Number(qty.value) > line.stock) setMessage('Në stok janë vetëm ' + line.stock + ' copë.', 'error');
       renderCart();
       return;
     }
@@ -659,6 +676,8 @@
     const selected = sizeSelect.options[sizeSelect.selectedIndex];
     line.size = sizeSelect.value;
     line.unit_price = Number(selected.getAttribute('data-price') || line.unit_price || 0);
+    line.stock = Number(selected.getAttribute('data-stock') || 0);
+    line.quantity = Math.min(line.quantity, line.stock);
     line.key = [line.product_id, line.size, line.unit_price].join('|');
     renderCart();
   });

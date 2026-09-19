@@ -196,6 +196,7 @@
     Faleminderit per besimin. Brillant
   </div>
 </div>
+@if($receipt?->source === 'pos')<script>try { sessionStorage.removeItem('brillant-pos-cart'); } catch (_) {}</script>@endif
 @if(!$isPdf && request()->boolean('print'))
   <script>
     window.addEventListener('load', function () {

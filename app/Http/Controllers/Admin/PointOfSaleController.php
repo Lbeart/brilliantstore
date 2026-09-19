@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class PointOfSaleController extends Controller
 {
@@ -60,20 +61,15 @@ class PointOfSaleController extends Controller
 
         $product = Product::query()
             ->where('is_active', true)
-            ->where(function ($query) use ($term) {
-                $query->where('barcode', $term)
-                    ->orWhere('sku', $term)
-                    ->orWhere('id', ctype_digit($term) ? (int) $term : 0)
-                    ->orWhere('name', 'like', "%{$term}%");
-            })
-            ->orderByRaw('CASE WHEN barcode = ? THEN 0 WHEN sku = ? THEN 1 ELSE 2 END', [$term, $term])
+            ->where(fn ($query) => $query->where('barcode', $term)->orWhere('sku', $term))
+            ->orderByRaw('CASE WHEN barcode = ? THEN 0 ELSE 1 END', [$term])
             ->first();
         $selectedSize = null;
 
         if (!$product) {
             $product = Product::query()
                 ->where('is_active', true)
-                ->where('sizes', 'like', "%{$term}%")
+                ->where('sizes', 'like', '%'.addcslashes($term, '%_\\').'%')
                 ->get()
                 ->first(function (Product $candidate) use ($term, &$selectedSize) {
                     foreach ($this->decodeProductSizes($candidate->sizes) as $size) {
@@ -86,6 +82,17 @@ class PointOfSaleController extends Controller
 
                     return false;
                 });
+        }
+
+        if (!$product) {
+            $product = Product::query()->where('is_active', true)
+                ->where(function ($query) use ($term) {
+                    if (ctype_digit($term)) {
+                        $query->whereKey((int) $term)->orWhere('name', 'like', '%'.addcslashes($term, '%_\\').'%');
+                    } else {
+                        $query->where('name', 'like', '%'.addcslashes($term, '%_\\').'%');
+                    }
+                })->first();
         }
 
         if (!$product) {
@@ -117,6 +124,7 @@ class PointOfSaleController extends Controller
             'discount' => 'nullable|numeric|min:0|max:999999',
             'paid_amount' => 'nullable|numeric|min:0|max:999999',
             'notes' => 'nullable|string|max:2000',
+            'print_format' => 'nullable|in:a4,receipt',
             'items' => 'required|array|min:1|max:80',
             'items.*.product_id' => 'nullable|integer|exists:products,id',
             'items.*.barcode' => 'nullable|string|max:120',
@@ -198,8 +206,18 @@ class PointOfSaleController extends Controller
         });
 
         return redirect()
-            ->route('admin.customers.invoice', [$customer, $receipt->code])
+            ->route(($data['print_format'] ?? 'a4') === 'receipt' ? 'admin.pos.receipt' : 'admin.customers.invoice',
+                ($data['print_format'] ?? 'a4') === 'receipt' ? [$receipt] : [$customer, $receipt->code])
             ->with('success', 'Shitja u ruajt ne POS dhe fatura u krijua.');
+    }
+
+    public function receipt(CustomerReceipt $receipt)
+    {
+        abort_unless($receipt->source === 'pos', 404);
+
+        return view('admin.pos.receipt', [
+            'receipt' => $receipt->load(['customer', 'purchases']),
+        ]);
     }
 
     private function resolveCustomer(array $data): Customer
@@ -248,29 +266,35 @@ class PointOfSaleController extends Controller
 
         $product = Product::query()->lockForUpdate()->find($productId);
         if (!$product) {
-            return;
+            throw ValidationException::withMessages(['items' => 'Produkti nuk ekziston më. Rifresko arkën.']);
         }
 
         $sizes = $this->decodeProductSizes($product->sizes);
         $size = trim((string) $size);
 
-        if ($size !== '' && !empty($sizes)) {
+        if (!empty($sizes)) {
             foreach ($sizes as &$row) {
                 if (($row['label'] ?? null) === $size) {
-                    $row['stock'] = max(((int) ($row['stock'] ?? 0)) - $quantity, 0);
-                    break;
+                    $available = (int) ($row['stock'] ?? 0);
+                    if ($available < $quantity) {
+                        throw ValidationException::withMessages(['items' => "{$product->name} ({$size}): në stok janë vetëm {$available} copë."]);
+                    }
+                    $row['stock'] = $available - $quantity;
+                    $product->sizes = $sizes;
+                    $product->stock = collect($sizes)->sum(fn ($variant) => (int) ($variant['stock'] ?? 0));
+                    $product->save();
+                    return;
                 }
             }
             unset($row);
-
-            $product->sizes = $sizes;
-            $product->stock = collect($sizes)->sum(fn ($row) => (int) ($row['stock'] ?? 0));
-            $product->save();
-
-            return;
+            throw ValidationException::withMessages(['items' => "Zgjidh përmasë valide për {$product->name}."]);
         }
 
-        $product->stock = max(((int) ($product->stock ?? 0)) - $quantity, 0);
+        $available = (int) ($product->stock ?? 0);
+        if ($available < $quantity) {
+            throw ValidationException::withMessages(['items' => "{$product->name}: në stok janë vetëm {$available} copë."]);
+        }
+        $product->stock = $available - $quantity;
         $product->save();
     }
 

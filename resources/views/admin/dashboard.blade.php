@@ -256,7 +256,7 @@
           <i class="fas fa-address-book me-1"></i> Klientet
         </a>
         <a class="nav-link {{ request()->routeIs('admin.pos*') ? 'active' : '' }}" href="{{ route('admin.pos.index') }}">
-          <i class="fas fa-cash-register me-1"></i> POS
+          <i class="fas fa-cash-register me-1"></i> Arkë & barkode
         </a>
         <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
           <i class="fas fa-box-open me-1"></i> Produktet
@@ -345,7 +345,7 @@
             <i class="fa fa-address-book me-1"></i> Klientet
           </a>
           <a class="btn btn-outline-dark" href="{{ route('admin.pos.index') }}">
-            <i class="fa fa-cash-register me-1"></i> POS
+            <i class="fa fa-cash-register me-1"></i> Arkë & barkode
           </a>
           <a class="btn btn-outline-dark" href="{{ route('admin.stats') }}">
             <i class="fa fa-chart-line me-1"></i> Raportet
@@ -489,7 +489,7 @@
         <i class="fas fa-address-book me-1"></i> Klientet
       </a>
       <a class="nav-link {{ request()->routeIs('admin.pos*') ? 'active' : '' }}" href="{{ route('admin.pos.index') }}">
-        <i class="fas fa-cash-register me-1"></i> POS
+        <i class="fas fa-cash-register me-1"></i> Arkë & barkode
       </a>
       <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
         <i class="fas fa-box-open me-1"></i> Produktet

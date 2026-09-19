@@ -222,6 +222,7 @@ Route::middleware(['auth','verified','admin'])
         Route::get('/pos', [AdminPointOfSaleController::class, 'index'])->name('pos.index');
         Route::get('/pos/lookup', [AdminPointOfSaleController::class, 'lookup'])->name('pos.lookup');
         Route::post('/pos/checkout', [AdminPointOfSaleController::class, 'checkout'])->name('pos.checkout');
+        Route::get('/pos/receipts/{receipt}', [AdminPointOfSaleController::class, 'receipt'])->name('pos.receipt');
 
         // Products
         Route::get('/products',                 [AdminProductController::class, 'index'])->name('products.index');
