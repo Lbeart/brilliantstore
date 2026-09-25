@@ -456,7 +456,7 @@
   try {
     const saved = JSON.parse(sessionStorage.getItem(cartStorageKey) || '[]');
     if (Array.isArray(saved)) cart = saved.filter(line => line && Number.isInteger(Number(line.product_id)) && Number(line.quantity) > 0);
-  } catch (_) { sessionStorage.removeItem(cartStorageKey); }
+  } catch (_) { cart = []; }
   const scanInput = document.querySelector('[data-scan-input]');
   const scanButton = document.querySelector('[data-scan-button]');
   const message = document.querySelector('[data-scan-message]');
