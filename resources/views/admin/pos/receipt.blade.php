@@ -8,18 +8,18 @@
     *{box-sizing:border-box}body{margin:0;padding:24px;background:#f2f4f7;color:#111;font:13px/1.4 Arial,sans-serif}
     .actions{max-width:380px;margin:0 auto 16px;display:flex;gap:8px;flex-wrap:wrap}
     .actions a,.actions button{border:1px solid #222;background:#fff;color:#111;padding:9px 12px;text-decoration:none;cursor:pointer;border-radius:5px;font:inherit}
-    .paper{width:80mm;max-width:100%;margin:auto;background:#fff;padding:5mm 4mm;box-shadow:0 5px 30px #0002}
+    .paper{width:50mm;max-width:100%;margin:auto;background:#fff;padding:4mm 3mm;box-shadow:0 5px 30px #0002}
     h1{font-size:20px;letter-spacing:.06em;text-align:center;margin:0}.center{text-align:center}.muted{color:#555}.rule{border-top:1px dashed #111;margin:10px 0}
     .row{display:flex;justify-content:space-between;gap:8px;margin:4px 0}.row span:last-child{text-align:right}
     .item{margin:10px 0}.item strong{display:block}.total{font-size:17px;font-weight:bold}.note{font-size:11px;margin-top:14px}
-    @page{size:80mm 200mm;margin:0}
     @media print{
-      html,body{margin:0!important;padding:0!important;background:#fff;width:80mm;min-height:0!important}
-      .paper{box-shadow:none;width:80mm;max-width:none;margin:0;padding:4mm 3mm;break-inside:avoid;page-break-inside:avoid}
+      html,body{margin:0!important;padding:0!important;background:#fff;width:50mm;min-height:0!important}
+      .paper{box-shadow:none;width:50mm;max-width:none;margin:0;padding:4mm 3mm;break-inside:avoid;page-break-inside:avoid}
       .item,.row,.rule{break-inside:avoid;page-break-inside:avoid}
       .actions{display:none!important}
     }
   </style>
+  <style id="receipt-page-size">@page{size:50mm 200mm;margin:0}</style>
 </head>
 <body>
   <div class="actions">
@@ -54,7 +54,6 @@
     <div class="rule"></div>
     <div class="center note">Faleminderit për blerjen!<br>Ky dokument nuk zëvendëson kuponin fiskal të lëshuar nga pajisja e autorizuar.</div>
   </div>
-  <style id="receipt-page-size"></style>
   <script>
     function prepareReceiptPage(){
       const paper = document.querySelector('.paper');
@@ -62,9 +61,9 @@
       if (!paper || !pageStyle) return;
 
       const pixelsPerMillimeter = 96 / 25.4;
-      const contentHeight = Math.ceil(paper.scrollHeight / pixelsPerMillimeter);
-      const pageHeight = Math.max(contentHeight + 2, 45);
-      pageStyle.textContent = '@page{size:80mm ' + pageHeight + 'mm;margin:0}';
+      const contentHeight = paper.getBoundingClientRect().height / pixelsPerMillimeter;
+      const pageHeight = Math.max(Math.ceil(contentHeight * 10) / 10 + 1, 45);
+      pageStyle.textContent = '@page{size:50mm ' + pageHeight + 'mm;margin:0}';
     }
 
     function printReceipt(){

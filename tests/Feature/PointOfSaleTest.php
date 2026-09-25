@@ -123,7 +123,7 @@ class PointOfSaleTest extends TestCase
         $this->assertStringContainsString('DOKUMENT SHITJEJE', $html);
         $this->assertStringContainsString('Jo kupon fiskal zyrtar', $html);
         $this->assertStringContainsString('function prepareReceiptPage()', $html);
-        $this->assertStringContainsString("pageStyle.textContent = '@page{size:80mm '", $html);
+        $this->assertStringContainsString("pageStyle.textContent = '@page{size:50mm '", $html);
     }
 
     private function product(): Product
