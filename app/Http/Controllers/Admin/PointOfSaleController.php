@@ -132,6 +132,17 @@ class PointOfSaleController extends Controller
             'items.*.size' => 'nullable|string|max:255',
             'items.*.quantity' => 'required|integer|min:1|max:9999',
             'items.*.unit_price' => 'required|numeric|min:0|max:999999',
+        ], [
+            'items.required' => 'Shto të paktën një produkt në shportë para se ta ruash shitjen.',
+            'items.array' => 'Shporta nuk është në formatin e duhur. Rifresko faqen dhe provo përsëri.',
+            'items.min' => 'Shto të paktën një produkt në shportë para se ta ruash shitjen.',
+            'items.*.product_id.exists' => 'Njëri nga produktet nuk ekziston më. Kërkoje ose skanoje përsëri.',
+            'items.*.item_name.required' => 'Emri i produktit mungon.',
+            'items.*.quantity.required' => 'Shkruaj sasinë e produktit.',
+            'items.*.quantity.min' => 'Sasia duhet të jetë së paku 1.',
+            'items.*.unit_price.required' => 'Shkruaj çmimin e produktit.',
+            'customer_email.email' => 'Emaili i klientit nuk është shkruar saktë.',
+            'receipt_type.required' => 'Zgjidh llojin e dokumentit.',
         ]);
 
         [$customer, $receipt] = DB::transaction(function () use ($data) {

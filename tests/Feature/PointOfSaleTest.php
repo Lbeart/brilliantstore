@@ -72,6 +72,16 @@ class PointOfSaleTest extends TestCase
             ->assertJsonPath('product.selected_size.price', 75);
     }
 
+    public function test_empty_checkout_has_a_clear_albanian_message(): void
+    {
+        $this->post(route('admin.pos.checkout'), [
+            'receipt_type' => 'regular',
+            'payment_method' => 'cash',
+        ])->assertSessionHasErrors([
+            'items' => 'Shto të paktën një produkt në shportë para se ta ruash shitjen.',
+        ]);
+    }
+
     public function test_checkout_rejects_more_than_variant_stock_without_creating_receipt(): void
     {
         $product = $this->product();

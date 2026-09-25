@@ -182,7 +182,7 @@
       @if(session('error')) <div class="alert alert-danger">{{ session('error') }}</div> @endif
       @if($errors->any())
         <div class="alert alert-danger">
-          Kontrollo fushat e POS-it. {{ $errors->first() }}
+          <strong>Shitja nuk u ruajt.</strong> {{ $errors->first() }}
         </div>
       @endif
 
