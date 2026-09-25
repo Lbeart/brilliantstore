@@ -12,13 +12,18 @@
     h1{font-size:20px;letter-spacing:.06em;text-align:center;margin:0}.center{text-align:center}.muted{color:#555}.rule{border-top:1px dashed #111;margin:10px 0}
     .row{display:flex;justify-content:space-between;gap:8px;margin:4px 0}.row span:last-child{text-align:right}
     .item{margin:10px 0}.item strong{display:block}.total{font-size:17px;font-weight:bold}.note{font-size:11px;margin-top:14px}
-    @page{size:80mm auto;margin:0}
-    @media print{body{padding:0;background:#fff}.paper{box-shadow:none;width:80mm}.actions{display:none}}
+    @page{size:80mm 200mm;margin:0}
+    @media print{
+      html,body{margin:0!important;padding:0!important;background:#fff;width:80mm;min-height:0!important}
+      .paper{box-shadow:none;width:80mm;max-width:none;margin:0;padding:4mm 3mm;break-inside:avoid;page-break-inside:avoid}
+      .item,.row,.rule{break-inside:avoid;page-break-inside:avoid}
+      .actions{display:none!important}
+    }
   </style>
 </head>
 <body>
   <div class="actions">
-    <button type="button" onclick="window.print()">Printo 80 mm</button>
+    <button type="button" onclick="printReceipt()">Printo 80 mm</button>
     <a href="{{ route('admin.customers.invoice', [$receipt->customer_id, $receipt->code]) }}">Fatura A4</a>
     <a href="{{ route('admin.pos.index') }}">Kthehu te arka</a>
   </div>
@@ -49,7 +54,32 @@
     <div class="rule"></div>
     <div class="center note">Faleminderit për blerjen!<br>Ky dokument nuk zëvendëson kuponin fiskal të lëshuar nga pajisja e autorizuar.</div>
   </div>
-  @if(request()->boolean('print'))<script>window.addEventListener('load',()=>window.print());</script>@endif
+  <style id="receipt-page-size"></style>
+  <script>
+    function prepareReceiptPage(){
+      const paper = document.querySelector('.paper');
+      const pageStyle = document.getElementById('receipt-page-size');
+      if (!paper || !pageStyle) return;
+
+      const pixelsPerMillimeter = 96 / 25.4;
+      const contentHeight = Math.ceil(paper.scrollHeight / pixelsPerMillimeter);
+      const pageHeight = Math.max(contentHeight + 2, 45);
+      pageStyle.textContent = '@page{size:80mm ' + pageHeight + 'mm;margin:0}';
+    }
+
+    function printReceipt(){
+      prepareReceiptPage();
+      requestAnimationFrame(() => window.print());
+    }
+
+    window.addEventListener('beforeprint', prepareReceiptPage);
+    window.addEventListener('load', () => {
+      prepareReceiptPage();
+      @if(request()->boolean('print'))
+        setTimeout(printReceipt, 100);
+      @endif
+    });
+  </script>
   <script>try { sessionStorage.removeItem('brillant-pos-cart'); } catch (_) {}</script>
 </body>
 </html>
