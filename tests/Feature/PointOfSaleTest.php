@@ -20,11 +20,13 @@ class PointOfSaleTest extends TestCase
         ]);
         DB::purge('pos_testing');
         $this->withoutMiddleware();
+        view()->share('errors', new \Illuminate\Support\ViewErrorBag());
 
         Schema::create('products', function (Blueprint $table) {
             $table->id(); $table->string('name'); $table->string('slug')->unique();
             $table->decimal('price', 10, 2); $table->integer('stock')->default(0);
             $table->string('sku')->nullable(); $table->string('barcode')->nullable();
+            $table->string('category')->nullable(); $table->string('subcategory')->nullable();
             $table->json('sizes')->nullable(); $table->string('image_path')->nullable();
             $table->boolean('is_active')->default(true); $table->timestamps();
         });
@@ -70,6 +72,20 @@ class PointOfSaleTest extends TestCase
             ->assertJsonPath('product.selected_size.label', '200x300')
             ->assertJsonPath('product.selected_size.stock', 2)
             ->assertJsonPath('product.selected_size.price', 75);
+    }
+
+    public function test_pos_page_renders_working_scanner_cart_and_payment_hooks(): void
+    {
+        $this->product();
+
+        $this->get(route('admin.pos.index'))
+            ->assertOk()
+            ->assertSee('data-scan-input', false)
+            ->assertSee('data-scan-button', false)
+            ->assertSee('data-quick-product', false)
+            ->assertSee('data-pay-full', false)
+            ->assertSee('const placeholderImage =', false)
+            ->assertDontSee('this.src=\\\\\'', false);
     }
 
     public function test_empty_checkout_has_a_clear_albanian_message(): void

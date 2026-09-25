@@ -450,6 +450,7 @@
 (function(){
   const lookupUrl = @json(route('admin.pos.lookup'));
   const quickProducts = @json($quickProductPayload);
+  const placeholderImage = @json(asset('images/placeholder-product.png'));
   const cartStorageKey = 'brillant-pos-cart';
   let cart = [];
   try {
@@ -466,6 +467,7 @@
   const discountInput = document.querySelector('[data-discount]');
   const paidInput = document.querySelector('[data-paid]');
   const form = document.getElementById('posForm');
+  let paidWasManuallyEdited = Number(paidInput?.value || 0) > 0;
 
   function money(value){
     return Number(value || 0).toFixed(2);
@@ -557,7 +559,7 @@
         : '<input class="form-control form-control-sm" value="' + escapeHtml(line.size || '') + '" data-line-size-text="' + index + '">';
 
       tr.innerHTML = ''
-        + '<td><div class="cart-product"><img class="cart-thumb" src="' + escapeAttr(line.image_url || '') + '" alt="' + escapeAttr(line.item_name) + '" onerror="this.onerror=null;this.src=\\'{{ asset('images/placeholder-product.png') }}\\'"><div><div class="fw-bold">' + escapeHtml(line.item_name) + '</div><div class="small text-muted">' + escapeHtml(line.barcode || '-') + (line.stock <= 0 ? ' / stok 0' : ' / stok ' + line.stock) + '</div></div></div></td>'
+        + '<td><div class="cart-product"><img class="cart-thumb" src="' + escapeAttr(line.image_url || placeholderImage) + '" alt="' + escapeAttr(line.item_name) + '"><div><div class="fw-bold">' + escapeHtml(line.item_name) + '</div><div class="small text-muted">' + escapeHtml(line.barcode || '-') + (line.stock <= 0 ? ' / stok 0' : ' / stok ' + line.stock) + '</div></div></div></td>'
         + '<td>' + sizeOptions + '</td>'
         + '<td><input type="number" min="1" class="form-control form-control-sm qty-input" value="' + line.quantity + '" data-line-qty="' + index + '"></td>'
         + '<td><input type="number" min="0" step="0.01" class="form-control form-control-sm price-input" value="' + money(line.unit_price) + '" data-line-price="' + index + '"></td>'
@@ -565,6 +567,10 @@
         + '<td class="text-end"><button type="button" class="btn btn-sm btn-outline-danger" data-line-remove="' + index + '"><i class="fa fa-trash"></i></button></td>';
 
       cartBody.appendChild(tr);
+      const thumb = tr.querySelector('.cart-thumb');
+      thumb?.addEventListener('error', () => {
+        if (thumb.src !== placeholderImage) thumb.src = placeholderImage;
+      }, {once: true});
 
       addHidden(index, 'product_id', line.product_id || '');
       addHidden(index, 'barcode', line.barcode || '');
@@ -589,6 +595,12 @@
     const subtotal = cart.reduce((sum, line) => sum + line.quantity * line.unit_price, 0);
     const discount = Math.min(Number(discountInput?.value || 0), subtotal);
     const total = Math.max(subtotal - discount, 0);
+    if (cart.length === 0) {
+      paidWasManuallyEdited = false;
+      if (paidInput) paidInput.value = '0.00';
+    } else if (!paidWasManuallyEdited && paidInput) {
+      paidInput.value = money(total);
+    }
     const paid = Number(paidInput?.value || 0);
     const balance = Math.max(total - paid, 0);
 
@@ -641,6 +653,7 @@
   });
 
   document.addEventListener('input', event => {
+    if (event.target.matches('[data-paid]')) paidWasManuallyEdited = true;
     if (event.target.matches('[data-discount], [data-paid]')) {
       calculateTotals();
     }
@@ -683,14 +696,17 @@
   });
 
   document.querySelector('[data-pay-none]')?.addEventListener('click', () => {
+    paidWasManuallyEdited = true;
     paidInput.value = '0.00';
     calculateTotals();
   });
   document.querySelector('[data-pay-half]')?.addEventListener('click', () => {
+    paidWasManuallyEdited = true;
     paidInput.value = money(Number(document.querySelector('[data-total]').textContent || 0) / 2);
     calculateTotals();
   });
   document.querySelector('[data-pay-full]')?.addEventListener('click', () => {
+    paidWasManuallyEdited = true;
     paidInput.value = money(Number(document.querySelector('[data-total]').textContent || 0));
     calculateTotals();
   });
