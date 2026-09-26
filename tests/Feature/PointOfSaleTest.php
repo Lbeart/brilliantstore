@@ -123,6 +123,13 @@ class PointOfSaleTest extends TestCase
         $this->assertStringContainsString('Jo kupon fiskal zyrtar', $html);
         $this->assertStringContainsString('function prepareReceiptPage()', $html);
         $this->assertStringContainsString("pageStyle.textContent = '@page{size:50mm '", $html);
+        $this->assertStringContainsString('vendor/qz-tray/qz-tray.js', $html);
+        $this->assertStringContainsString('data-qz-print', $html);
+        $this->assertStringContainsString('function buildRawReceipt()', $html);
+        $this->assertStringContainsString('qz.websocket.connect', $html);
+        $this->assertStringContainsString('qz.printers.find', $html);
+        $this->assertStringContainsString("format: 'command'", $html);
+        $this->assertStringContainsString('Letra ndalet menjëherë pas faturës.', $html);
         $this->assertStringContainsString('data-estimated-page-height="145"', $html);
 
         foreach (range(2, 4) as $index) {
