@@ -125,10 +125,12 @@ class PointOfSaleTest extends TestCase
         $this->assertStringContainsString("pageStyle.textContent = '@page{size:50mm '", $html);
         $this->assertStringContainsString('js/qz-tray.js?v=2.3.0', $html);
         $this->assertStringContainsString('data-qz-print', $html);
-        $this->assertStringContainsString('function buildPixelReceipt(pageHeight)', $html);
+        $this->assertStringContainsString('function buildPixelReceipt()', $html);
         $this->assertStringContainsString("type: 'pixel'", $html);
         $this->assertStringContainsString("format: 'html'", $html);
         $this->assertStringContainsString('rasterize: true', $html);
+        $this->assertStringContainsString('QZ_PAPER_HEIGHT_MM = 200', $html);
+        $this->assertStringContainsString('custom: false', $html);
         $this->assertStringContainsString('qz.websocket.connect', $html);
         $this->assertStringContainsString('qz.printers.find', $html);
         $this->assertStringContainsString('Letra ndalet menjëherë pas faturës.', $html);

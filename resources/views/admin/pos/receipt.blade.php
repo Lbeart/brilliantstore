@@ -77,38 +77,31 @@
   <script src="{{ asset('js/qz-tray.js') }}?v=2.3.0"></script>
   <script>
     const receiptCode = @json((string) $receipt->code, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_AMP|JSON_HEX_QUOT);
+    const QZ_PAPER_WIDTH_MM = 50;
+    const QZ_PAPER_HEIGHT_MM = 200;
     const preferredPrinterPatterns = [
       /^HPRT\s+LPQ80$/i,
       /^LPQ80\s+faktura$/i,
       /LPQ80/i,
     ];
 
-    function qzReceiptHeightMm() {
-      const paper = document.querySelector('.paper');
-      if (!paper) return 100;
-
-      const pixelsPerMillimeter = 96 / 25.4;
-      const contentHeight = paper.getBoundingClientRect().height / pixelsPerMillimeter;
-      return Math.max(60, Math.ceil(contentHeight) + 4);
-    }
-
-    function buildPixelReceipt(pageHeight) {
+    function buildPixelReceipt() {
       const paper = document.querySelector('.paper');
       if (!paper) throw new Error('Përmbajtja e faturës nuk u gjet.');
 
       return '<!doctype html><html><head><meta charset="utf-8">' +
         '<style>' +
-        '@page{size:50mm ' + pageHeight + 'mm;margin:0}' +
+        '@page{size:50mm 200mm;margin:0}' +
         '*{box-sizing:border-box}' +
-        'html,body{width:50mm;height:' + pageHeight + 'mm;margin:0;padding:0;background:#fff;color:#111}' +
-        'body{font:13px/1.4 Arial,sans-serif}' +
-        '.paper{width:50mm;margin:0;padding:4mm 3mm;background:#fff}' +
-        'h1{font-size:20px;letter-spacing:.06em;text-align:center;margin:0}' +
+        'html,body{width:50mm;height:200mm;margin:0;padding:0;background:#fff;color:#111}' +
+        'body{font:10px/1.22 Arial,sans-serif}' +
+        '.paper{width:50mm;margin:0;padding:2.5mm 2mm;background:#fff}' +
+        'h1{font-size:16px;letter-spacing:.04em;text-align:center;margin:0}' +
         '.center{text-align:center}.muted{color:#555}' +
-        '.rule{border-top:1px dashed #111;margin:10px 0}' +
-        '.row{display:flex;justify-content:space-between;gap:8px;margin:4px 0}' +
-        '.row span:last-child{text-align:right}.item{margin:10px 0}.item strong{display:block}' +
-        '.total{font-size:17px;font-weight:bold}.note{font-size:11px;margin-top:14px}' +
+        '.rule{border-top:1px dashed #111;margin:5px 0}' +
+        '.row{display:flex;justify-content:space-between;gap:5px;margin:2px 0}' +
+        '.row span:last-child{text-align:right}.item{margin:5px 0}.item strong{display:block}' +
+        '.total{font-size:13px;font-weight:bold}.note{font-size:8px;margin-top:7px}' +
         '</style></head><body><div class="paper">' + paper.innerHTML + '</div></body></html>';
     }
 
@@ -155,15 +148,14 @@
         await connectQzTray();
         const printer = await findReceiptPrinter();
         showPrintStatus('Duke e dërguar faturën te ' + printer + '…');
-        const pageHeight = qzReceiptHeightMm();
         const config = qz.configs.create(printer, {
           colorType: 'grayscale',
           copies: 1,
           margins: 0,
           orientation: 'portrait',
           rasterize: true,
-          scaleContent: false,
-          size: { width: 50, height: pageHeight, custom: true },
+          scaleContent: true,
+          size: { width: QZ_PAPER_WIDTH_MM, height: QZ_PAPER_HEIGHT_MM, custom: false },
           units: 'mm',
           jobName: 'B-Brillant ' + receiptCode,
         });
@@ -171,8 +163,8 @@
           type: 'pixel',
           format: 'html',
           flavor: 'plain',
-          data: buildPixelReceipt(pageHeight),
-          options: { pageWidth: 50, pageHeight: pageHeight },
+          data: buildPixelReceipt(),
+          options: { pageWidth: QZ_PAPER_WIDTH_MM, pageHeight: QZ_PAPER_HEIGHT_MM },
         }]);
         showPrintStatus('Fatura u dërgua me sukses te ' + printer + '. Letra ndalet menjëherë pas faturës.', 'success');
       } catch (error) {
