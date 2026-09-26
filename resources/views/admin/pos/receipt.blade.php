@@ -91,13 +91,13 @@
     <div class="center note">Faleminderit për blerjen!<br>Ky dokument nuk zëvendëson kuponin fiskal të lëshuar nga pajisja e autorizuar.</div>
   </div>
 
-  <script src="{{ asset('vendor/qz-tray/qz-tray.js') }}"></script>
+  <script src="{{ asset('js/qz-tray.js') }}?v=2.3.0"></script>
   <script>
     const qzReceipt = @json($qzReceipt, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_AMP|JSON_HEX_QUOT);
     const RECEIPT_COLUMNS = 32;
     const preferredPrinterPatterns = [
-      /^LPQ80\s*\(ESC\)$/i,
       /^HPRT\s+LPQ80$/i,
+      /^LPQ80\s+faktura$/i,
       /LPQ80/i,
     ];
 

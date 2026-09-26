@@ -123,7 +123,7 @@ class PointOfSaleTest extends TestCase
         $this->assertStringContainsString('Jo kupon fiskal zyrtar', $html);
         $this->assertStringContainsString('function prepareReceiptPage()', $html);
         $this->assertStringContainsString("pageStyle.textContent = '@page{size:50mm '", $html);
-        $this->assertStringContainsString('vendor/qz-tray/qz-tray.js', $html);
+        $this->assertStringContainsString('js/qz-tray.js?v=2.3.0', $html);
         $this->assertStringContainsString('data-qz-print', $html);
         $this->assertStringContainsString('function buildRawReceipt()', $html);
         $this->assertStringContainsString('qz.websocket.connect', $html);
