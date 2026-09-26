@@ -1,6 +1,6 @@
 @php
-  // Chrome remains available as a fallback. QZ Tray prints the receipt as raw
-  // ESC/POS, so the printer feeds only the content and never creates sheet 2.
+  // Chrome remains available as a fallback. QZ Tray sends a dynamically sized
+  // raster page through the HPRT driver so continuous paper is not split.
   $receiptPageHeightMm = 127;
   foreach ($receipt->purchases as $purchase) {
       $nameLines = max(1, (int) ceil(mb_strlen((string) $purchase->item_name) / 24));
@@ -9,24 +9,6 @@
   }
   $receiptPageHeightMm = min(300, max(80, (int) ceil($receiptPageHeightMm)));
 
-  $qzReceipt = [
-      'code' => (string) $receipt->code,
-      'date' => optional($receipt->sold_at)->format('d.m.Y H:i'),
-      'customer' => $receipt->customer->name ?? 'Klient POS',
-      'items' => $receipt->purchases->map(fn ($purchase) => [
-          'name' => (string) $purchase->item_name,
-          'size' => $purchase->size ? (string) $purchase->size : null,
-          'quantity' => (int) $purchase->quantity,
-          'unit_price' => number_format((float) $purchase->unit_price, 2, '.', ''),
-          'total' => number_format((float) $purchase->total, 2, '.', ''),
-      ])->values()->all(),
-      'subtotal' => number_format((float) $receipt->subtotal, 2, '.', ''),
-      'discount' => number_format((float) $receipt->discount, 2, '.', ''),
-      'total' => number_format((float) $receipt->total, 2, '.', ''),
-      'paid' => number_format((float) $receipt->paid_amount, 2, '.', ''),
-      'balance' => number_format((float) $receipt->balance, 2, '.', ''),
-      'payment_method' => strtoupper((string) $receipt->payment_method),
-  ];
 @endphp
 <!doctype html>
 <html lang="sq">
@@ -93,104 +75,40 @@
 
   <script src="{{ asset('js/qz-tray.js') }}?v=2.3.0"></script>
   <script>
-    const qzReceipt = @json($qzReceipt, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_AMP|JSON_HEX_QUOT);
-    const RECEIPT_COLUMNS = 32;
+    const receiptCode = @json((string) $receipt->code, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_AMP|JSON_HEX_QUOT);
     const preferredPrinterPatterns = [
       /^HPRT\s+LPQ80$/i,
       /^LPQ80\s+faktura$/i,
       /LPQ80/i,
     ];
 
-    function receiptText(value) {
-      return String(value ?? '')
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[“”„]/g, '"')
-        .replace(/[‘’]/g, "'")
-        .replace(/€/g, 'EUR')
-        .replace(/×/g, 'x')
-        .replace(/[^\x20-\x7E]/g, '?')
-        .replace(/\s+/g, ' ')
-        .trim();
+    function qzReceiptHeightMm() {
+      const paper = document.querySelector('.paper');
+      if (!paper) return 100;
+
+      const pixelsPerMillimeter = 96 / 25.4;
+      const contentHeight = paper.getBoundingClientRect().height / pixelsPerMillimeter;
+      return Math.max(60, Math.ceil(contentHeight) + 4);
     }
 
-    function wrapReceiptText(value, width = RECEIPT_COLUMNS) {
-      const text = receiptText(value);
-      if (!text) return [''];
+    function buildPixelReceipt(pageHeight) {
+      const paper = document.querySelector('.paper');
+      if (!paper) throw new Error('Përmbajtja e faturës nuk u gjet.');
 
-      const lines = [];
-      let remaining = text;
-      while (remaining.length > width) {
-        let splitAt = remaining.lastIndexOf(' ', width);
-        if (splitAt < 1) splitAt = width;
-        lines.push(remaining.slice(0, splitAt));
-        remaining = remaining.slice(splitAt).trimStart();
-      }
-      if (remaining || !lines.length) lines.push(remaining);
-      return lines;
-    }
-
-    function receiptPair(left, right, width = RECEIPT_COLUMNS) {
-      const safeLeft = receiptText(left);
-      const safeRight = receiptText(right);
-      const gap = width - safeLeft.length - safeRight.length;
-      if (gap >= 1) return safeLeft + ' '.repeat(gap) + safeRight;
-
-      const lines = wrapReceiptText(safeLeft, width);
-      lines.push(safeRight.slice(0, width).padStart(width, ' '));
-      return lines.join('\n');
-    }
-
-    function buildRawReceipt() {
-      const ESC = '\x1B';
-      const GS = '\x1D';
-      const separator = '-'.repeat(RECEIPT_COLUMNS);
-      let output = ESC + '@';
-      output += ESC + 'M' + '\x00';
-      output += ESC + 'a' + '\x01';
-      output += ESC + 'E' + '\x01';
-      output += GS + '!' + '\x11';
-      output += 'B-BRILLANT\n';
-      output += GS + '!' + '\x00';
-      output += ESC + 'E' + '\x00';
-      output += 'Rruga Gjergj Fishta, Lipjan\n';
-      output += '+383 44 996 926\n';
-      output += separator + '\n';
-      output += ESC + 'E' + '\x01';
-      output += 'DOKUMENT SHITJEJE\n';
-      output += ESC + 'E' + '\x00';
-      output += 'Jo kupon fiskal zyrtar\n';
-      output += separator + '\n';
-      output += ESC + 'a' + '\x00';
-      output += receiptPair('Nr.', qzReceipt.code) + '\n';
-      output += receiptPair('Data', qzReceipt.date) + '\n';
-      output += receiptPair('Klienti', qzReceipt.customer) + '\n';
-      output += separator + '\n';
-
-      qzReceipt.items.forEach((item) => {
-        output += ESC + 'E' + '\x01';
-        output += wrapReceiptText(item.name).join('\n') + '\n';
-        output += ESC + 'E' + '\x00';
-        if (item.size) output += wrapReceiptText('Permasa: ' + item.size).join('\n') + '\n';
-        output += receiptPair(item.quantity + ' x ' + item.unit_price + ' EUR', item.total + ' EUR') + '\n';
-      });
-
-      output += separator + '\n';
-      output += receiptPair('Nentotali', qzReceipt.subtotal + ' EUR') + '\n';
-      output += receiptPair('Zbritja', qzReceipt.discount + ' EUR') + '\n';
-      output += ESC + 'E' + '\x01';
-      output += receiptPair('TOTALI', qzReceipt.total + ' EUR') + '\n';
-      output += ESC + 'E' + '\x00';
-      output += receiptPair('Paguar', qzReceipt.paid + ' EUR') + '\n';
-      output += receiptPair('Mbetur', qzReceipt.balance + ' EUR') + '\n';
-      output += receiptPair('Pagesa', qzReceipt.payment_method) + '\n';
-      output += separator + '\n';
-      output += ESC + 'a' + '\x01';
-      output += 'Faleminderit per blerjen!\n';
-      output += wrapReceiptText('Ky dokument nuk zevendeson kuponin fiskal te leshuar nga pajisja e autorizuar.').join('\n');
-      output += '\n\n';
-      output += ESC + 'a' + '\x00';
-      return output;
+      return '<!doctype html><html><head><meta charset="utf-8">' +
+        '<style>' +
+        '@page{size:50mm ' + pageHeight + 'mm;margin:0}' +
+        '*{box-sizing:border-box}' +
+        'html,body{width:50mm;height:' + pageHeight + 'mm;margin:0;padding:0;background:#fff;color:#111}' +
+        'body{font:13px/1.4 Arial,sans-serif}' +
+        '.paper{width:50mm;margin:0;padding:4mm 3mm;background:#fff}' +
+        'h1{font-size:20px;letter-spacing:.06em;text-align:center;margin:0}' +
+        '.center{text-align:center}.muted{color:#555}' +
+        '.rule{border-top:1px dashed #111;margin:10px 0}' +
+        '.row{display:flex;justify-content:space-between;gap:8px;margin:4px 0}' +
+        '.row span:last-child{text-align:right}.item{margin:10px 0}.item strong{display:block}' +
+        '.total{font-size:17px;font-weight:bold}.note{font-size:11px;margin-top:14px}' +
+        '</style></head><body><div class="paper">' + paper.innerHTML + '</div></body></html>';
     }
 
     function showPrintStatus(message, type = '') {
@@ -236,16 +154,24 @@
         await connectQzTray();
         const printer = await findReceiptPrinter();
         showPrintStatus('Duke e dërguar faturën te ' + printer + '…');
+        const pageHeight = qzReceiptHeightMm();
         const config = qz.configs.create(printer, {
-          encoding: 'Cp1252',
-          forceRaw: true,
-          jobName: 'B-Brillant ' + qzReceipt.code,
+          colorType: 'grayscale',
+          copies: 1,
+          margins: 0,
+          orientation: 'portrait',
+          rasterize: true,
+          scaleContent: false,
+          size: { width: 50, height: pageHeight, custom: true },
+          units: 'mm',
+          jobName: 'B-Brillant ' + receiptCode,
         });
         await qz.print(config, [{
-          type: 'raw',
-          format: 'command',
+          type: 'pixel',
+          format: 'html',
           flavor: 'plain',
-          data: buildRawReceipt(),
+          data: buildPixelReceipt(pageHeight),
+          options: { pageWidth: 50, pageHeight: pageHeight },
         }]);
         showPrintStatus('Fatura u dërgua me sukses te ' + printer + '. Letra ndalet menjëherë pas faturës.', 'success');
       } catch (error) {
