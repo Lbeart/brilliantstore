@@ -16,6 +16,13 @@ class AutoTranslateHtml
             return $response;
         }
 
+        // Admin pages already use the application's own interface language.
+        // Injecting Google Translate here can also corrupt receipt JavaScript
+        // which legitimately contains HTML strings for QZ Tray printing.
+        if ($request->is('admin') || $request->is('admin/*')) {
+            return $response;
+        }
+
         $contentType = (string) $response->headers->get('Content-Type', '');
         $html = (string) $response->getContent();
 
@@ -32,7 +39,15 @@ class AutoTranslateHtml
         }
 
         $script = $this->translationScript($locale);
-        $html = preg_replace('/<\/body>/i', $script . "\n</body>", $html, 1);
+        $bodyClosePosition = strripos($html, '</body>');
+
+        // Always inject before the final body tag. JavaScript may contain an
+        // HTML string with "</body>" and must never be split in the middle.
+        if ($bodyClosePosition === false) {
+            return $response;
+        }
+
+        $html = substr_replace($html, $script . "\n", $bodyClosePosition, 0);
 
         $response->setContent($html);
 
