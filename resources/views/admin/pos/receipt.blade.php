@@ -94,14 +94,14 @@
         '@page{size:50mm 200mm;margin:0}' +
         '*{box-sizing:border-box}' +
         'html,body{width:50mm;height:200mm;margin:0;padding:0;background:#fff;color:#111}' +
-        'body{font:10px/1.22 Arial,sans-serif}' +
-        '.paper{width:50mm;margin:0;padding:2.5mm 2mm;background:#fff}' +
-        'h1{font-size:16px;letter-spacing:.04em;text-align:center;margin:0}' +
-        '.center{text-align:center}.muted{color:#555}' +
+        'body{font:600 10px/1.22 Arial,sans-serif}' +
+        '.paper{width:50mm;margin:0;padding:2.5mm 3mm;background:#fff}' +
+        'h1{font-size:16px;font-weight:700;letter-spacing:.04em;text-align:center;margin:0}' +
+        '.center{text-align:center}.muted{color:#222}' +
         '.rule{border-top:1px dashed #111;margin:5px 0}' +
         '.row{display:flex;justify-content:space-between;gap:5px;margin:2px 0}' +
-        '.row span:last-child{text-align:right}.item{margin:5px 0}.item strong{display:block}' +
-        '.total{font-size:13px;font-weight:bold}.note{font-size:8px;margin-top:7px}' +
+        '.row span:last-child{text-align:right}.item{margin:5px 0}.item strong{display:block;font-weight:700}' +
+        '.total{font-size:13px;font-weight:700}.note{font-size:8px;font-weight:600;margin-top:7px}' +
         '</style></head><body><div class="paper">' + paper.innerHTML + '</div></body></html>';
     }
 
