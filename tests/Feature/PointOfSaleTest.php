@@ -132,6 +132,7 @@ class PointOfSaleTest extends TestCase
         $this->assertStringContainsString('qz.websocket.connect', $html);
         $this->assertStringContainsString('qz.printers.find', $html);
         $this->assertStringContainsString('Letra ndalet menjëherë pas faturës.', $html);
+        $this->assertStringContainsString('body>*:not(.paper){display:none!important}', $html);
         $this->assertStringContainsString('data-estimated-page-height="145"', $html);
 
         foreach (range(2, 4) as $index) {

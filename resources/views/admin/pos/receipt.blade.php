@@ -17,7 +17,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dokument shitjeje {{ $receipt->code }}</title>
   <style>
-    *{box-sizing:border-box}body{margin:0;padding:24px;background:#f2f4f7;color:#111;font:13px/1.4 Arial,sans-serif}
+    *{box-sizing:border-box}script{display:none!important}body{margin:0;padding:24px;background:#f2f4f7;color:#111;font:13px/1.4 Arial,sans-serif}
     .actions{max-width:520px;margin:0 auto 10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .actions a,.actions button{border:1px solid #222;background:#fff;color:#111;padding:9px 12px;text-decoration:none;cursor:pointer;border-radius:5px;font:inherit}
     .actions .qz-print{background:#dc3545;border-color:#dc3545;color:#fff;font-weight:700}
@@ -30,6 +30,7 @@
     .item{margin:10px 0}.item strong{display:block}.total{font-size:17px;font-weight:bold}.note{font-size:11px;margin-top:14px}
     @media print{
       html,body{margin:0!important;padding:0!important;background:#fff;width:50mm;min-height:0!important}
+      body>*:not(.paper){display:none!important}
       .paper{box-shadow:none;width:50mm;max-width:none;margin:0;padding:4mm 3mm;break-inside:avoid;page-break-inside:avoid}
       .item,.row,.rule{break-inside:avoid;page-break-inside:avoid}
       .actions,.print-status{display:none!important}
@@ -40,7 +41,7 @@
 <body>
   <div class="actions">
     <button class="qz-print" type="button" data-qz-print>Printo direkt me QZ</button>
-    <button type="button" onclick="printReceipt()">Printo me Chrome</button>
+    <button type="button" onclick="printReceipt()">Rezervë: Chrome</button>
     <a href="{{ route('admin.customers.invoice', [$receipt->customer_id, $receipt->code]) }}">Fatura A4</a>
     <a href="{{ route('admin.pos.index') }}">Kthehu te arka</a>
   </div>
