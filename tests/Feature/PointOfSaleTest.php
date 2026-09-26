@@ -131,8 +131,8 @@ class PointOfSaleTest extends TestCase
         $this->assertStringContainsString('rasterize: true', $html);
         $this->assertStringContainsString('QZ_PAPER_HEIGHT_MM = 200', $html);
         $this->assertStringContainsString('custom: false', $html);
-        $this->assertStringContainsString('font:600 10px/1.22 Arial', $html);
-        $this->assertStringContainsString('padding:2.5mm 3mm', $html);
+        $this->assertStringContainsString('font:700 10.5px/1.2 Arial', $html);
+        $this->assertStringContainsString('padding:2.5mm 3.5mm', $html);
         $this->assertStringContainsString('qz.websocket.connect', $html);
         $this->assertStringContainsString('qz.printers.find', $html);
         $this->assertStringContainsString('Letra ndalet menjëherë pas faturës.', $html);
