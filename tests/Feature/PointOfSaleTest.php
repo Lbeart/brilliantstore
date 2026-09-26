@@ -117,13 +117,31 @@ class PointOfSaleTest extends TestCase
         $receipt = DB::table('customer_receipts')->first();
         $this->assertNotNull($receipt);
         $this->assertSame(1, Product::find($product->id)->sizes[0]['stock']);
-        $html = view('admin.pos.receipt', [
-            'receipt' => CustomerReceipt::findOrFail($receipt->id)->load(['customer', 'purchases']),
-        ])->render();
+        $receiptModel = CustomerReceipt::findOrFail($receipt->id)->load(['customer', 'purchases']);
+        $html = view('admin.pos.receipt', ['receipt' => $receiptModel])->render();
         $this->assertStringContainsString('DOKUMENT SHITJEJE', $html);
         $this->assertStringContainsString('Jo kupon fiskal zyrtar', $html);
         $this->assertStringContainsString('function prepareReceiptPage()', $html);
         $this->assertStringContainsString("pageStyle.textContent = '@page{size:50mm '", $html);
+        $this->assertStringContainsString('data-estimated-page-height="145"', $html);
+
+        foreach (range(2, 4) as $index) {
+            $receiptModel->purchases()->create([
+                'customer_id' => $receiptModel->customer_id,
+                'receipt_code' => $receiptModel->code,
+                'item_name' => 'Produkt Test '.$index,
+                'size' => '200x300',
+                'quantity' => 1,
+                'unit_price' => 10,
+                'total' => 10,
+                'purchased_at' => now(),
+            ]);
+        }
+
+        $multipleItemsHtml = view('admin.pos.receipt', [
+            'receipt' => $receiptModel->fresh()->load(['customer', 'purchases']),
+        ])->render();
+        $this->assertStringContainsString('data-estimated-page-height="199"', $multipleItemsHtml);
     }
 
     private function product(): Product

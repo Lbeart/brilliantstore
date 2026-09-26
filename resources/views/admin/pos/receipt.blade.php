@@ -1,3 +1,14 @@
+@php
+  // Chrome can snapshot @page before the print JavaScript runs. Give it a
+  // content-sized page from the first HTML parse, then refine it in JS below.
+  $receiptPageHeightMm = 127;
+  foreach ($receipt->purchases as $purchase) {
+      $nameLines = max(1, (int) ceil(mb_strlen((string) $purchase->item_name) / 24));
+      $sizeLines = $purchase->size ? max(1, (int) ceil(mb_strlen((string) $purchase->size) / 28)) : 0;
+      $receiptPageHeightMm += 13 + (($nameLines - 1) * 5) + ($sizeLines * 5);
+  }
+  $receiptPageHeightMm = min(300, max(80, (int) ceil($receiptPageHeightMm)));
+@endphp
 <!doctype html>
 <html lang="sq">
 <head>
@@ -19,7 +30,7 @@
       .actions{display:none!important}
     }
   </style>
-  <style id="receipt-page-size">@page{size:50mm 200mm;margin:0}</style>
+  <style id="receipt-page-size">@page{size:50mm {{ $receiptPageHeightMm }}mm;margin:0}</style>
 </head>
 <body>
   <div class="actions">
@@ -27,7 +38,7 @@
     <a href="{{ route('admin.customers.invoice', [$receipt->customer_id, $receipt->code]) }}">Fatura A4</a>
     <a href="{{ route('admin.pos.index') }}">Kthehu te arka</a>
   </div>
-  <div class="paper">
+  <div class="paper" data-estimated-page-height="{{ $receiptPageHeightMm }}">
     <h1>B-BRILLANT</h1>
     <div class="center muted">Rruga Gjergj Fishta, Lipjan<br>+383 44 996 926</div>
     <div class="rule"></div>
@@ -68,15 +79,18 @@
 
     function printReceipt(){
       prepareReceiptPage();
-      requestAnimationFrame(() => window.print());
+      requestAnimationFrame(() => requestAnimationFrame(() => window.print()));
     }
 
     window.addEventListener('beforeprint', prepareReceiptPage);
     window.addEventListener('load', () => {
-      prepareReceiptPage();
-      @if(request()->boolean('print'))
-        setTimeout(printReceipt, 100);
-      @endif
+      const ready = document.fonts?.ready || Promise.resolve();
+      ready.then(() => {
+        prepareReceiptPage();
+        @if(request()->boolean('print'))
+          setTimeout(printReceipt, 100);
+        @endif
+      });
     });
   </script>
   <script>try { sessionStorage.removeItem('brillant-pos-cart'); } catch (_) {}</script>
