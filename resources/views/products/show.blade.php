@@ -1410,12 +1410,12 @@
 
             <div class="row">
               <div class="col-6">
-                <label class="form-label">Width (m)</label>
-                <input type="number" step="0.1" name="width" class="form-control" required>
+                <label class="form-label">Gjerësia (m)</label>
+                <input type="number" step="0.01" min="0.1" name="width" class="form-control" placeholder="p.sh. 2.50" required>
               </div>
               <div class="col-6">
-                <label class="form-label">Height (m)</label>
-                <input type="number" step="0.1" name="height" class="form-control" required>
+                <label class="form-label">Gjatësia (m)</label>
+                <input type="number" step="0.01" min="0.1" name="height" class="form-control" placeholder="p.sh. 2.80" required>
               </div>
             </div>
           </div>
@@ -2187,6 +2187,7 @@ function showToast(text, isErr){
 @if($isCurtain)
 
 const pricePerMeter = {{ (float)$product->price }};
+const curtainForm = document.getElementById('curtainForm');
 
 function calculateCurtain() {
 
@@ -2219,6 +2220,49 @@ function calculateCurtain() {
 
 document.querySelectorAll('#curtainForm input')
     .forEach(el => el.addEventListener('input', calculateCurtain));
+
+curtainForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const colorInput = document.getElementById('curtainColorInput');
+    if(colorInput) colorInput.value = currentColorName();
+
+    const submitButton = curtainForm.querySelector('button[type="submit"]');
+    const originalText = submitButton?.innerHTML;
+    if(submitButton){
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Duke shtuar...';
+    }
+
+    try {
+        const res = await fetch(curtainForm.action, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: new FormData(curtainForm)
+        });
+        const data = await res.json();
+
+        if(data.ok){
+            document.querySelectorAll('.cart-badge').forEach(b => b.textContent = data.totalQty);
+            document.dispatchEvent(new CustomEvent('cart:updated', { detail: { totalQty: data.totalQty }}));
+            showToast(data.message || 'Perde u shtua në shportë');
+        } else {
+            showToast(data.message || 'Diçka shkoi keq', true);
+        }
+    } catch (e) {
+        showToast('Gabim lidhjeje', true);
+    } finally {
+        if(submitButton){
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalText;
+        }
+    }
+});
+
+calculateCurtain();
 
 @endif
 @if($isCurtain)

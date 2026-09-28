@@ -280,6 +280,10 @@ class PointOfSaleController extends Controller
             throw ValidationException::withMessages(['items' => 'Produkti nuk ekziston më. Rifresko arkën.']);
         }
 
+        if ($this->isCurtainProduct($product)) {
+            return;
+        }
+
         $sizes = $this->decodeProductSizes($product->sizes);
         $size = trim((string) $size);
 
@@ -319,9 +323,17 @@ class PointOfSaleController extends Controller
             'price' => (float) $product->price,
             'stock' => (int) ($product->stock ?? 0),
             'image_url' => ProductImages::url($product->image_path, asset('images/placeholder-product.png'), $product),
+            'category' => $product->category,
+            'subcategory' => $product->subcategory,
+            'is_curtain' => $this->isCurtainProduct($product),
             'sizes' => $this->decodeProductSizes($product->sizes),
             'selected_size' => $selectedSize,
         ];
+    }
+
+    private function isCurtainProduct(Product $product): bool
+    {
+        return str_contains(Str::lower(Str::ascii((string) $product->category)), 'perde');
     }
 
     private function decodeProductSizes($value): array

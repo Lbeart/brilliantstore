@@ -99,6 +99,9 @@
           'price' => (float) $product->price,
           'stock' => (int) ($product->stock ?? 0),
           'image_url' => \App\Support\ProductImages::url($product->image_path, asset('images/placeholder-product.png'), $product),
+          'category' => $product->category,
+          'subcategory' => $product->subcategory,
+          'is_curtain' => str_contains(\Illuminate\Support\Str::lower(\Illuminate\Support\Str::ascii((string) $product->category)), 'perde'),
           'sizes' => is_array($sizes) ? array_values(array_filter($sizes, fn ($row) => is_array($row))) : [],
       ];
   })->values();
@@ -483,7 +486,91 @@
     return quickProducts.find(product => Number(product.id) === Number(id));
   }
 
+  const curtainFolds = [
+    {key: 'fold1', label: 'Fold 1 (1:2)', ratio: 2, extra: 0, rings: 0, ringPrice: 0},
+    {key: 'fold2', label: 'Fold 2 (1:2.5)', ratio: 2.5, extra: 0, rings: 0, ringPrice: 0},
+    {key: 'fold3', label: 'Fold 3 (1:3)', ratio: 3, extra: 0, rings: 0, ringPrice: 0},
+    {key: 'grommet', label: 'Grommet', ratio: 2.5, extra: 0, rings: 5, ringPrice: 1},
+    {key: 'pencil', label: 'Pencil Pleat (1:1.5)', ratio: 1.5, extra: 0, rings: 0, ringPrice: 0},
+    {key: 'swave', label: 'S-Wave', ratio: 2.8, extra: 2.5, rings: 0, ringPrice: 0}
+  ];
+
+  function isCurtainProduct(product){
+    return Boolean(product?.is_curtain) || String(product?.category || '').toLowerCase().includes('perde');
+  }
+
+  function parseDecimal(value){
+    return Number(String(value || '').replace(',', '.'));
+  }
+
+  function formatDecimal(value){
+    return Number(value || 0).toFixed(2).replace(/\.?0+$/, '');
+  }
+
+  function askCurtainDetails(product){
+    const width = parseDecimal(prompt('Shkruaj gjeresine e perdes ne metra (p.sh. 2.50):', ''));
+    if (!Number.isFinite(width) || width <= 0) {
+      setMessage('Gjeresia e perdes nuk eshte valide.', 'error');
+      return null;
+    }
+
+    const height = parseDecimal(prompt('Shkruaj gjatesine/lartesine e perdes ne metra (p.sh. 2.80):', ''));
+    if (!Number.isFinite(height) || height <= 0) {
+      setMessage('Gjatesia e perdes nuk eshte valide.', 'error');
+      return null;
+    }
+
+    const foldChoice = prompt(
+      'Zgjidh sistemin:\n1 - Fold 1 (1:2)\n2 - Fold 2 (1:2.5)\n3 - Fold 3 (1:3)\n4 - Grommet\n5 - Pencil Pleat\n6 - S-Wave',
+      '1'
+    );
+    if (foldChoice === null) return null;
+
+    const fold = curtainFolds[Math.max(0, Math.min(curtainFolds.length - 1, Number(foldChoice || 1) - 1))] || curtainFolds[0];
+    const meters = width * fold.ratio;
+    const fabricTotal = meters * Number(product.price || 0);
+    const extraTotal = meters * fold.extra;
+    const rings = Math.ceil(meters * fold.rings);
+    const ringsTotal = rings * fold.ringPrice;
+    const total = fabricTotal + extraTotal + ringsTotal;
+
+    return {
+      size: formatDecimal(width) + 'm x ' + formatDecimal(height) + 'm / Sistemi: ' + fold.label + ' / Material: ' + formatDecimal(meters) + 'm',
+      unit_price: Number(money(total))
+    };
+  }
+
   function addProduct(product){
+    if (isCurtainProduct(product)) {
+      const curtain = askCurtainDetails(product);
+      if (!curtain) return;
+
+      const key = [product.id, curtain.size, curtain.unit_price].join('|');
+      const existing = cart.find(line => line.key === key);
+
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({
+          key,
+          product_id: product.id,
+          item_name: product.name,
+          barcode: product.barcode || product.sku || '',
+          stock: 9999,
+          image_url: product.image_url || '',
+          sizes: [],
+          size: curtain.size,
+          quantity: 1,
+          unit_price: curtain.unit_price,
+          is_curtain: true
+        });
+      }
+
+      renderCart();
+      setMessage(product.name + ' u shtua si perde me dimension personal.', 'ok');
+      return;
+    }
+
     const size = product.selected_size || (Array.isArray(product.sizes) ? product.sizes.find(option => Number(option.stock || 0) > 0) || product.sizes[0] : null);
     const sizeLabel = size ? String(size.label || '') : '';
     const price = size && size.price !== null && size.price !== '' ? Number(size.price) : Number(product.price || 0);
@@ -549,7 +636,9 @@
     cart.forEach((line, index) => {
       const total = line.quantity * line.unit_price;
       const tr = document.createElement('tr');
-      const sizeOptions = line.sizes.length
+      const sizeOptions = line.is_curtain
+        ? '<textarea class="form-control form-control-sm" rows="2" data-line-size-text="' + index + '">' + escapeHtml(line.size || '') + '</textarea>'
+        : line.sizes.length
         ? '<select class="form-select form-select-sm" data-line-size="' + index + '">' + line.sizes.map(size => {
             const label = String(size.label || '');
             const selected = label === line.size ? ' selected' : '';
@@ -557,9 +646,10 @@
             return '<option value="' + escapeHtml(label) + '" data-price="' + money(price) + '" data-stock="' + Number(size.stock || 0) + '"' + selected + (Number(size.stock || 0) <= 0 ? ' disabled' : '') + '>' + escapeHtml(label) + ' (' + Number(size.stock || 0) + ' në stok)</option>';
           }).join('') + '</select>'
         : '<input class="form-control form-control-sm" value="' + escapeHtml(line.size || '') + '" data-line-size-text="' + index + '">';
+      const stockText = line.is_curtain ? 'perde me porosi' : (line.stock <= 0 ? 'stok 0' : 'stok ' + line.stock);
 
       tr.innerHTML = ''
-        + '<td><div class="cart-product"><img class="cart-thumb" src="' + escapeAttr(line.image_url || placeholderImage) + '" alt="' + escapeAttr(line.item_name) + '"><div><div class="fw-bold">' + escapeHtml(line.item_name) + '</div><div class="small text-muted">' + escapeHtml(line.barcode || '-') + (line.stock <= 0 ? ' / stok 0' : ' / stok ' + line.stock) + '</div></div></div></td>'
+        + '<td><div class="cart-product"><img class="cart-thumb" src="' + escapeAttr(line.image_url || placeholderImage) + '" alt="' + escapeAttr(line.item_name) + '"><div><div class="fw-bold">' + escapeHtml(line.item_name) + '</div><div class="small text-muted">' + escapeHtml(line.barcode || '-') + ' / ' + stockText + '</div></div></div></td>'
         + '<td>' + sizeOptions + '</td>'
         + '<td><input type="number" min="1" class="form-control form-control-sm qty-input" value="' + line.quantity + '" data-line-qty="' + index + '"></td>'
         + '<td><input type="number" min="0" step="0.01" class="form-control form-control-sm price-input" value="' + money(line.unit_price) + '" data-line-price="' + index + '"></td>'
@@ -663,8 +753,10 @@
     const qty = event.target.closest('[data-line-qty]');
     if (qty) {
       const line = cart[Number(qty.getAttribute('data-line-qty'))];
-      line.quantity = Math.min(Math.max(Number(qty.value || 1), 1), line.stock);
-      if (Number(qty.value) > line.stock) setMessage('Në stok janë vetëm ' + line.stock + ' copë.', 'error');
+      line.quantity = line.is_curtain
+        ? Math.max(Number(qty.value || 1), 1)
+        : Math.min(Math.max(Number(qty.value || 1), 1), line.stock);
+      if (!line.is_curtain && Number(qty.value) > line.stock) setMessage('Në stok janë vetëm ' + line.stock + ' copë.', 'error');
       renderCart();
       return;
     }

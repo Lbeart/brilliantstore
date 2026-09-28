@@ -158,6 +158,54 @@ class PointOfSaleTest extends TestCase
         $this->assertStringContainsString('data-estimated-page-height="199"', $multipleItemsHtml);
     }
 
+    public function test_curtain_can_be_added_to_public_cart_with_custom_dimensions(): void
+    {
+        $product = $this->curtainProduct();
+
+        $this->postJson(route('cart.addCurtain'), [
+            'product_id' => $product->id,
+            'width' => '2,5',
+            'height' => '2.8',
+            'fold_type' => 'grommet',
+        ])->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('totalQty', 1);
+
+        $cart = session('cart');
+        $this->assertCount(1, $cart);
+
+        $line = array_values($cart)[0];
+        $this->assertSame('curtain', $line['type']);
+        $this->assertSame(2.5, $line['curtain']['width']);
+        $this->assertSame(2.8, $line['curtain']['height']);
+        $this->assertSame('grommet', $line['curtain']['fold_type']);
+    }
+
+    public function test_pos_checkout_accepts_curtain_custom_dimension_without_variant_stock_check(): void
+    {
+        $product = $this->curtainProduct();
+
+        $this->post(route('admin.pos.checkout'), [
+            'receipt_type' => 'regular',
+            'payment_method' => 'cash',
+            'print_format' => 'receipt',
+            'items' => [[
+                'product_id' => $product->id,
+                'item_name' => $product->name,
+                'size' => '2.5m x 2.8m / Sistemi: Fold 1 (1:2) / Material: 5m',
+                'quantity' => 1,
+                'unit_price' => 50,
+            ]],
+        ])->assertRedirect();
+
+        $this->assertSame(1, DB::table('customer_receipts')->count());
+        $this->assertDatabaseHas('customer_purchases', [
+            'product_id' => $product->id,
+            'size' => '2.5m x 2.8m / Sistemi: Fold 1 (1:2) / Material: 5m',
+        ]);
+        $this->assertSame(0, Product::find($product->id)->sizes[0]['stock']);
+    }
+
     private function product(): Product
     {
         return Product::create([
@@ -165,6 +213,22 @@ class PointOfSaleTest extends TestCase
             'stock' => 2, 'sku' => 'RUG-TEST', 'barcode' => 'BRL-TEST',
             'is_active' => true,
             'sizes' => [['label' => '200x300', 'price' => 75, 'stock' => 2, 'barcode' => '2000000000012']],
+        ]);
+    }
+
+    private function curtainProduct(): Product
+    {
+        return Product::create([
+            'name' => 'Perde Test',
+            'slug' => 'perde-test',
+            'price' => 10,
+            'stock' => 0,
+            'sku' => 'CURTAIN-TEST',
+            'barcode' => 'BRL-CURTAIN',
+            'category' => 'perde',
+            'subcategory' => 'ditore',
+            'is_active' => true,
+            'sizes' => [['label' => 'Gati', 'price' => 10, 'stock' => 0, 'barcode' => '3000000000012']],
         ]);
     }
 

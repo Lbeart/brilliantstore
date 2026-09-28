@@ -112,6 +112,11 @@ class CartController extends Controller
     // ✅ PERDE (width + height + folding system me extra)
     public function addCurtain(Request $request)
     {
+        $request->merge([
+            'width' => $this->normalizeDecimalInput($request->input('width')),
+            'height' => $this->normalizeDecimalInput($request->input('height')),
+        ]);
+
         $data = $request->validate([
             'product_id' => 'required|integer|exists:products,id',
             'width'      => 'required|numeric|min:0.1|max:50',
@@ -211,6 +216,14 @@ class CartController extends Controller
         }
 
         $this->storeCart($cart);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'ok' => true,
+                'totalQty' => session('cart_total_qty', 0),
+                'message' => 'Perde u shtua në shportë!',
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Perde u shtua në shportë!');
     }
@@ -450,5 +463,14 @@ class CartController extends Controller
     private function formatNumber(float $value): string
     {
         return rtrim(rtrim(number_format($value, 2, '.', ''), '0'), '.');
+    }
+
+    private function normalizeDecimalInput(mixed $value): mixed
+    {
+        if (!is_string($value)) {
+            return $value;
+        }
+
+        return str_replace(',', '.', trim($value));
     }
 }
