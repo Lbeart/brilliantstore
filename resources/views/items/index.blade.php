@@ -2013,7 +2013,7 @@
     <section class="hero" aria-label="Brillant home">
       <div class="hero-stage">
         <div class="hero-content">
-          <h1 data-sq="Rehatiiii. Stil. Brillant." data-en="Comfort. Style. Brillant." data-sr="Udobnost. Stil. Brillant.">Rehati. Stil. Brillant.</h1>
+          <h1 data-sq="Rehatii. Stil. Brillant." data-en="Comfort. Style. Brillant." data-sr="Udobnost. Stil. Brillant.">Rehati. Stil. Brillant.</h1>
           <a class="hero-cta" href="{{ route('products.index') }}"><span data-sq="Shiko koleksionet" data-en="Explore collections" data-sr="Pogledaj kolekcije">Shiko koleksionet</span><i class="bi bi-arrow-right"></i></a>
         </div>
         <a class="hero-scroll" href="#searchSection">Zbulo më shumë ↓</a>
