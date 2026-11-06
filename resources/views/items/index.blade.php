@@ -1910,7 +1910,7 @@
       .chat-footer > span { display:none; }
     }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v=20261106.1">
+  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v=20261106.2">
 </head>
 <body>
   @php
@@ -2767,6 +2767,6 @@
       setLanguage(serverLang || savedLang || 'sq');
     })();
   </script>
-<script defer src="{{ asset('js/admin-theme.js') }}?v=20261106.1"></script>
+<script defer src="{{ asset('js/admin-theme.js') }}?v=20261106.2"></script>
 </body>
 </html>
