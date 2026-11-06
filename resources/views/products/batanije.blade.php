@@ -173,8 +173,8 @@
       .navbar-brand img{ height:40px }
     }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}">
-  <script>try { document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'dark'; } catch (_) { document.documentElement.dataset.adminTheme = 'dark'; }</script>
+  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261106.1">
+  <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
 </head>
 <body>
 
@@ -378,8 +378,8 @@
   class="product-thumb"
   src="{{ $src }}"
   alt="{{ $p->name }}"
-  loading="{{ $loop->first ? 'eager' : 'lazy' }}"
-  fetchpriority="{{ $loop->first ? 'high' : 'low' }}"
+  loading="{{ $loop->iteration <= 4 ? 'eager' : 'lazy' }}"
+  fetchpriority="{{ $loop->first ? 'high' : 'auto' }}"
   decoding="async"
   sizes="(max-width: 576px) 50vw, (max-width: 992px) 33vw, 25vw"
   onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
@@ -477,6 +477,6 @@
     }
   });
 </script>
-<script defer src="{{ asset('js/admin-theme.js') }}"></script>
+<script defer src="{{ asset('js/admin-theme.js') }}?v=20261106.1"></script>
 </body>
 </html>

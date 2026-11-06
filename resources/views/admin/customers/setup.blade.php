@@ -4,10 +4,7 @@
   <meta charset="UTF-8">
   <title>Klientet - Setup</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>
-    try { document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'dark'; }
-    catch (_) { document.documentElement.dataset.adminTheme = 'dark'; }
-  </script>
+  <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -29,7 +26,7 @@
     @media (max-width:991px){.content{padding:1rem}.sidebar.desktop{display:none}}
   </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}?v=20261106.1">
 </head>
 <body>
 <nav class="navbar navbar-light app-navbar sticky-top">
@@ -89,6 +86,6 @@
 </div>
 
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script defer src="{{ asset('js/admin-theme.js') }}"></script>
+<script defer src="{{ asset('js/admin-theme.js') }}?v=20261106.1"></script>
 </body>
 </html>

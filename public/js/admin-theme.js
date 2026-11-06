@@ -52,7 +52,13 @@
     }
   }
 
-  let savedTheme = 'dark';
-  try { savedTheme = localStorage.getItem(storageKey) || 'dark'; } catch (_) {}
+  let savedTheme = 'light';
+  try {
+    if (localStorage.getItem('brillant-theme-version') !== '2') {
+      localStorage.setItem('brillant-theme-version', '2');
+      localStorage.setItem(storageKey, 'light');
+    }
+    savedTheme = localStorage.getItem(storageKey) || 'light';
+  } catch (_) {}
   applyTheme(root.dataset.adminTheme || savedTheme);
 })();

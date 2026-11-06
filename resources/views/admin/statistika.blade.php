@@ -38,7 +38,8 @@
     @media (max-width: 767px){ .sidebar.desktop{display:none} .chart-card{min-height:320px} }
   </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
+  <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}?v=20261106.1">
 </head>
 <body>
 
@@ -333,6 +334,6 @@ document.getElementById('yearlyPNG').addEventListener('click', e=>{
   e.preventDefault(); downloadPNG(yearlyChart, 'yearly_'+yearlyMetric+'.png');
 });
 </script>
-<script defer src="{{ asset('js/admin-theme.js') }}"></script>
+<script defer src="{{ asset('js/admin-theme.js') }}?v=20261106.1"></script>
 </body>
 </html>

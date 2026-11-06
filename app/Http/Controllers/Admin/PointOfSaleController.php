@@ -242,9 +242,11 @@ class PointOfSaleController extends Controller
             return [$customer, $receipt];
         });
 
+        $isReceipt = ($data['print_format'] ?? 'a4') === 'receipt';
+
         return redirect()
-            ->route(($data['print_format'] ?? 'a4') === 'receipt' ? 'admin.pos.receipt' : 'admin.customers.invoice',
-                ($data['print_format'] ?? 'a4') === 'receipt' ? [$receipt] : [$customer, $receipt->code])
+            ->route($isReceipt ? 'admin.pos.receipt' : 'admin.customers.invoice',
+                $isReceipt ? ['receipt' => $receipt->id, 'print' => 1] : [$customer, $receipt->code])
             ->with('success', 'Shitja u ruajt ne POS dhe fatura u krijua.');
     }
 

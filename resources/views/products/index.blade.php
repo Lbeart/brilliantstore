@@ -12,8 +12,8 @@
     body{ background:#f8f9fa; font-family:'Segoe UI',sans-serif; }
     .card-img-top{ object-fit:cover; height:220px; }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}">
-  <script>try { document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'dark'; } catch (_) { document.documentElement.dataset.adminTheme = 'dark'; }</script>
+  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261106.1">
+  <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
 </head>
 <body>
 
@@ -31,7 +31,7 @@
     @foreach($products as $p)
       <div class="col-12 col-sm-6 col-lg-3">
         <div class="card h-100 shadow-sm">
-          <img class="card-img-top" src="{{ $p->image_url }}" alt="{{ $p->name }}" loading="{{ $loop->first ? 'eager' : 'lazy' }}" decoding="async" fetchpriority="{{ $loop->first ? 'high' : 'low' }}" width="640" height="520">
+          <img class="card-img-top" src="{{ $p->image_url }}" alt="{{ $p->name }}" loading="{{ $loop->iteration <= 4 ? 'eager' : 'lazy' }}" decoding="async" fetchpriority="{{ $loop->first ? 'high' : 'auto' }}" width="640" height="520">
           <div class="card-body d-flex flex-column">
             <h5 class="card-title mb-1">{{ $p->name }}</h5>
             <div class="text-danger fw-bold mb-2">€ {{ number_format($p->price,2) }}</div>
@@ -53,6 +53,6 @@
 </div>
 
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script defer src="{{ asset('js/admin-theme.js') }}"></script>
+<script defer src="{{ asset('js/admin-theme.js') }}?v=20261106.1"></script>
 </body>
 </html>

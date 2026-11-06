@@ -75,7 +75,8 @@
     @media (max-width:767px){.sidebar.desktop{display:none}.stat{min-height:auto}.qty-input,.price-input{width:100%}}
   </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
+  <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}?v=20261106.1">
 </head>
 <body>
 
@@ -258,7 +259,7 @@
                   <div class="col-12 col-md-6">
                     <button type="button" class="quick-product" data-quick-product="{{ $product['id'] }}">
                       <span class="quick-left">
-                        <img class="quick-thumb" src="{{ $product['image_url'] }}" alt="{{ $product['name'] }}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+                        <img class="quick-thumb" src="{{ $product['image_url'] }}" alt="{{ $product['name'] }}" loading="{{ $loop->iteration <= 4 ? 'eager' : 'lazy' }}" fetchpriority="{{ $loop->first ? 'high' : 'auto' }}" decoding="async" width="56" height="56" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
                         <span>
                           <span class="fw-bold">{{ $product['name'] }}</span><br>
                           <span class="small text-muted">{{ $product['barcode'] ?: $product['sku'] }}</span>
@@ -368,6 +369,7 @@
               <div class="small text-muted mt-2">Kuponi 80 mm është dokument shitjeje, jo kupon fiskal zyrtar.</div>
             </div>
 
+            </form>
             <div class="card-soft p-3">
               <div class="section-title">
                 <h2>Faturat e fundit</h2>
@@ -406,7 +408,7 @@
             </div>
           </div>
         </div>
-      </form>
+
     </main>
   </div>
 </div>
@@ -845,6 +847,6 @@
   renderCart();
 })();
 </script>
-<script defer src="{{ asset('js/admin-theme.js') }}"></script>
+<script defer src="{{ asset('js/admin-theme.js') }}?v=20261106.1"></script>
 </body>
 </html>

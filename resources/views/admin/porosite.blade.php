@@ -35,7 +35,8 @@
     .order-card .value{font-weight:600}
   </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
+  <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}?v=20261106.1">
 </head>
 <body>
 
@@ -270,6 +271,6 @@ document.querySelectorAll('form.auto-submit select[name="status"]').forEach(sel=
   });
 });
 </script>
-<script defer src="{{ asset('js/admin-theme.js') }}"></script>
+<script defer src="{{ asset('js/admin-theme.js') }}?v=20261106.1"></script>
 </body>
 </html>

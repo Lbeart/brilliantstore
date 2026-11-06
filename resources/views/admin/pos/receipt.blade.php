@@ -77,6 +77,7 @@
   <script src="{{ asset('js/qz-tray.js') }}?v=2.3.0"></script>
   <script>
     const receiptCode = @json((string) $receipt->code, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_AMP|JSON_HEX_QUOT);
+    const autoPrintRequested = @json(request()->boolean('print'));
     const QZ_PAPER_WIDTH_MM = 50;
     const QZ_PAPER_HEIGHT_MM = 200;
     const preferredPrinterPatterns = [
@@ -171,6 +172,7 @@
         console.error(error);
         const detail = error && error.message ? error.message : String(error);
         showPrintStatus('Printimi direkt dështoi: ' + detail + ' Hape QZ Tray, shtyp Allow dhe shëno “Remember this decision”, pastaj provo përsëri.', 'error');
+        if (autoPrintRequested) setTimeout(printReceipt, 250);
       } finally {
         if (button) button.disabled = false;
       }
@@ -199,6 +201,9 @@
       ready.then(() => {
         prepareReceiptPage();
         @if(request()->boolean('print'))
+          const cleanUrl = new URL(window.location.href);
+          cleanUrl.searchParams.delete('print');
+          window.history.replaceState({}, document.title, cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
           setTimeout(printWithQz, 150);
         @endif
       });

@@ -19,8 +19,8 @@
                 font-family: 'Nunito', sans-serif;
             }
         </style>
-      <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}">
-  <script>try { document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'dark'; } catch (_) { document.documentElement.dataset.adminTheme = 'dark'; }</script>
+      <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261106.1">
+  <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
 </head>
     <body class="antialiased">
         <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
@@ -130,6 +130,6 @@
                 </div>
             </div>
         </div>
-    <script defer src="{{ asset('js/admin-theme.js') }}"></script>
+    <script defer src="{{ asset('js/admin-theme.js') }}?v=20261106.1"></script>
 </body>
 </html>

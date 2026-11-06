@@ -1,23 +1,23 @@
 /* Shared storefront palette for catalogue, product, cart and information pages. */
 html[data-admin-theme="dark"] {
   color-scheme: dark;
-  --store-ink: #edf0f4;
-  --store-muted: #aab3bf;
-  --store-line: #343c48;
-  --store-surface: #1b212a;
-  --store-page: #12171e;
-  --store-field: #151b23;
-  --store-soft: #242c37;
+  --store-ink: #f1ece7;
+  --store-muted: #b8aaa0;
+  --store-line: #403832;
+  --store-surface: #211d1a;
+  --store-page: #171310;
+  --store-field: #1b1714;
+  --store-soft: #2b2521;
 }
 html[data-admin-theme="light"] {
   color-scheme: light;
-  --store-ink: #202939;
-  --store-muted: #667085;
-  --store-line: #d9dfe7;
+  --store-ink: #2b211d;
+  --store-muted: #76675f;
+  --store-line: #e5d8ce;
   --store-surface: #fff;
-  --store-page: #f4f6f8;
+  --store-page: #f8f4ef;
   --store-field: #fff;
-  --store-soft: #f5f7fa;
+  --store-soft: #f4ece5;
 }
 html[data-admin-theme] body { color: var(--store-ink); background: var(--store-page); }
 html[data-admin-theme] .navbar-custom,
