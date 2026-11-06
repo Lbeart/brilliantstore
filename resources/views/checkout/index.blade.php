@@ -270,11 +270,20 @@
     }
 
     if(form){
+      let submitting = false;
       form.addEventListener('submit',function(e){
+        // Ignore repeated clicks or programmatic submits while the first request is in flight.
+        if (submitting) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          return;
+        }
         if(!form.checkValidity()){
           e.preventDefault(); e.stopPropagation(); form.classList.add('was-validated'); return;
         }
+        submitting = true;
         btn.disabled=true; spinner.classList.remove('d-none');
+        btn.setAttribute('aria-busy', 'true');
       });
 
       const phone = document.getElementById('phone');

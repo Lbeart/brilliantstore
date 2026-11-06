@@ -97,6 +97,9 @@
 
     .quick-actions .btn,
     .toolbar .btn{border-radius:var(--radius);font-weight:700}
+    .quick-actions{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+    .quick-actions-title{font-size:.9rem;font-weight:800;margin:0;color:var(--ink)}
+    .quick-actions-hint{font-size:.82rem;color:var(--muted);margin:.15rem 0 0}
     .quick-actions .btn-danger{background:var(--brand);border-color:var(--brand)}
     .quick-actions .btn-danger:hover{background:var(--brand-dark);border-color:var(--brand-dark)}
 
@@ -193,6 +196,7 @@
       .sidebar.desktop{display:none}
       .kpi{min-height:auto}
       .quick-actions .btn{width:100%}
+      .quick-actions{align-items:stretch;flex-direction:column}
       .table-responsive{border-radius:var(--radius)}
       .admin-ai-launcher{right:14px;bottom:14px}
       .admin-ai-panel{left:10px;right:10px;bottom:80px;width:auto;height:min(72dvh,560px);max-height:calc(100dvh - 96px);border-radius:14px}
@@ -331,24 +335,16 @@
       </div>
 
       <div class="card-soft quick-actions p-3 mb-3">
+        <div>
+          <h2 class="quick-actions-title">Veprime të shpejta</h2>
+          <p class="quick-actions-hint">Hap punët që kërkojnë vëmendje.</p>
+        </div>
         <div class="d-flex flex-wrap gap-2">
           <a class="btn btn-danger" href="{{ route('admin.orders.index') }}?status=new">
             <i class="fa fa-bell me-1"></i> Porosi të reja
           </a>
-          <a class="btn btn-outline-dark" href="{{ route('admin.orders.index') }}">
-            <i class="fa fa-calendar-day me-1"></i> Porositë e sotme
-          </a>
           <a class="btn btn-outline-dark" href="{{ route('track.form') }}" target="_blank" rel="noopener">
             <i class="fa fa-location-dot me-1"></i> Faqja e gjurmimit
-          </a>
-          <a class="btn btn-outline-dark" href="{{ route('admin.customers.index') }}">
-            <i class="fa fa-address-book me-1"></i> Klientet
-          </a>
-          <a class="btn btn-outline-dark" href="{{ route('admin.pos.index') }}">
-            <i class="fa fa-cash-register me-1"></i> Arkë & barkode
-          </a>
-          <a class="btn btn-outline-dark" href="{{ route('admin.stats') }}">
-            <i class="fa fa-chart-line me-1"></i> Raportet
           </a>
         </div>
       </div>
