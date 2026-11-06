@@ -1959,7 +1959,7 @@
         <a href="{{ route('about') }}" data-sq="About" data-en="About" data-sr="O nama">About</a>
         <a href="{{ route('contact') }}" data-sq="Contact" data-en="Contact" data-sr="Kontakt">Contact</a>
         @auth
-          <a class="account-mobile-link" href="{{ route('account.dashboard') }}"><i class="bi bi-person-circle"></i> {{ \Illuminate\Support\Str::limit(auth()->user()->name, 18) }}</a>
+          <a class="account-mobile-link" href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('account.dashboard') }}"><i class="bi bi-person-circle"></i> {{ auth()->user()->role === 'admin' ? 'Paneli admin' : \Illuminate\Support\Str::limit(auth()->user()->name, 18) }}</a>
         @else
           <a class="account-mobile-link" href="{{ route('login') }}"><i class="bi bi-person-circle"></i> Llogaria ime</a>
         @endauth
@@ -1979,7 +1979,7 @@
           <button type="button" data-lang="sr" data-url="/lang/sr" class="{{ $pageLocale === 'sr' ? 'active' : '' }}">SR</button>
         </div>
         @auth
-          <a class="login-btn" href="{{ route('account.dashboard') }}"><i class="bi bi-person-circle"></i> {{ \Illuminate\Support\Str::limit(auth()->user()->name, 16) }}</a>
+          <a class="login-btn" href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('account.dashboard') }}"><i class="bi bi-person-circle"></i> {{ auth()->user()->role === 'admin' ? 'Admin' : \Illuminate\Support\Str::limit(auth()->user()->name, 16) }}</a>
         @else
           <a class="login-btn" href="{{ route('login') }}"><i class="bi bi-person-circle"></i> Llogaria ime</a>
         @endauth

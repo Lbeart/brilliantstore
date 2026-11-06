@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use App\Models\User;
 
 class UserController extends Controller
@@ -70,7 +73,19 @@ public function index(Request $request)
 
     public function destroy(User $user)
     {
-        $user->delete();
+        if (request()->user()?->is($user)) {
+            return back()->with('error', 'Nuk mund ta fshish llogarinë me të cilën je kyçur.');
+        }
+
+        DB::transaction(function () use ($user) {
+            if (Schema::hasTable('sessions')) {
+                DB::table('sessions')->where('user_id', $user->id)->delete();
+            }
+
+            $user->delete();
+        });
+
+        Cache::forget('user-is-online-'.$user->id);
 
         return back()->with('success', 'Përdoruesi u fshi me sukses.');
     }

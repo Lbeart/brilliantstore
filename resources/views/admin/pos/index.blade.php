@@ -162,6 +162,7 @@
       </div>
 
       @if(session('error')) <div class="alert alert-danger">{{ session('error') }}</div> @endif
+      @if(session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
       @if($errors->any())
         <div class="alert alert-danger">
           <strong>Shitja nuk u ruajt.</strong> {{ $errors->first() }}
@@ -242,11 +243,18 @@
             <div class="card-soft p-3">
               <div class="section-title">
                 <h2>Produktet e fundit</h2>
-                <a href="{{ route('admin.products.index') }}" class="small fw-bold text-danger">Lista</a>
+                <div class="d-flex align-items-center gap-2">
+                  @if($quickProductPayload->count() > 8)
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-toggle-products aria-expanded="false">
+                      Shfaq të gjitha ({{ $quickProductPayload->count() }})
+                    </button>
+                  @endif
+                  <a href="{{ route('admin.products.index') }}" class="small fw-bold text-danger">Menaxho</a>
+                </div>
               </div>
               <div class="row g-2">
                 @forelse($quickProductPayload as $product)
-                  <div class="col-12 col-md-6">
+                  <div class="col-12 col-md-6 {{ $loop->iteration > 8 ? 'd-none' : '' }}" @if($loop->iteration > 8) data-extra-product @endif>
                     <button type="button" class="quick-product" data-quick-product="{{ $product['id'] }}">
                       <span class="quick-left">
                         <img class="quick-thumb" src="{{ $product['image_url'] }}" alt="{{ $product['name'] }}" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
@@ -690,6 +698,14 @@
   scanButton?.addEventListener('click', lookup);
 
   document.addEventListener('click', event => {
+    const showProducts = event.target.closest('[data-toggle-products]');
+    if (showProducts) {
+      const expanded = showProducts.getAttribute('aria-expanded') === 'true';
+      document.querySelectorAll('[data-extra-product]').forEach(item => item.classList.toggle('d-none', expanded));
+      showProducts.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      showProducts.textContent = expanded ? 'Shfaq të gjitha (' + quickProducts.length + ')' : 'Shfaq më pak';
+    }
+
     const quick = event.target.closest('[data-quick-product]');
     if (quick) {
       const product = productById(quick.getAttribute('data-quick-product'));

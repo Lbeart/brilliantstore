@@ -45,7 +45,7 @@ class PointOfSaleController extends Controller
         $quickProducts = Product::query()
             ->where('is_active', true)
             ->orderByDesc('id')
-            ->limit(24)
+            ->limit(200)
             ->get(['id', 'name', 'price', 'stock', 'sku', 'barcode', 'sizes', 'image_path', 'category', 'subcategory']);
 
         return view('admin.pos.index', compact('receipts', 'summary', 'quickProducts'));

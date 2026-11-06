@@ -71,6 +71,8 @@
 
     <!-- Content -->
     <div class="col-lg-10 content">
+      @if(session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
+      @if(session('error')) <div class="alert alert-danger">{{ session('error') }}</div> @endif
       <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap controls-wrap">
         <div>
           <div class="h5 m-0">Lista e Përdoruesve</div>
@@ -150,17 +152,21 @@
                 <td>{{ $user->created_at?->format('d/m/Y H:i') }}</td>
                 <td>
                   @if(Cache::has('user-is-online-' . $user->id))
-                    <span class="badge bg-success">Online</span>
+                    <span class="badge bg-success"><i class="fa fa-circle me-1" aria-hidden="true"></i>Online</span>
                   @else
-                    <span class="badge bg-secondary">Offline</span>
+                    <span class="badge bg-secondary"><i class="fa fa-circle me-1" aria-hidden="true"></i>Offline</span>
                   @endif
                 </td>
                 <td class="text-nowrap">
                   <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">Edito</a>
-                  <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('A je i sigurt që do me fshi?')">Fshi</button>
-                  </form>
+                  @if(auth()->id() === $user->id)
+                    <span class="badge bg-light text-dark">Llogaria jote</span>
+                  @else
+                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
+                      @csrf @method('DELETE')
+                      <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('A je i sigurt që dëshiron ta fshish këtë përdorues?')">Fshi</button>
+                    </form>
+                  @endif
                 </td>
               </tr>
             @empty
