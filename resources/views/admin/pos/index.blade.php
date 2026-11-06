@@ -75,6 +75,7 @@
     @media (max-width:767px){.sidebar.desktop{display:none}.stat{min-height:auto}.qty-input,.price-input{width:100%}}
   </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
 </head>
 <body>
 
@@ -844,5 +845,6 @@
   renderCart();
 })();
 </script>
+<script defer src="{{ asset('js/admin-theme.js') }}"></script>
 </body>
 </html>

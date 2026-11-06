@@ -38,6 +38,7 @@
     @media (max-width: 767px){ .sidebar.desktop{display:none} .chart-card{min-height:320px} }
   </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
 </head>
 <body>
 
@@ -332,5 +333,6 @@ document.getElementById('yearlyPNG').addEventListener('click', e=>{
   e.preventDefault(); downloadPNG(yearlyChart, 'yearly_'+yearlyMetric+'.png');
 });
 </script>
+<script defer src="{{ asset('js/admin-theme.js') }}"></script>
 </body>
 </html>

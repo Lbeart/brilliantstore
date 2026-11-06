@@ -32,6 +32,7 @@
     .small-muted{ color:#6b7280; font-size:.9rem }
   </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
 </head>
 <body>
 
@@ -213,5 +214,6 @@ if (searchInput) {
   });
 }
 </script>
+<script defer src="{{ asset('js/admin-theme.js') }}"></script>
 </body>
 </html>

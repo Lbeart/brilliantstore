@@ -57,7 +57,7 @@
     @media (max-width:767px){.sidebar.desktop{display:none}.payment-inline{grid-template-columns:1fr}}
   </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/customer-theme.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
 </head>
 <body>
 

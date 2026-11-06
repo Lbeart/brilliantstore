@@ -12,6 +12,7 @@
     .summary-thumb{width:56px;height:56px;border-radius:8px;object-fit:cover;background:#f1f2f6}
     .badge-status{font-size:.8rem}
   </style>
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
 </head>
 <body>
 
@@ -237,5 +238,6 @@
   });
 </script>
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="{{ asset('js/admin-theme.js') }}"></script>
 </body>
 </html>

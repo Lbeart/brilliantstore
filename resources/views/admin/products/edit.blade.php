@@ -50,6 +50,7 @@
         .card-soft{ background:#fff; border:0; border-radius:14px; box-shadow:0 8px 24px rgba(0,0,0,.06); }
     </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
 </head>
 <body>
 
@@ -694,5 +695,6 @@ document.addEventListener('click', function (e) {
 });
 </script>
 
+<script defer src="{{ asset('js/admin-theme.js') }}"></script>
 </body>
 </html>

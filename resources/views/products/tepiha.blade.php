@@ -936,6 +936,8 @@
       ::-webkit-scrollbar-thumb:hover{ background: rgba(15,23,42,.28); }
     }
   </style>
+  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}">
+  <script>try { document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'dark'; } catch (_) { document.documentElement.dataset.adminTheme = 'dark'; }</script>
 </head>
 
 <body>
@@ -1658,5 +1660,6 @@
   });
 })();
   </script>
+<script defer src="{{ asset('js/admin-theme.js') }}"></script>
 </body>
 </html>

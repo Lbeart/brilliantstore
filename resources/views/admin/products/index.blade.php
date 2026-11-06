@@ -55,6 +55,7 @@
     }
   </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
 </head>
 <body>
 
@@ -304,5 +305,6 @@
   });
 })();
 </script>
+<script defer src="{{ asset('js/admin-theme.js') }}"></script>
 </body>
 </html>

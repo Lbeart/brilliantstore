@@ -19,7 +19,9 @@
                 font-family: 'Nunito', sans-serif;
             }
         </style>
-    </head>
+      <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}">
+  <script>try { document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'dark'; } catch (_) { document.documentElement.dataset.adminTheme = 'dark'; }</script>
+</head>
     <body class="antialiased">
         <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
             @if (Route::has('login'))
@@ -128,5 +130,6 @@
                 </div>
             </div>
         </div>
-    </body>
+    <script defer src="{{ asset('js/admin-theme.js') }}"></script>
+</body>
 </html>

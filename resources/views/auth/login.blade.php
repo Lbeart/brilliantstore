@@ -285,6 +285,8 @@
             .back-link { margin-bottom: 20px; }
         }
     </style>
+  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}">
+  <script>try { document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'dark'; } catch (_) { document.documentElement.dataset.adminTheme = 'dark'; }</script>
 </head>
 <body>
     <main class="auth-page">
@@ -393,5 +395,6 @@
             </div>
         </section>
     </main>
+<script defer src="{{ asset('js/admin-theme.js') }}"></script>
 </body>
 </html>

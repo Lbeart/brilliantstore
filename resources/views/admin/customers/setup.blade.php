@@ -29,7 +29,7 @@
     @media (max-width:991px){.content{padding:1rem}.sidebar.desktop{display:none}}
   </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/customer-theme.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
 </head>
 <body>
 <nav class="navbar navbar-light app-navbar sticky-top">

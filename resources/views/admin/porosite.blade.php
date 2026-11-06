@@ -35,6 +35,7 @@
     .order-card .value{font-weight:600}
   </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
 </head>
 <body>
 
@@ -269,5 +270,6 @@ document.querySelectorAll('form.auto-submit select[name="status"]').forEach(sel=
   });
 });
 </script>
+<script defer src="{{ asset('js/admin-theme.js') }}"></script>
 </body>
 </html>

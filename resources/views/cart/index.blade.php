@@ -40,6 +40,8 @@
       .summary-sticky{ position:static }
     }
   </style>
+  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}">
+  <script>try { document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'dark'; } catch (_) { document.documentElement.dataset.adminTheme = 'dark'; }</script>
 </head>
 <body>
 <div class="container page-wrap py-4">
@@ -379,5 +381,6 @@
     }
   });
 </script>
+<script defer src="{{ asset('js/admin-theme.js') }}"></script>
 </body>
 </html>

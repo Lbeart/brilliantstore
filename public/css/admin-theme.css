@@ -1,0 +1,153 @@
+/* Shared admin theme: one layout and a clear contrast in both modes. */
+html[data-admin-theme="dark"] {
+  color-scheme: dark;
+  --ink: #eef1f5;
+  --muted: #aab4c0;
+  --line: #343c48;
+  --surface: #1b212a;
+  --page: #12171e;
+  --field: #151b23;
+  --soft: #242c37;
+  --soft-ink: #e1e6ed;
+  --shadow: 0 10px 28px rgba(0, 0, 0, .22);
+  --accent-soft: rgba(201, 47, 61, .17);
+}
+
+html[data-admin-theme="light"] {
+  color-scheme: light;
+  --ink: #202939;
+  --muted: #667085;
+  --line: #d9dfe7;
+  --surface: #fff;
+  --page: #f3f5f8;
+  --field: #fff;
+  --soft: #f5f7fa;
+  --soft-ink: #344054;
+  --shadow: 0 8px 24px rgba(16, 24, 40, .06);
+  --accent-soft: #fff0f1;
+}
+
+html[data-admin-theme] body {
+  background: var(--page) !important;
+  color: var(--ink) !important;
+}
+
+html[data-admin-theme] .app-navbar {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+/* The navigation stays dark in both modes so the admin pages retain one identity. */
+html[data-admin-theme] .sidebar { background: #202734 !important; color: #fff !important; }
+html[data-admin-theme] .sidebar .nav-link { color: #cbd2dc !important; }
+html[data-admin-theme] .sidebar .nav-link:hover { background: rgba(255,255,255,.08) !important; color: #fff !important; }
+html[data-admin-theme] .sidebar .nav-link.active { background: rgba(201,47,61,.24) !important; color: #fff !important; }
+
+html[data-admin-theme] .card,
+html[data-admin-theme] .card-soft,
+html[data-admin-theme] .customer-card,
+html[data-admin-theme] .month-tile,
+html[data-admin-theme] .line-item,
+html[data-admin-theme] .product-card,
+html[data-admin-theme] .chart-card,
+html[data-admin-theme] .stat-card,
+html[data-admin-theme] .modal-content,
+html[data-admin-theme] .dropdown-menu,
+html[data-admin-theme] .receipt-row,
+html[data-admin-theme] .order-card,
+html[data-admin-theme] .user-card,
+html[data-admin-theme] .accordion-item,
+html[data-admin-theme] .list-group-item {
+  background-color: var(--surface) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+html[data-admin-theme] .content,
+html[data-admin-theme] main,
+html[data-admin-theme] .card-body,
+html[data-admin-theme] .card-title,
+html[data-admin-theme] .section-title h2,
+html[data-admin-theme] .page-head h1,
+html[data-admin-theme] label,
+html[data-admin-theme] th,
+html[data-admin-theme] td,
+html[data-admin-theme] .dropdown-item { color: var(--ink); }
+html[data-admin-theme] .text-muted,
+html[data-admin-theme] .muted,
+html[data-admin-theme] .small-muted,
+html[data-admin-theme] .eyebrow,
+html[data-admin-theme] .page-head p { color: var(--muted) !important; }
+
+html[data-admin-theme] .form-control,
+html[data-admin-theme] .form-select,
+html[data-admin-theme] .input-group-text,
+html[data-admin-theme] textarea,
+html[data-admin-theme] select,
+html[data-admin-theme] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]) {
+  background-color: var(--field);
+  border-color: var(--line);
+  color: var(--ink);
+}
+html[data-admin-theme] .form-control::placeholder,
+html[data-admin-theme] textarea::placeholder,
+html[data-admin-theme] input::placeholder { color: var(--muted); opacity: 1; }
+html[data-admin-theme] select option { background: var(--surface); color: var(--ink); }
+
+html[data-admin-theme] .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--ink);
+  --bs-table-border-color: var(--line);
+  --bs-table-striped-color: var(--ink);
+  --bs-table-striped-bg: color-mix(in srgb, var(--soft) 72%, transparent);
+  --bs-table-hover-color: var(--ink);
+  --bs-table-hover-bg: var(--soft);
+}
+html[data-admin-theme] .table-light {
+  --bs-table-bg: var(--soft);
+  --bs-table-color: var(--ink);
+  --bs-table-border-color: var(--line);
+}
+html[data-admin-theme] .table thead th { color: var(--muted) !important; }
+html[data-admin-theme] .bg-light,
+html[data-admin-theme] .text-bg-light { background: var(--soft) !important; color: var(--soft-ink) !important; }
+html[data-admin-theme] .border,
+html[data-admin-theme] .border-top,
+html[data-admin-theme] .border-bottom,
+html[data-admin-theme] hr { border-color: var(--line) !important; }
+html[data-admin-theme] hr { color: var(--line); opacity: 1; }
+html[data-admin-theme] .dropdown-item:hover,
+html[data-admin-theme] .dropdown-item:focus { background: var(--soft) !important; }
+html[data-admin-theme] .dropdown-menu { box-shadow: var(--shadow); }
+html[data-admin-theme] .btn-outline-dark { color: var(--ink) !important; border-color: var(--muted) !important; }
+html[data-admin-theme] .btn-outline-dark:hover { background: var(--ink) !important; color: var(--surface) !important; }
+html[data-admin-theme] .pagination {
+  --bs-pagination-color: var(--ink); --bs-pagination-bg: var(--surface);
+  --bs-pagination-border-color: var(--line); --bs-pagination-hover-bg: var(--soft);
+  --bs-pagination-hover-color: var(--ink); --bs-pagination-active-bg: #c92f3d;
+  --bs-pagination-active-border-color: #c92f3d;
+}
+html[data-admin-theme] .purchase-pill,
+html[data-admin-theme] .badge-soft { background: var(--soft) !important; border-color: var(--line) !important; color: var(--soft-ink) !important; }
+html[data-admin-theme] .private-toggle { background: var(--field); color: var(--ink); border-color: var(--line); }
+html[data-admin-theme] .stat-icon { background: var(--accent-soft) !important; color: #e34a59 !important; }
+html[data-admin-theme] .quick-product { background: var(--surface) !important; border-color: var(--line) !important; color: var(--ink) !important; }
+html[data-admin-theme] .quick-product:hover { border-color: #c92f3d !important; }
+
+html[data-admin-theme] .alert-success { --bs-alert-bg: color-mix(in srgb, #198754 12%, var(--surface)); --bs-alert-color: #198754; --bs-alert-border-color: color-mix(in srgb, #198754 34%, var(--line)); }
+html[data-admin-theme="dark"] .alert-success { --bs-alert-color: #85d5aa; }
+html[data-admin-theme] .alert-danger { --bs-alert-bg: color-mix(in srgb, #dc3545 11%, var(--surface)); --bs-alert-color: #c92f3d; --bs-alert-border-color: color-mix(in srgb, #dc3545 34%, var(--line)); }
+html[data-admin-theme="dark"] .alert-danger { --bs-alert-color: #ff9ca5; }
+html[data-admin-theme] .alert-warning { --bs-alert-bg: color-mix(in srgb, #ffc107 10%, var(--surface)); --bs-alert-color: #8a6500; --bs-alert-border-color: color-mix(in srgb, #ffc107 32%, var(--line)); }
+html[data-admin-theme="dark"] .alert-warning { --bs-alert-color: #f5d780; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-admin-theme] body,
+  html[data-admin-theme] .app-navbar,
+  html[data-admin-theme] .card,
+  html[data-admin-theme] .form-control,
+  html[data-admin-theme] .form-select,
+  html[data-admin-theme] .btn { transition: background-color .16s ease, color .16s ease, border-color .16s ease; }
+}

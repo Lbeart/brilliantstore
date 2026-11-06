@@ -23,6 +23,8 @@
     .kpi .value{ font-weight:800; font-size:1.2rem }
     @media (max-width:575.98px){ .btn-lg{ padding:.6rem 1rem; font-size:1rem } }
   </style>
+  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}">
+  <script>try { document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'dark'; } catch (_) { document.documentElement.dataset.adminTheme = 'dark'; }</script>
 </head>
 <body>
   <div class="container wrap py-4 py-md-5">
@@ -77,5 +79,6 @@
   </div>
 @endif
   <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="{{ asset('js/admin-theme.js') }}"></script>
 </body>
 </html>

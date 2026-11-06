@@ -1,0 +1,79 @@
+/* Shared storefront palette for catalogue, product, cart and information pages. */
+html[data-admin-theme="dark"] {
+  color-scheme: dark;
+  --store-ink: #edf0f4;
+  --store-muted: #aab3bf;
+  --store-line: #343c48;
+  --store-surface: #1b212a;
+  --store-page: #12171e;
+  --store-field: #151b23;
+  --store-soft: #242c37;
+}
+html[data-admin-theme="light"] {
+  color-scheme: light;
+  --store-ink: #202939;
+  --store-muted: #667085;
+  --store-line: #d9dfe7;
+  --store-surface: #fff;
+  --store-page: #f4f6f8;
+  --store-field: #fff;
+  --store-soft: #f5f7fa;
+}
+html[data-admin-theme] body { color: var(--store-ink); background: var(--store-page); }
+html[data-admin-theme] .navbar-custom,
+html[data-admin-theme] .navbar-custom .navbar-collapse { background: #202734 !important; }
+html[data-admin-theme] .navbar-custom .nav-link { color: #eef1f5 !important; }
+html[data-admin-theme] .navbar-custom .nav-link:hover { color: #ff9ca5 !important; }
+html[data-admin-theme] .dropdown-menu,
+html[data-admin-theme] .card,
+html[data-admin-theme] .product-card,
+html[data-admin-theme] .product-body,
+html[data-admin-theme] .product-info,
+html[data-admin-theme] .product-details,
+html[data-admin-theme] .empty,
+html[data-admin-theme] .summary-card,
+html[data-admin-theme] .cart-item,
+html[data-admin-theme] .checkout-card,
+html[data-admin-theme] .account-card,
+html[data-admin-theme] .modal-content,
+html[data-admin-theme] .list-group-item { background: var(--store-surface); border-color: var(--store-line); color: var(--store-ink); }
+html[data-admin-theme] .dropdown-item,
+html[data-admin-theme] .card-title,
+html[data-admin-theme] .product-title,
+html[data-admin-theme] .product-name,
+html[data-admin-theme] .page-header h1,
+html[data-admin-theme] .form-label,
+html[data-admin-theme] label,
+html[data-admin-theme] th,
+html[data-admin-theme] td { color: var(--store-ink); }
+html[data-admin-theme] .text-muted,
+html[data-admin-theme] .page-sub,
+html[data-admin-theme] .product-meta,
+html[data-admin-theme] .small-muted { color: var(--store-muted) !important; }
+html[data-admin-theme] .form-control,
+html[data-admin-theme] .form-select,
+html[data-admin-theme] .input-group-text,
+html[data-admin-theme] textarea,
+html[data-admin-theme] select,
+html[data-admin-theme] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]) { background: var(--store-field); color: var(--store-ink); border-color: var(--store-line); }
+html[data-admin-theme] .form-control::placeholder,
+html[data-admin-theme] textarea::placeholder,
+html[data-admin-theme] input::placeholder { color: var(--store-muted); opacity: 1; }
+html[data-admin-theme] .dropdown-item:hover,
+html[data-admin-theme] .dropdown-item:focus { background: var(--store-soft); color: var(--store-ink); }
+html[data-admin-theme] .table { --bs-table-bg: transparent; --bs-table-color: var(--store-ink); --bs-table-border-color: var(--store-line); --bs-table-striped-color: var(--store-ink); --bs-table-striped-bg: var(--store-soft); }
+html[data-admin-theme="dark"] .page-header h1 { color: var(--store-ink); }
+html[data-admin-theme="dark"] .product-thumb { background: var(--store-soft); }
+
+.global-theme-toggle {
+  position: fixed; right: 22px; bottom: 22px; z-index: 2000;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-width: 48px; height: 48px; padding: 0 14px; border: 1px solid rgba(255,255,255,.18);
+  border-radius: 999px; background: #a91f32; color: #fff; font: 600 14px/1 system-ui,sans-serif;
+  box-shadow: 0 8px 24px rgba(20,24,32,.24); cursor: pointer;
+}
+.global-theme-toggle:hover { background: #8e192a; }
+.global-theme-toggle:focus-visible { outline: 3px solid #e7b55c; outline-offset: 3px; }
+.theme-toggle-nav-item { display: flex; align-items: center; margin-left: .5rem; }
+.theme-toggle-nav-item .global-theme-toggle { position: static; min-width: 40px; height: 38px; padding: 0 12px; border-color: rgba(255,255,255,.24); box-shadow: none; }
+@media (max-width: 600px) { .global-theme-toggle { right: 14px; bottom: 14px; width: 46px; min-width: 46px; height: 46px; padding: 0; font-size: 20px; } .global-theme-toggle span { display: none; } }

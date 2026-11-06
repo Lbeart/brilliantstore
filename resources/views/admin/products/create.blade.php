@@ -24,6 +24,7 @@
         @media (max-width:767px){ .sidebar.desktop{ display:none; } }
     </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
 </head>
 <body>
 <nav class="navbar navbar-light app-navbar sticky-top">
@@ -507,5 +508,6 @@ document.addEventListener('click', function (e) {
   input.focus();
 });
 </script>
+<script defer src="{{ asset('js/admin-theme.js') }}"></script>
 </body>
 </html>
