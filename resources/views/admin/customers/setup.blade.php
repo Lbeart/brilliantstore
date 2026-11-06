@@ -39,7 +39,6 @@
     </button>
     <div class="title m-0">Klientet</div>
     <div class="d-flex align-items-center gap-2">
-      @include('admin.partials.theme-toggle')
       <a class="text-dark text-decoration-none fw-semibold" href="{{ route('admin.dashboard') }}">
         <i class="fas fa-home me-1"></i> Dashboard
       </a>

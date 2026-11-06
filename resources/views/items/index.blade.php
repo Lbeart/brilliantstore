@@ -49,6 +49,10 @@
   <meta name="theme-color" content="#7f1d2d">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <script>
+    try { document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'dark'; }
+    catch (_) { document.documentElement.dataset.adminTheme = 'dark'; }
+  </script>
 
   <meta property="og:title" content="{{ $seo['ogTitle'] }}">
   <meta property="og:description" content="{{ $seo['ogDescription'] }}">
@@ -1909,6 +1913,7 @@
       .chat-footer > span { display:none; }
     }
   </style>
+  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}">
 </head>
 <body>
   @php
@@ -1978,6 +1983,9 @@
           <button type="button" data-lang="en" data-url="/lang/en" class="{{ $pageLocale === 'en' ? 'active' : '' }}">EN</button>
           <button type="button" data-lang="sr" data-url="/lang/sr" class="{{ $pageLocale === 'sr' ? 'active' : '' }}">SR</button>
         </div>
+        <button class="icon-btn site-theme-toggle" type="button" data-theme-toggle data-theme-prefix="bi" aria-label="Kalo në temën e çelët" title="Kalo në temën e çelët" aria-pressed="true">
+          <i class="bi bi-sun" data-theme-icon data-theme-prefix="bi" aria-hidden="true"></i>
+        </button>
         @auth
           <a class="login-btn" href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('account.dashboard') }}"><i class="bi bi-person-circle"></i> {{ auth()->user()->role === 'admin' ? 'Admin' : \Illuminate\Support\Str::limit(auth()->user()->name, 16) }}</a>
         @else
@@ -2762,5 +2770,6 @@
       setLanguage(serverLang || savedLang || 'sq');
     })();
   </script>
+<script defer src="{{ asset('js/admin-theme.js') }}"></script>
 </body>
 </html>

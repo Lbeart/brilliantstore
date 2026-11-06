@@ -15,7 +15,10 @@
       button.setAttribute('title', label);
       button.setAttribute('aria-pressed', selected === 'dark' ? 'true' : 'false');
       const icon = button.querySelector('[data-theme-icon]');
-      if (icon) icon.className = selected === 'dark' ? 'fa fa-sun' : 'fa fa-moon';
+      if (icon) {
+        const prefix = icon.dataset.themePrefix || 'fa';
+        icon.className = prefix + ' ' + prefix + '-' + (selected === 'dark' ? 'sun' : 'moon');
+      }
       const text = button.querySelector('[data-theme-label]');
       if (text) text.textContent = selected === 'dark' ? 'Tema e çelët' : 'Tema e errët';
     });

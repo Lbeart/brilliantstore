@@ -68,7 +68,6 @@
     </button>
     <div class="title m-0">Edito klientin</div>
     <div class="d-flex align-items-center gap-2">
-      @include('admin.partials.theme-toggle')
       <div class="dropdown">
         <a class="text-dark text-decoration-none fw-semibold" href="#" data-bs-toggle="dropdown">
           <i class="fas fa-user-circle me-1"></i> Admin
