@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <title>Klientet - Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    try { document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'dark'; }
+    catch (_) { document.documentElement.dataset.adminTheme = 'dark'; }
+  </script>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -80,6 +84,7 @@
     @media (max-width:767px){.sidebar.desktop{display:none}.stat{min-height:auto}.actions{width:100%;display:flex}.actions .btn,.actions form{flex:1}.actions form button{width:100%}}
   </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/customer-theme.css') }}">
 </head>
 <body>
 
@@ -89,17 +94,20 @@
       <i class="fas fa-bars"></i>
     </button>
     <div class="title m-0">Klientet</div>
-    <div class="dropdown">
-      <a class="text-dark text-decoration-none fw-semibold" href="#" data-bs-toggle="dropdown">
-        <i class="fas fa-user-circle me-1"></i> Admin
-      </a>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li>
-          <form method="POST" action="{{ route('logout') }}"> @csrf
-            <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i> Dil</button>
-          </form>
-        </li>
-      </ul>
+    <div class="d-flex align-items-center gap-2">
+      @include('admin.partials.theme-toggle')
+      <div class="dropdown">
+        <a class="text-dark text-decoration-none fw-semibold" href="#" data-bs-toggle="dropdown">
+          <i class="fas fa-user-circle me-1"></i> Admin
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li>
+            <form method="POST" action="{{ route('logout') }}"> @csrf
+              <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i> Dil</button>
+            </form>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </nav>
@@ -687,5 +695,6 @@
   calculate();
 })();
 </script>
+<script defer src="{{ asset('js/admin-theme.js') }}"></script>
 </body>
 </html>

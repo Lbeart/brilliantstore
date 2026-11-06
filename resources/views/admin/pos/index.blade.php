@@ -244,20 +244,20 @@
               <div class="section-title">
                 <h2>Produktet e fundit</h2>
                 <div class="d-flex align-items-center gap-2">
-                  @if($quickProductPayload->count() > 8)
+                @if($quickProductCount > $quickProductPayload->count())
                     <button type="button" class="btn btn-sm btn-outline-danger" data-toggle-products aria-expanded="false">
-                      Shfaq të gjitha ({{ $quickProductPayload->count() }})
+                    Shfaq të gjitha ({{ $quickProductCount }})
                     </button>
                   @endif
                   <a href="{{ route('admin.products.index') }}" class="small fw-bold text-danger">Menaxho</a>
                 </div>
               </div>
-              <div class="row g-2">
+              <div class="row g-2" data-product-list>
                 @forelse($quickProductPayload as $product)
-                  <div class="col-12 col-md-6 {{ $loop->iteration > 8 ? 'd-none' : '' }}" @if($loop->iteration > 8) data-extra-product @endif>
+                  <div class="col-12 col-md-6">
                     <button type="button" class="quick-product" data-quick-product="{{ $product['id'] }}">
                       <span class="quick-left">
-                        <img class="quick-thumb" src="{{ $product['image_url'] }}" alt="{{ $product['name'] }}" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+                        <img class="quick-thumb" src="{{ $product['image_url'] }}" alt="{{ $product['name'] }}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
                         <span>
                           <span class="fw-bold">{{ $product['name'] }}</span><br>
                           <span class="small text-muted">{{ $product['barcode'] ?: $product['sku'] }}</span>
@@ -427,7 +427,10 @@
 <script>
 (function(){
   const lookupUrl = @json(route('admin.pos.lookup'));
+  const catalogUrl = @json(route('admin.pos.products'));
   const quickProducts = @json($quickProductPayload);
+  let catalogHasMore = @json($quickProductCount > $quickProductPayload->count());
+  let catalogLoading = false;
   const placeholderImage = @json(asset('images/placeholder-product.png'));
   const cartStorageKey = 'brillant-pos-cart';
   let cart = [];
@@ -437,6 +440,7 @@
   } catch (_) { cart = []; }
   const scanInput = document.querySelector('[data-scan-input]');
   const scanButton = document.querySelector('[data-scan-button]');
+  const productList = document.querySelector('[data-product-list]');
   const message = document.querySelector('[data-scan-message]');
   const cartWrap = document.querySelector('[data-cart-wrap]');
   const cartEmpty = document.querySelector('[data-cart-empty]');
@@ -459,6 +463,51 @@
 
   function productById(id){
     return quickProducts.find(product => Number(product.id) === Number(id));
+  }
+
+  async function loadMoreProducts(button){
+    if (catalogLoading || !catalogHasMore) return;
+    catalogLoading = true;
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+    button.textContent = 'Duke ngarkuar…';
+
+    try {
+      const response = await fetch(catalogUrl + '?offset=' + quickProducts.length, {
+        headers: {'Accept': 'application/json'}
+      });
+      if (!response.ok) throw new Error('Nuk u ngarkuan produktet. Provo përsëri.');
+      const data = await response.json();
+
+      (data.products || []).forEach(product => {
+        quickProducts.push(product);
+        const image = escapeAttr(product.image_url || placeholderImage);
+        const name = escapeHtml(product.name || 'Produkt');
+        const code = escapeHtml(product.barcode || product.sku || '');
+        productList.insertAdjacentHTML('beforeend',
+          '<div class="col-12 col-md-6"><button type="button" class="quick-product" data-quick-product="' + Number(product.id) + '">' +
+          '<span class="quick-left"><img class="quick-thumb" src="' + image + '" alt="' + escapeAttr(name) + '" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=\'' + escapeAttr(placeholderImage) + '\'"><span>' +
+          '<span class="fw-bold">' + name + '</span><br><span class="small text-muted">' + code + '</span></span></span>' +
+          '<span class="fw-bold">' + money(product.price) + ' EUR</span></button></div>'
+        );
+      });
+
+      catalogHasMore = Boolean(data.has_more);
+      if (!catalogHasMore) {
+        button.remove();
+      } else {
+        button.disabled = false;
+        button.textContent = 'Shfaq edhe ' + Math.min(24, Math.max(0, data.total - data.next_offset)) + ' produkte';
+        button.setAttribute('aria-expanded', 'true');
+      }
+    } catch (error) {
+      button.disabled = false;
+      button.textContent = 'Provo përsëri';
+      setMessage(error.message || 'Nuk u ngarkuan produktet. Provo përsëri.', 'error');
+    } finally {
+      button.removeAttribute('aria-busy');
+      catalogLoading = false;
+    }
   }
 
   const curtainFolds = [
@@ -697,13 +746,11 @@
   });
   scanButton?.addEventListener('click', lookup);
 
-  document.addEventListener('click', event => {
+  document.addEventListener('click', async event => {
     const showProducts = event.target.closest('[data-toggle-products]');
     if (showProducts) {
-      const expanded = showProducts.getAttribute('aria-expanded') === 'true';
-      document.querySelectorAll('[data-extra-product]').forEach(item => item.classList.toggle('d-none', expanded));
-      showProducts.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-      showProducts.textContent = expanded ? 'Shfaq të gjitha (' + quickProducts.length + ')' : 'Shfaq më pak';
+      await loadMoreProducts(showProducts);
+      return;
     }
 
     const quick = event.target.closest('[data-quick-product]');

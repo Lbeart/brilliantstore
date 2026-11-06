@@ -42,13 +42,39 @@ class PointOfSaleController extends Controller
             'non_regular_count' => (clone $summaryQuery)->where('receipt_type', 'non_regular')->count(),
         ];
 
-        $quickProducts = Product::query()
+        $quickProductQuery = Product::query()
             ->where('is_active', true)
-            ->orderByDesc('id')
-            ->limit(200)
+            ->orderByDesc('id');
+        $quickProductCount = (clone $quickProductQuery)->count();
+        $quickProducts = $quickProductQuery
+            ->limit(8)
             ->get(['id', 'name', 'price', 'stock', 'sku', 'barcode', 'sizes', 'image_path', 'category', 'subcategory']);
 
-        return view('admin.pos.index', compact('receipts', 'summary', 'quickProducts'));
+        return view('admin.pos.index', compact('receipts', 'summary', 'quickProducts', 'quickProductCount'));
+    }
+
+    public function catalog(Request $request)
+    {
+        $data = $request->validate([
+            'offset' => 'sometimes|integer|min:0|max:100000',
+        ]);
+        $offset = (int) ($data['offset'] ?? 0);
+
+        $query = Product::query()->where('is_active', true)->orderByDesc('id');
+        $total = (clone $query)->count();
+        $products = $query
+            ->offset($offset)
+            ->limit(24)
+            ->get(['id', 'name', 'price', 'stock', 'sku', 'barcode', 'sizes', 'image_path', 'category', 'subcategory'])
+            ->map(fn (Product $product) => $this->productPayload($product))
+            ->values();
+
+        return response()->json([
+            'products' => $products,
+            'next_offset' => $offset + $products->count(),
+            'total' => $total,
+            'has_more' => $offset + $products->count() < $total,
+        ]);
     }
 
     public function lookup(Request $request)

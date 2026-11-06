@@ -63,26 +63,38 @@ class CustomerController extends Controller
         };
 
         $customers = $query->paginate($perPage)->withQueryString();
-        $today = now()->toDateString();
+        $todayStart = now()->startOfDay();
+        $todayEnd = now()->endOfDay();
         $monthStart = now()->startOfMonth();
         $yearStart = now()->setDate($reportYear, 1, 1)->startOfDay();
         $yearEnd = now()->setDate($reportYear, 12, 31)->endOfDay();
 
-        $receiptBase = CustomerReceipt::query();
+        $receiptStats = CustomerReceipt::query()
+            ->selectRaw('COUNT(*) as receipts_count')
+            ->selectRaw('COALESCE(SUM(total), 0) as revenue')
+            ->selectRaw('COALESCE(SUM(paid_amount), 0) as paid_revenue')
+            ->selectRaw('COALESCE(SUM(balance), 0) as open_balance')
+            ->selectRaw('COALESCE(SUM(CASE WHEN sold_at >= ? AND sold_at <= ? THEN total ELSE 0 END), 0) as today_sales', [$todayStart, $todayEnd])
+            ->selectRaw('SUM(CASE WHEN sold_at >= ? AND sold_at <= ? THEN 1 ELSE 0 END) as today_receipts', [$todayStart, $todayEnd])
+            ->selectRaw('COALESCE(SUM(CASE WHEN sold_at >= ? AND sold_at <= ? THEN total ELSE 0 END), 0) as month_sales', [$monthStart, now()])
+            ->selectRaw('COALESCE(SUM(CASE WHEN sold_at >= ? AND sold_at <= ? THEN total ELSE 0 END), 0) as year_sales', [$yearStart, $yearEnd])
+            ->selectRaw('COALESCE(SUM(CASE WHEN sold_at >= ? AND sold_at <= ? THEN paid_amount ELSE 0 END), 0) as year_paid', [$yearStart, $yearEnd])
+            ->selectRaw('COALESCE(SUM(CASE WHEN sold_at >= ? AND sold_at <= ? THEN balance ELSE 0 END), 0) as year_balance', [$yearStart, $yearEnd])
+            ->first();
 
         $stats = [
             'customersCount' => Customer::count(),
-            'receiptsCount' => CustomerReceipt::count(),
+            'receiptsCount' => (int) $receiptStats->receipts_count,
             'purchasesCount' => CustomerPurchase::count(),
-            'revenue' => CustomerReceipt::sum('total'),
-            'paidRevenue' => CustomerReceipt::sum('paid_amount'),
-            'openBalance' => CustomerReceipt::sum('balance'),
-            'todaySales' => (clone $receiptBase)->whereDate('sold_at', $today)->sum('total'),
-            'todayReceipts' => (clone $receiptBase)->whereDate('sold_at', $today)->count(),
-            'monthSales' => (clone $receiptBase)->whereBetween('sold_at', [$monthStart, now()])->sum('total'),
-            'yearSales' => (clone $receiptBase)->whereBetween('sold_at', [$yearStart, $yearEnd])->sum('total'),
-            'yearPaid' => (clone $receiptBase)->whereBetween('sold_at', [$yearStart, $yearEnd])->sum('paid_amount'),
-            'yearBalance' => (clone $receiptBase)->whereBetween('sold_at', [$yearStart, $yearEnd])->sum('balance'),
+            'revenue' => (float) $receiptStats->revenue,
+            'paidRevenue' => (float) $receiptStats->paid_revenue,
+            'openBalance' => (float) $receiptStats->open_balance,
+            'todaySales' => (float) $receiptStats->today_sales,
+            'todayReceipts' => (int) $receiptStats->today_receipts,
+            'monthSales' => (float) $receiptStats->month_sales,
+            'yearSales' => (float) $receiptStats->year_sales,
+            'yearPaid' => (float) $receiptStats->year_paid,
+            'yearBalance' => (float) $receiptStats->year_balance,
             'latestCount' => Customer::where('created_at', '>=', now()->subDays(30))->count(),
         ];
 
