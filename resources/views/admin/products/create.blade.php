@@ -2,7 +2,7 @@
 <html lang="sq">
 <head>
     <meta charset="UTF-8">
-    <title>Shto Produkt â€“ Admin</title>
+    <title>Shto Produkt – Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap + FontAwesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -61,7 +61,7 @@
         <div class="col-lg-10 content">
             @if($errors->any())
                 <div class="alert alert-danger">
-                    <strong>Kujdes!</strong> Kontrollo fushat e mÃ«poshtme.
+                    <strong>Kujdes!</strong> Kontrollo fushat e mëposhtme.
                     <ul class="mb-0">
                         @foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach
                     </ul>
@@ -69,7 +69,7 @@
             @endif
 
             @php
-                // kategorizimi â€“ i njÃ«jtÃ« me menunÃ«
+                // kategorizimi – i njëjtë me menunë
                 $categories = [
                   'tepiha' => 'Tepiha',
                   'perde' => 'Perde',
@@ -77,7 +77,7 @@
                   'postava' => 'Postava',
                   'mbulesa' => 'Mbulesa',
                   'batanije' => 'Batanije',
-                  'tepihebanjo' => 'Tepiha pÃ«r Banjo',
+                  'tepihebanjo' => 'Tepiha për Banjo',
                   'posteqia' => 'Posteqia',
                   'garnishte'    => 'Garnishte',
                 ];
@@ -92,7 +92,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label class="form-label">Ã‡mimi (â‚¬)</label>
+                    <label class="form-label">Çmimi (€)</label>
                     <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price') }}">
                 </div>
 
@@ -113,12 +113,12 @@
                     </select>
                 </div>
 
-                <!-- NÃ«n-kategoria (vetÃ«m pÃ«r Perde) -->
+                <!-- Nën-kategoria (vetëm për Perde) -->
                 <div class="col-md-3" id="subcategoryWrap" style="display:none;">
-                    <label class="form-label">NÃ«n-kategoria (vetÃ«m pÃ«r Perde)</label>
+                    <label class="form-label">Nën-kategoria (vetëm për Perde)</label>
                     <select name="subcategory" class="form-select">
-                        <option value="">â€” Zgjedh â€”</option>
-                        <option value="anesore" @selected(old('subcategory')==='anesore')>Perde anÃ«sore</option>
+                        <option value="">— Zgjedh —</option>
+                        <option value="anesore" @selected(old('subcategory')==='anesore')>Perde anësore</option>
                         <option value="ditore"  @selected(old('subcategory')==='ditore')>Perde ditore</option>
                     </select>
                 </div>
@@ -128,12 +128,12 @@
                     <div class="form-check form-switch pt-2">
                         <input type="hidden" name="sold_by_meter" value="0">
                         <input class="form-check-input" type="checkbox" name="sold_by_meter" value="1" id="soldByMeter" @checked(old('sold_by_meter'))>
-                        <label class="form-check-label" for="soldByMeter">StazÃ« pÃ«r korridor â€“ shitet me metÃ«r</label>
+                        <label class="form-check-label" for="soldByMeter">Stazë për korridor – shitet me metër</label>
                     </div>
                 </div>
 
                 <div class="col-12">
-                    <label class="form-label">PÃ«rshkrimi</label>
+                    <label class="form-label">Përshkrimi</label>
                     <textarea name="description" rows="4" class="form-control">{{ old('description') }}</textarea>
                 </div>
 
@@ -154,19 +154,19 @@
                 {{-- Dimensione / opsione --}}
                 <div id="sizesCard" class="card border-0 shadow-sm mt-3" style="display:none;">
                   <div class="card-body">
-                    <h6 class="mb-2">Dimensione / opsione pÃ«r <span id="sizesCatLabel">Tepiha</span></h6>
+                    <h6 class="mb-2">Dimensione / opsione për <span id="sizesCatLabel">Tepiha</span></h6>
                     <small class="text-muted d-block mb-3">
-                      PÃ«r staza shto poshtÃ« gjerÃ«sitÃ«, p.sh. <strong>64 cm</strong>, <strong>80 cm</strong>, <strong>1 m</strong>.
-                      Ã‡mimi i secilÃ«s gjerÃ«si Ã«shtÃ« Ã§mimi pÃ«r njÃ« metÃ«r gjatÃ«si.<br>
+                      Për staza shto poshtë gjerësitë, p.sh. <strong>64 cm</strong>, <strong>80 cm</strong>, <strong>1 m</strong>.
+                      Çmimi i secilës gjerësi është çmimi për një metër gjatësi.<br>
                       Per mbulesa cakto <strong>Cmimi me meter</strong> ne fushen e vecante, p.sh. 8 euro.
                       Per set shto <strong>3+2+1</strong> me cmimin total te setit, p.sh. 30 euro.
                       Nese klienti shkruan 3+3+2+1, sistemi e llogarit proporcionalisht: 45 euro.
                     </small>
 
                     @php
-                      // PÃ«r EDIT: $product->sizes. PÃ«r CREATE: old('sizes')
+                      // Për EDIT: $product->sizes. Për CREATE: old('sizes')
                       $sizes = old('sizes', isset($product) ? ($product->sizes ?? []) : []);
-                      // kur vjen nga old() si sizes[label] / sizes[price] / sizes[stock], i rindÃ«rtojmÃ«:
+                      // kur vjen nga old() si sizes[label] / sizes[price] / sizes[stock], i rindërtojmë:
                       if(isset($sizes['label'])){
                         $tmp=[]; foreach(($sizes['label'] ?? []) as $i=>$lbl){
                           if($lbl!==null && $lbl!==''){
@@ -199,7 +199,7 @@
 
                     <div id="coverMeterPriceWrap" class="row g-2 mb-3" style="display:none;">
                       <div class="col-md-4">
-                        <label class="form-label mb-1">Cmimi me meter (â‚¬)</label>
+                        <label class="form-label mb-1">Cmimi me meter (€)</label>
                         <input name="cover_meter_price" type="number" step="0.01" min="0" class="form-control" value="{{ $coverMeterPrice }}" placeholder="p.sh. 8">
                       </div>
                       <div class="col-md-8 d-flex align-items-end">
@@ -208,8 +208,8 @@
                     </div>
 
                     <div id="runnerWidthsPanel" class="alert alert-primary mb-3" style="{{ old('sold_by_meter') ? '' : 'display:none' }}">
-                      <div class="fw-bold mb-2">GjerÃ«sitÃ« e stazÃ«s</div>
-                      <div class="small mb-2">Kliko gjerÃ«sitÃ« qÃ« i ka kjo stazÃ«. Pastaj shkruaj Ã§mimin pÃ«r metÃ«r dhe stokun pÃ«r secilÃ«n.</div>
+                      <div class="fw-bold mb-2">Gjerësitë e stazës</div>
+                      <div class="small mb-2">Kliko gjerësitë që i ka kjo stazë. Pastaj shkruaj çmimin për metër dhe stokun për secilën.</div>
                       <div class="d-flex flex-wrap gap-2">
                         @foreach(['64 cm', '80 cm', '1 m', '1.20 m'] as $runnerWidth)
                           <button type="button" class="btn btn-light border runner-width-preset" data-width="{{ $runnerWidth }}">+ {{ $runnerWidth }}</button>
@@ -226,7 +226,7 @@
                             <input type="hidden" name="sizes[barcode][]" value="{{ $s['barcode'] ?? '' }}">
                           </div>
                           <div class="col-md-3">
-                            <label class="form-label mb-1">Ã‡mimi (â‚¬)</label>
+                            <label class="form-label mb-1">Çmimi (€)</label>
                             <input name="sizes[price][]" type="number" step="0.01" class="form-control" value="{{ $s['price'] ?? '' }}">
                           </div>
                           <div class="col-md-2">
@@ -245,7 +245,7 @@
                             <input type="hidden" name="sizes[barcode][]" value="">
                           </div>
                           <div class="col-md-3">
-                            <label class="form-label mb-1">Ã‡mimi (â‚¬)</label>
+                            <label class="form-label mb-1">Çmimi (€)</label>
                             <input name="sizes[price][]" type="number" step="0.01" class="form-control">
                           </div>
                           <div class="col-md-2">
@@ -382,7 +382,7 @@ document.addEventListener('click', function(e){
         <input type="hidden" name="sizes[barcode][]" value="">
       </div>
       <div class="col-md-3">
-        <label class="form-label mb-1">Ã‡mimi (â‚¬)</label>
+        <label class="form-label mb-1">Çmimi (€)</label>
         <input name="sizes[price][]" type="number" step="0.01" class="form-control">
       </div>
       <div class="col-md-2">
@@ -428,7 +428,7 @@ document.addEventListener('click', function(e){
   }
 });
 
-/* Toggle nÃ«n-kategori & dimensione sipas kategorisÃ« */
+/* Toggle nën-kategori & dimensione sipas kategorisë */
 document.addEventListener('DOMContentLoaded', function () {
   const categorySel = document.querySelector('select[name="category"]');
   const subWrap     = document.getElementById('subcategoryWrap');
@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function toggleByCategory() {
     const cat = (categorySel.value || '').toLowerCase();
 
-    // NÃ«n-kategoria: vetÃ«m kur Ã«shtÃ« 'perde'
+    // Nën-kategoria: vetëm kur është 'perde'
     if (cat === 'perde') {
       subWrap.style.display = '';
     } else {
@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function () {
     toggleByCategory();
     if (this.checked) setTimeout(() => runnerWidthsPanel?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
   });
-  toggleByCategory(); // init nÃ« load (respekton old() kur ka errora)
+  toggleByCategory(); // init në load (respekton old() kur ka errora)
 });
 
 document.addEventListener('click', function (e) {
@@ -490,7 +490,7 @@ document.addEventListener('click', function (e) {
   labelInput.value = width;
   labelInput.placeholder = 'p.sh. 80 cm';
   const priceLabel = row.querySelector('input[name="sizes[price][]"]')?.closest('div')?.querySelector('label');
-  if (priceLabel) priceLabel.textContent = 'Ã‡mimi pÃ«r metÃ«r (â‚¬)';
+  if (priceLabel) priceLabel.textContent = 'Çmimi për metër (€)';
   row.querySelector('input[name="sizes[price][]"]')?.focus();
 });
 

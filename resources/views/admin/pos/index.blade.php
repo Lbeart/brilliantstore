@@ -2,7 +2,7 @@
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <title>ArkÃ« & barkode - Admin</title>
+  <title>Arkë & barkode - Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -113,7 +113,7 @@
     <button class="btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Hape menun">
       <i class="fas fa-bars"></i>
     </button>
-    <div class="title m-0">ArkÃ« & barkode</div>
+    <div class="title m-0">Arkë & barkode</div>
     <div class="dropdown">
       <a class="text-dark text-decoration-none fw-semibold" href="#" data-bs-toggle="dropdown">
         <i class="fas fa-user-circle me-1"></i> Admin
@@ -142,7 +142,7 @@
       <div class="page-head">
         <div>
           <div class="eyebrow">Point of sale</div>
-          <h1>ArkÃ« & barkode</h1>
+          <h1>Arkë & barkode</h1>
           <p>Skano barkodin ose shkruaje me numra, kontrollo stokun dhe printo dokumentin e shitjes.</p>
         </div>
         <div class="d-flex gap-2 flex-wrap">
@@ -210,13 +210,13 @@
 
               <div class="input-group mb-3">
                 <span class="input-group-text"><i class="fa fa-barcode"></i></span>
-                <input type="text" class="form-control scanner" data-scan-input placeholder="Skano ose shkruaj barkod/SKU/ID/emÃ«r" autocomplete="off" inputmode="search" autofocus>
+                <input type="text" class="form-control scanner" data-scan-input placeholder="Skano ose shkruaj barkod/SKU/ID/emër" autocomplete="off" inputmode="search" autofocus>
                 <button type="button" class="btn btn-danger" data-scan-button>
                   <i class="fa fa-plus me-1"></i> Shto
                 </button>
               </div>
               <div data-scan-message class="small text-muted mb-2"></div>
-              <div class="small text-muted mb-3">Skaneri USB/Bluetooth punon si tastierÃ«: mbaje fokusin kÃ«tu dhe skano. Mund ta shkruash kodin edhe me dorÃ«.</div>
+              <div class="small text-muted mb-3">Skaneri USB/Bluetooth punon si tastierë: mbaje fokusin këtu dhe skano. Mund ta shkruash kodin edhe me dorë.</div>
 
               <div data-cart-empty class="empty-cart">
                 Shporta eshte bosh.
@@ -354,9 +354,9 @@
 
               <div class="d-grid gap-2 mt-3">
                 <button class="btn btn-danger" type="submit" name="print_format" value="receipt"><i class="fa fa-receipt me-1"></i> Ruaj dhe hap kuponin 80 mm</button>
-                <button class="btn btn-outline-dark" type="submit" name="print_format" value="a4"><i class="fa fa-file-lines me-1"></i> Ruaj dhe hap faturÃ«n A4</button>
+                <button class="btn btn-outline-dark" type="submit" name="print_format" value="a4"><i class="fa fa-file-lines me-1"></i> Ruaj dhe hap faturën A4</button>
               </div>
-              <div class="small text-muted mt-2">Kuponi 80 mm Ã«shtÃ« dokument shitjeje, jo kupon fiskal zyrtar.</div>
+              <div class="small text-muted mt-2">Kuponi 80 mm është dokument shitjeje, jo kupon fiskal zyrtar.</div>
             </div>
 
             <div class="card-soft p-3">
@@ -378,7 +378,17 @@
                   </div>
                   <div class="d-flex justify-content-between align-items-center mt-2">
                     <span class="small text-muted">{{ $paymentLabels[$receipt->payment_method] ?? $receipt->payment_method }}</span>
-                    <span class="d-flex gap-1"><a href="{{ route('admin.pos.receipt', $receipt) }}" class="btn btn-sm btn-outline-dark">80 mm</a><a href="{{ route('admin.customers.invoice', [$receipt->customer_id, $receipt->code]) }}" class="btn btn-sm btn-outline-dark">A4</a></span>
+                    <span class="d-flex flex-wrap justify-content-end gap-1">
+                      <a href="{{ route('admin.pos.receipt', $receipt) }}" class="btn btn-sm btn-outline-dark" aria-label="Hap kuponin 80 mm për {{ $receipt->code }}">80 mm</a>
+                      <a href="{{ route('admin.customers.invoice', [$receipt->customer_id, $receipt->code]) }}" class="btn btn-sm btn-outline-dark" aria-label="Hap faturën A4 për {{ $receipt->code }}">A4</a>
+                      @if($receipt->source === 'pos' && !$receipt->order_id)
+                        <form method="POST" action="{{ route('admin.pos.receipts.destroy', $receipt) }}" onsubmit="return confirm('A je i sigurt që dëshiron ta fshish këtë faturë POS? Stoku do të kthehet automatikisht.');">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Fshi faturën {{ $receipt->code }}"><i class="fa fa-trash" aria-hidden="true"></i><span class="d-none d-sm-inline ms-1">Fshi</span></button>
+                        </form>
+                      @endif
+                    </span>
                   </div>
                 </div>
               @empty
@@ -536,7 +546,7 @@
     const available = size ? Number(size.stock || 0) : Number(product.stock || 0);
 
     if (available <= (existing ? existing.quantity : 0)) {
-      setMessage(product.name + ' (' + (sizeLabel || 'pa pÃ«rmasÃ«') + '): nuk ka mÃ« stok tÃ« lirÃ«.', 'error');
+      setMessage(product.name + ' (' + (sizeLabel || 'pa përmasë') + '): nuk ka më stok të lirë.', 'error');
       return;
     }
 
@@ -600,7 +610,7 @@
             const label = String(size.label || '');
             const selected = label === line.size ? ' selected' : '';
             const price = size.price !== null && size.price !== undefined ? Number(size.price) : line.unit_price;
-            return '<option value="' + escapeHtml(label) + '" data-price="' + money(price) + '" data-stock="' + Number(size.stock || 0) + '"' + selected + (Number(size.stock || 0) <= 0 ? ' disabled' : '') + '>' + escapeHtml(label) + ' (' + Number(size.stock || 0) + ' nÃ« stok)</option>';
+            return '<option value="' + escapeHtml(label) + '" data-price="' + money(price) + '" data-stock="' + Number(size.stock || 0) + '"' + selected + (Number(size.stock || 0) <= 0 ? ' disabled' : '') + '>' + escapeHtml(label) + ' (' + Number(size.stock || 0) + ' në stok)</option>';
           }).join('') + '</select>'
         : '<input class="form-control form-control-sm" value="' + escapeHtml(line.size || '') + '" data-line-size-text="' + index + '">';
       const stockText = line.is_curtain ? 'perde me porosi' : (line.stock <= 0 ? 'stok 0' : 'stok ' + line.stock);
@@ -713,7 +723,7 @@
       line.quantity = line.is_curtain
         ? Math.max(Number(qty.value || 1), 1)
         : Math.min(Math.max(Number(qty.value || 1), 1), line.stock);
-      if (!line.is_curtain && Number(qty.value) > line.stock) setMessage('NÃ« stok janÃ« vetÃ«m ' + line.stock + ' copÃ«.', 'error');
+      if (!line.is_curtain && Number(qty.value) > line.stock) setMessage('Në stok janë vetëm ' + line.stock + ' copë.', 'error');
       renderCart();
       return;
     }

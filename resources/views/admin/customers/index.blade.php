@@ -135,11 +135,16 @@
         <div class="alert alert-danger">Kontrollo fushat, ka disa te dhena qe mungojne ose nuk jane ne formatin e duhur.</div>
       @endif
       @php
-        $privateValue = function ($value) {
+        $privateValue = function ($value, $showToggle = false) {
+            $escapedValue = e($value);
+            if (!$showToggle) {
+                return new \Illuminate\Support\HtmlString($escapedValue);
+            }
+
             return new \Illuminate\Support\HtmlString(
                 '<span class="private-value" data-private-value>'
                 .'<span class="private-mask">****</span>'
-                .'<span class="private-text d-none">'.e($value).'</span>'
+                .'<span class="private-text d-none">'.$escapedValue.'</span>'
                 .'<button type="button" class="private-toggle" data-private-toggle aria-label="Shfaq vleren"><i class="fa fa-eye"></i></button>'
                 .'</span>'
             );
@@ -187,7 +192,7 @@
           </div>
           <div class="col-12 col-md-3 metric">
             <div class="label">Shitje {{ $reportYear }}</div>
-            <div class="value">{!! $privateValue(number_format($stats['yearSales'] ?? 0, 2).' EUR') !!}</div>
+            <div class="value">{!! $privateValue(number_format($stats['yearSales'] ?? 0, 2).' EUR', true) !!}</div>
             <div class="small text-white-50">Paguar {!! $privateValue(number_format($stats['yearPaid'] ?? 0, 2).' EUR') !!}</div>
           </div>
           <div class="col-12 col-md-3 metric">

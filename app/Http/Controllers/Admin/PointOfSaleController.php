@@ -231,6 +231,36 @@ class PointOfSaleController extends Controller
         ]);
     }
 
+    public function destroyReceipt(CustomerReceipt $receipt)
+    {
+        abort_unless($receipt->source === 'pos' && !$receipt->order_id, 404);
+
+        DB::transaction(function () use ($receipt) {
+            $receipt = CustomerReceipt::query()->lockForUpdate()->findOrFail($receipt->id);
+            abort_unless($receipt->source === 'pos' && !$receipt->order_id, 404);
+
+            $purchases = $receipt->purchases()->get();
+            foreach ($purchases as $purchase) {
+                $this->restoreStock($purchase->product_id, $purchase->size, (int) $purchase->quantity);
+            }
+
+            $customerId = $receipt->customer_id;
+            $receipt->purchases()->delete();
+            $receipt->delete();
+
+            $customer = Customer::query()->find($customerId);
+            if ($customer) {
+                $customer->update([
+                    'last_purchase_at' => CustomerPurchase::query()
+                        ->where('customer_id', $customerId)
+                        ->max('purchased_at'),
+                ]);
+            }
+        });
+
+        return redirect()->route('admin.pos.index')->with('success', 'Fatura POS u fshi dhe stoku u përditësua.');
+    }
+
     private function resolveCustomer(array $data): Customer
     {
         $name = trim((string) ($data['customer_name'] ?? ''));
@@ -310,6 +340,39 @@ class PointOfSaleController extends Controller
             throw ValidationException::withMessages(['items' => "{$product->name}: në stok janë vetëm {$available} copë."]);
         }
         $product->stock = $available - $quantity;
+        $product->save();
+    }
+
+    private function restoreStock(?int $productId, ?string $size, int $quantity): void
+    {
+        if (!$productId || $quantity < 1) {
+            return;
+        }
+
+        $product = Product::query()->lockForUpdate()->find($productId);
+        if (!$product || $this->isCurtainProduct($product)) {
+            return;
+        }
+
+        $sizes = $this->decodeProductSizes($product->sizes);
+        $size = trim((string) $size);
+
+        if (!empty($sizes)) {
+            foreach ($sizes as &$variant) {
+                if (($variant['label'] ?? null) === $size) {
+                    $variant['stock'] = (int) ($variant['stock'] ?? 0) + $quantity;
+                    $product->sizes = $sizes;
+                    $product->stock = collect($sizes)->sum(fn ($row) => (int) ($row['stock'] ?? 0));
+                    $product->save();
+                    return;
+                }
+            }
+            unset($variant);
+
+            return;
+        }
+
+        $product->stock = (int) ($product->stock ?? 0) + $quantity;
         $product->save();
     }
 

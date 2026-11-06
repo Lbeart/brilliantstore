@@ -2,7 +2,7 @@
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <title>Produktet â€“ Admin</title>
+  <title>Produktet – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap + FontAwesome -->
@@ -59,7 +59,7 @@
 <body>
 
 @php
-  // âœ… FIX FOTO (admin): trajton JSON array, URL absolute, dhe rastin .../storage/[...]
+  // ✅ FIX FOTO (admin): trajton JSON array, URL absolute, dhe rastin .../storage/[...]
   $admin_img_url = fn($raw) => \App\Support\ProductImages::url($raw, asset('images/placeholder.png'));
 @endphp
 
@@ -103,7 +103,7 @@
         <form id="searchForm" method="GET" class="d-flex" action="{{ route('admin.products.index') }}">
           <div class="input-group">
             <span class="input-group-text"><i class="fas fa-search"></i></span>
-            <input id="qInput" type="text" name="search" class="form-control" placeholder="KÃ«rko me emÃ«r / slugâ€¦"
+            <input id="qInput" type="text" name="search" class="form-control" placeholder="Kërko me emër / slug…"
                    value="{{ request('search') }}" autocomplete="off">
           </div>
         </form>
@@ -123,7 +123,7 @@
           <div class="col-12 col-sm-6 col-md-3">
             <label class="form-label mb-1">Statusi</label>
             <select name="active" class="form-select" onchange="this.form.submit()">
-              <option value="">TÃ« gjithÃ«</option>
+              <option value="">Të gjithë</option>
               <option value="1" @selected(request('active')==='1')>Aktiv</option>
               <option value="0" @selected(request('active')==='0')>Jo aktiv</option>
             </select>
@@ -133,17 +133,17 @@
             <label class="form-label mb-1">Rendit sipas</label>
             <select name="sort" class="form-select" onchange="this.form.submit()">
               @php $sort = request('sort'); @endphp
-              <option value="newest"  @selected($sort==='newest' || !$sort)>MÃ« tÃ« rejat</option>
-              <option value="oldest"  @selected($sort==='oldest')>MÃ« tÃ« vjetrat</option>
-              <option value="price_hi" @selected($sort==='price_hi')>Ã‡mimi: lart â†’ poshtÃ«</option>
-              <option value="price_lo" @selected($sort==='price_lo')>Ã‡mimi: poshtÃ« â†’ lart</option>
-              <option value="name_az" @selected($sort==='name_az')>Emri: A â†’ Z</option>
-              <option value="name_za" @selected($sort==='name_za')>Emri: Z â†’ A</option>
+              <option value="newest"  @selected($sort==='newest' || !$sort)>Më të rejat</option>
+              <option value="oldest"  @selected($sort==='oldest')>Më të vjetrat</option>
+              <option value="price_hi" @selected($sort==='price_hi')>Çmimi: lart → poshtë</option>
+              <option value="price_lo" @selected($sort==='price_lo')>Çmimi: poshtë → lart</option>
+              <option value="name_az" @selected($sort==='name_az')>Emri: A → Z</option>
+              <option value="name_za" @selected($sort==='name_za')>Emri: Z → A</option>
             </select>
           </div>
 
           <div class="col-6 col-md-2">
-            <label class="form-label mb-1">PÃ«r faqe</label>
+            <label class="form-label mb-1">Për faqe</label>
             <select name="per_page" class="form-select" onchange="this.form.submit()">
               @php $pp = (int)request('per_page', 12); @endphp
               @foreach([12,24,50,100] as $n)
@@ -173,7 +173,7 @@
                 <th>Foto</th>
                 <th>Emri</th>
                 <th>Barkodi / SKU</th>
-                <th>Ã‡mimi</th>
+                <th>Çmimi</th>
                 <th>Statusi</th>
                 <th class="text-end">Veprime</th>
               </tr>
@@ -207,7 +207,7 @@
                     <div class="small text-muted">SKU: {{ $p->sku }}</div>
                   @endif
                 </td>
-                <td>â‚¬ {{ number_format($p->price ?? 0, 2) }}</td>
+                <td>€ {{ number_format($p->price ?? 0, 2) }}</td>
                 <td>
                   @if($p->is_active)
                     <span class="badge bg-success badge-soft">Aktiv</span>
@@ -259,7 +259,7 @@
                 </td>
               </tr>
             @empty
-              <tr><td colspan="7" class="text-center text-muted py-4">Sâ€™ka produkte.</td></tr>
+              <tr><td colspan="7" class="text-center text-muted py-4">S’ka produkte.</td></tr>
             @endforelse
             </tbody>
           </table>
@@ -292,7 +292,7 @@
 <!-- SCRIPTS -->
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Debounce kÃ«rkimi: pret 500ms
+// Debounce kërkimi: pret 500ms
 (function(){
   const form = document.getElementById('searchForm');
   const input = document.getElementById('qInput');

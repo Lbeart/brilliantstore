@@ -2,7 +2,7 @@
 <html lang="sq">
 <head>
     <meta charset="UTF-8">
-    <title>Edito Produkt â€“ Admin</title>
+    <title>Edito Produkt – Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap + FontAwesome -->
@@ -54,7 +54,7 @@
 <body>
 
 @php
-  // ---------- Helpers pÃ«r FOTO ----------
+  // ---------- Helpers për FOTO ----------
   $placeholder = asset('images/placeholder.png');
 
   $decode_images = function($value){
@@ -64,7 +64,7 @@
 
     $raw = trim((string)$value);
 
-    // nÃ«se vjen si URL qÃ« pÃ«rmban JSON: https://domain.com/storage/[...]
+    // nëse vjen si URL që përmban JSON: https://domain.com/storage/[...]
     if (preg_match('/\[[^\]]+\]/', $raw, $m)) {
       $raw = $m[0];
     }
@@ -74,7 +74,7 @@
       return array_values(array_filter($decoded));
     }
 
-    // fallback: string i vetÃ«m
+    // fallback: string i vetëm
     return [$raw];
   };
 
@@ -91,7 +91,7 @@
     'postava' => 'Postava',
     'mbulesa' => 'Mbulesa',
     'batanije' => 'Batanije',
-    'tepihebanjo' => 'Tepiha pÃ«r Banjo',
+    'tepihebanjo' => 'Tepiha për Banjo',
     'posteqia' => 'Posteqia',
     'garnishte' => 'Garnishte'
   ];
@@ -140,7 +140,7 @@
         <div class="col-lg-10 content">
             @if($errors->any())
                 <div class="alert alert-danger">
-                    <strong>Kujdes!</strong> Kontrollo fushat e mÃ«poshtme.
+                    <strong>Kujdes!</strong> Kontrollo fushat e mëposhtme.
                     <ul class="mb-0">
                         @foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach
                     </ul>
@@ -159,7 +159,7 @@
                             </div>
 
                             <div class="col-md-3">
-                                <label class="form-label">Ã‡mimi (â‚¬) *</label>
+                                <label class="form-label">Çmimi (€) *</label>
                                 <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price',$product->price) }}" required>
                             </div>
 
@@ -183,9 +183,9 @@
                             <div class="col-md-3" id="subcatWrap" style="{{ $catValue==='perde' ? '' : 'display:none' }}">
                                 <label class="form-label">Subkategoria (Perde)</label>
                                 <select name="subcategory" class="form-select" id="subcatSelect">
-                                    <option value="">â€”</option>
-                                    <option value="ditore" @selected($subValue==='ditore')>DitorÃ«</option>
-                                    <option value="anesore" @selected($subValue==='anesore')>AnÃ«sore</option>
+                                    <option value="">—</option>
+                                    <option value="ditore" @selected($subValue==='ditore')>Ditorë</option>
+                                    <option value="anesore" @selected($subValue==='anesore')>Anësore</option>
                                 </select>
                             </div>
 
@@ -194,7 +194,7 @@
                                 <div class="form-check form-switch pt-2">
                                     <input type="hidden" name="sold_by_meter" value="0">
                                     <input class="form-check-input" type="checkbox" name="sold_by_meter" value="1" id="soldByMeter" @checked(old('sold_by_meter', $product->sold_by_meter))>
-                                    <label class="form-check-label" for="soldByMeter">StazÃ« pÃ«r korridor â€“ shitet me metÃ«r</label>
+                                    <label class="form-check-label" for="soldByMeter">Stazë për korridor – shitet me metër</label>
                                 </div>
                             </div>
 
@@ -213,7 +213,7 @@
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">PÃ«rshkrimi</label>
+                                <label class="form-label">Përshkrimi</label>
                                 <textarea name="description" rows="4" class="form-control">{{ old('description',$product->description) }}</textarea>
                             </div>
                         </div>
@@ -225,8 +225,8 @@
                     <div class="card-soft p-3">
                         <h6 class="mb-2">Dimensione / opsione</h6>
                         <small class="text-muted d-block mb-3">
-                            PÃ«r staza shto poshtÃ« gjerÃ«sitÃ«, p.sh. <strong>64 cm</strong>, <strong>80 cm</strong>, <strong>1 m</strong>.
-                            Ã‡mimi i secilÃ«s gjerÃ«si Ã«shtÃ« Ã§mimi pÃ«r njÃ« metÃ«r gjatÃ«si.<br>
+                            Për staza shto poshtë gjerësitë, p.sh. <strong>64 cm</strong>, <strong>80 cm</strong>, <strong>1 m</strong>.
+                            Çmimi i secilës gjerësi është çmimi për një metër gjatësi.<br>
                             Per mbulesa cakto <strong>Cmimi me meter</strong> ne fushen e vecante, p.sh. 8 euro.
                             Per set shto <strong>3+2+1</strong> me cmimin total te setit, p.sh. 30 euro.
                             Nese klienti shkruan 3+3+2+1, sistemi e llogarit proporcionalisht: 45 euro.
@@ -266,7 +266,7 @@
 
                         <div id="coverMeterPriceWrap" class="row g-2 mb-3" style="{{ $catValue === 'mbulesa' ? '' : 'display:none' }}">
                           <div class="col-md-4">
-                            <label class="form-label mb-1">Cmimi me meter (â‚¬)</label>
+                            <label class="form-label mb-1">Cmimi me meter (€)</label>
                             <input name="cover_meter_price" type="number" step="0.01" min="0" class="form-control" value="{{ $coverMeterPrice }}" placeholder="p.sh. 8">
                           </div>
                           <div class="col-md-8 d-flex align-items-end">
@@ -275,8 +275,8 @@
                         </div>
 
                         <div id="runnerWidthsPanel" class="alert alert-primary mb-3" style="{{ $catValue === 'tepiha' && old('sold_by_meter', $product->sold_by_meter) ? '' : 'display:none' }}">
-                          <div class="fw-bold mb-2">GjerÃ«sitÃ« e stazÃ«s</div>
-                          <div class="small mb-2">Kliko gjerÃ«sitÃ« qÃ« i ka kjo stazÃ«. Pastaj shkruaj Ã§mimin pÃ«r metÃ«r dhe stokun pÃ«r secilÃ«n.</div>
+                          <div class="fw-bold mb-2">Gjerësitë e stazës</div>
+                          <div class="small mb-2">Kliko gjerësitë që i ka kjo stazë. Pastaj shkruaj çmimin për metër dhe stokun për secilën.</div>
                           <div class="d-flex flex-wrap gap-2">
                             @foreach(['64 cm', '80 cm', '1 m', '1.20 m'] as $runnerWidth)
                               <button type="button" class="btn btn-light border runner-width-preset" data-width="{{ $runnerWidth }}">+ {{ $runnerWidth }}</button>
@@ -293,7 +293,7 @@
                                 <input type="hidden" name="sizes[barcode][]" value="{{ $s['barcode'] ?? '' }}">
                               </div>
                               <div class="col-md-3">
-                                <label class="form-label mb-1">Ã‡mimi (â‚¬)</label>
+                                <label class="form-label mb-1">Çmimi (€)</label>
                                 <input name="sizes[price][]" type="number" step="0.01" class="form-control" value="{{ $s['price'] ?? '' }}">
                               </div>
                               <div class="col-md-2">
@@ -312,7 +312,7 @@
                                 <input type="hidden" name="sizes[barcode][]" value="">
                               </div>
                               <div class="col-md-3">
-                                <label class="form-label mb-1">Ã‡mimi (â‚¬)</label>
+                                <label class="form-label mb-1">Çmimi (€)</label>
                                 <input name="sizes[price][]" type="number" step="0.01" class="form-control">
                               </div>
                               <div class="col-md-2">
@@ -448,7 +448,7 @@
                     <div class="card-soft p-3">
                         <h6 class="mb-2">Fotot</h6>
                         <div class="hint mb-2">
-                            âœ… Mundesh me i fshi disa foto ekzistuese (X) dhe me shto tÃ« reja. NÃ«se i heq krejt ekzistueset, fotot e reja i zÃ«vendÃ«sojnÃ« krejt.
+                            ✅ Mundesh me i fshi disa foto ekzistuese (X) dhe me shto të reja. Nëse i heq krejt ekzistueset, fotot e reja i zëvendësojnë krejt.
                         </div>
 
                         {{-- EXISTING --}}
@@ -470,22 +470,22 @@
                                     @endforeach
                                 </div>
                             @else
-                                <div class="text-muted">Sâ€™ka foto aktuale.</div>
+                                <div class="text-muted">S’ka foto aktuale.</div>
                             @endif
                         </div>
 
                         {{-- NEW UPLOAD --}}
                         <div class="mb-2">
-                            <label class="form-label">Shto foto tÃ« reja (multiple, max 40MB)</label>
+                            <label class="form-label">Shto foto të reja (multiple, max 40MB)</label>
                             <input type="file" name="image[]" class="form-control" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif" id="imageInput" multiple>
-                            <div class="hint mt-1">Mundesh me zgjedh 1+ foto njÃ«herÃ«sh.</div>
+                            <div class="hint mt-1">Mundesh me zgjedh 1+ foto njëherësh.</div>
                         </div>
 
                         {{-- PREVIEW NEW --}}
                         <div class="mt-3">
                             <label class="form-label mb-1">Preview (fotot e reja)</label>
                             <div class="img-grid" id="newPreviewWrap">
-                                <div class="text-muted" id="noNewText">Sâ€™ka foto tÃ« reja tÃ« zgjedhura.</div>
+                                <div class="text-muted" id="noNewText">S’ka foto të reja të zgjedhura.</div>
                             </div>
                         </div>
                     </div>
@@ -528,7 +528,7 @@ function reindexColorVariantRows(){
   });
 }
 
-// repeater pÃ«r size
+// repeater për size
 document.addEventListener('click', function(e){
   if(e.target.id === 'addSize'){
     const wrap = document.getElementById('sizesRepeater');
@@ -541,7 +541,7 @@ document.addEventListener('click', function(e){
         <input type="hidden" name="sizes[barcode][]" value="">
       </div>
       <div class="col-md-3">
-        <label class="form-label mb-1">Ã‡mimi (â‚¬)</label>
+        <label class="form-label mb-1">Çmimi (€)</label>
         <input name="sizes[price][]" type="number" step="0.01" class="form-control">
       </div>
       <div class="col-md-2">
@@ -598,7 +598,7 @@ document.addEventListener('click', function(e){
   btn.closest('.existing-item')?.remove();
 });
 
-// preview pÃ«r shumÃ« foto tÃ« reja
+// preview për shumë foto të reja
 const input = document.getElementById('imageInput');
 const wrap = document.getElementById('newPreviewWrap');
 const noText = document.getElementById('noNewText');
@@ -608,7 +608,7 @@ if(input && wrap){
     wrap.innerHTML = '';
     const files = Array.from(this.files || []);
     if(files.length === 0){
-      wrap.innerHTML = '<div class="text-muted">Sâ€™ka foto tÃ« reja tÃ« zgjedhura.</div>';
+      wrap.innerHTML = '<div class="text-muted">S’ka foto të reja të zgjedhura.</div>';
       return;
     }
 
@@ -676,7 +676,7 @@ document.addEventListener('click', function (e) {
   labelInput.value = width;
   labelInput.placeholder = 'p.sh. 80 cm';
   const priceLabel = row.querySelector('input[name="sizes[price][]"]')?.closest('div')?.querySelector('label');
-  if (priceLabel) priceLabel.textContent = 'Ã‡mimi pÃ«r metÃ«r (â‚¬)';
+  if (priceLabel) priceLabel.textContent = 'Çmimi për metër (€)';
   row.querySelector('input[name="sizes[price][]"]')?.focus();
 });
 

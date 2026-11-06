@@ -223,6 +223,8 @@ Route::middleware(['auth','verified','admin'])
         Route::get('/pos/lookup', [AdminPointOfSaleController::class, 'lookup'])->name('pos.lookup');
         Route::post('/pos/checkout', [AdminPointOfSaleController::class, 'checkout'])->name('pos.checkout');
         Route::get('/pos/receipts/{receipt}', [AdminPointOfSaleController::class, 'receipt'])->name('pos.receipt');
+        Route::delete('/pos/receipts/{receipt}', [AdminPointOfSaleController::class, 'destroyReceipt'])
+            ->whereNumber('receipt')->name('pos.receipts.destroy');
 
         // Products
         Route::get('/products',                 [AdminProductController::class, 'index'])->name('products.index');

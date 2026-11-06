@@ -2,7 +2,7 @@
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <title>PorositÃ« â€“ Admin</title>
+  <title>Porositë – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -43,7 +43,7 @@
     <button class="btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
       <i class="fas fa-bars"></i>
     </button>
-    <div class="title m-0">PorositÃ«</div>
+    <div class="title m-0">Porositë</div>
     <div class="dropdown">
       <a class="text-dark text-decoration-none" href="#" data-bs-toggle="dropdown">
         <i class="fas fa-user-circle me-1"></i> Admin
@@ -82,9 +82,9 @@
      <!-- Filter bar -->
 <form method="get" class="card-soft p-3 mb-3 filter-bar">
   <div class="row g-2 align-items-end">
-    <!-- KÃ«rko: emÃ«r / telefon / email -->
+    <!-- Kërko: emër / telefon / email -->
     <div class="col-12 col-md-5">
-      <label class="form-label mb-1">KÃ«rko</label>
+      <label class="form-label mb-1">Kërko</label>
       <div class="input-group">
         <span class="input-group-text"><i class="fas fa-search"></i></span>
         <input
@@ -92,7 +92,7 @@
           name="q"
           value="{{ request('q') }}"
           class="form-control"
-          placeholder="Emri, telefoni ose emailiâ€¦"
+          placeholder="Emri, telefoni ose emaili…"
         >
       </div>
     </div>
@@ -101,24 +101,24 @@
     <div class="col-12 col-sm-6 col-md-3">
       <label class="form-label mb-1">Statusi</label>
       <select name="status" class="form-select" onchange="this.form.submit()">
-        <option value="">TÃ« gjitha</option>
-        @foreach(['new'=>'TÃ« reja','processing'=>'NÃ« proces','completed'=>'PÃ«rfunduara','canceled'=>'Anuluara'] as $k=>$v)
+        <option value="">Të gjitha</option>
+        @foreach(['new'=>'Të reja','processing'=>'Në proces','completed'=>'Përfunduara','canceled'=>'Anuluara'] as $k=>$v)
           <option value="{{ $k }}" @selected(request('status')===$k)>{{ $v }}</option>
         @endforeach
       </select>
     </div>
 
-    <!-- Butoni KÃ«rko -->
+    <!-- Butoni Kërko -->
     <div class="col-6 col-md-2">
       <label class="form-label mb-1 d-none d-md-block">&nbsp;</label>
-      <button class="btn btn-outline-secondary w-100" type="submit">KÃ«rko</button>
+      <button class="btn btn-outline-secondary w-100" type="submit">Kërko</button>
     </div>
 
-    <!-- Shiko tÃ« gjitha (reset) -->
+    <!-- Shiko të gjitha (reset) -->
     <div class="col-6 col-md-2">
       <label class="form-label mb-1 d-none d-md-block">&nbsp;</label>
       <a href="{{ route('admin.orders.all') }}" class="btn btn-secondary w-100">
-  Shiko tÃ« gjitha
+  Shiko të gjitha
 </a>
     </div>
   </div>
@@ -153,7 +153,7 @@
                     <div><i class="fa fa-phone me-1"></i>{{ $o->phone }}</div>
                     @if($o->email)<div><i class="fa fa-envelope me-1"></i>{{ $o->email }}</div>@endif
                   </td>
-                  <td>{{ number_format($o->total,2) }} â‚¬</td>
+                  <td>{{ number_format($o->total,2) }} €</td>
                   <td>{{ $o->items_count ?? ($o->items_count ?? $o->items()->count()) }}</td>
                   <td>
                     @php
@@ -163,7 +163,7 @@
                     <form method="POST" action="{{ route('admin.orders.status',$o) }}" class="mt-1 d-flex gap-2 align-items-center auto-submit">
                       @csrf
                       <select name="status" class="form-select form-select-sm" style="width:160px">
-                        @foreach(['new'=>'TÃ« reja','processing'=>'NÃ« proces','completed'=>'PÃ«rfunduara','canceled'=>'Anuluara'] as $k=>$v)
+                        @foreach(['new'=>'Të reja','processing'=>'Në proces','completed'=>'Përfunduara','canceled'=>'Anuluara'] as $k=>$v)
                           <option value="{{ $k }}" @selected($o->status===$k)>{{ $v }}</option>
                         @endforeach
                       </select>
@@ -178,7 +178,7 @@
                   </td>
                 </tr>
               @empty
-                <tr><td colspan="8" class="text-center text-muted py-4">Sâ€™ka porosi.</td></tr>
+                <tr><td colspan="8" class="text-center text-muted py-4">S’ka porosi.</td></tr>
               @endforelse
             </tbody>
           </table>
@@ -207,7 +207,7 @@
               <div class="row row-cols-2 g-2 mt-2">
                 <div><span class="label">Tel:</span> <span class="value">{{ $o->phone }}</span></div>
                 <div><span class="label">Artikuj:</span> <span class="value">{{ $o->items_count ?? ($o->items_count ?? $o->items()->count()) }}</span></div>
-                <div><span class="label">Totali:</span> <span class="value">{{ number_format($o->total,2) }} â‚¬</span></div>
+                <div><span class="label">Totali:</span> <span class="value">{{ number_format($o->total,2) }} €</span></div>
                 <div><span class="label">Data:</span> <span class="value">{{ $o->created_at->format('d.m.Y H:i') }}</span></div>
                 @if($o->email)
                   <div class="col-12"><span class="label">Email:</span> <span class="value">{{ $o->email }}</span></div>
@@ -221,7 +221,7 @@
                 <form method="POST" action="{{ route('admin.orders.status',$o) }}" class="d-flex gap-2 flex-grow-1 auto-submit">
                   @csrf
                   <select name="status" class="form-select">
-                    @foreach(['new'=>'TÃ« reja','processing'=>'NÃ« proces','completed'=>'PÃ«rfunduara','canceled'=>'Anuluara'] as $k=>$v)
+                    @foreach(['new'=>'Të reja','processing'=>'Në proces','completed'=>'Përfunduara','canceled'=>'Anuluara'] as $k=>$v)
                       <option value="{{ $k }}" @selected($o->status===$k)>{{ $v }}</option>
                     @endforeach
                   </select>
@@ -231,7 +231,7 @@
             </div>
           </div>
         @empty
-          <div class="card card-soft p-3 text-center text-muted">Sâ€™ka porosi.</div>
+          <div class="card card-soft p-3 text-center text-muted">S’ka porosi.</div>
         @endforelse
 
         <div class="mt-2">{{ $orders->links() }}</div>
@@ -257,7 +257,7 @@
 
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// autosubmit pÃ«r "Ndrysho statusin" te select
+// autosubmit për "Ndrysho statusin" te select
 document.querySelectorAll('form.auto-submit select[name="status"]').forEach(sel=>{
   sel.addEventListener('change', e=>{
     const form = e.target.closest('form');
