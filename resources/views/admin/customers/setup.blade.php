@@ -24,6 +24,7 @@
     .muted{color:var(--muted)}
     @media (max-width:991px){.content{padding:1rem}.sidebar.desktop{display:none}}
   </style>
+  <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 <body>
 <nav class="navbar navbar-light app-navbar sticky-top">
@@ -44,14 +45,7 @@
       <div class="text-center mb-4">
         <img src="{{ asset('images/llogo.png') }}" alt="Brillant" class="logo img-fluid">
       </div>
-      <nav class="nav flex-column">
-        <a class="nav-link" href="{{ route('admin.dashboard') }}"><i class="fas fa-home me-1"></i> Dashboard</a>
-        <a class="nav-link" href="{{ route('admin.users') }}"><i class="fas fa-users me-1"></i> Perdoruesit</a>
-        <a class="nav-link active" href="{{ route('admin.customers.index') }}"><i class="fas fa-address-book me-1"></i> Klientet</a>
-        <a class="nav-link" href="{{ route('admin.products.index') }}"><i class="fas fa-box-open me-1"></i> Produktet</a>
-        <a class="nav-link" href="{{ route('admin.orders.index') }}"><i class="fas fa-shopping-cart me-1"></i> Porosite</a>
-        <a class="nav-link" href="{{ route('admin.stats') }}"><i class="fas fa-chart-line me-1"></i> Statistikat</a>
-      </nav>
+      @include('admin.partials.navigation')
     </div>
 
     <main class="col-lg-10 content">
@@ -83,12 +77,7 @@
     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Mbyll"></button>
   </div>
   <div class="offcanvas-body">
-    <nav class="nav flex-column">
-      <a class="nav-link" href="{{ route('admin.dashboard') }}"><i class="fas fa-home me-1"></i> Dashboard</a>
-      <a class="nav-link active" href="{{ route('admin.customers.index') }}"><i class="fas fa-address-book me-1"></i> Klientet</a>
-      <a class="nav-link" href="{{ route('admin.products.index') }}"><i class="fas fa-box-open me-1"></i> Produktet</a>
-      <a class="nav-link" href="{{ route('admin.orders.index') }}"><i class="fas fa-shopping-cart me-1"></i> Porosite</a>
-    </nav>
+    @include('admin.partials.navigation')
   </div>
 </div>
 

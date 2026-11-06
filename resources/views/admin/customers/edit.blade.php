@@ -52,6 +52,7 @@
     @media (max-width:991px){.content{padding:1rem}.page-head{flex-direction:column}.sidebar{min-height:100vh}}
     @media (max-width:767px){.sidebar.desktop{display:none}.payment-inline{grid-template-columns:1fr}}
   </style>
+  <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 <body>
 
@@ -82,26 +83,7 @@
       <div class="text-center mb-4">
         <img src="{{ asset('images/llogo.png') }}" alt="Brillant" class="logo img-fluid">
       </div>
-      <nav class="nav flex-column">
-        <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
-          <i class="fas fa-home me-1"></i> Dashboard
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">
-          <i class="fas fa-users me-1"></i> Perdoruesit
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
-          <i class="fas fa-address-book me-1"></i> Klientet
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
-          <i class="fas fa-box-open me-1"></i> Produktet
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.orders*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
-          <i class="fas fa-shopping-cart me-1"></i> Porosite
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.stats') ? 'active' : '' }}" href="{{ route('admin.stats') }}">
-          <i class="fas fa-chart-line me-1"></i> Statistikat
-        </a>
-      </nav>
+      @include('admin.partials.navigation')
     </div>
 
     <main class="col-lg-10 content">
@@ -392,26 +374,7 @@
     <div class="text-center mb-4">
       <img src="{{ asset('images/llogo.png') }}" alt="Brillant" class="logo img-fluid">
     </div>
-    <nav class="nav flex-column">
-      <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
-        <i class="fas fa-home me-1"></i> Dashboard
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">
-        <i class="fas fa-users me-1"></i> Perdoruesit
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
-        <i class="fas fa-address-book me-1"></i> Klientet
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
-        <i class="fas fa-box-open me-1"></i> Produktet
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.orders*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
-        <i class="fas fa-shopping-cart me-1"></i> Porosite
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.stats') ? 'active' : '' }}" href="{{ route('admin.stats') }}">
-        <i class="fas fa-chart-line me-1"></i> Statistikat
-      </a>
-    </nav>
+    @include('admin.partials.navigation')
   </div>
 </div>
 

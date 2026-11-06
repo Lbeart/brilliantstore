@@ -2,7 +2,7 @@
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <title>Arkë & barkode - Admin</title>
+  <title>ArkÃ« & barkode - Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -74,6 +74,7 @@
     @media (max-width:991px){.content{padding:1rem}.page-head{flex-direction:column}.sidebar{min-height:100vh}}
     @media (max-width:767px){.sidebar.desktop{display:none}.stat{min-height:auto}.qty-input,.price-input{width:100%}}
   </style>
+  <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 <body>
 
@@ -112,7 +113,7 @@
     <button class="btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Hape menun">
       <i class="fas fa-bars"></i>
     </button>
-    <div class="title m-0">Arkë & barkode</div>
+    <div class="title m-0">ArkÃ« & barkode</div>
     <div class="dropdown">
       <a class="text-dark text-decoration-none fw-semibold" href="#" data-bs-toggle="dropdown">
         <i class="fas fa-user-circle me-1"></i> Admin
@@ -134,36 +135,14 @@
       <div class="text-center mb-4">
         <img src="{{ asset('images/llogo.png') }}" alt="Brillant" class="logo img-fluid">
       </div>
-      <nav class="nav flex-column">
-        <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
-          <i class="fas fa-home me-1"></i> Dashboard
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">
-          <i class="fas fa-users me-1"></i> Perdoruesit
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
-          <i class="fas fa-address-book me-1"></i> Klientet
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.pos*') ? 'active' : '' }}" href="{{ route('admin.pos.index') }}">
-          <i class="fas fa-cash-register me-1"></i> Arkë & barkode
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
-          <i class="fas fa-box-open me-1"></i> Produktet
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.orders*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
-          <i class="fas fa-shopping-cart me-1"></i> Porosite
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.stats') ? 'active' : '' }}" href="{{ route('admin.stats') }}">
-          <i class="fas fa-chart-line me-1"></i> Statistikat
-        </a>
-      </nav>
+      @include('admin.partials.navigation')
     </div>
 
     <main class="col-lg-10 content">
       <div class="page-head">
         <div>
           <div class="eyebrow">Point of sale</div>
-          <h1>Arkë & barkode</h1>
+          <h1>ArkÃ« & barkode</h1>
           <p>Skano barkodin ose shkruaje me numra, kontrollo stokun dhe printo dokumentin e shitjes.</p>
         </div>
         <div class="d-flex gap-2 flex-wrap">
@@ -231,13 +210,13 @@
 
               <div class="input-group mb-3">
                 <span class="input-group-text"><i class="fa fa-barcode"></i></span>
-                <input type="text" class="form-control scanner" data-scan-input placeholder="Skano ose shkruaj barkod/SKU/ID/emër" autocomplete="off" inputmode="search" autofocus>
+                <input type="text" class="form-control scanner" data-scan-input placeholder="Skano ose shkruaj barkod/SKU/ID/emÃ«r" autocomplete="off" inputmode="search" autofocus>
                 <button type="button" class="btn btn-danger" data-scan-button>
                   <i class="fa fa-plus me-1"></i> Shto
                 </button>
               </div>
               <div data-scan-message class="small text-muted mb-2"></div>
-              <div class="small text-muted mb-3">Skaneri USB/Bluetooth punon si tastierë: mbaje fokusin këtu dhe skano. Mund ta shkruash kodin edhe me dorë.</div>
+              <div class="small text-muted mb-3">Skaneri USB/Bluetooth punon si tastierÃ«: mbaje fokusin kÃ«tu dhe skano. Mund ta shkruash kodin edhe me dorÃ«.</div>
 
               <div data-cart-empty class="empty-cart">
                 Shporta eshte bosh.
@@ -375,9 +354,9 @@
 
               <div class="d-grid gap-2 mt-3">
                 <button class="btn btn-danger" type="submit" name="print_format" value="receipt"><i class="fa fa-receipt me-1"></i> Ruaj dhe hap kuponin 80 mm</button>
-                <button class="btn btn-outline-dark" type="submit" name="print_format" value="a4"><i class="fa fa-file-lines me-1"></i> Ruaj dhe hap faturën A4</button>
+                <button class="btn btn-outline-dark" type="submit" name="print_format" value="a4"><i class="fa fa-file-lines me-1"></i> Ruaj dhe hap faturÃ«n A4</button>
               </div>
-              <div class="small text-muted mt-2">Kuponi 80 mm është dokument shitjeje, jo kupon fiskal zyrtar.</div>
+              <div class="small text-muted mt-2">Kuponi 80 mm Ã«shtÃ« dokument shitjeje, jo kupon fiskal zyrtar.</div>
             </div>
 
             <div class="card-soft p-3">
@@ -422,29 +401,7 @@
     <div class="text-center mb-4">
       <img src="{{ asset('images/llogo.png') }}" alt="Brillant" class="logo img-fluid">
     </div>
-    <nav class="nav flex-column">
-      <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
-        <i class="fas fa-home me-1"></i> Dashboard
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">
-        <i class="fas fa-users me-1"></i> Perdoruesit
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
-        <i class="fas fa-address-book me-1"></i> Klientet
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.pos*') ? 'active' : '' }}" href="{{ route('admin.pos.index') }}">
-        <i class="fas fa-cash-register me-1"></i> Arkë & barkode
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
-        <i class="fas fa-box-open me-1"></i> Produktet
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.orders*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
-        <i class="fas fa-shopping-cart me-1"></i> Porosite
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.stats') ? 'active' : '' }}" href="{{ route('admin.stats') }}">
-        <i class="fas fa-chart-line me-1"></i> Statistikat
-      </a>
-    </nav>
+    @include('admin.partials.navigation')
   </div>
 </div>
 
@@ -579,7 +536,7 @@
     const available = size ? Number(size.stock || 0) : Number(product.stock || 0);
 
     if (available <= (existing ? existing.quantity : 0)) {
-      setMessage(product.name + ' (' + (sizeLabel || 'pa përmasë') + '): nuk ka më stok të lirë.', 'error');
+      setMessage(product.name + ' (' + (sizeLabel || 'pa pÃ«rmasÃ«') + '): nuk ka mÃ« stok tÃ« lirÃ«.', 'error');
       return;
     }
 
@@ -643,7 +600,7 @@
             const label = String(size.label || '');
             const selected = label === line.size ? ' selected' : '';
             const price = size.price !== null && size.price !== undefined ? Number(size.price) : line.unit_price;
-            return '<option value="' + escapeHtml(label) + '" data-price="' + money(price) + '" data-stock="' + Number(size.stock || 0) + '"' + selected + (Number(size.stock || 0) <= 0 ? ' disabled' : '') + '>' + escapeHtml(label) + ' (' + Number(size.stock || 0) + ' në stok)</option>';
+            return '<option value="' + escapeHtml(label) + '" data-price="' + money(price) + '" data-stock="' + Number(size.stock || 0) + '"' + selected + (Number(size.stock || 0) <= 0 ? ' disabled' : '') + '>' + escapeHtml(label) + ' (' + Number(size.stock || 0) + ' nÃ« stok)</option>';
           }).join('') + '</select>'
         : '<input class="form-control form-control-sm" value="' + escapeHtml(line.size || '') + '" data-line-size-text="' + index + '">';
       const stockText = line.is_curtain ? 'perde me porosi' : (line.stock <= 0 ? 'stok 0' : 'stok ' + line.stock);
@@ -756,7 +713,7 @@
       line.quantity = line.is_curtain
         ? Math.max(Number(qty.value || 1), 1)
         : Math.min(Math.max(Number(qty.value || 1), 1), line.stock);
-      if (!line.is_curtain && Number(qty.value) > line.stock) setMessage('Në stok janë vetëm ' + line.stock + ' copë.', 'error');
+      if (!line.is_curtain && Number(qty.value) > line.stock) setMessage('NÃ« stok janÃ« vetÃ«m ' + line.stock + ' copÃ«.', 'error');
       renderCart();
       return;
     }

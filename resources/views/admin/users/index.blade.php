@@ -2,7 +2,7 @@
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <title>Lista e Përdoruesve</title>
+  <title>Lista e PÃ«rdoruesve</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap + FontAwesome -->
@@ -31,6 +31,7 @@
     .table thead th{ white-space:nowrap }
     .small-muted{ color:#6b7280; font-size:.9rem }
   </style>
+  <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 <body>
 
@@ -40,7 +41,7 @@
     <button class="btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
       <i class="fas fa-bars"></i>
     </button>
-    <div class="title m-0">Lista e Përdoruesve</div>
+    <div class="title m-0">Lista e PÃ«rdoruesve</div>
     <div class="dropdown">
       <a class="text-dark text-decoration-none" href="#" data-bs-toggle="dropdown">
         <i class="fas fa-user-circle me-1"></i> Admin
@@ -65,34 +66,15 @@
       <div class="text-center mb-4">
         <img src="{{ asset('images/llogo.png') }}" alt="Logo" class="logo img-fluid">
       </div>
-      <nav class="nav flex-column">
-        <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
-          <i class="fas fa-home me-1"></i> Dashboard
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">
-          <i class="fas fa-users me-1"></i> Përdoruesit
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
-          <i class="fas fa-address-book me-1"></i> Klientet
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
-          <i class="fas fa-box-open me-1"></i> Produktet
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.orders*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
-          <i class="fas fa-shopping-cart me-1"></i> Porositë
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.stats') ? 'active' : '' }}" href="{{ route('admin.stats') }}">
-          <i class="fas fa-chart-line me-1"></i> Statistikat
-        </a>
-      </nav>
+      @include('admin.partials.navigation')
     </div>
 
     <!-- Content -->
     <div class="col-lg-10 content">
       <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap controls-wrap">
         <div>
-          <div class="h5 m-0">Lista e Përdoruesve</div>
-          <div class="small-muted">Shfaq {{ $users->firstItem() ?? 0 }}–{{ $users->lastItem() ?? 0 }} nga {{ $users->total() ?? $users->count() }}</div>
+          <div class="h5 m-0">Lista e PÃ«rdoruesve</div>
+          <div class="small-muted">Shfaq {{ $users->firstItem() ?? 0 }}â€“{{ $users->lastItem() ?? 0 }} nga {{ $users->total() ?? $users->count() }}</div>
         </div>
       </div>
 
@@ -100,17 +82,17 @@
       <form method="GET" action="{{ route('admin.users') }}" class="card p-3 mb-3">
         <div class="row g-2 align-items-end filters">
           <div class="col-12 col-md-4">
-            <label class="form-label mb-1">Kërko</label>
+            <label class="form-label mb-1">KÃ«rko</label>
             <div class="input-group">
               <span class="input-group-text"><i class="fa fa-search"></i></span>
-              <input type="text" name="search" value="{{ $search ?? request('search') }}" class="form-control" placeholder="Emër ose email…" id="searchInput">
+              <input type="text" name="search" value="{{ $search ?? request('search') }}" class="form-control" placeholder="EmÃ«r ose emailâ€¦" id="searchInput">
             </div>
           </div>
 
           <div class="col-6 col-md-2">
             <label class="form-label mb-1">Roli</label>
             <select name="role" class="form-select" onchange="this.form.submit()">
-              <option value="">Të gjithë</option>
+              <option value="">TÃ« gjithÃ«</option>
               <option value="admin" @selected(($role ?? request('role'))==='admin')>Admin</option>
               <option value="user"  @selected(($role ?? request('role'))==='user')>User</option>
             </select>
@@ -120,15 +102,15 @@
             <label class="form-label mb-1">Rendit</label>
             <select name="sort" class="form-select" onchange="this.form.submit()">
               @php $s = $sort ?? request('sort','newest'); @endphp
-              <option value="newest"  @selected($s==='newest')>Më të rinjtë</option>
-              <option value="oldest"  @selected($s==='oldest')>Më të vjetrit</option>
-              <option value="name_az" @selected($s==='name_az')>Emri A–Z</option>
-              <option value="name_za" @selected($s==='name_za')>Emri Z–A</option>
+              <option value="newest"  @selected($s==='newest')>MÃ« tÃ« rinjtÃ«</option>
+              <option value="oldest"  @selected($s==='oldest')>MÃ« tÃ« vjetrit</option>
+              <option value="name_az" @selected($s==='name_az')>Emri Aâ€“Z</option>
+              <option value="name_za" @selected($s==='name_za')>Emri Zâ€“A</option>
             </select>
           </div>
 
           <div class="col-6 col-md-2">
-            <label class="form-label mb-1">Për faqe</label>
+            <label class="form-label mb-1">PÃ«r faqe</label>
             <select name="perPage" class="form-select" onchange="this.form.submit()">
               @php $pp = (int)($perPage ?? request('perPage', 25)); @endphp
               @foreach([10,25,50,100] as $n)
@@ -154,7 +136,7 @@
               <th style="width:70px">#</th>
               <th>Emri</th>
               <th>Email</th>
-              <th style="width:180px">Krijuar më</th>
+              <th style="width:180px">Krijuar mÃ«</th>
               <th style="width:120px">Statusi</th>
               <th style="width:160px">Veprime</th>
             </tr>
@@ -177,12 +159,12 @@
                   <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">Edito</a>
                   <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
                     @csrf @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('A je i sigurt që do me fshi?')">Fshi</button>
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('A je i sigurt qÃ« do me fshi?')">Fshi</button>
                   </form>
                 </td>
               </tr>
             @empty
-              <tr><td colspan="6">S’ka përdorues.</td></tr>
+              <tr><td colspan="6">Sâ€™ka pÃ«rdorues.</td></tr>
             @endforelse
           </tbody>
         </table>
@@ -207,32 +189,13 @@
     <div class="text-center mb-4">
       <img src="{{ asset('images/llogo.png') }}" alt="Logo" class="logo img-fluid">
     </div>
-    <nav class="nav flex-column">
-      <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
-        <i class="fas fa-home me-1"></i> Dashboard
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">
-        <i class="fas fa-users me-1"></i> Përdoruesit
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
-        <i class="fas fa-address-book me-1"></i> Klientet
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
-        <i class="fas fa-box-open me-1"></i> Produktet
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.orders*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
-        <i class="fas fa-shopping-cart me-1"></i> Porositë
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.stats') ? 'active' : '' }}" href="{{ route('admin.stats') }}">
-        <i class="fas fa-chart-line me-1"></i> Statistikat
-      </a>
-    </nav>
+    @include('admin.partials.navigation')
   </div>
 </div>
 
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Debounce për kërkim – autosubmit pas 400ms
+// Debounce pÃ«r kÃ«rkim â€“ autosubmit pas 400ms
 const searchInput = document.getElementById('searchInput');
 let t;
 if (searchInput) {

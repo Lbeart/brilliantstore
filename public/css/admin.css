@@ -1,0 +1,82 @@
+﻿:root {
+  --admin-brand: #c92f3d;
+  --admin-ink: #17202a;
+  --admin-muted: #667085;
+  --admin-line: #e5e7eb;
+  --admin-sidebar: #202734;
+  --admin-page: #f4f6f8;
+}
+
+body {
+  background: var(--admin-page);
+  color: var(--admin-ink);
+}
+
+.app-navbar {
+  min-height: 64px;
+  background: rgba(255, 255, 255, .97) !important;
+  border-bottom: 1px solid var(--admin-line);
+  box-shadow: 0 4px 16px rgba(16, 24, 40, .045) !important;
+}
+
+.sidebar {
+  background: var(--admin-sidebar) !important;
+  color: #fff;
+}
+
+.sidebar.desktop {
+  position: sticky;
+  top: 64px;
+  align-self: flex-start;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+}
+
+.admin-navigation {
+  gap: 4px;
+}
+
+.admin-navigation .nav-link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 12px !important;
+  border: 1px solid transparent;
+  border-radius: 8px !important;
+  color: #cbd2dc !important;
+  font-size: .93rem;
+  font-weight: 600;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.admin-navigation .nav-link i {
+  width: 22px !important;
+  margin-right: 8px !important;
+  text-align: center;
+  color: #aab4c2;
+}
+
+.admin-navigation .nav-link:hover {
+  background: rgba(255, 255, 255, .08) !important;
+  color: #fff !important;
+}
+
+.admin-navigation .nav-link.active {
+  background: rgba(201, 47, 61, .18) !important;
+  border-color: rgba(255, 117, 127, .25);
+  color: #fff !important;
+}
+
+.admin-navigation .nav-link.active i {
+  color: #ff8992;
+}
+
+.admin-navigation .nav-link:focus-visible {
+  outline: 3px solid rgba(255, 137, 146, .55);
+  outline-offset: 2px;
+}
+
+@media (max-width: 991.98px) {
+  .sidebar.desktop { display: none !important; }
+  .sidebar.offcanvas { top: 0; height: 100dvh; }
+}

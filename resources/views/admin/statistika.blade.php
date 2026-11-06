@@ -2,7 +2,7 @@
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <title>Statistikat – Admin</title>
+  <title>Statistikat â€“ Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -37,6 +37,7 @@
     @media (max-width: 991px){ .content{padding:1rem} }
     @media (max-width: 767px){ .sidebar.desktop{display:none} .chart-card{min-height:320px} }
   </style>
+  <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 <body>
 
@@ -69,32 +70,13 @@
       <div class="text-center mb-4">
         <img src="{{ asset('images/llogo.png') }}" alt="Logo" class="logo img-fluid">
       </div>
-      <nav class="nav flex-column">
-        <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
-          <i class="fas fa-home me-1"></i> Dashboard
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">
-          <i class="fas fa-users me-1"></i> Përdoruesit
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
-          <i class="fas fa-address-book me-1"></i> Klientet
-        </a>
-        <a class="nav-link" href="{{ route('admin.products.index') }}">
-          <i class="fas fa-box-open me-1"></i> Produktet
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.orders*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
-          <i class="fas fa-shopping-cart me-1"></i> Porositë
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.stats') ? 'active' : '' }}" href="{{ route('admin.stats') }}">
-          <i class="fas fa-chart-line me-1"></i> Statistikat
-        </a>
-      </nav>
+      @include('admin.partials.navigation')
     </div>
 
     <!-- CONTENT -->
     <div class="col-lg-10 content">
       <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-        <h1 class="h5 m-0">Përmbledhje</h1>
+        <h1 class="h5 m-0">PÃ«rmbledhje</h1>
         <form method="get" class="d-flex flex-wrap gap-2">
           <input type="date" name="from" value="{{ request('from') }}" class="form-control">
           <input type="date" name="to"   value="{{ request('to')   }}" class="form-control">
@@ -108,29 +90,29 @@
         <div class="col-12 col-sm-6 col-xl-3">
           <div class="card-soft p-3 kpi h-100">
             <div class="label">Porosi sot</div>
-            <div class="value">{{ $kpi['today_orders'] ?? '—' }}</div>
-            <div class="sub">krahasuar me dje: {{ $kpi['today_vs_yesterday'] ?? '—' }}</div>
+            <div class="value">{{ $kpi['today_orders'] ?? 'â€”' }}</div>
+            <div class="sub">krahasuar me dje: {{ $kpi['today_vs_yesterday'] ?? 'â€”' }}</div>
           </div>
         </div>
         <div class="col-12 col-sm-6 col-xl-3">
           <div class="card-soft p-3 kpi h-100">
-            <div class="label">Të ardhura sot</div>
-            <div class="value">{{ isset($kpi['today_revenue']) ? number_format($kpi['today_revenue'],2).' €' : '—' }}</div>
-            <div class="sub">mesatare/porosi: {{ isset($kpi['today_avg']) ? number_format($kpi['today_avg'],2).' €' : '—' }}</div>
+            <div class="label">TÃ« ardhura sot</div>
+            <div class="value">{{ isset($kpi['today_revenue']) ? number_format($kpi['today_revenue'],2).' â‚¬' : 'â€”' }}</div>
+            <div class="sub">mesatare/porosi: {{ isset($kpi['today_avg']) ? number_format($kpi['today_avg'],2).' â‚¬' : 'â€”' }}</div>
           </div>
         </div>
         <div class="col-12 col-sm-6 col-xl-3">
           <div class="card-soft p-3 kpi h-100">
-            <div class="label">Këtë muaj</div>
-            <div class="value">{{ $kpi['month_orders'] ?? '—' }}</div>
-            <div class="sub">të ardhura: {{ isset($kpi['month_revenue']) ? number_format($kpi['month_revenue'],2).' €' : '—' }}</div>
+            <div class="label">KÃ«tÃ« muaj</div>
+            <div class="value">{{ $kpi['month_orders'] ?? 'â€”' }}</div>
+            <div class="sub">tÃ« ardhura: {{ isset($kpi['month_revenue']) ? number_format($kpi['month_revenue'],2).' â‚¬' : 'â€”' }}</div>
           </div>
         </div>
         <div class="col-12 col-sm-6 col-xl-3">
           <div class="card-soft p-3 kpi h-100">
-            <div class="label">Këtë vit</div>
-            <div class="value">{{ $kpi['year_orders'] ?? '—' }}</div>
-            <div class="sub">të ardhura: {{ isset($kpi['year_revenue']) ? number_format($kpi['year_revenue'],2).' €' : '—' }}</div>
+            <div class="label">KÃ«tÃ« vit</div>
+            <div class="value">{{ $kpi['year_orders'] ?? 'â€”' }}</div>
+            <div class="sub">tÃ« ardhura: {{ isset($kpi['year_revenue']) ? number_format($kpi['year_revenue'],2).' â‚¬' : 'â€”' }}</div>
           </div>
         </div>
       </div>
@@ -141,12 +123,12 @@
         <div class="col-12 col-xl-6">
           <div class="card-soft p-3 chart-card">
             <div class="chart-toolbar">
-              <h6 class="m-0">Porosi ditore (30 ditët e fundit)</h6>
+              <h6 class="m-0">Porosi ditore (30 ditÃ«t e fundit)</h6>
               <div class="btn-group btn-group-sm" role="group">
                 <input type="radio" class="btn-check" name="dailyMetric" id="dailyOrders" value="orders" checked>
                 <label class="btn btn-outline-secondary" for="dailyOrders">Porosi</label>
                 <input type="radio" class="btn-check" name="dailyMetric" id="dailyRevenue" value="revenue">
-                <label class="btn btn-outline-secondary" for="dailyRevenue">€</label>
+                <label class="btn btn-outline-secondary" for="dailyRevenue">â‚¬</label>
                 <button class="btn btn-outline-dark ms-2" id="dailyCSV"><i class="fa fa-file-csv me-1"></i> CSV</button>
                 <button class="btn btn-outline-dark" id="dailyPNG"><i class="fa fa-download me-1"></i> PNG</button>
               </div>
@@ -159,12 +141,12 @@
         <div class="col-12 col-xl-6">
           <div class="card-soft p-3 chart-card">
             <div class="chart-toolbar">
-              <h6 class="m-0">Të ardhura / Porosi mujore (12 muaj)</h6>
+              <h6 class="m-0">TÃ« ardhura / Porosi mujore (12 muaj)</h6>
               <div class="btn-group btn-group-sm" role="group">
                 <input type="radio" class="btn-check" name="monthlyMetric" id="monthlyOrders" value="orders">
                 <label class="btn btn-outline-secondary" for="monthlyOrders">Porosi</label>
                 <input type="radio" class="btn-check" name="monthlyMetric" id="monthlyRevenue" value="revenue" checked>
-                <label class="btn btn-outline-secondary" for="monthlyRevenue">€</label>
+                <label class="btn btn-outline-secondary" for="monthlyRevenue">â‚¬</label>
                 <button class="btn btn-outline-dark ms-2" id="monthlyCSV"><i class="fa fa-file-csv me-1"></i> CSV</button>
                 <button class="btn btn-outline-dark" id="monthlyPNG"><i class="fa fa-download me-1"></i> PNG</button>
               </div>
@@ -177,12 +159,12 @@
         <div class="col-12">
           <div class="card-soft p-3 chart-card">
             <div class="chart-toolbar">
-              <h6 class="m-0">Porosi / Të ardhura vjetore (5 vite)</h6>
+              <h6 class="m-0">Porosi / TÃ« ardhura vjetore (5 vite)</h6>
               <div class="btn-group btn-group-sm" role="group">
                 <input type="radio" class="btn-check" name="yearlyMetric" id="yearlyOrders" value="orders" checked>
                 <label class="btn btn-outline-secondary" for="yearlyOrders">Porosi</label>
                 <input type="radio" class="btn-check" name="yearlyMetric" id="yearlyRevenue" value="revenue">
-                <label class="btn btn-outline-secondary" for="yearlyRevenue">€</label>
+                <label class="btn btn-outline-secondary" for="yearlyRevenue">â‚¬</label>
                 <button class="btn btn-outline-dark ms-2" id="yearlyCSV"><i class="fa fa-file-csv me-1"></i> CSV</button>
                 <button class="btn btn-outline-dark" id="yearlyPNG"><i class="fa fa-download me-1"></i> PNG</button>
               </div>
@@ -206,26 +188,7 @@
     <div class="text-center mb-4">
       <img src="{{ asset('images/llogo.png') }}" alt="Logo" class="logo img-fluid">
     </div>
-    <nav class="nav flex-column">
-      <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
-        <i class="fas fa-home me-1"></i> Dashboard
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">
-        <i class="fas fa-users me-1"></i> Përdoruesit
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
-        <i class="fas fa-address-book me-1"></i> Klientet
-      </a>
-      <a class="nav-link" href="{{ route('admin.products.index') }}">
-        <i class="fas fa-box-open me-1"></i> Produktet
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.orders*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
-        <i class="fas fa-shopping-cart me-1"></i> Porositë
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.stats') ? 'active' : '' }}" href="{{ route('admin.stats') }}">
-        <i class="fas fa-chart-line me-1"></i> Statistikat
-      </a>
-    </nav>
+    @include('admin.partials.navigation')
   </div>
 </div>
 
@@ -245,7 +208,7 @@ function euroFmt(v){ return new Intl.NumberFormat('sq-AL', {minimumFractionDigit
 function buildDataset(metric, values){
   const isMoney = metric === 'revenue';
   return {
-    label: isMoney ? 'Të ardhura (€)' : 'Porosi',
+    label: isMoney ? 'TÃ« ardhura (â‚¬)' : 'Porosi',
     data: values,
     fill: true,
     tension: 0.25,
@@ -281,7 +244,7 @@ const commonOptions = (isMoney=false) => ({
       callbacks: {
         label: ctx => {
           const v = ctx.parsed.y ?? 0;
-          return (isMoney ? '€ ' + euroFmt(v) : v + ' porosi');
+          return (isMoney ? 'â‚¬ ' + euroFmt(v) : v + ' porosi');
         }
       }
     }
@@ -290,7 +253,7 @@ const commonOptions = (isMoney=false) => ({
     y: {
       beginAtZero: true,
       ticks: {
-        callback: (val) => isMoney ? '€ ' + euroFmt(val) : val
+        callback: (val) => isMoney ? 'â‚¬ ' + euroFmt(val) : val
       }
     },
     x: { grid: { display:false } }

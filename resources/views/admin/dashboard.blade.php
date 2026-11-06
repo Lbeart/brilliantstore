@@ -202,14 +202,15 @@
       .admin-ai-panel{left:10px;right:10px;bottom:80px;width:auto;height:min(72dvh,560px);max-height:calc(100dvh - 96px);border-radius:14px}
     }
   </style>
+  <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 <body>
 
 @php
   $statusLabels = [
-    'new' => 'Të reja',
-    'processing' => 'Në proces',
-    'completed' => 'Përfunduara',
+    'new' => 'TÃ« reja',
+    'processing' => 'NÃ« proces',
+    'completed' => 'PÃ«rfunduara',
     'canceled' => 'Anuluara',
   ];
   $statusBadges = [
@@ -222,7 +223,7 @@
 
 <nav class="navbar navbar-light app-navbar sticky-top">
   <div class="container-fluid d-flex justify-content-between align-items-center">
-    <button class="btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Hape menunë">
+    <button class="btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Hape menunÃ«">
       <i class="fas fa-bars"></i>
     </button>
     <div class="title m-0">Admin Dashboard</div>
@@ -249,41 +250,19 @@
       <div class="text-center mb-4">
         <img src="{{ asset('images/llogo.png') }}" alt="Brillant" class="logo img-fluid">
       </div>
-      <nav class="nav flex-column">
-        <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
-          <i class="fas fa-home me-1"></i> Dashboard
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">
-          <i class="fas fa-users me-1"></i> Përdoruesit
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
-          <i class="fas fa-address-book me-1"></i> Klientet
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.pos*') ? 'active' : '' }}" href="{{ route('admin.pos.index') }}">
-          <i class="fas fa-cash-register me-1"></i> Arkë & barkode
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
-          <i class="fas fa-box-open me-1"></i> Produktet
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.orders*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
-          <i class="fas fa-shopping-cart me-1"></i> Porositë
-        </a>
-        <a class="nav-link {{ request()->routeIs('admin.stats') ? 'active' : '' }}" href="{{ route('admin.stats') }}">
-          <i class="fas fa-chart-line me-1"></i> Statistikat
-        </a>
-      </nav>
+      @include('admin.partials.navigation')
     </div>
 
     <main class="col-lg-10 content">
       <div class="page-head">
         <div>
-          <div class="eyebrow">Përmbledhje</div>
+          <div class="eyebrow">PÃ«rmbledhje</div>
           <h1>Kontrolli i porosive, produkteve dhe gjurmimit</h1>
-          <p>Shiko punën e sotme, kodet e gjurmimit dhe aksionet kryesore në një vend.</p>
+          <p>Shiko punÃ«n e sotme, kodet e gjurmimit dhe aksionet kryesore nÃ« njÃ« vend.</p>
         </div>
         <div class="toolbar d-flex flex-wrap gap-2">
           <a class="btn btn-outline-dark" href="{{ route('admin.orders.all') }}">
-            <i class="fa fa-list me-1"></i> Krejt porositë
+            <i class="fa fa-list me-1"></i> Krejt porositÃ«
           </a>
           <a class="btn btn-danger" href="{{ route('admin.products.create') }}">
             <i class="fa fa-plus me-1"></i> Shto produkt
@@ -305,9 +284,9 @@
         <div class="col-12 col-sm-6 col-xl-3">
           <a class="card-soft kpi p-3 h-100 d-flex text-reset" href="{{ route('admin.orders.index') }}?status=new">
             <div>
-              <div class="label">Në pritje</div>
+              <div class="label">NÃ« pritje</div>
               <div class="value">{{ number_format($pendingOrders ?? 0) }}</div>
-              <div class="sub">Të reja dhe në proces</div>
+              <div class="sub">TÃ« reja dhe nÃ« proces</div>
             </div>
             <div class="kpi-icon"><i class="fa fa-clock"></i></div>
           </a>
@@ -317,7 +296,7 @@
             <div>
               <div class="label">Produkte</div>
               <div class="value">{{ number_format($productsCount ?? 0) }}</div>
-              <div class="sub">Menaxho stokun dhe çmimet</div>
+              <div class="sub">Menaxho stokun dhe Ã§mimet</div>
             </div>
             <div class="kpi-icon"><i class="fa fa-box"></i></div>
           </a>
@@ -325,9 +304,9 @@
         <div class="col-12 col-sm-6 col-xl-3">
           <a class="card-soft kpi p-3 h-100 d-flex text-reset" href="{{ route('admin.stats') }}">
             <div>
-              <div class="label">Të ardhura</div>
-              <div class="value">{{ number_format($revenue ?? 0, 2) }} €</div>
-              <div class="sub">Muaji: {{ number_format($monthRevenue ?? 0, 2) }} €</div>
+              <div class="label">TÃ« ardhura</div>
+              <div class="value">{{ number_format($revenue ?? 0, 2) }} â‚¬</div>
+              <div class="sub">Muaji: {{ number_format($monthRevenue ?? 0, 2) }} â‚¬</div>
             </div>
             <div class="kpi-icon"><i class="fa fa-euro-sign"></i></div>
           </a>
@@ -336,12 +315,12 @@
 
       <div class="card-soft quick-actions p-3 mb-3">
         <div>
-          <h2 class="quick-actions-title">Veprime të shpejta</h2>
-          <p class="quick-actions-hint">Hap punët që kërkojnë vëmendje.</p>
+          <h2 class="quick-actions-title">Veprime tÃ« shpejta</h2>
+          <p class="quick-actions-hint">Hap punÃ«t qÃ« kÃ«rkojnÃ« vÃ«mendje.</p>
         </div>
         <div class="d-flex flex-wrap gap-2">
           <a class="btn btn-danger" href="{{ route('admin.orders.index') }}?status=new">
-            <i class="fa fa-bell me-1"></i> Porosi të reja
+            <i class="fa fa-bell me-1"></i> Porosi tÃ« reja
           </a>
           <a class="btn btn-outline-dark" href="{{ route('track.form') }}" target="_blank" rel="noopener">
             <i class="fa fa-location-dot me-1"></i> Faqja e gjurmimit
@@ -353,8 +332,8 @@
         <div class="col-12 col-xl-8">
           <div class="card-soft p-3 h-100">
             <div class="section-title">
-              <h2>Porositë e fundit</h2>
-              <a href="{{ route('admin.orders.all') }}">Shiko të gjitha</a>
+              <h2>PorositÃ« e fundit</h2>
+              <a href="{{ route('admin.orders.all') }}">Shiko tÃ« gjitha</a>
             </div>
             <div class="table-responsive">
               <table class="table align-middle">
@@ -383,7 +362,7 @@
                           <span class="text-muted">Pa kod</span>
                         @endif
                       </td>
-                      <td>{{ number_format($order->total ?? 0, 2) }} €</td>
+                      <td>{{ number_format($order->total ?? 0, 2) }} â‚¬</td>
                       <td>
                         <span class="badge bg-{{ $statusBadges[$order->status] ?? 'secondary' }} badge-status text-uppercase">
                           {{ $statusLabels[$order->status] ?? $order->status }}
@@ -397,7 +376,7 @@
                     </tr>
                   @empty
                     <tr>
-                      <td colspan="6" class="empty-state">Ende nuk ka porosi për t'u shfaqur.</td>
+                      <td colspan="6" class="empty-state">Ende nuk ka porosi pÃ«r t'u shfaqur.</td>
                     </tr>
                   @endforelse
                 </tbody>
@@ -436,10 +415,10 @@
                   <div class="rank">{{ $loop->iteration }}</div>
                   <div class="fw-semibold">{{ $product->name }}</div>
                 </div>
-                <span class="badge bg-light text-dark">{{ (int) $product->total_qty }} copë</span>
+                <span class="badge bg-light text-dark">{{ (int) $product->total_qty }} copÃ«</span>
               </div>
             @empty
-              <div class="empty-state">S'ka ende të dhëna për top produkte.</div>
+              <div class="empty-state">S'ka ende tÃ« dhÃ«na pÃ«r top produkte.</div>
             @endforelse
           </div>
         </div>
@@ -457,11 +436,11 @@
     <button class="admin-ai-close" id="adminAiClose" type="button" aria-label="Mbyll"><i class="fa fa-xmark"></i></button>
   </header>
   <div class="admin-ai-messages" id="adminAiMessages" role="log" aria-live="polite">
-    <div class="admin-ai-message assistant">Përshëndetje! Më pyet për porositë e reja, të ardhurat, stokun ose një porosi me ID/kod gjurmimi.</div>
+    <div class="admin-ai-message assistant">PÃ«rshÃ«ndetje! MÃ« pyet pÃ«r porositÃ« e reja, tÃ« ardhurat, stokun ose njÃ« porosi me ID/kod gjurmimi.</div>
   </div>
   <form class="admin-ai-form" id="adminAiForm">
-    <textarea class="admin-ai-input" id="adminAiInput" rows="1" maxlength="700" placeholder="P.sh. A ka porosi të reja?" required></textarea>
-    <button class="admin-ai-send" type="submit" aria-label="Dërgo"><i class="fa fa-arrow-up"></i></button>
+    <textarea class="admin-ai-input" id="adminAiInput" rows="1" maxlength="700" placeholder="P.sh. A ka porosi tÃ« reja?" required></textarea>
+    <button class="admin-ai-send" type="submit" aria-label="DÃ«rgo"><i class="fa fa-arrow-up"></i></button>
   </form>
 </section>
 
@@ -474,29 +453,7 @@
     <div class="text-center mb-4">
       <img src="{{ asset('images/llogo.png') }}" alt="Brillant" class="logo img-fluid">
     </div>
-    <nav class="nav flex-column">
-      <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
-        <i class="fas fa-home me-1"></i> Dashboard
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">
-        <i class="fas fa-users me-1"></i> Përdoruesit
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
-        <i class="fas fa-address-book me-1"></i> Klientet
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.pos*') ? 'active' : '' }}" href="{{ route('admin.pos.index') }}">
-        <i class="fas fa-cash-register me-1"></i> Arkë & barkode
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
-        <i class="fas fa-box-open me-1"></i> Produktet
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.orders*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
-        <i class="fas fa-shopping-cart me-1"></i> Porositë
-      </a>
-      <a class="nav-link {{ request()->routeIs('admin.stats') ? 'active' : '' }}" href="{{ route('admin.stats') }}">
-        <i class="fas fa-chart-line me-1"></i> Statistikat
-      </a>
-    </nav>
+    @include('admin.partials.navigation')
   </div>
 </div>
 
@@ -541,7 +498,7 @@
     add(message, 'user');
     input.value = '';
     input.style.height = 'auto';
-    const loading = add('Duke kontrolluar të dhënat reale…', 'assistant', 'loading');
+    const loading = add('Duke kontrolluar tÃ« dhÃ«nat realeâ€¦', 'assistant', 'loading');
 
     try {
       const response = await fetch(@json(route('admin.assistant.message')), {
@@ -552,11 +509,11 @@
       const contentType = response.headers.get('content-type') || '';
       const data = contentType.includes('application/json') ? await response.json() : null;
       if (!response.ok) {
-        if (response.status === 419) throw new Error('Sesioni ka skaduar. Rifresko faqen dhe provo përsëri. (419)');
-        if (response.status === 429) throw new Error('Shumë kërkesa brenda një minute. Prit pak dhe provo përsëri. (429)');
-        throw new Error(`Kërkesa dështoi në server. Kodi: ${response.status}`);
+        if (response.status === 419) throw new Error('Sesioni ka skaduar. Rifresko faqen dhe provo pÃ«rsÃ«ri. (419)');
+        if (response.status === 429) throw new Error('ShumÃ« kÃ«rkesa brenda njÃ« minute. Prit pak dhe provo pÃ«rsÃ«ri. (429)');
+        throw new Error(`KÃ«rkesa dÃ«shtoi nÃ« server. Kodi: ${response.status}`);
       }
-      if (!data || typeof data.reply !== 'string') throw new Error('Serveri nuk ktheu përgjigje të vlefshme.');
+      if (!data || typeof data.reply !== 'string') throw new Error('Serveri nuk ktheu pÃ«rgjigje tÃ« vlefshme.');
       loading.remove();
       add(data.reply, 'assistant');
       history.push(
@@ -565,7 +522,7 @@
       );
       if (history.length > 8) history.splice(0, history.length - 8);
     } catch (error) {
-      loading.textContent = error.message || 'Nuk munda t’i lexoj të dhënat tani. Rifresko faqen dhe provo përsëri.';
+      loading.textContent = error.message || 'Nuk munda tâ€™i lexoj tÃ« dhÃ«nat tani. Rifresko faqen dhe provo pÃ«rsÃ«ri.';
       loading.classList.remove('loading');
     } finally {
       pending = false;
