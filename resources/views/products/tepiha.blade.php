@@ -705,7 +705,7 @@
     .price-row{
       display: flex;
       align-items: baseline;
-      justify-content: flex-end;
+      justify-content: center;
       gap: .42rem;
       margin-bottom: .08rem;
     }
@@ -938,7 +938,7 @@
       ::-webkit-scrollbar-thumb:hover{ background: rgba(15,23,42,.28); }
     }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.10">
+  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.11">
   <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
 </head>
 

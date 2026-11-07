@@ -910,7 +910,7 @@
     }
     .product-bottom { margin-top: auto; }
     .price-label { color: #8a7f77; font-size: .76rem; font-weight: 700; }
-    .home-sale-price { display:flex; align-items:baseline; justify-content:flex-end; gap:7px; margin-top:2px; color:var(--brand); font-size:1.28rem; font-weight:800; }
+    .home-sale-price { display:flex; align-items:baseline; justify-content:center; gap:7px; margin-top:2px; color:var(--brand); font-size:1.28rem; font-weight:800; }
     .home-sale-price del { color:var(--muted); font-size:.78rem; font-weight:500; }
     .home-sale-price > span { color:var(--muted); font-size:.9rem; }
     .price {
