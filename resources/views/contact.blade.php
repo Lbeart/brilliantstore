@@ -12,6 +12,7 @@
   <meta property="og:description" content="Na kontaktoni për porosi, pyetje dhe dërgesë të produkteve të shtëpisë në Kosovë.">
   <meta property="og:url" content="{{ url('/contact') }}">
   <meta property="og:image" content="{{ asset('images/llogo.png') }}">
+  @include('partials.seo-business-schema')
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <!-- Bootstrap CSS + Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">

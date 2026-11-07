@@ -7,22 +7,22 @@
   $pageLocale = in_array($activeLocale, ['sq', 'en', 'sr'], true) ? $activeLocale : 'sq';
   $seoCopy = [
     'sq' => [
-      'title' => 'Brillant | Tepiha, Perde, Mbulesa, Batanije & Dekor',
-      'description' => 'Brillant në Lipjan: tepiha, perde ditore, perde anësore, mbulesa divani, set çarçafësh, postava, batanije, jastëk dekorues, tepiha banjo dhe lëkurë pelushi në Kosovë.',
-      'ogTitle' => 'Brillant - Tepiha dhe Perde',
-      'ogDescription' => 'Koleksione per shtepi me dizajn te paster, materiale te zgjedhura dhe kontakt direkt ne WhatsApp.',
+      'title' => 'Tepiha dhe Perde në Kosovë | B-Brillant Lipjan',
+      'description' => 'B-Brillant në Lipjan: tepiha, perde, mbulesa, postava dhe tekstil për shtëpi. Porosit online dhe dërgesë në Kosovë.',
+      'ogTitle' => 'Tepiha dhe Perde në Kosovë – B-Brillant Lipjan',
+      'ogDescription' => 'Zgjedh tepiha, perde dhe tekstil për shtëpi nga B-Brillant në Lipjan. Shiko koleksionet dhe porosit online.',
       'keywords' => 'tepiha, perde ditore, perde anesore, mbulesa, batanije, set carcafesh, jasteke dekorues, tepiha banjo, garnishte, Brillant Lipjan',
     ],
     'en' => [
-      'title' => 'Brillant | Rugs, Curtains, Covers, Blankets & Home Decor',
-      'description' => 'Brillant in Lipjan offers rugs, day curtains, side curtains, sofa covers, bedsheet sets, blankets, decorative pillows, bath rugs, curtain rails and plush fur home decor in Kosovo.',
+      'title' => 'Rugs & Curtains in Kosovo | B-Brillant Lipjan',
+      'description' => 'Shop rugs, curtains and home textiles from B-Brillant in Lipjan, with online ordering and delivery across Kosovo.',
       'ogTitle' => 'Brillant - Rugs, Curtains and Home Textiles',
       'ogDescription' => 'Home collections with clean design, selected materials, clear categories and direct WhatsApp support.',
       'keywords' => 'rugs Kosovo, curtains Kosovo, day curtains, side curtains, sofa covers, blankets, bedsheet sets, decorative pillows, bath rugs, curtain rails, Brillant Lipjan',
     ],
     'sr' => [
-      'title' => 'Brillant | Tepisi, Zavese, Prekrivaci, Cebad i Dekor',
-      'description' => 'Brillant u Lipljanu nudi tepihe, dnevne zavese, bocne zavese, prekrivace, setove posteljine, cebad, dekorativne jastuke, kupatilske tepihe, garnisne i plisani dekor na Kosovu.',
+      'title' => 'Tepisi i Zavese na Kosovu | B-Brillant Lipljan',
+      'description' => 'Kupite tepihe, zavese i tekstil za dom u B-Brillant prodavnici u Lipljanu. Online poručivanje i dostava širom Kosova.',
       'ogTitle' => 'Brillant - Tepisi, Zavese i Tekstil za Dom',
       'ogDescription' => 'Kolekcije za dom sa urednim dizajnom, izabranim materijalima, jasnim kategorijama i direktnom WhatsApp podrskom.',
       'keywords' => 'tepisi Kosovo, zavese Kosovo, dnevne zavese, bocne zavese, prekrivaci, cebad, posteljina, dekorativni jastuci, kupatilski tepisi, garnisne, Brillant Lipljan',
@@ -54,12 +54,15 @@
   <meta property="og:title" content="{{ $seo['ogTitle'] }}">
   <meta property="og:description" content="{{ $seo['ogDescription'] }}">
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="B-Brillant">
   <meta property="og:url" content="{{ $canonicalUrl }}">
   <meta property="og:image" content="{{ asset('images/home/hero-luxury-curtains.jpg') }}">
   <meta property="og:locale" content="{{ $pageLocale === 'en' ? 'en_US' : ($pageLocale === 'sr' ? 'sr_RS' : 'sq_AL') }}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ $seo['ogTitle'] }}">
   <meta name="twitter:description" content="{{ $seo['ogDescription'] }}">
+  <meta name="twitter:image" content="{{ asset('images/home/hero-luxury-curtains.jpg') }}">
+  @include('partials.seo-business-schema')
 
   <link rel="icon" type="image/png" href="{{ asset('images/llogo.png') }}">
   <link rel="preload" as="image" href="{{ asset('images/home/hero-luxury-curtains.jpg') }}" fetchpriority="high">
@@ -1472,6 +1475,7 @@
     .hero-content { position:relative; z-index:2; width:min(1050px,calc(100% - 36px)); margin-top:96px; color:#fff; text-align:center; }
     .hero-sale-kicker { display:inline-flex; align-items:center; margin:0 auto 22px; padding:8px 14px; border:1px solid rgba(237,199,127,.7); border-radius:999px; color:#ffdc99; background:rgba(45,14,19,.55); font-size:.75rem; font-weight:900; letter-spacing:.15em; box-shadow:0 8px 28px rgba(0,0,0,.2); }
     .hero-content h1 { margin:0 auto; max-width:1000px; font-family:Georgia,'Times New Roman',serif; font-size:clamp(3.4rem,7.4vw,7.6rem); font-weight:400; line-height:.92; letter-spacing:-.055em; text-wrap:balance; text-shadow:0 5px 30px rgba(0,0,0,.28); }
+    .hero-seo-intro { max-width:640px; margin:20px auto 0; color:rgba(255,255,255,.92); font-size:clamp(.95rem,1.5vw,1.12rem); line-height:1.6; text-shadow:0 2px 12px rgba(0,0,0,.5); }
     .hero-content .hero-cta { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-width:230px; margin-top:42px; padding:16px 26px; border:1px solid rgba(255,255,255,.85); border-radius:999px; color:#fff; background:rgba(34,26,22,.24); backdrop-filter:blur(10px); font-weight:600; transition:.25s ease; }
     .hero-content .hero-cta:hover { color:#241b17; background:#fff; transform:translateY(-2px); }
     .hero-scroll { position:absolute; z-index:2; bottom:24px; color:rgba(255,255,255,.8); font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; }
@@ -2048,6 +2052,7 @@
         <div class="hero-content">
           <span class="hero-sale-kicker" data-sq="BLACK FRIDAY · OFERTA TË VEÇANTA" data-en="BLACK FRIDAY · SPECIAL OFFERS" data-sr="BLACK FRIDAY · POSEBNE PONUDE">BLACK FRIDAY · OFERTA TË VEÇANTA</span>
           <h1 data-sq="Rehatii. Stil. Brillant." data-en="Comfort. Style. Brillant." data-sr="Udobnost. Stil. Brillant.">Rehati. Stil. Brillant.</h1>
+          <p class="hero-seo-intro" data-sq="Tepiha, perde dhe tekstil për shtëpinë, me dërgesë në Kosovë." data-en="Rugs, curtains and home textiles, delivered across Kosovo." data-sr="Tepisi, zavese i kućni tekstil, uz dostavu širom Kosova.">Tepiha, perde dhe tekstil për shtëpinë, me dërgesë në Kosovë.</p>
           <a class="hero-cta" href="{{ route('products.index') }}"><span data-sq="Shiko ofertat Black Friday" data-en="Shop Black Friday offers" data-sr="Pogledaj Black Friday ponude">Shiko ofertat Black Friday</span><i class="bi bi-arrow-right"></i></a>
         </div>
         <a class="hero-scroll" href="#searchSection">Zbulo më shumë ↓</a>

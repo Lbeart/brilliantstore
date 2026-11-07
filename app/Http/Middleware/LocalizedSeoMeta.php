@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Str;
 
 class LocalizedSeoMeta
 {
@@ -43,12 +44,33 @@ class LocalizedSeoMeta
         $response = $next($request);
         $routeName = $request->route()?->getName();
 
-        if (!isset(self::CATEGORIES[$routeName]) || !method_exists($response, 'getContent')) {
+        if (!method_exists($response, 'getContent')) {
+            return $response;
+        }
+
+        if (stripos((string) $response->headers->get('Content-Type'), 'text/html') === false) {
+            return $response;
+        }
+
+        $path = trim($request->path(), '/');
+        $noIndexPrefixes = [
+            'admin', 'account', 'cart', 'checkout', 'track', 'search', 'login', 'register',
+            'forgot-password', 'reset-password', 'email/verify', 'invoice', 'receipt',
+        ];
+        $noIndex = collect($noIndexPrefixes)->contains(fn (string $prefix) => $path === $prefix || Str::startsWith($path, $prefix.'/'));
+        if (!isset(self::CATEGORIES[$routeName]) && !$noIndex) {
             return $response;
         }
 
         $html = (string) $response->getContent();
-        if (stripos((string) $response->headers->get('Content-Type'), 'text/html') === false) {
+        if ($noIndex) {
+            $robots = '<meta name="robots" content="noindex, follow">';
+            if (preg_match('/<meta\s+name=["\']robots["\'][^>]*>/i', $html)) {
+                $html = preg_replace('/<meta\s+name=["\']robots["\'][^>]*>/i', $robots, $html, 1);
+            } else {
+                $html = preg_replace('/<\/head>/i', $robots."\n</head>", $html, 1);
+            }
+            $response->setContent($html);
             return $response;
         }
 

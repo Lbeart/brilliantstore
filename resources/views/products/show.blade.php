@@ -858,38 +858,18 @@
       ],
       'shippingDetails' => [
         '@type' => 'OfferShippingDetails',
-        'shippingRate' => [
-          '@type' => 'MonetaryAmount',
-          'value' => 0.00,
-          'currency' => 'EUR',
-        ],
-        'shippingDestination' => [
-          '@type' => 'DefinedRegion',
-          'addressCountry' => 'XK',
-        ],
+        'shippingRate' => ['@type' => 'MonetaryAmount', 'value' => 0.00, 'currency' => 'EUR'],
+        'shippingDestination' => ['@type' => 'DefinedRegion', 'addressCountry' => 'XK'],
         'deliveryTime' => [
           '@type' => 'ShippingDeliveryTime',
-          'handlingTime' => [
-            '@type' => 'QuantitativeValue',
-            'minValue' => 1,
-            'maxValue' => 1,
-            'unitCode' => 'DAY',
-          ],
-          'transitTime' => [
-            '@type' => 'QuantitativeValue',
-            'minValue' => 1,
-            'maxValue' => 3,
-            'unitCode' => 'DAY',
-          ],
+          'handlingTime' => ['@type' => 'QuantitativeValue', 'minValue' => 1, 'maxValue' => 1, 'unitCode' => 'DAY'],
+          'transitTime' => ['@type' => 'QuantitativeValue', 'minValue' => 1, 'maxValue' => 3, 'unitCode' => 'DAY'],
         ],
       ],
       'hasMerchantReturnPolicy' => [
         '@type' => 'MerchantReturnPolicy',
         'name' => 'Politika e kthimit',
-        'applicableCountry' => [
-          '@type' => 'Country',
-          'name' => 'XK',
-        ],
+        'applicableCountry' => ['@type' => 'Country', 'name' => 'XK'],
         'merchantReturnDays' => 14,
         'returnPolicyCategory' => 'https://schema.org/MerchantReturnFiniteReturnWindow',
         'returnMethod' => 'https://schema.org/ReturnByMail',
@@ -912,27 +892,43 @@
     'bestRating' => 5,
     'worstRating' => 1,
   ];
-  $productSchema['review'] = [
-    [
-      '@type' => 'Review',
-      'name' => 'Produkt cilesor nga B-Brillant',
-      'reviewBody' => 'Produkt me cilesi te mire, pamje elegante dhe sherbim te shpejte nga B-Brillant.',
-      'datePublished' => now()->subDays(14)->toDateString(),
-      'author' => [
-        '@type' => 'Person',
-        'name' => 'Klient B-Brillant',
-      ],
-      'reviewRating' => [
-        '@type' => 'Rating',
-        'ratingValue' => $schemaRatingValue,
-        'bestRating' => 5,
-        'worstRating' => 1,
-      ],
-    ],
-  ];
+  $productSchema['review'] = [[
+    '@type' => 'Review',
+    'name' => 'Produkt cilesor nga B-Brillant',
+    'reviewBody' => 'Produkt me cilesi te mire, pamje elegante dhe sherbim te shpejte nga B-Brillant.',
+    'datePublished' => now()->subDays(14)->toDateString(),
+    'author' => ['@type' => 'Person', 'name' => 'Klient B-Brillant'],
+    'reviewRating' => ['@type' => 'Rating', 'ratingValue' => $schemaRatingValue, 'bestRating' => 5, 'worstRating' => 1],
+  ]];
 @endphp
 {!! json_encode($productSchema, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT) !!}
 </script>
+@php
+  $categoryRouteNames = [
+    'tepiha' => 'products.tepiha', 'perde' => 'products.perde', 'postava' => 'products.postava',
+    'mbulesa' => 'products.mbulesa', 'jastekdekorues' => 'products.jastekdekorues',
+    'batanije' => 'products.batanije', 'tepihebanjo' => 'products.tepihebanjo',
+    'posteqia' => 'products.posteqia', 'garnishte' => 'products.garnishte',
+  ];
+  if (($product->category ?? '') === 'perde') {
+    $categoryRouteNames['perde'] = ($product->subcategory ?? '') === 'anesore'
+      ? 'products.anesore'
+      : ((($product->subcategory ?? '') === 'ditore') ? 'products.perdeDitore' : 'products.perde');
+  }
+  $categoryRouteName = $categoryRouteNames[$product->category ?? ''] ?? 'products.index';
+  $categoryUrl = route($categoryRouteName);
+  if (($locale ?? 'sq') !== 'sq') $categoryUrl .= '?lang='.urlencode($locale);
+  $breadcrumbSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'BreadcrumbList',
+    'itemListElement' => [
+      ['@type' => 'ListItem', 'position' => 1, 'name' => 'Ballina', 'item' => url('/')],
+      ['@type' => 'ListItem', 'position' => 2, 'name' => $localizedSeo['category'], 'item' => $categoryUrl],
+      ['@type' => 'ListItem', 'position' => 3, 'name' => $localizedSeo['name'], 'item' => $pageUrl],
+    ],
+  ];
+@endphp
+<script type="application/ld+json">{!! json_encode($breadcrumbSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}</script>
   <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.12">
   <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
 </head>
@@ -1001,7 +997,7 @@
       <h1 class="h2 mb-2">{{ $product->name }}</h1>
 
       <div class="d-flex align-items-center gap-2 mb-3" aria-label="Vleresimi i klienteve">
-        <span class="text-warning">★★★★★</span>
+        <span class="text-warning" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
         <span class="fw-bold">{{ number_format((float)$schemaRatingValue, 1) }}</span>
         <span class="text-muted small">({{ (int)$schemaReviewCount }} vleresime)</span>
       </div>
