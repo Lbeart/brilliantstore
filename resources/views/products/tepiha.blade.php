@@ -936,7 +936,7 @@
       ::-webkit-scrollbar-thumb:hover{ background: rgba(15,23,42,.28); }
     }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.3">
+  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.4">
   <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
 </head>
 
@@ -977,158 +977,7 @@
   <div class="top-progress" id="topProgress" aria-hidden="true"></div>
 
   <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom" aria-label="Navigimi kryesor">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/" aria-label="Brillant Home">
-        <img src="{{ asset('images/brillant.png') }}" alt="Brillant">
-      </a>
-
-      <div class="d-flex align-items-center gap-2 ms-auto">
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#nav"
-          aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      </div>
-
-      <div id="nav" class="collapse navbar-collapse">
-        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-
-          <li class="nav-item">
-            <a class="nav-link" href="/" data-nav="home">{{ $tepihaText['home'] }}</a>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              data-bs-toggle="dropdown"
-              role="button"
-              aria-expanded="false"
-              data-nav="products">
-              {{ $tepihaText['products'] }}
-            </a>
-
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/tepiha">
-                  <i class="bi bi-grid-3x3-gap me-2"></i> {{ $tepihaText['rugs'] }}
-                </a>
-              </li>
-
-              <li class="dropdown-submenu">
-                <a class="dropdown-item submenu-toggle" href="#" role="button" aria-expanded="false">
-                  <span><i class="bi bi-columns-gap me-2"></i> {{ $tepihaText['curtains'] }}</span>
-                  <i class="bi bi-chevron-down chev"></i>
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="/anesore">{{ $tepihaText['side_curtains'] }}</a></li>
-                  <li><a class="dropdown-item" href="/perde-ditore">{{ $tepihaText['day_curtains'] }}</a></li>
-                </ul>
-              </li>
-
-              <li><a class="dropdown-item" href="/jastekdekorues"><i class="bi bi-square-fill me-2"></i> {{ $tepihaText['pillows'] }}</a></li>
-              <li><a class="dropdown-item" href="/postava"><i class="bi bi-journal-text me-2"></i> {{ $tepihaText['bedsheets'] }}</a></li>
-              <li><a class="dropdown-item" href="/mbulesa"><i class="bi bi-collection me-2"></i> {{ $tepihaText['covers'] }}</a></li>
-              <li><a class="dropdown-item" href="/batanije"><i class="bi bi-layers me-2"></i> {{ $tepihaText['blankets'] }}</a></li>
-              <li><a class="dropdown-item" href="/tepihebanjo"><i class="bi bi-droplet me-2"></i> {{ $tepihaText['bath_rugs'] }}</a></li>
-              <li><a class="dropdown-item" href="/posteqia"><i class="bi bi-cloud-fog2 me-2"></i> {{ $tepihaText['plush_fur'] }}</a></li>
-              <li><a class="dropdown-item" href="/garnishte"><i class="bi bi-dash-square me-2"></i> {{ $tepihaText['rails'] }}</a></li>
-            </ul>
-          </li>
-
-          <li class="nav-item"><a class="nav-link" href="{{ route('about') }}" data-nav="about">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}" data-nav="contact">Contact</a></li>
-
-          @auth
-            <li class="nav-item dropdown ms-lg-2">
-              <a
-                class="nav-link dropdown-toggle d-flex align-items-center gap-2"
-                href="#"
-                id="userDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false">
-                <i class="bi bi-person-circle"></i>
-                <span class="user-name">{{ Auth::user()->name }}</span>
-              </a>
-
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                <li><a class="dropdown-item" href="{{ route('account.dashboard') }}"><i class="bi bi-speedometer2 me-1"></i> {{ $tepihaText['account'] }}</a></li>
-                <li><hr class="dropdown-divider"></li>
-                @if(auth()->user()->role === 'admin')
-                  <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Admin</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                @endif
-                <li>
-                  <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                    @csrf
-                    <button type="submit" class="dropdown-item">Log out</button>
-                  </form>
-                </li>
-              </ul>
-            </li>
-          @else
-            <li class="nav-item ms-lg-2">
-              <a href="{{ route('login') }}" class="btn btn-outline-light btn-sm nav-btn">Log in</a>
-            </li>
-          @endauth
-
-          <!-- Shporta + Gjurmo porosinë -->
-          <li class="nav-item dropdown ms-lg-2">
-            <a
-              class="nav-link dropdown-toggle d-flex align-items-center gap-2"
-              href="#"
-              id="cartDropdown"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false">
-              <i class="bi bi-bag"></i> {{ $tepihaText['cart'] }}
-              <span class="badge bg-danger rounded-pill ms-1 cart-badge">
-                {{ session('cart_total_qty', 0) }}
-              </span>
-            </a>
-
-            <div
-              class="dropdown-menu dropdown-menu-end p-3 shadow"
-              aria-labelledby="cartDropdown"
-              style="min-width: 320px; border-radius: 16px;">
-              <div class="small text-muted mb-2">{{ $tepihaText['track_order'] }}</div>
-
-              <form
-                class="d-flex align-items-stretch gap-2"
-                onsubmit="event.preventDefault();
-                          const el=this.querySelector('#trackCodeNav');
-                          const v=(el?.value||'').trim();
-                          if(v){ window.location='{{ url('/track') }}/'+encodeURIComponent(v); }">
-                <div class="input-group input-group-sm">
-                  <span class="input-group-text"><i class="bi bi-search"></i></span>
-                  <input
-                    id="trackCodeNav"
-                    type="text"
-                    class="form-control"
-                    placeholder="p.sh. BRL-LKNJ-0YXN"
-                    autocomplete="off"
-                    required>
-                  <button class="btn btn-danger" type="submit">{{ $tepihaText['track'] }}</button>
-                </div>
-              </form>
-
-              <div class="mt-3 d-grid">
-                <a class="btn btn-outline-secondary btn-sm" href="{{ route('cart.index') }}">
-                  <i class="bi bi-bag"></i> {{ $tepihaText['view_cart'] }}
-                </a>
-              </div>
-            </div>
-          </li>
-
-        </ul>
-      </div>
-    </div>
-  </nav>
+  @include('partials.storefront-nav')
 
   <!-- Koka e faqes -->
   <header class="page-header">
@@ -1660,6 +1509,6 @@
   });
 })();
   </script>
-<script defer src="{{ asset('js/admin-theme.js') }}?v=20261107.3"></script>
+<script defer src="{{ asset('js/admin-theme.js') }}?v=20261107.4"></script>
 </body>
 </html>

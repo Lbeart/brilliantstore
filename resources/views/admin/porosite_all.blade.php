@@ -11,7 +11,7 @@
     .badge-status{font-size:.8rem}
   </style>
   <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
-  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}?v=20261107.3">
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}?v=20261107.4">
 </head>
 <body>
 <div class="container-fluid py-3">
@@ -147,6 +147,6 @@
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script defer src="{{ asset('js/admin-theme.js') }}?v=20261107.3"></script>
+<script defer src="{{ asset('js/admin-theme.js') }}?v=20261107.4"></script>
 </body>
 </html>

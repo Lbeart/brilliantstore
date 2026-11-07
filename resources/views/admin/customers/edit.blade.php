@@ -54,7 +54,7 @@
     @media (max-width:767px){.sidebar.desktop{display:none}.payment-inline{grid-template-columns:1fr}}
   </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}?v=20261107.3">
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}?v=20261107.4">
 </head>
 <body>
 
@@ -498,6 +498,6 @@
   calculate();
 })();
 </script>
-<script defer src="{{ asset('js/admin-theme.js') }}?v=20261107.3"></script>
+<script defer src="{{ asset('js/admin-theme.js') }}?v=20261107.4"></script>
 </body>
 </html>

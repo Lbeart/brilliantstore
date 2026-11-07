@@ -56,7 +56,7 @@
   </style>
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
   <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
-  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}?v=20261107.3">
+  <link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}?v=20261107.4">
 </head>
 <body>
 
@@ -308,6 +308,6 @@
   });
 })();
 </script>
-<script defer src="{{ asset('js/admin-theme.js') }}?v=20261107.3"></script>
+<script defer src="{{ asset('js/admin-theme.js') }}?v=20261107.4"></script>
 </body>
 </html>
