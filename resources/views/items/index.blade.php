@@ -1933,7 +1933,7 @@
       .chat-footer > span { display:none; }
     }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v=20261107.5">
+  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v=20261107.6">
 </head>
 <body>
   @php
@@ -1962,7 +1962,8 @@
     ];
   @endphp
 
-  <header class="site-header">
+  <header class="site-header home-site-header">
+      <div class="black-friday-strip" role="note"><span>BLACK FRIDAY</span><span data-sq="Ofertat aktive shfaqen me çmimin e vjetër dhe përqindjen e zbritjes" data-en="Active offers show the original price and discount percentage" data-sr="Aktivne ponude prikazuju staru cenu i procenat popusta">Ofertat aktive shfaqen me çmimin e vjetër dhe përqindjen e zbritjes</span></div>
     <div class="nav-container nav">
       <a class="brand" href="{{ route('home') }}" aria-label="Brillant home">
         <img src="{{ asset('images/brillant.png') }}" alt="Brillant">
@@ -2036,7 +2037,6 @@
       </div>
     </div>
   </header>
-  <div class="black-friday-strip" role="note"><span>BLACK FRIDAY</span><span data-sq="Ofertat aktive shfaqen me çmimin e vjetër dhe përqindjen e zbritjes" data-en="Active offers show the original price and discount percentage" data-sr="Aktivne ponude prikazuju staru cenu i procenat popusta">Ofertat aktive shfaqen me çmimin e vjetër dhe përqindjen e zbritjes</span></div>
 
   <main>
     <section class="hero" aria-label="Brillant home">

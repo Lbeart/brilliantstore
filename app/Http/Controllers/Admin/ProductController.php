@@ -8,6 +8,7 @@ use App\Support\ProductImages;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use Illuminate\Validation\Rule;
@@ -55,6 +56,10 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        if ($response = $this->productSchemaResponse($request)) {
+            return $response;
+        }
+
         $data = $request->validate([
             'name'        => 'required|string|max:150',
             'category'    => 'required|string|max:50',
@@ -203,6 +208,10 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        if ($response = $this->productSchemaResponse($request)) {
+            return $response;
+        }
+
         $data = $request->validate([
             'name'        => 'required|string|max:150',
             'category'    => 'required|string|max:50',
@@ -382,6 +391,21 @@ class ProductController extends Controller
     }
 
     // ===== Helpers =====
+
+    private function productSchemaResponse(Request $request)
+    {
+        $missing = collect(['sold_by_meter', 'old_price'])
+            ->reject(fn ($column) => Schema::hasColumn('products', $column))
+            ->all();
+
+        if (!$missing) {
+            return null;
+        }
+
+        return back()
+            ->withErrors(['product' => 'Databaza e produkteve nuk është përditësuar. Publiko migrimet dhe ekzekuto `php artisan migrate --force` në server. Fushat që mungojnë: '.implode(', ', $missing).'.'])
+            ->withInput($request->except(['image', 'color_variant_images']));
+    }
 
     private function uploadedImageFiles(Request $request): array
     {

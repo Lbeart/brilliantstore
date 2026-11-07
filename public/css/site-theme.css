@@ -310,3 +310,9 @@ html[data-admin-theme="dark"] textarea {
 .black-friday-strip{display:flex;justify-content:center;align-items:center;gap:.7rem;min-height:36px;padding:7px 14px;color:#fff;background:linear-gradient(90deg,#741422,#b21f35,#741422);text-align:center;font-size:.78rem;line-height:1.35}
 .black-friday-strip span:first-child{font-weight:900;letter-spacing:.12em}
 @media(max-width:600px){.black-friday-strip{gap:.45rem;font-size:.68rem}}
+.home-site-header { padding-top: 58px !important; }
+.home-site-header .black-friday-strip { position: absolute; inset: 0 0 auto; z-index: 120; min-height: 40px; }
+@media(max-width:560px) {
+  .home-site-header { padding-top: calc(52px + env(safe-area-inset-top, 0px)) !important; }
+  .home-site-header .black-friday-strip { min-height: 38px; padding-inline: 8px; font-size: .64rem; }
+}
