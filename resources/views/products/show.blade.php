@@ -1014,7 +1014,7 @@
     <div class="col-lg-5">
       <span class="bf-chip">
         <i class="bi bi-stars"></i>
-        {{ !empty($product->old_price) && (float) $product->old_price > (float) $product->price ? 'BLACK FRIDAY' : 'KOLEKSIONI BRILLANT' }}
+        BLACK FRIDAY · BRILLANT
       </span>
 
       <h1 class="h2 mb-2">{{ $product->name }}</h1>

@@ -8,5 +8,7 @@
   @if($discountPrice)
     <del class="sale-price-old">{{ number_format($discountPrice, 2) }} €</del>
     <span class="sale-price-badge">BLACK FRIDAY · -{{ $discountPercent }}%</span>
+  @else
+    <span class="sale-price-badge">BLACK FRIDAY</span>
   @endif
 </div>

@@ -1137,12 +1137,10 @@
                 </button>
               </div>
 
-              @if($discountPercent)
-                <div class="bf-label is-discount">
-                  <span>-{{ $discountPercent }}%</span>
-                  <small>Black Friday</small>
-                </div>
-              @endif
+              <div class="bf-label {{ $discountPercent ? 'is-discount' : '' }}">
+                <span>{{ $discountPercent ? '-'.$discountPercent.'%' : 'BLACK FRIDAY' }}</span>
+                <small>{{ $discountPercent ? 'ZBRITJE' : 'OFERTË' }}</small>
+              </div>
 
               @if($sizeLabel)
                 <div class="size-label">{{ $sizeLabel }} cm</div>

@@ -2254,7 +2254,7 @@
               <article class="product-card">
                 <a class="product-media" href="{{ $detailsUrl }}" aria-label="Shiko {{ $item->name }}">
                   <img src="{{ $imgUrl }}" alt="{{ $item->name }}" loading="{{ $loop->iteration <= 4 ? 'eager' : 'lazy' }}" fetchpriority="{{ $loop->first ? 'high' : 'auto' }}" decoding="async" sizes="(max-width: 576px) 100vw, (max-width: 992px) 50vw, 33vw" width="640" height="520" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
-                  <span class="product-badge {{ $originalPrice ? 'sale-price-badge' : '' }}">{{ $originalPrice ? 'BLACK FRIDAY' : 'I ri' }}</span>
+                  <span class="product-badge sale-price-badge">{{ $originalPrice ? 'BLACK FRIDAY · -'.round((1 - ((float) $priceValue / $originalPrice)) * 100).'%' : 'BLACK FRIDAY' }}</span>
                   <span class="stock-badge {{ $inStock ? '' : 'out' }}">{{ $inStock ? 'Ne stock' : 'Pa stock' }}</span>
                 </a>
                 <div class="product-body">
