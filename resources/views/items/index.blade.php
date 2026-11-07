@@ -910,6 +910,9 @@
     }
     .product-bottom { margin-top: auto; }
     .price-label { color: #8a7f77; font-size: .76rem; font-weight: 700; }
+    .home-sale-price { display:flex; align-items:baseline; gap:7px; margin-top:2px; color:var(--brand); font-size:1.28rem; font-weight:800; }
+    .home-sale-price del { color:var(--muted); font-size:.78rem; font-weight:500; }
+    .home-sale-price > span { color:var(--muted); font-size:.9rem; }
     .price {
       display: block;
       color: var(--brand);
@@ -1933,7 +1936,7 @@
       .chat-footer > span { display:none; }
     }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v=20261107.7">
+  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v=20261107.8">
 </head>
 <body>
   @php
@@ -2244,7 +2247,7 @@
                   }
                   if (!empty($prices)) $priceValue = min($prices);
                 }
-                $priceLabel = $priceValue !== null ? 'EUR ' . number_format((float) $priceValue, 2) : 'Me kerkese';
+                $priceLabel = $priceValue !== null ? number_format((float) $priceValue, 2) . ' €' : 'Me kerkese';
                 $originalPrice = is_numeric($item->old_price ?? null) && (float) $item->old_price > (float) $priceValue ? (float) $item->old_price : null;
                 $inStock = (int)($item->stock ?? 0) > 0;
                 $cat = $item->category ? strtoupper($item->category) : 'PRODUKT';
@@ -2270,8 +2273,7 @@
                   </p>
                   <div class="product-bottom">
                     @if($originalPrice)
-                      <span class="price-label">Prej <del>EUR {{ number_format($originalPrice, 2) }}</del></span>
-                      <strong class="price">Tash {{ $priceLabel }}</strong>
+                      <div class="home-sale-price"><del>{{ number_format($originalPrice, 2) }} €</del><span aria-hidden="true">/</span><strong>{{ $priceLabel }}</strong></div>
                       <span class="sale-price-badge">-{{ round((1 - ((float) $priceValue / $originalPrice)) * 100) }}% zbritje</span>
                     @else
                       <span class="price-label">Çmimi aktual</span>

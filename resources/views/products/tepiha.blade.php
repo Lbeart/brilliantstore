@@ -709,6 +709,7 @@
       gap: .42rem;
       margin-bottom: .08rem;
     }
+    .price-divider{color:var(--muted);font-weight:700}
     .price-new{
       color: var(--brand);
       font-weight: 950;
@@ -937,7 +938,7 @@
       ::-webkit-scrollbar-thumb:hover{ background: rgba(15,23,42,.28); }
     }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.8">
+  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.9">
   <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
 </head>
 
@@ -1177,10 +1178,11 @@
 
               <div class="price-row">
                 @if($oldPrice)
-                  <span class="price-old"><small>Prej</small> {{ number_format($oldPrice, 2) }} €</span>
-                  <span class="price-new"><small>Tash</small> {{ number_format($price, 2) }} €</span>
+                  <span class="price-old">{{ number_format($oldPrice, 2) }} €</span>
+                  <span class="price-divider" aria-hidden="true">/</span>
+                  <span class="price-new">{{ number_format($price, 2) }} €</span>
                 @elseif(!is_null($price))
-                  <span class="price-new"><small>Çmimi aktual</small> {{ number_format($price, 2) }} €</span>
+                  <span class="price-new">{{ number_format($price, 2) }} €</span>
                 @endif
               </div>
 

@@ -218,9 +218,8 @@ body:has(> .storefront-site-header) { padding-top: 0 !important; }
 }
 .black-friday-strip span:first-child { font-weight: 900; letter-spacing: .12em; }
 .sale-price-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: .45rem; }
-.sale-price-current { display: inline-grid; gap: 1px; color: var(--brand, #a51d31); font-weight: 800; line-height: 1.15; }
-.sale-price-current small,.sale-price-previous small { color: var(--store-muted, #756b63); font-size: .68rem; font-weight: 600; }
-.sale-price-previous { display: inline-grid; gap: 1px; color: var(--store-muted, #756b63); line-height: 1.15; }
+.sale-price-current { color: var(--brand, #a51d31); font-weight: 900; white-space: nowrap; }
+.sale-price-divider { color: var(--store-muted, #756b63); font-weight: 600; }
 .sale-price-old { color: var(--muted, #756b63); font-size: .88em; }
 .sale-price-badge { display: inline-flex; padding: .12rem .4rem; border-radius: 999px; background: #a51d31; color: #fff; font-size: .72em; font-weight: 800; }
 @media (max-width: 600px) {
