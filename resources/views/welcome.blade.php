@@ -19,7 +19,7 @@
                 font-family: 'Nunito', sans-serif;
             }
         </style>
-      <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.4">
+      <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.5">
   <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
 </head>
     <body class="antialiased">
@@ -130,6 +130,6 @@
                 </div>
             </div>
         </div>
-    <script defer src="{{ asset('js/admin-theme.js') }}?v=20261107.4"></script>
+    <script defer src="{{ asset('js/admin-theme.js') }}?v=20261107.5"></script>
 </body>
 </html>

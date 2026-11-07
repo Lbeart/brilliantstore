@@ -225,6 +225,26 @@ body:has(> .storefront-site-header) { padding-top: 0 !important; }
   .storefront-site-header .menu-toggle { display: inline-flex; flex: 0 0 40px; width: 40px; min-width: 40px; height: 40px; }
   .storefront-site-header .mobile-cart { display: inline-flex; }
   .storefront-site-header .menu-toggle { display: inline-flex; }
+  .storefront-site-header .mobile-cart {
+    position: relative;
+    overflow: visible;
+    margin-right: 3px;
+  }
+  .storefront-site-header .mobile-cart .cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -4px;
+    display: grid;
+    min-width: 18px;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    place-items: center;
+    border: 2px solid #211916;
+    border-radius: 50%;
+    font-size: .62rem;
+    line-height: 1;
+  }
   .storefront-menu,
   .storefront-menu.open {
     position: fixed;
