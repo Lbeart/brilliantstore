@@ -182,17 +182,6 @@
     .dropdown-item{border-radius:8px}
     .dropdown-item:hover{background:#f3f4f6}
 
-    /* BACK BUTTON */
-    .back-btn{
-      position:fixed;top:90px;left:24px;z-index:1100;
-      border:none;border-radius:999px;padding:.5rem .9rem;
-      background:#fff;
-      box-shadow:0 6px 20px rgba(0,0,0,.08);
-      display:flex;align-items:center;gap:.4rem;
-      color:#111827;font-size:.85rem
-    }
-    .back-btn:hover{background:#f7f7f7}
-
     /* HERO IMAGE */
     .product-hero{
       background:#fff;border-radius:16px;
@@ -525,10 +514,6 @@
       .product-hero{padding:10px;min-height:auto}
       .product-hero img{max-height:420px;cursor:zoom-in}
       .zoom-pane,.zoom-lens{display:none!important}
-      .back-btn{
-        top:78px;left:8px;
-        padding:.4rem .7rem;font-size:14px
-      }
       .section-card{padding:14px}
       .size-pill{font-size:.88rem;padding:.52rem .85rem}
       .thumb-btn{width:70px;height:70px}
@@ -954,10 +939,6 @@
 <body>
 
   @include('partials.storefront-nav')
-
-<button class="back-btn" type="button" onclick="history.back()">
-  <i class="bi bi-arrow-left"></i> Kthehu prapa
-</button>
 
 <div class="container mt-4 mb-5">
   <div class="row g-4 align-items-start">
@@ -2009,6 +1990,7 @@ addBtn?.addEventListener('click', async () => {
     if(data.ok){
       document.querySelectorAll('.cart-badge').forEach(b => b.textContent = data.totalQty);
       document.dispatchEvent(new CustomEvent('cart:updated', { detail: { totalQty: data.totalQty }}));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       showToast(data.message || 'U shtua në shportë');
     } else {
       showToast(data.message || 'Diçka shkoi keq', true);
@@ -2025,7 +2007,7 @@ function showToast(text, isErr){
     el.id='cartToast';
     el.className='toast align-items-center text-bg-' + (isErr?'danger':'success');
     el.role='alert'; el.ariaLive='assertive'; el.ariaAtomic='true';
-    el.style.position='fixed'; el.style.bottom='16px'; el.style.right='16px'; el.style.zIndex='3000';
+    el.style.position='fixed'; el.style.top='calc(env(safe-area-inset-top, 0px) + 108px)'; el.style.left='50%'; el.style.transform='translateX(-50%)'; el.style.zIndex='3000'; el.style.width='max-content'; el.style.maxWidth='min(92vw, 460px)'; el.style.boxShadow='0 12px 34px rgba(20,12,10,.22)';
     el.innerHTML=`<div class="d-flex"><div class="toast-body"></div>
       <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>`;
     document.body.appendChild(el);
@@ -2101,6 +2083,7 @@ curtainForm?.addEventListener('submit', async (event) => {
         if(data.ok){
             document.querySelectorAll('.cart-badge').forEach(b => b.textContent = data.totalQty);
             document.dispatchEvent(new CustomEvent('cart:updated', { detail: { totalQty: data.totalQty }}));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             showToast(data.message || 'Perde u shtua në shportë');
         } else {
             showToast(data.message || 'Diçka shkoi keq', true);
