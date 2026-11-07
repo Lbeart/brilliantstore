@@ -257,8 +257,13 @@ class CheckoutController extends Controller
             }
         }
 
-        $adminEmail = trim((string) config('mail.admin_address'));
-        if ($adminEmail !== '') {
+        $notificationEmails = config('mail.order_notification_addresses', []);
+        foreach (is_array($notificationEmails) ? $notificationEmails : [] as $adminEmail) {
+            $adminEmail = trim((string) $adminEmail);
+            if ($adminEmail === '') {
+                continue;
+            }
+
             try {
                 Mail::to($adminEmail)->send(new AdminOrderNotificationMail($order));
             } catch (\Throwable $e) {

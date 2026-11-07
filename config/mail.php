@@ -97,6 +97,13 @@ return [
     ],
 
     'admin_address' => env('MAIL_ADMIN_ADDRESS'),
+    'order_notification_addresses' => array_values(array_unique(array_filter(array_map(
+        'trim',
+        array_merge(
+            explode(',', (string) env('MAIL_ORDER_NOTIFICATION_ADDRESSES', '')),
+            [(string) env('MAIL_ADMIN_ADDRESS', ''), 'leonitbytyqi85@gmail.com']
+        )
+    )))),
 
     /*
     |--------------------------------------------------------------------------
