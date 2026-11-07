@@ -1467,10 +1467,33 @@
     .hero-stage { position:relative; display:grid; place-items:center; min-height:calc(100svh - 36px); overflow:hidden; border-radius:0 0 48px 48px; background:url('{{ asset('images/home/hero-luxury-curtains.jpg') }}') center center/cover no-repeat; }
     .hero-stage::before { content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(22,16,13,.24),rgba(22,16,13,.42) 50%,rgba(22,16,13,.58)); }
     .hero-content { position:relative; z-index:2; width:min(1050px,calc(100% - 36px)); margin-top:96px; color:#fff; text-align:center; }
+    .hero-sale-kicker { display:inline-flex; align-items:center; margin:0 auto 22px; padding:8px 14px; border:1px solid rgba(237,199,127,.7); border-radius:999px; color:#ffdc99; background:rgba(45,14,19,.55); font-size:.75rem; font-weight:900; letter-spacing:.15em; box-shadow:0 8px 28px rgba(0,0,0,.2); }
     .hero-content h1 { margin:0 auto; max-width:1000px; font-family:Georgia,'Times New Roman',serif; font-size:clamp(3.4rem,7.4vw,7.6rem); font-weight:400; line-height:.92; letter-spacing:-.055em; text-wrap:balance; text-shadow:0 5px 30px rgba(0,0,0,.28); }
     .hero-content .hero-cta { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-width:230px; margin-top:42px; padding:16px 26px; border:1px solid rgba(255,255,255,.85); border-radius:999px; color:#fff; background:rgba(34,26,22,.24); backdrop-filter:blur(10px); font-weight:600; transition:.25s ease; }
     .hero-content .hero-cta:hover { color:#241b17; background:#fff; transform:translateY(-2px); }
     .hero-scroll { position:absolute; z-index:2; bottom:24px; color:rgba(255,255,255,.8); font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; }
+    .black-friday-home { position:relative; z-index:3; padding:28px 0 12px; background:var(--bg); }
+    .black-friday-panel { position:relative; display:flex; align-items:center; justify-content:space-between; gap:28px; overflow:hidden; padding:clamp(24px,4vw,48px); border:1px solid rgba(214,177,107,.34); border-radius:22px; color:#fff8ec; background:radial-gradient(ellipse at 92% 10%,rgba(224,173,86,.18),transparent 35%),linear-gradient(115deg,#1b1112,#47151e 58%,#781f2a); box-shadow:0 22px 50px rgba(48,19,22,.18); }
+    .black-friday-panel::after { content:""; position:absolute; width:260px; height:260px; right:14%; top:-190px; border:1px solid rgba(238,203,141,.22); border-radius:50%; box-shadow:0 0 0 22px rgba(238,203,141,.035),0 0 0 48px rgba(238,203,141,.025); pointer-events:none; }
+    .black-friday-copy { position:relative; z-index:1; max-width:700px; }
+    .black-friday-kicker { display:inline-flex; align-items:center; gap:8px; color:#edc77f; font-size:.72rem; font-weight:900; letter-spacing:.16em; }
+    .black-friday-copy h2 { margin:12px 0 8px; font-size:clamp(1.7rem,3.2vw,2.7rem); line-height:1.1; font-weight:800; }
+    .black-friday-copy p { max-width:620px; margin:0; color:rgba(255,248,236,.76); line-height:1.65; }
+    .black-friday-cta { display:inline-flex; align-items:center; gap:10px; margin-top:20px; padding:11px 17px; border:1px solid rgba(238,203,141,.52); border-radius:999px; color:#211517; background:#edc77f; font-weight:800; }
+    .black-friday-countdown { position:relative; z-index:1; display:grid; min-width:150px; justify-items:center; color:#edc77f; }
+    .black-friday-countdown strong { font-size:clamp(3.4rem,7vw,5rem); line-height:1; }
+    .countdown-label { color:rgba(255,248,236,.78); font-size:.8rem; }
+    .black-friday-deals { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-top:16px; }
+    .black-friday-deal { display:flex; min-width:0; align-items:center; gap:11px; padding:9px; border:1px solid var(--line); border-radius:14px; color:var(--ink); background:var(--paper); }
+    .black-friday-deal img { width:64px; height:64px; flex:none; border-radius:9px; object-fit:cover; }
+    .black-friday-deal span { display:grid; min-width:0; gap:4px; }
+    .black-friday-deal strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:.84rem; }
+    .black-friday-deal small { color:var(--brand); font-weight:800; }
+    .black-friday-deal del { margin-left:4px; color:var(--muted); font-weight:500; }
+    .black-friday-deal>b { margin-left:auto; color:#fff; background:#a51d31; padding:5px 7px; border-radius:8px; font-size:.74rem; }
+    .black-friday-empty { margin:10px 0 0; color:var(--muted); text-align:center; font-size:.84rem; }
+    @media(max-width:760px) { .black-friday-panel { align-items:flex-start; gap:12px; padding:24px 20px; } .black-friday-countdown { min-width:72px; padding-top:8px; } .black-friday-countdown strong { font-size:3rem; } .black-friday-deals { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; } .black-friday-deal { gap:8px; padding:7px; } .black-friday-deal img { width:50px; height:50px; } }
+    @media(max-width:460px) { .black-friday-panel { display:grid; } .black-friday-countdown { position:absolute; right:18px; top:18px; min-width:56px; } .black-friday-countdown strong { font-size:2.4rem; } .countdown-label { max-width:75px; text-align:center; font-size:.62rem; } .black-friday-copy { padding-right:52px; } .black-friday-copy p { font-size:.88rem; } .black-friday-deal>b { font-size:.65rem; } }
     @media (max-width:900px) {
       .site-header { padding:14px 0; }
       .nav { min-height:64px; padding:0 14px; border-radius:24px; }
@@ -1910,7 +1933,7 @@
       .chat-footer > span { display:none; }
     }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v=20261107.4">
+  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v=20261107.5">
 </head>
 <body>
   @php
@@ -2013,16 +2036,48 @@
       </div>
     </div>
   </header>
-  <div class="black-friday-strip" role="note"><span>BLACK FRIDAY</span><span>Shiko çmimin aktual dhe zbritjen reale te produktet me ofertë</span></div>
+  <div class="black-friday-strip" role="note"><span>BLACK FRIDAY</span><span data-sq="Ofertat aktive shfaqen me çmimin e vjetër dhe përqindjen e zbritjes" data-en="Active offers show the original price and discount percentage" data-sr="Aktivne ponude prikazuju staru cenu i procenat popusta">Ofertat aktive shfaqen me çmimin e vjetër dhe përqindjen e zbritjes</span></div>
 
   <main>
     <section class="hero" aria-label="Brillant home">
       <div class="hero-stage">
         <div class="hero-content">
+          <span class="hero-sale-kicker" data-sq="BLACK FRIDAY · OFERTA TË VEÇANTA" data-en="BLACK FRIDAY · SPECIAL OFFERS" data-sr="BLACK FRIDAY · POSEBNE PONUDE">BLACK FRIDAY · OFERTA TË VEÇANTA</span>
           <h1 data-sq="Rehatii. Stil. Brillant." data-en="Comfort. Style. Brillant." data-sr="Udobnost. Stil. Brillant.">Rehati. Stil. Brillant.</h1>
-          <a class="hero-cta" href="{{ route('products.index') }}"><span data-sq="Shiko koleksionet" data-en="Explore collections" data-sr="Pogledaj kolekcije">Shiko koleksionet</span><i class="bi bi-arrow-right"></i></a>
+          <a class="hero-cta" href="{{ route('products.index') }}"><span data-sq="Shiko ofertat Black Friday" data-en="Shop Black Friday offers" data-sr="Pogledaj Black Friday ponude">Shiko ofertat Black Friday</span><i class="bi bi-arrow-right"></i></a>
         </div>
         <a class="hero-scroll" href="#searchSection">Zbulo më shumë ↓</a>
+      </div>
+    </section>
+
+    <section class="black-friday-home" aria-labelledby="blackFridayTitle">
+      <div class="container">
+        <div class="black-friday-panel">
+          <div class="black-friday-copy">
+            <span class="black-friday-kicker"><i class="bi bi-stars" aria-hidden="true"></i> BLACK FRIDAY · BRILLANT</span>
+            <h2 id="blackFridayTitle" data-sq="Ofertat e Black Friday po vijnë." data-en="Black Friday offers are coming." data-sr="Black Friday ponude uskoro stižu.">Ofertat e Black Friday po vijnë.</h2>
+            <p data-sq="Çmimi i vjetër dhe përqindja e zbritjes shfaqen qartë te çdo produkt që ka ofertë aktive." data-en="The original price and discount are clearly shown on every product with an active offer." data-sr="Stara cena i procenat popusta jasno su prikazani uz svaki proizvod sa aktivnom ponudom.">Çmimi i vjetër dhe përqindja e zbritjes shfaqen qartë te çdo produkt që ka ofertë aktive.</p>
+            <a class="black-friday-cta" href="{{ route('products.index') }}"><span data-sq="Shiko ofertat" data-en="Shop offers" data-sr="Pogledaj ponude">Shiko ofertat</span><i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+          </div>
+          <div class="black-friday-countdown" aria-label="Numërimi deri në Black Friday">
+            <span class="countdown-label" data-sq="Deri në Black Friday" data-en="Until Black Friday" data-sr="Do Black Friday">Deri në Black Friday</span>
+            <strong data-bf-days>—</strong><span data-sq="ditë" data-en="days" data-sr="dana">ditë</span>
+          </div>
+        </div>
+        @if(($saleProducts ?? collect())->isNotEmpty())
+          <div class="black-friday-deals" aria-label="Produktet me ofertë Black Friday">
+            @foreach($saleProducts as $deal)
+              @php $dealImage = \App\Support\ProductImages::url($deal->image_path ?? null, asset('images/placeholder-product.png'), $deal); @endphp
+              <a class="black-friday-deal" href="{{ route('products.show', $deal->slug) }}">
+                <img src="{{ $dealImage }}" alt="{{ $deal->name }}" loading="lazy" decoding="async" width="240" height="180">
+                <span><strong>{{ $deal->name }}</strong><small>{{ number_format((float) $deal->price, 2) }} € <del>{{ number_format((float) $deal->old_price, 2) }} €</del></small></span>
+                <b>-{{ round((1 - ((float) $deal->price / (float) $deal->old_price)) * 100) }}%</b>
+              </a>
+            @endforeach
+          </div>
+        @else
+          <p class="black-friday-empty" data-sq="Ofertat e produkteve do të shfaqen këtu sapo të aktivizohen." data-en="Product offers will appear here as soon as they are activated." data-sr="Ponude proizvoda će se prikazati ovde čim budu aktivirane.">Ofertat e produkteve do të shfaqen këtu sapo të aktivizohen.</p>
+        @endif
       </div>
     </section>
 
@@ -2199,7 +2254,7 @@
               <article class="product-card">
                 <a class="product-media" href="{{ $detailsUrl }}" aria-label="Shiko {{ $item->name }}">
                   <img src="{{ $imgUrl }}" alt="{{ $item->name }}" loading="{{ $loop->iteration <= 4 ? 'eager' : 'lazy' }}" fetchpriority="{{ $loop->first ? 'high' : 'auto' }}" decoding="async" sizes="(max-width: 576px) 100vw, (max-width: 992px) 50vw, 33vw" width="640" height="520" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
-                  <span class="product-badge">I ri</span>
+                  <span class="product-badge {{ $originalPrice ? 'sale-price-badge' : '' }}">{{ $originalPrice ? 'BLACK FRIDAY' : 'I ri' }}</span>
                   <span class="stock-badge {{ $inStock ? '' : 'out' }}">{{ $inStock ? 'Ne stock' : 'Pa stock' }}</span>
                 </a>
                 <div class="product-body">
@@ -2389,6 +2444,24 @@
   </div>
 
   <script>
+    (function updateBlackFridayCountdown() {
+      const output = document.querySelector('[data-bf-days]');
+      if (!output) return;
+      const now = new Date();
+      let year = now.getFullYear();
+      function blackFridayDate(targetYear) {
+        const thanksgiving = new Date(targetYear, 10, 1);
+        while (thanksgiving.getDay() !== 4) thanksgiving.setDate(thanksgiving.getDate() + 1);
+        thanksgiving.setDate(thanksgiving.getDate() + 21);
+        return new Date(targetYear, 10, thanksgiving.getDate() + 1);
+      }
+      let eventDate = blackFridayDate(year);
+      if (now >= eventDate && now.toDateString() !== eventDate.toDateString()) eventDate = blackFridayDate(++year);
+      output.textContent = now.toDateString() === eventDate.toDateString()
+        ? '0'
+        : Math.max(0, Math.ceil((eventDate - now) / 86400000));
+    })();
+
     (function () {
       const menu = document.getElementById('mainMenu');
       const toggle = document.querySelector('.menu-toggle');

@@ -19,6 +19,11 @@
     ['sq' => 'Garnishte', 'en' => 'Curtain rails', 'sr' => 'Garnisne', 'url' => route('products.garnishte')],
   ];
   $storefrontCartQty = (int) session('cart_total_qty', 0);
+  $blackFridayMessage = [
+    'sq' => 'Zbritjet Black Friday shfaqen te produktet me ofertë aktive',
+    'en' => 'Black Friday prices are shown on products with an active offer',
+    'sr' => 'Black Friday cene su prikazane na proizvodima sa aktivnom ponudom',
+  ][$storefrontNavLocale];
 @endphp
 
 <header class="site-header storefront-site-header">
@@ -87,6 +92,6 @@
     </div>
   </div>
 </header>
-<div class="black-friday-strip" role="note"><span>BLACK FRIDAY</span><span>Shiko çmimin aktual dhe zbritjen reale te produktet me ofertë</span></div>
+<div class="black-friday-strip" role="note"><span>BLACK FRIDAY</span><span>{{ $blackFridayMessage }}</span></div>
 
 <script defer src="{{ asset('js/storefront-nav.js') }}?v=20261107.2"></script>

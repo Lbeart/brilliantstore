@@ -15,11 +15,19 @@ class ItemController extends Controller
                 ->orderByDesc('id')
                 ->take(6)
                 ->get();
+            $saleProducts = Product::query()
+                ->where('is_active', 1)
+                ->whereNotNull('old_price')
+                ->whereColumn('old_price', '>', 'price')
+                ->orderByDesc('id')
+                ->take(4)
+                ->get();
         } catch (\Throwable $e) {
             report($e);
             $latestProducts = new Collection();
+            $saleProducts = new Collection();
         }
 
-        return view('items.index', compact('latestProducts'));
+        return view('items.index', compact('latestProducts', 'saleProducts'));
     }
 }
