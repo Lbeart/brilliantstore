@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Support\ProductImages;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -21,6 +22,7 @@ class CheckoutController extends Controller
     public function index()
     {
         $cart = session('cart', []);
+        $this->refreshCartPrices($cart);
 
         // ✅ Siguro URL të plota për imazhet
         foreach ($cart as &$item) {
@@ -42,6 +44,8 @@ class CheckoutController extends Controller
     public function store(Request $request)
     {
         $cart = session('cart', []);
+        $this->refreshCartPrices($cart);
+        session(['cart' => $cart]);
         if (empty($cart)) {
             return redirect()->route('checkout.index')->with('error','Shporta është bosh.');
         }
@@ -177,6 +181,30 @@ class CheckoutController extends Controller
             ->with('success','Porosia u krye me sukses!')
             ->with('order_number', $order->id)
             ->with('tracking_code', $order->tracking_code);
+    }
+
+    private function refreshCartPrices(array &$cart): void
+    {
+        $ids = collect($cart)->pluck('product_id')->filter()->unique()->values();
+        if ($ids->isEmpty()) {
+            return;
+        }
+
+        $products = Product::query()->whereIn('id', $ids)->get()->keyBy('id');
+        foreach ($cart as &$item) {
+            $product = $products->get($item['product_id'] ?? null);
+            if (! $product || ($item['type'] ?? 'product') !== 'product'
+                || str_starts_with((string) ($item['size'] ?? ''), 'Gjerësia:')
+                || str_starts_with((string) ($item['size'] ?? ''), 'Me metër:')
+                || str_starts_with((string) ($item['size'] ?? ''), 'Set:')) {
+                continue;
+            }
+
+            $sizes = is_array($product->sizes) ? $product->sizes : [];
+            $size = collect($sizes)->first(fn (array $row) => (string) ($row['label'] ?? '') === (string) ($item['size'] ?? ''));
+            $item['price'] = round((float) ($size['price'] ?? $product->price), 2);
+        }
+        unset($item);
     }
 
     // ✅ faqe publike suksesi (pa admin middleware)

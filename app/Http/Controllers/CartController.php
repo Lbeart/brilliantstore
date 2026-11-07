@@ -19,6 +19,15 @@ class CartController extends Controller
             $product = $products->get($item['product_id'] ?? null);
             if ($product) {
                 $item['image'] = $this->productImageForColor($product, $item['color'] ?? null);
+
+                // Older cart sessions may contain a sale price discounted twice.
+                // Product.price and size prices already contain the active sale price.
+                if (($item['type'] ?? 'product') === 'product'
+                    && ! Str::startsWith((string) ($item['size'] ?? ''), ['Gjerësia:', 'Me metër:', 'Set:'])) {
+                    $sizePrice = collect($this->productSizes($product))
+                        ->first(fn (array $size) => (string) ($size['label'] ?? '') === (string) ($item['size'] ?? ''));
+                    $item['price'] = round((float) ($sizePrice['price'] ?? $product->price), 2);
+                }
             }
         }
         unset($item);
@@ -80,13 +89,6 @@ class CartController extends Controller
                     break;
                 }
             }
-        }
-
-        // A product sale applies consistently to its selected size/meter price too.
-        $regularPrice = (float) $product->price;
-        $originalPrice = (float) ($product->old_price ?? 0);
-        if ($regularPrice > 0 && $originalPrice > $regularPrice) {
-            $unitPrice *= $regularPrice / $originalPrice;
         }
 
         $cart = session('cart', []);
