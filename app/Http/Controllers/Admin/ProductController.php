@@ -823,6 +823,8 @@ class ProductController extends Controller
     private function productValidationMessages(): array
     {
         return [
+            'subcategory.required' => 'Zgjedhe llojin e perdes: anësore ose ditore.',
+            'subcategory.in' => 'Lloji i perdes duhet të jetë anësore ose ditore.',
             'image.*.file' => 'Fotoja nuk u lexua mire. Provo nje foto JPG, PNG ose WEBP.',
             'image.*.max' => 'Fotoja eshte shume e madhe. Provo nje foto me te vogel ose zgjidh me pak foto njeheresh.',
         ];

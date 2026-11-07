@@ -193,10 +193,11 @@
                             <div class="col-md-3" id="subcatWrap" style="{{ $catValue==='perde' ? '' : 'display:none' }}">
                                 <label class="form-label">Subkategoria (Perde)</label>
                                 <select name="subcategory" class="form-select" id="subcatSelect">
-                                    <option value="">—</option>
+                                    <option value="">Zgjedhe llojin e perdes</option>
                                     <option value="ditore" @selected($subValue==='ditore')>Ditorë</option>
                                     <option value="anesore" @selected($subValue==='anesore')>Anësore</option>
                                 </select>
+                                @error('subcategory')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                             </div>
 
                             <div class="col-md-4" id="soldByMeterWrap" style="{{ $catValue === 'tepiha' ? '' : 'display:none' }}">
@@ -645,8 +646,10 @@ if(catSel && subWrap){
   const toggleProductTypeFields = function(){
     if(catSel.value === 'perde'){
       subWrap.style.display = '';
+      subSel?.setAttribute('required', 'required');
     }else{
       subWrap.style.display = 'none';
+      subSel?.removeAttribute('required');
       if(subSel) subSel.value = '';
     }
 

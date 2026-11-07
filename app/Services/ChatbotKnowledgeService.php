@@ -90,7 +90,8 @@ class ChatbotKnowledgeService
                     $intent,
                     $terms,
                     array_values(array_unique(array_map('intval', $contextProductIds))),
-                    $followUp
+                    $followUp,
+                    ! $dealsRequest
                 );
             }
         } catch (Throwable $exception) {
@@ -98,7 +99,8 @@ class ChatbotKnowledgeService
             Log::warning('Brillant chatbot catalog search failed.', ['exception_class' => $exception::class]);
         }
 
-        $noExactMatch = $productSearch && $catalogAvailable === true && $products === [];
+        $noExactMatch = $productSearch && $catalogAvailable === true
+            && ($products === [] || collect($products)->contains(fn (array $product) => ($product['is_suggestion'] ?? false) === true));
         $action = $trackingCode !== null
             ? ['label' => 'Shiko gjurmimin e porosisë', 'url' => route('track.show', $trackingCode, false)]
             : $this->suggestedAction($current, $intent);
@@ -163,6 +165,10 @@ class ChatbotKnowledgeService
 
         if (($knowledge['no_exact_match'] ?? false) === true) {
             $label = is_array($intent) ? mb_strtolower((string) ($intent['label'] ?? 'produkti që kërkove')) : 'produkti që kërkove';
+            if ($products !== []) {
+                return "Nuk e gjeta modelin e sakte me kete emer, por keto jane alternativa reale te {$label}. Shiko kartat e produkteve dhe me trego cili te pershtatet.";
+            }
+
 
             return "{$label} nuk figuron aktualisht në katalogun aktiv të B-Brillant me kërkesat që dhe. Mund të të ndihmoj të gjesh alternativën më të afërt, ose mund të na shkruash në WhatsApp që ta kontrollojmë me ekipin.";
         }
@@ -217,7 +223,8 @@ class ChatbotKnowledgeService
         ?array $intent,
         array $terms,
         array $contextProductIds = [],
-        bool $followUp = false
+        bool $followUp = false,
+        bool $allowAlternatives = true
     ): array {
         $filtered = $catalog->filter(function (Product $product) use ($intent) {
             if ($intent === null) {
@@ -310,8 +317,24 @@ class ChatbotKnowledgeService
             return $right['product']->id <=> $left['product']->id;
         });
 
-        return $ranked->map(fn (array $row) => $this->serializeProduct($row['product'], $message))
+        $results = $ranked->map(fn (array $row) => $this->serializeProduct($row['product'], $message))
             ->values()->all();
+
+        if ($results !== [] || ! $allowAlternatives || $intent === null) {
+            return $results;
+        }
+
+        // Keep answers useful when the requested name is misspelled or absent:
+        // show real, available items from the intended category as alternatives.
+        $alternatives = $filtered->sort(function (Product $left, Product $right) {
+            $leftStock = $this->hasAvailableOption($left) ? 1 : 0;
+            $rightStock = $this->hasAvailableOption($right) ? 1 : 0;
+            return ($rightStock <=> $leftStock) ?: ($right->id <=> $left->id);
+        })->take(4);
+
+        return $alternatives->map(function (Product $product) use ($message) {
+            return [...$this->serializeProduct($product, $message), 'is_suggestion' => true];
+        })->values()->all();
     }
 
     private function searchableFields(Product $product): array
@@ -342,6 +365,27 @@ class ChatbotKnowledgeService
         foreach ($this->expandedTerms($term) as $needle) {
             foreach ($fields as $field) {
                 if ($needle !== '' && str_contains($field, $needle)) {
+                    return true;
+                }
+            }
+        }
+
+        // Tolerate a small typo or a close Albanian/English spelling in product names.
+        $needles = $this->expandedTerms($term);
+        $tokens = collect($fields)
+            ->flatMap(fn (string $field) => preg_split('/[^a-z0-9]+/u', $field) ?: [])
+            ->filter(fn (string $token) => mb_strlen($token) >= 4)
+            ->unique();
+
+        foreach ($needles as $needle) {
+            if (mb_strlen($needle) < 5) {
+                continue;
+            }
+
+            $maxDistance = mb_strlen($needle) >= 8 ? 2 : 1;
+            foreach ($tokens as $token) {
+                if (abs(mb_strlen($needle) - mb_strlen($token)) <= $maxDistance
+                    && levenshtein($needle, $token) <= $maxDistance) {
                     return true;
                 }
             }
@@ -656,6 +700,14 @@ class ChatbotKnowledgeService
     private function expandedTerms(string $term): array
     {
         $normalized = $this->normalize($term);
+
+        foreach ((array) config('chatbot.search_synonyms', []) as $group) {
+            $group = collect($group)->map(fn ($value) => $this->normalize((string) $value))->unique()->values()->all();
+            if (collect($group)->contains(fn (string $value) => $value === $normalized
+                || (mb_strlen($normalized) >= 4 && (str_contains($value, $normalized) || str_contains($normalized, $value))))) {
+                return $group;
+            }
+        }
 
         foreach ((array) config('chatbot.color_synonyms', []) as $group) {
             $group = collect($group)->map(fn ($value) => $this->normalize((string) $value))->unique()->values()->all();

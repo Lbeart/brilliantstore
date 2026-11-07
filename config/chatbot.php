@@ -156,6 +156,15 @@ return [
         ['label' => 'Hyr në llogari', 'route' => 'login', 'keywords' => ['login', 'kycu', 'kyçu', 'llogaria']],
     ],
 
+    'search_synonyms' => [
+        ['bambus', 'bambu', 'bamboo', 'bambusove', 'bambuk', 'bambook'],
+        ['perde', 'perdet', 'curtain', 'curtains', 'zavese'],
+        ['tepiha', 'tepih', 'tapet', 'rug', 'rugs', 'carpet', 'tepisi'],
+        ['postava', 'çarçaf', 'carcaf', 'bedsheet', 'bed sheet', 'posteljina'],
+        ['batanije', 'batania', 'qebe', 'cebe', 'blanket', 'blankets'],
+        ['mbulesa', 'mbulese', 'cover', 'prekrivac', 'prekrivač'],
+    ],
+
     'color_synonyms' => [
         ['gri', 'hir', 'hiri', 'hirte', 'hirtë', 'hirta', 'grey', 'gray', 'siva', 'sivo'],
         ['bardh', 'bardhe', 'bardhë', 'bardha', 'white', 'bela', 'bijela'],

@@ -127,10 +127,11 @@
                 <div class="col-md-3" id="subcategoryWrap" style="display:none;">
                     <label class="form-label">Nën-kategoria (vetëm për Perde)</label>
                     <select name="subcategory" class="form-select">
-                        <option value="">— Zgjedh —</option>
+                        <option value="">Zgjedhe llojin e perdes</option>
                         <option value="anesore" @selected(old('subcategory')==='anesore')>Perde anësore</option>
                         <option value="ditore"  @selected(old('subcategory')==='ditore')>Perde ditore</option>
                     </select>
+                    @error('subcategory')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="col-md-4" id="soldByMeterWrap" style="display:none;">
@@ -456,8 +457,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Nën-kategoria: vetëm kur është 'perde'
     if (cat === 'perde') {
       subWrap.style.display = '';
+      subSel?.setAttribute('required', 'required');
     } else {
       subWrap.style.display = 'none';
+      subSel?.removeAttribute('required');
       if (subSel) subSel.value = '';
     }
 

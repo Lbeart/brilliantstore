@@ -48,7 +48,9 @@ class ChatbotController extends Controller
         );
 
         // Keep live offer answers precise and fast: never depend on a model to infer prices.
-        if (($knowledge['deals_request'] ?? false) === true) {
+        $hasSuggestedProducts = collect($knowledge['products'] ?? [])
+            ->contains(fn (array $product) => ($product['is_suggestion'] ?? false) === true);
+        if (($knowledge['deals_request'] ?? false) === true || $hasSuggestedProducts) {
             return $this->jsonReply(
                 $this->knowledge->fallbackReply($message, $knowledge),
                 false,
