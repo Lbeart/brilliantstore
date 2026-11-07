@@ -213,7 +213,7 @@
               <div class="product-title" title="{{ $p->name }}">{{ $p->name }}</div>
 
               @if(!is_null($p->price))
-                <div class="product-price">{{ number_format($p->price, 2) }} €</div>
+                @include('products.partials.price', ['product' => $p, 'price' => $p->price])
               @endif
             </div>
 

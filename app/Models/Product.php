@@ -15,6 +15,8 @@ protected $fillable = [
 ];
 
 protected $casts = [
+  'price' => 'decimal:2',
+  'old_price' => 'decimal:2',
   'is_active' => 'boolean',
   'sold_by_meter' => 'boolean',
   'sizes'     => 'array',

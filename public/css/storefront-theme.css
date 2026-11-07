@@ -203,6 +203,28 @@ body:has(> .storefront-site-header) { padding-top: 0 !important; }
 .storefront-site-header a:focus,
 .storefront-site-header a:visited { text-decoration: none !important; }
 
+.black-friday-strip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .7rem;
+  min-height: 36px;
+  padding: 7px 14px;
+  color: #fff;
+  background: linear-gradient(90deg, #741422, #b21f35, #741422);
+  text-align: center;
+  font-size: .78rem;
+  line-height: 1.35;
+}
+.black-friday-strip span:first-child { font-weight: 900; letter-spacing: .12em; }
+.sale-price-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: .45rem; }
+.sale-price-current { color: var(--brand, #a51d31); font-weight: 800; }
+.sale-price-old { color: var(--muted, #756b63); font-size: .88em; }
+.sale-price-badge { display: inline-flex; padding: .12rem .4rem; border-radius: 999px; background: #a51d31; color: #fff; font-size: .72em; font-weight: 800; }
+@media (max-width: 600px) {
+  .black-friday-strip { gap: .45rem; font-size: .68rem; }
+}
+
 @media (max-width: 1000px) {
   .storefront-nav { gap: 10px; padding-inline: 16px; }
   .storefront-brand { flex-basis: 170px; }

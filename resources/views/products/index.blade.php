@@ -34,7 +34,7 @@
           <img class="card-img-top" src="{{ $p->image_url }}" alt="{{ $p->name }}" loading="{{ $loop->iteration <= 4 ? 'eager' : 'lazy' }}" decoding="async" fetchpriority="{{ $loop->first ? 'high' : 'auto' }}" width="640" height="520">
           <div class="card-body d-flex flex-column">
             <h5 class="card-title mb-1">{{ $p->name }}</h5>
-            <div class="text-danger fw-bold mb-2">€ {{ number_format($p->price,2) }}</div>
+            @include('products.partials.price', ['product' => $p, 'price' => $p->price])
             @if($p->description)
               <p class="card-text text-muted" style="flex:1 1 auto;">
                 {{ \Illuminate\Support\Str::limit($p->description, 120) }}

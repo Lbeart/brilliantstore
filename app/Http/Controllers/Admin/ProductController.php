@@ -68,6 +68,7 @@ class ProductController extends Controller
             ],
 
             'price'       => 'nullable|numeric|min:0',
+            'old_price'   => 'nullable|numeric|min:0',
             'stock'       => 'nullable|integer|min:0',
             'sold_by_meter' => 'sometimes|boolean',
             'cover_meter_price' => 'nullable|numeric|min:0',
@@ -99,6 +100,7 @@ class ProductController extends Controller
 
         $data['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : true;
         $data['sold_by_meter'] = ($data['category'] ?? null) === 'tepiha' && $request->boolean('sold_by_meter');
+        $data['old_price'] = $request->filled('old_price') ? (float) $request->input('old_price') : null;
         // Slug generated automatically in model
 
         if (empty($data['sku'])) {
@@ -159,6 +161,10 @@ class ProductController extends Controller
             $data['stock'] = $sumStock ?? ($data['stock'] ?? 0);
         }
 
+        if (($data['old_price'] ?? null) !== null && (float) $data['old_price'] <= (float) ($data['price'] ?? 0)) {
+            throw ValidationException::withMessages(['old_price' => 'Çmimi real duhet të jetë më i lartë se çmimi aktual.']);
+        }
+
         try {
             Product::create($data);
         } catch (QueryException $e) {
@@ -210,6 +216,7 @@ class ProductController extends Controller
             ],
 
             'price'       => 'nullable|numeric|min:0',
+            'old_price'   => 'nullable|numeric|min:0',
             'stock'       => 'nullable|integer|min:0',
             'sold_by_meter' => 'sometimes|boolean',
             'cover_meter_price' => 'nullable|numeric|min:0',
@@ -250,6 +257,7 @@ class ProductController extends Controller
 
         $data['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : $product->is_active;
         $data['sold_by_meter'] = ($data['category'] ?? null) === 'tepiha' && $request->boolean('sold_by_meter');
+        $data['old_price'] = $request->filled('old_price') ? (float) $request->input('old_price') : null;
 
         if ($product->name !== $data['name']) {
             $data['slug'] = Product::generateSlug($data['name']);
@@ -320,6 +328,10 @@ class ProductController extends Controller
             $sumStock = collect($norm)->pluck('stock')->sum();
             $data['price'] = $minPrice ?? ($data['price'] ?? $product->price);
             $data['stock'] = $sumStock ?? ($data['stock'] ?? $product->stock);
+        }
+
+        if (($data['old_price'] ?? null) !== null && (float) $data['old_price'] <= (float) ($data['price'] ?? $product->price ?? 0)) {
+            throw ValidationException::withMessages(['old_price' => 'Çmimi real duhet të jetë më i lartë se çmimi aktual.']);
         }
 
         try {

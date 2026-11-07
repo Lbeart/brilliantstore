@@ -1014,7 +1014,7 @@
     <div class="col-lg-5">
       <span class="bf-chip">
         <i class="bi bi-stars"></i>
-        OFERTË SPECIALE
+        {{ !empty($product->old_price) && (float) $product->old_price > (float) $product->price ? 'BLACK FRIDAY' : 'KOLEKSIONI BRILLANT' }}
       </span>
 
       <h1 class="h2 mb-2">{{ $product->name }}</h1>
@@ -1027,10 +1027,10 @@
 
       @php
         $basePrice = (float)$product->price;
-        $oldBase   = $basePrice ? round($basePrice * 1.25, 2) : null;
+        $oldBase   = is_numeric($product->old_price ?? null) && (float) $product->old_price > $basePrice ? (float) $product->old_price : null;
         $discount  = ($oldBase && $basePrice && $oldBase > $basePrice)
           ? round(100 - ($basePrice / $oldBase * 100))
-          : 20;
+          : null;
 
         $sizes=[];
         if(!empty($product->sizes)){
@@ -1082,7 +1082,7 @@
           @if($oldBase)
             <div class="price-old">{{ number_format($oldBase, 2) }} €</div>
           @endif
-          <span class="price-badge">-{{ $discount }}% Zbritje</span>
+          @if($discount)<span class="price-badge">-{{ $discount }}% zbritje</span>@endif
         </div>
       </div>
 
@@ -1685,16 +1685,18 @@
         : `${cover.option} = ${cover.basePrice.toFixed(2)} EUR, 1 njesi = ${cover.unitPrice.toFixed(2)} EUR, ${cover.value || '-'} = ${price.toFixed(2)} EUR`;
     }
 
-    const oldPrice = price ? (price * 1.25) : null;
+    const baseSalePrice = Number(@json((float) $product->price));
+    const baseOldPrice = Number(@json((float) ($product->old_price ?? 0)));
+    const oldPrice = baseOldPrice > baseSalePrice && price > 0 ? price * (baseOldPrice / baseSalePrice) : null;
     const discount = (oldPrice && price && oldPrice > price)
       ? Math.round(100 - (price / oldPrice * 100))
-      : 20;
+      : null;
 
     priceContainer.innerHTML = `
       <div class="d-flex align-items-baseline flex-wrap gap-2">
         <div class="price-now">${price.toFixed(2)} €</div>
         ${oldPrice ? `<div class="price-old">${oldPrice.toFixed(2)} €</div>` : ''}
-        <span class="price-badge">-${discount}% Zbritje</span>
+        ${discount ? `<span class="price-badge">-${discount}% zbritje</span>` : ''}
       </div>
     `;
 

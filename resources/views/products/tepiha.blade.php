@@ -1087,7 +1087,7 @@
       @foreach($products as $product)
         @php
           $price = $product->price;
-          $oldPrice = $price ? round($price * 1.25, 2) : null;
+          $oldPrice = is_numeric($product->old_price ?? null) && (float) $product->old_price > (float) $price ? (float) $product->old_price : null;
           $discountPercent = ($oldPrice && $price && $oldPrice > $price)
             ? round(100 - ($price / $oldPrice * 100))
             : null;
@@ -1140,12 +1140,7 @@
               @if($discountPercent)
                 <div class="bf-label is-discount">
                   <span>-{{ $discountPercent }}%</span>
-                  <small>Oferta</small>
-                </div>
-              @else
-                <div class="bf-label">
-                  <span>SALE</span>
-                  <small>Oferta</small>
+                  <small>Black Friday</small>
                 </div>
               @endif
 

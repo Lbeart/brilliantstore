@@ -2013,6 +2013,7 @@
       </div>
     </div>
   </header>
+  <div class="black-friday-strip" role="note"><span>BLACK FRIDAY</span><span>Shiko çmimin aktual dhe zbritjen reale te produktet me ofertë</span></div>
 
   <main>
     <section class="hero" aria-label="Brillant home">
@@ -2189,6 +2190,7 @@
                   if (!empty($prices)) $priceValue = min($prices);
                 }
                 $priceLabel = $priceValue !== null ? 'EUR ' . number_format((float) $priceValue, 2) : 'Me kerkese';
+                $originalPrice = is_numeric($item->old_price ?? null) && (float) $item->old_price > (float) $priceValue ? (float) $item->old_price : null;
                 $inStock = (int)($item->stock ?? 0) > 0;
                 $cat = $item->category ? strtoupper($item->category) : 'PRODUKT';
                 $detailsUrl = $item->slug ? route('products.show', $item->slug) : route('products.index');
@@ -2214,6 +2216,10 @@
                   <div class="product-bottom">
                     <span class="price-label">Cmimi</span>
                     <strong class="price">{{ $priceLabel }}</strong>
+                    @if($originalPrice)
+                      <del class="sale-price-old">EUR {{ number_format($originalPrice, 2) }}</del>
+                      <span class="sale-price-badge">-{{ round((1 - ((float) $priceValue / $originalPrice)) * 100) }}%</span>
+                    @endif
                     <div class="product-actions">
                       <a class="btn btn-outline" href="{{ $detailsUrl }}">Detaje</a>
                       <a class="btn btn-whatsapp" href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Pershendetje! Jam i interesuar per: '.$item->name.' ('.$priceLabel.'). A ka ne stock?') }}" target="_blank" rel="noopener">

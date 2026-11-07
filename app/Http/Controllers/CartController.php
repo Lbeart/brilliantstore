@@ -82,6 +82,13 @@ class CartController extends Controller
             }
         }
 
+        // A product sale applies consistently to its selected size/meter price too.
+        $regularPrice = (float) $product->price;
+        $originalPrice = (float) ($product->old_price ?? 0);
+        if ($regularPrice > 0 && $originalPrice > $regularPrice) {
+            $unitPrice *= $regularPrice / $originalPrice;
+        }
+
         $cart = session('cart', []);
         $key = 'product|'.$product->id.'|'.($sizeLabel ?? '').'|'.($colorLabel ?? '');
 

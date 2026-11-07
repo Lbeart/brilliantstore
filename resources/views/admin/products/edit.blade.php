@@ -161,8 +161,16 @@
                             </div>
 
                             <div class="col-md-3">
-                                <label class="form-label">Çmimi (€) *</label>
-                                <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price',$product->price) }}" required>
+                                <label class="form-label">Çmimi aktual (€) *</label>
+                                <input type="number" step="0.01" min="0" name="price" class="form-control" value="{{ old('price',$product->price) }}" required data-sale-price>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Çmimi real para zbritjes (€)</label>
+                                <input type="number" step="0.01" min="0" name="old_price" class="form-control" value="{{ old('old_price',$product->old_price) }}" placeholder="p.sh. 100.00" data-old-price>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Zbritja</label>
+                                <div class="form-control bg-light" data-discount-preview aria-live="polite">—</div>
                             </div>
 
                             <div class="col-md-3">
@@ -697,5 +705,6 @@ document.addEventListener('click', function (e) {
 </script>
 
 <script defer src="{{ asset('js/admin-theme.js') }}?v=20261107.4"></script>
+<script defer src="{{ asset('js/admin-product-pricing.js') }}?v=20261107.1"></script>
 </body>
 </html>

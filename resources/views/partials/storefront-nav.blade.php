@@ -87,5 +87,6 @@
     </div>
   </div>
 </header>
+<div class="black-friday-strip" role="note"><span>BLACK FRIDAY</span><span>Shiko çmimin aktual dhe zbritjen reale te produktet me ofertë</span></div>
 
 <script defer src="{{ asset('js/storefront-nav.js') }}?v=20261107.2"></script>
