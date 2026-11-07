@@ -198,6 +198,10 @@ body:has(> .storefront-site-header) { padding-top: 0 !important; }
 .storefront-site-header a:focus-visible,
 .storefront-site-header button:focus-visible,
 .storefront-site-header summary:focus-visible { outline: 3px solid #d8ad73; outline-offset: 2px; }
+.storefront-site-header a,
+.storefront-site-header a:hover,
+.storefront-site-header a:focus,
+.storefront-site-header a:visited { text-decoration: none !important; }
 
 @media (max-width: 1000px) {
   .storefront-nav { gap: 10px; padding-inline: 16px; }
