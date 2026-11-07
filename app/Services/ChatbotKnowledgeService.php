@@ -18,7 +18,7 @@ class ChatbotKnowledgeService
         array $cart = []
     ): array {
         $current = $this->normalize($message);
-        $dealsRequest = Str::contains($current, ['black friday', 'blackfriday', 'ofertat', 'oferta', 'zbritje', 'sale']);
+        $dealsRequest = Str::contains($current, ['black friday', 'blackfriday', 'ofert', 'zbrit', 'ulje', 'promocion', 'sale', 'aksion']);
         $trackingCode = $this->extractTrackingCode($message);
         $tracking = $this->trackingSummary($trackingCode);
         $intent = $this->categoryIntent($current);
