@@ -938,7 +938,7 @@
       ::-webkit-scrollbar-thumb:hover{ background: rgba(15,23,42,.28); }
     }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.11">
+  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.12">
   <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
 </head>
 
@@ -1140,8 +1140,7 @@
               </div>
 
               <div class="bf-label {{ $discountPercent ? 'is-discount' : '' }}">
-                <span>{{ $discountPercent ? '-'.$discountPercent.'%' : 'BLACK FRIDAY' }}</span>
-                <small>{{ $discountPercent ? 'ZBRITJE' : 'BRILLANT' }}</small>
+                <span>{{ $discountPercent ? '-'.$discountPercent.'% ZBRITJE' : 'BLACK FRIDAY' }}</span>
               </div>
 
               @if($sizeLabel)

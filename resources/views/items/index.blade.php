@@ -1936,7 +1936,7 @@
       .chat-footer > span { display:none; }
     }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v=20261107.8">
+  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v=20261107.9">
 </head>
 <body>
   @php
