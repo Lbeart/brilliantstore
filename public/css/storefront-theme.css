@@ -1,13 +1,13 @@
 /* Shared storefront palette for catalogue, product, cart and information pages. */
 html[data-admin-theme="dark"] {
   color-scheme: dark;
-  --store-ink: #f1ece7;
-  --store-muted: #b8aaa0;
-  --store-line: #403832;
-  --store-surface: #211d1a;
-  --store-page: #171310;
-  --store-field: #1b1714;
-  --store-soft: #2b2521;
+  --store-ink: #f8f0e8;
+  --store-muted: #c2b2a5;
+  --store-line: #45352d;
+  --store-surface: #211a17;
+  --store-page: #17120f;
+  --store-field: #1b1512;
+  --store-soft: #2d211d;
 }
 html[data-admin-theme="light"] {
   color-scheme: light;
@@ -21,9 +21,9 @@ html[data-admin-theme="light"] {
 }
 html[data-admin-theme] body { color: var(--store-ink); background: var(--store-page); }
 html[data-admin-theme] .navbar-custom,
-html[data-admin-theme] .navbar-custom .navbar-collapse { background: #202734 !important; }
-html[data-admin-theme] .navbar-custom .nav-link { color: #eef1f5 !important; }
-html[data-admin-theme] .navbar-custom .nav-link:hover { color: #ff9ca5 !important; }
+html[data-admin-theme] .navbar-custom .navbar-collapse { background: #211916 !important; }
+html[data-admin-theme] .navbar-custom .nav-link { color: #f8f0e8 !important; }
+html[data-admin-theme] .navbar-custom .nav-link:hover { color: #ffb2a8 !important; }
 html[data-admin-theme] .dropdown-menu,
 html[data-admin-theme] .card,
 html[data-admin-theme] .product-card,

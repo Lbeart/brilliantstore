@@ -1910,7 +1910,7 @@
       .chat-footer > span { display:none; }
     }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v=20261106.2">
+  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v=20261107.3">
 </head>
 <body>
   @php
@@ -2694,6 +2694,7 @@
           event.stopPropagation();
           const open = menu.classList.toggle('open');
           toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          document.body.classList.toggle('site-menu-open', open);
           toggle.innerHTML = open ? '<i class="bi bi-x-lg"></i>' : '<i class="bi bi-list"></i>';
         });
       }
@@ -2702,6 +2703,7 @@
         link.addEventListener('click', function () {
           if (!menu) return;
           menu.classList.remove('open');
+          document.body.classList.remove('site-menu-open');
           if (toggle) toggle.setAttribute('aria-expanded', 'false');
           if (toggle) toggle.innerHTML = '<i class="bi bi-list"></i>';
         });
@@ -2711,8 +2713,18 @@
         if (!menu || !toggle || !menu.classList.contains('open')) return;
         if (menu.contains(event.target) || toggle.contains(event.target)) return;
         menu.classList.remove('open');
+        document.body.classList.remove('site-menu-open');
         toggle.setAttribute('aria-expanded', 'false');
         toggle.innerHTML = '<i class="bi bi-list"></i>';
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape' || !menu || !menu.classList.contains('open')) return;
+        menu.classList.remove('open');
+        document.body.classList.remove('site-menu-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.innerHTML = '<i class="bi bi-list"></i>';
+        toggle.focus();
       });
 
       window.updateCartBadges = function (totalQty) {
@@ -2767,6 +2779,6 @@
       setLanguage(serverLang || savedLang || 'sq');
     })();
   </script>
-<script defer src="{{ asset('js/admin-theme.js') }}?v=20261106.2"></script>
+<script defer src="{{ asset('js/admin-theme.js') }}?v=20261107.3"></script>
 </body>
 </html>

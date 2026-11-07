@@ -1,14 +1,14 @@
 /* Shared admin theme: one layout and a clear contrast in both modes. */
 html[data-admin-theme="dark"] {
   color-scheme: dark;
-  --ink: #f1ece7;
-  --muted: #b8aaa0;
-  --line: #403832;
-  --surface: #211d1a;
-  --page: #171310;
-  --field: #1b1714;
-  --soft: #2b2521;
-  --soft-ink: #eee4dc;
+  --ink: #f8f0e8;
+  --muted: #c2b2a5;
+  --line: #45352d;
+  --surface: #211a17;
+  --page: #17120f;
+  --field: #1b1512;
+  --soft: #2d211d;
+  --soft-ink: #f0e4d8;
   --shadow: 0 10px 28px rgba(0, 0, 0, .22);
   --accent-soft: rgba(201, 47, 61, .17);
 }
@@ -40,10 +40,10 @@ html[data-admin-theme] .app-navbar {
 }
 
 /* The navigation stays dark in both modes so the admin pages retain one identity. */
-html[data-admin-theme] .sidebar { background: #202734 !important; color: #fff !important; }
-html[data-admin-theme] .sidebar .nav-link { color: #cbd2dc !important; }
+html[data-admin-theme] .sidebar { background: #211916 !important; color: #fff !important; }
+html[data-admin-theme] .sidebar .nav-link { color: #e8ddd4 !important; }
 html[data-admin-theme] .sidebar .nav-link:hover { background: rgba(255,255,255,.08) !important; color: #fff !important; }
-html[data-admin-theme] .sidebar .nav-link.active { background: rgba(201,47,61,.24) !important; color: #fff !important; }
+html[data-admin-theme] .sidebar .nav-link.active { background: rgba(201,47,61,.30) !important; color: #fff !important; }
 
 html[data-admin-theme] .card,
 html[data-admin-theme] .card-soft,
