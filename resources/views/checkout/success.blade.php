@@ -23,7 +23,7 @@
     .kpi .value{ font-weight:800; font-size:1.2rem }
     @media (max-width:575.98px){ .btn-lg{ padding:.6rem 1rem; font-size:1rem } }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.7">
+  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.8">
   <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
 </head>
 <body>

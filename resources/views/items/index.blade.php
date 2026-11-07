@@ -1933,7 +1933,7 @@
       .chat-footer > span { display:none; }
     }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v=20261107.6">
+  <link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v=20261107.7">
 </head>
 <body>
   @php
@@ -2254,7 +2254,7 @@
               <article class="product-card">
                 <a class="product-media" href="{{ $detailsUrl }}" aria-label="Shiko {{ $item->name }}">
                   <img src="{{ $imgUrl }}" alt="{{ $item->name }}" loading="{{ $loop->iteration <= 4 ? 'eager' : 'lazy' }}" fetchpriority="{{ $loop->first ? 'high' : 'auto' }}" decoding="async" sizes="(max-width: 576px) 100vw, (max-width: 992px) 50vw, 33vw" width="640" height="520" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
-                  <span class="product-badge sale-price-badge">{{ $originalPrice ? 'BLACK FRIDAY · -'.round((1 - ((float) $priceValue / $originalPrice)) * 100).'%' : 'BLACK FRIDAY' }}</span>
+                  <span class="product-badge {{ $originalPrice ? 'sale-price-badge' : '' }}">{{ $originalPrice ? 'BLACK FRIDAY · -'.round((1 - ((float) $priceValue / $originalPrice)) * 100).'%' : 'BLACK FRIDAY' }}</span>
                   <span class="stock-badge {{ $inStock ? '' : 'out' }}">{{ $inStock ? 'Ne stock' : 'Pa stock' }}</span>
                 </a>
                 <div class="product-body">
@@ -2269,11 +2269,13 @@
                     {{ $item->description ? \Illuminate\Support\Str::limit($item->description, 115) : "Detajet e produktit mund t'i merrni shpejt ne WhatsApp." }}
                   </p>
                   <div class="product-bottom">
-                    <span class="price-label">Cmimi</span>
-                    <strong class="price">{{ $priceLabel }}</strong>
                     @if($originalPrice)
-                      <del class="sale-price-old">EUR {{ number_format($originalPrice, 2) }}</del>
-                      <span class="sale-price-badge">-{{ round((1 - ((float) $priceValue / $originalPrice)) * 100) }}%</span>
+                      <span class="price-label">Prej <del>EUR {{ number_format($originalPrice, 2) }}</del></span>
+                      <strong class="price">Tash {{ $priceLabel }}</strong>
+                      <span class="sale-price-badge">-{{ round((1 - ((float) $priceValue / $originalPrice)) * 100) }}% zbritje</span>
+                    @else
+                      <span class="price-label">Çmimi aktual</span>
+                      <strong class="price">{{ $priceLabel }}</strong>
                     @endif
                     <div class="product-actions">
                       <a class="btn btn-outline" href="{{ $detailsUrl }}">Detaje</a>

@@ -720,6 +720,7 @@
       font-size: .82rem;
       text-decoration: line-through;
     }
+    .price-row small{display:block;color:var(--muted);font-size:.62rem;font-weight:600;line-height:1.2;text-align:left}
     .price-note{
       font-size: .72rem;
       color: #6b7280;
@@ -936,7 +937,7 @@
       ::-webkit-scrollbar-thumb:hover{ background: rgba(15,23,42,.28); }
     }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.7">
+  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.8">
   <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
 </head>
 
@@ -1139,7 +1140,7 @@
 
               <div class="bf-label {{ $discountPercent ? 'is-discount' : '' }}">
                 <span>{{ $discountPercent ? '-'.$discountPercent.'%' : 'BLACK FRIDAY' }}</span>
-                <small>{{ $discountPercent ? 'ZBRITJE' : 'OFERTË' }}</small>
+                <small>{{ $discountPercent ? 'ZBRITJE' : 'BRILLANT' }}</small>
               </div>
 
               @if($sizeLabel)
@@ -1175,11 +1176,11 @@
               </div>
 
               <div class="price-row">
-                @if(!is_null($price))
-                  <span class="price-new">{{ number_format($price, 2) }} €</span>
-                @endif
                 @if($oldPrice)
-                  <span class="price-old">{{ number_format($oldPrice, 2) }} €</span>
+                  <span class="price-old"><small>Prej</small> {{ number_format($oldPrice, 2) }} €</span>
+                  <span class="price-new"><small>Tash</small> {{ number_format($price, 2) }} €</span>
+                @elseif(!is_null($price))
+                  <span class="price-new"><small>Çmimi aktual</small> {{ number_format($price, 2) }} €</span>
                 @endif
               </div>
 
