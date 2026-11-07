@@ -217,7 +217,7 @@ body:has(> .storefront-site-header) { padding-top: 0 !important; }
   line-height: 1.35;
 }
 .black-friday-strip span:first-child { font-weight: 900; letter-spacing: .12em; }
-.sale-price-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: .45rem; }
+.sale-price-line { display: flex; align-items: baseline; justify-content: flex-end; flex-wrap: wrap; gap: .45rem; text-align: right; }
 .sale-price-current { color: var(--brand, #a51d31); font-weight: 900; white-space: nowrap; }
 .sale-price-divider { color: var(--store-muted, #756b63); font-weight: 600; }
 .sale-price-old { color: var(--muted, #756b63); font-size: .88em; }

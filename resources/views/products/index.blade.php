@@ -12,7 +12,7 @@
     body{ background:#f8f9fa; font-family:'Segoe UI',sans-serif; }
     .card-img-top{ object-fit:cover; height:220px; }
   </style>
-  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.9">
+  <link rel="stylesheet" href="{{ asset('css/storefront-theme.css') }}?v=20261107.10">
   <script>try { if (localStorage.getItem('brillant-theme-version') !== '2') { localStorage.setItem('brillant-theme-version', '2'); localStorage.setItem('brillant-admin-theme', 'light'); } document.documentElement.dataset.adminTheme = localStorage.getItem('brillant-admin-theme') || 'light'; } catch (_) { document.documentElement.dataset.adminTheme = 'light'; }</script>
 </head>
 <body>
