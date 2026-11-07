@@ -18,6 +18,7 @@ class ChatbotKnowledgeService
         array $cart = []
     ): array {
         $current = $this->normalize($message);
+        $dealsRequest = Str::contains($current, ['black friday', 'blackfriday', 'ofertat', 'oferta', 'zbritje', 'sale']);
         $trackingCode = $this->extractTrackingCode($message);
         $tracking = $this->trackingSummary($trackingCode);
         $intent = $this->categoryIntent($current);
@@ -34,10 +35,14 @@ class ChatbotKnowledgeService
         $generalQuestion = $this->isGeneralQuestion($current);
         $productSearch = ! $greetingOnly
             && ! $operational
-            && ($explicitProductSearch
+            && ($dealsRequest
+                || $explicitProductSearch
                 || ($followUp && $historyIntent !== null)
                 || ($intent !== null && ! $generalQuestion));
         $terms = $productSearch ? $this->searchTerms($message, $intent) : [];
+        if ($dealsRequest) {
+            $terms = ['required' => [], 'soft' => []];
+        }
         if ($productSearch && $followUp && $this->ordinalProductId($message, $contextProductIds) === null) {
             $historyTerms = $this->searchTerms($this->recentConversationText($history), $intent);
             $stableHistoryTerms = array_filter(
@@ -65,16 +70,22 @@ class ChatbotKnowledgeService
                 ->where('is_active', true)
                 ->orderByDesc('id')
                 ->get([
-                    'id', 'name', 'slug', 'price', 'description', 'image_path', 'stock',
+                    'id', 'name', 'slug', 'price', 'old_price', 'description', 'image_path', 'stock',
                     'category', 'subcategory', 'sizes', 'color_variants', 'sku', 'barcode',
                 ]);
 
             $inventory = $this->inventorySummary($catalog);
             $catalogOverview = $this->catalogOverview($catalog);
+            $searchCatalog = $catalog;
+
+            if ($dealsRequest) {
+                $searchCatalog = $catalog->filter(fn (Product $product) => is_numeric($product->old_price)
+                    && (float) $product->old_price > (float) $product->price)->values();
+            }
 
             if ($productSearch) {
                 $products = $this->rankProducts(
-                    $catalog,
+                    $searchCatalog,
                     $message,
                     $intent,
                     $terms,
@@ -95,6 +106,7 @@ class ChatbotKnowledgeService
 
         return [
             'intent' => $intent,
+            'deals_request' => $dealsRequest,
             'products' => $products,
             'inventory' => $inventory,
             'action' => $action,
@@ -122,6 +134,16 @@ class ChatbotKnowledgeService
         $products = $knowledge['products'] ?? [];
         $intent = $knowledge['intent'] ?? null;
         $tracking = (array) ($knowledge['order_tracking'] ?? []);
+
+        if (($knowledge['deals_request'] ?? false) === true) {
+            if ($products === []) {
+                return 'Për momentin nuk ka produkte me çmim promocional të regjistruar në website. Ofertat shfaqen këtu sapo të aktivizohen.';
+            }
+
+            $offers = collect($products)->map(fn (array $product) => $product['name'].' ('.number_format((float) $product['old_price'], 2).' € → '.number_format((float) $product['current_price'], 2).' €, '.$product['discount_percent'].'% zbritje)')->implode('; ');
+
+            return 'Po, këto janë ofertat aktive Black Friday: '.$offers.'. Çmimet dhe zbritjet janë marrë nga produktet aktuale në website; hape kartën për detaje.';
+        }
 
         if (($tracking['lookup_requested'] ?? false) === true) {
             if (($tracking['found'] ?? false) === true) {
@@ -411,6 +433,10 @@ class ChatbotKnowledgeService
             'description' => Str::limit(trim(strip_tags((string) $product->description)), 240, ''),
             'verified_facts' => $this->verifiedFacts($product),
             'price' => $range['min'],
+            'old_price' => $this->activeOldPrice($product),
+            'current_price' => is_numeric($product->price) ? (float) $product->price : $range['min'],
+            'discount_percent' => $this->discountPercent($product),
+            'is_sale' => $this->discountPercent($product) > 0,
             'price_min' => $range['min'],
             'price_max' => $range['max'],
             'price_text' => $priceText,
@@ -516,6 +542,22 @@ class ChatbotKnowledgeService
             'min' => $prices->isEmpty() ? null : (float) $prices->min(),
             'max' => $prices->isEmpty() ? null : (float) $prices->max(),
         ];
+    }
+
+    private function activeOldPrice(Product $product): ?float
+    {
+        $old = is_numeric($product->old_price) ? (float) $product->old_price : 0.0;
+        $current = is_numeric($product->price) ? (float) $product->price : 0.0;
+
+        return $old > $current ? $old : null;
+    }
+
+    private function discountPercent(Product $product): int
+    {
+        $old = $this->activeOldPrice($product);
+        $current = is_numeric($product->price) ? (float) $product->price : 0.0;
+
+        return $old && $old > 0 ? (int) round((($old - $current) / $old) * 100) : 0;
     }
 
     private function hasAvailableOption(Product $product): bool
@@ -756,6 +798,8 @@ class ChatbotKnowledgeService
                 'subcategory' => $product->subcategory ?: null,
                 'price_min' => $prices['min'],
                 'price_max' => $prices['max'],
+                'old_price' => $this->activeOldPrice($product),
+                'discount_percent' => $this->discountPercent($product),
                 'sizes' => collect($sizes)->map(fn (array $size) => [
                     'label' => $size['label'],
                     'price' => $size['price'],

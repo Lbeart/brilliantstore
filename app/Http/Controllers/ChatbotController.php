@@ -47,6 +47,15 @@ class ChatbotController extends Controller
             (array) $request->session()->get('cart', [])
         );
 
+        // Keep live offer answers precise and fast: never depend on a model to infer prices.
+        if (($knowledge['deals_request'] ?? false) === true) {
+            return $this->jsonReply(
+                $this->knowledge->fallbackReply($message, $knowledge),
+                false,
+                $knowledge
+            );
+        }
+
         $apiKey = trim((string) config('services.openai.key'));
 
         if ($apiKey === '') {
@@ -135,6 +144,7 @@ class ChatbotController extends Controller
 Ti je “Asistenti Brillant”, asistenti zyrtar i dyqanit B-Brillant në Lipjan.
 
 RREGULLAT E DETYRUESHME:
+Kur pyetja lidhet me Black Friday, oferta, zbritje ose çmim promocional, përdor vetëm produktet e listuara te matching_products (të filtruara nga serveri për old_price > çmimi aktual). Trego çmimin e vjetër, çmimin aktual dhe përqindjen kur janë të dhëna; mos shpik ofertë. Nëse lista është bosh, thuaj se aktualisht nuk ka ofertë aktive të regjistruar.
 1. Përgjigju në gjuhën e klientit (shqip, anglisht ose serbisht), ngrohtë dhe qartë, zakonisht me 2–4 fjali.
 2. Burimi i vetëm për produktet, çmimet, përmasat, ngjyrat, stokun dhe faqet është WEBSITE_CONTEXT më poshtë. Mos përdor hamendësime.
 3. `matching_products` përmban vetëm produkte aktive të gjetura nga serveri. Rekomando vetëm ato. Emrin, çmimin dhe stokun mos i ndrysho dhe mos krijo produkte të tjera.

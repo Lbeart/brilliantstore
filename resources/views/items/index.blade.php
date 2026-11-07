@@ -1814,6 +1814,7 @@
     .chat-product-details { min-width:0; padding:9px 10px; display:flex; flex-direction:column; justify-content:center; gap:3px; }
     .chat-product-details strong { overflow:hidden; font-size:.78rem; line-height:1.2; text-overflow:ellipsis; white-space:nowrap; }
     .chat-product-price { color:var(--brand); font-size:.72rem; font-weight:800; }
+    .chat-product-price-old { margin-right:6px; color:#847b75; font-weight:500; text-decoration:line-through; }
     .chat-product-meta { overflow:hidden; color:#75665e; font-size:.64rem; line-height:1.25; text-overflow:ellipsis; white-space:nowrap; }
     .chat-product-stock { font-size:.64rem; font-weight:700; }
     .chat-product-stock.in_stock { color:#15803d; }
@@ -2554,7 +2555,17 @@
           name.textContent = product.name || 'Produkt';
           const price = document.createElement('span');
           price.className = 'chat-product-price';
-          price.textContent = product.price_text || 'Shiko produktin';
+          if (Number(product.discount_percent) > 0 && Number(product.old_price) > 0) {
+            const oldPrice = document.createElement('s');
+            oldPrice.className = 'chat-product-price-old';
+            oldPrice.textContent = Number(product.old_price).toFixed(2) + ' €';
+            price.appendChild(oldPrice);
+            const currentPrice = document.createElement('strong');
+            currentPrice.textContent = Number(product.current_price).toFixed(2) + ' € · -' + product.discount_percent + '%';
+            price.appendChild(currentPrice);
+          } else {
+            price.textContent = product.price_text || 'Shiko produktin';
+          }
           const meta = document.createElement('span');
           meta.className = 'chat-product-meta';
           const sizeLabels = Array.isArray(product.sizes) ? product.sizes.slice(0, 3).map(function (size) { return size.label; }).filter(Boolean) : [];
