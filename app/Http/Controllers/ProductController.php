@@ -13,6 +13,7 @@ class ProductController extends Controller
         'name',
         'slug',
         'price',
+        'old_price',
         'description',
         'image_path',
         'is_active',
