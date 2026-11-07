@@ -30,27 +30,42 @@ class OptimizeProductImages extends Command
         foreach ($paths as $relativePath) {
             $sourcePath = public_path(str_replace('/', DIRECTORY_SEPARATOR, $relativePath));
             $cachePath = $this->cachePath($relativePath);
+            $thumbnailPath = $this->thumbnailPath($relativePath);
 
-            if (
-                !$this->option('force')
-                && is_file($cachePath)
-                && filemtime($cachePath) >= filemtime($sourcePath)
-            ) {
+            $freshCache = is_file($cachePath) && filemtime($cachePath) >= filemtime($sourcePath);
+            $freshThumbnail = is_file($thumbnailPath) && filemtime($thumbnailPath) >= filemtime($sourcePath);
+
+            if (!$this->option('force') && $freshCache && $freshThumbnail) {
                 $skipped++;
                 continue;
             }
 
-            $this->ensureDirectory(dirname($cachePath));
-
             try {
-                Image::make($sourcePath)
-                    ->orientate()
-                    ->resize(1100, 1100, function ($constraint) {
-                        $constraint->aspectRatio();
-                        $constraint->upsize();
-                    })
-                    ->encode('jpg', 76)
-                    ->save($cachePath);
+                if ($this->option('force') || !$freshCache) {
+                    $this->ensureDirectory(dirname($cachePath));
+                    Image::make($sourcePath)
+                        ->orientate()
+                        ->resize(1100, 1100, function ($constraint) {
+                            $constraint->aspectRatio();
+                            $constraint->upsize();
+                        })
+                        ->encode('jpg', 76)
+                        ->save($cachePath);
+                }
+
+                if ($this->option('force') || !$freshThumbnail) {
+                    $this->ensureDirectory(dirname($thumbnailPath));
+                    // Derive the tiny gallery images from the already-compressed cache when possible.
+                    $thumbnailSource = is_file($cachePath) ? $cachePath : $sourcePath;
+                    Image::make($thumbnailSource)
+                        ->orientate()
+                        ->resize(180, 180, function ($constraint) {
+                            $constraint->aspectRatio();
+                            $constraint->upsize();
+                        })
+                        ->encode('jpg', 62)
+                        ->save($thumbnailPath);
+                }
 
                 $created++;
             } catch (\Throwable $e) {
@@ -178,6 +193,13 @@ class OptimizeProductImages extends Command
     {
         return public_path(
             'optimized-cache/' . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, ltrim($relativePath, '/')) . '.jpg'
+        );
+    }
+
+    private function thumbnailPath(string $relativePath): string
+    {
+        return public_path(
+            'optimized-cache/thumbs/' . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, ltrim($relativePath, '/')) . '.jpg'
         );
     }
 

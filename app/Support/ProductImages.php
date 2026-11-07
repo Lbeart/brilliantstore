@@ -29,6 +29,26 @@ class ProductImages
         return self::urls($value, $placeholder, $context)[0] ?? ($placeholder ?: asset('images/placeholder-product.png'));
     }
 
+    public static function thumbnailUrl(?string $imageUrl): ?string
+    {
+        if (!$imageUrl) {
+            return null;
+        }
+
+        $path = trim((string) parse_url($imageUrl, PHP_URL_PATH), '/');
+        if (str_starts_with($path, 'optimized-cache/')) {
+            $path = substr($path, strlen('optimized-cache/'));
+            // Full-size optimized copies append .jpg to the source filename.
+            $path = preg_replace('/\.jpg$/i', '', $path) ?? $path;
+        } elseif (!preg_match('#^(?:storage|images|carpet|curtainn|perdeditoree|postavav|mbulesaa|jastak|batanijee|tepihebanjoo|posteqiaa)/#i', $path)) {
+            return $imageUrl;
+        }
+
+        $thumbnail = 'optimized-cache/thumbs/'.$path.'.jpg';
+
+        return self::existsInPublic($thumbnail) ? asset($thumbnail) : $imageUrl;
+    }
+
     public static function decode(mixed $value): array
     {
         if (empty($value)) {

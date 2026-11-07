@@ -581,6 +581,23 @@ class ProductController extends Controller
                 })
                 ->encode('jpg', 76)
                 ->save($cachePath);
+
+            $thumbnailPath = public_path(
+                'optimized-cache/thumbs/' . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, ltrim($publicRelativePath, '/')) . '.jpg'
+            );
+            $thumbnailDirectory = dirname($thumbnailPath);
+            if (!is_dir($thumbnailDirectory)) {
+                mkdir($thumbnailDirectory, 0775, true);
+            }
+
+            Image::make($sourcePath)
+                ->orientate()
+                ->resize(180, 180, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })
+                ->encode('jpg', 62)
+                ->save($thumbnailPath);
         } catch (\Throwable $e) {
             report($e);
         }

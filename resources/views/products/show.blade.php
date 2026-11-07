@@ -987,7 +987,7 @@
             <button type="button"
               class="thumb-btn {{ (!$initialColorImageUrl && $i === 0) ? 'active' : '' }}"
               data-product-image="{{ $imgUrl }}">
-              <img src="{{ $imgUrl }}" alt="thumb {{ $i+1 }}" loading="lazy" decoding="async" fetchpriority="low" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+              <img src="{{ \App\Support\ProductImages::thumbnailUrl($imgUrl) }}" alt="thumb {{ $i+1 }}" loading="lazy" decoding="async" fetchpriority="low" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
             </button>
           @endforeach
 
@@ -1000,7 +1000,7 @@
                   data-color-name="{{ $variant['name'] }}"
                   title="Ngjyra: {{ $variant['name'] }}"
                   aria-label="Ngjyra {{ $variant['name'] }} foto {{ $variantImageIndex + 1 }}">
-                  <img src="{{ $variantImageUrl }}" alt="Ngjyra {{ $variant['name'] }} foto {{ $variantImageIndex + 1 }}" loading="lazy" decoding="async" fetchpriority="low" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
+                  <img src="{{ \App\Support\ProductImages::thumbnailUrl($variantImageUrl) }}" alt="Ngjyra {{ $variant['name'] }} foto {{ $variantImageIndex + 1 }}" loading="lazy" decoding="async" fetchpriority="low" width="96" height="96" onerror="this.onerror=null;this.src='{{ asset('images/placeholder-product.png') }}'">
                   <span class="thumb-color-dot" style="background: {{ $variant['hex'] }}"></span>
                 </button>
               @endif
